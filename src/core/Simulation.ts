@@ -1,3 +1,4 @@
+import { newDangerState } from "../systems/DangerState";
 import { syncTerritory, newStrategy } from "../systems/Territory";
 import { newStreetState } from "../systems/StreetEconomy";
 import { type GameState, type ZoneId } from "./GameState";
@@ -28,6 +29,7 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
   );
   const s: GameState = {
     version: 8,
+    danger: newDangerState(seed),
     strategic: newStrategy({ zones: ZONES, factions: FACTIONS }),
     street: newStreetState(),
     day: 1,

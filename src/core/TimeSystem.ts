@@ -1,3 +1,10 @@
+import {
+  advanceConflicts,
+  dischargePatient,
+  expose,
+  hospitalStay,
+} from "../systems/Danger";
+import { presenceOf } from "../board/presence";
 import { advanceBusinesses } from "../systems/Businesses";
 import { resolveTerritories } from "../systems/Territory";
 import { legitimateProgress, finalizeEnding } from "../systems/EndConditions";
@@ -24,6 +31,7 @@ export function advanceDay(state: GameState): GameState {
   settleWorkplaceScenes(s);
   settleAttendance(s);
   s.day++;
+  advanceConflicts(s);
   releaseEligible(s);
   advanceStreet(s);
   generateShifts(s);
@@ -35,6 +43,11 @@ export function advanceDay(state: GameState): GameState {
   advanceIncidents(s);
   evaluatePromises(s);
   advancePressure(s);
+  expose(s, presenceOf(s).location, "linger");
+  if (s.end) {
+    syncEncounters(s);
+    return s;
+  }
   const p = player(s),
     income =
       p.recurringLawfulIncome +
@@ -75,11 +88,12 @@ export function advanceDay(state: GameState): GameState {
       ? s.strategic.lawfulStreak + 1
       : 0;
   finalizeEnding(s);
-  s.ap = BALANCE.dailyAP;
+  dischargePatient(s);
+  s.ap = hospitalStay(s) || s.end ? 0 : BALANCE.dailyAP;
   record(
     s,
     "system",
-    `Day ${s.day}. Two action points available.`,
+    `Day ${s.day}. ${hospitalStay(s) ? "Inpatient recovery continues." : s.end ? "This life has ended." : "Two action points available."}`,
     [p.id],
     [p.id],
     { importance: "routine" },
@@ -99,5 +113,14 @@ export function serveSentence(state: GameState): GameState {
   let s = state;
   const releaseDay = r.releaseDay!;
   while (s.day < releaseDay && !s.end) s = advanceDay(s);
+  return s;
+}
+
+/** All normal day systems run during treatment; no frozen NPC/faction timeline. */
+export function recoverInHospital(state: GameState): GameState {
+  const stay = hospitalStay(state);
+  if (!stay || state.end) return state;
+  let s = state;
+  while (s.day < stay.releaseDay && !s.end) s = advanceDay(s);
   return s;
 }

@@ -1,3 +1,5 @@
+import { dangerSchema, newDangerState } from "../systems/DangerState";
+import { validateDangerReferences } from "../systems/Danger";
 import { strategicSchema } from "./StrategicSchema";
 import { streetSchema } from "./StreetSchema";
 import { z } from "zod";
@@ -83,7 +85,9 @@ const presenceSchema = z.object({
   location: z.string().min(1),
   zone,
   arrivedDay: integer.min(1),
-  trail: z.array(z.object({ location: z.string(), day: integer.min(1) })).max(12),
+  trail: z
+    .array(z.object({ location: z.string(), day: integer.min(1) }))
+    .max(12),
   appearance: z.object({
     skin: z.string(),
     hair: z.enum(HAIR),
@@ -99,6 +103,7 @@ const presenceSchema = z.object({
 });
 const schema = z.object({
   presence: presenceSchema.optional(),
+  danger: dangerSchema.default(() => newDangerState()),
   version: z.literal(8),
   street: streetSchema,
   strategic: strategicSchema,
@@ -247,6 +252,7 @@ const schema = z.object({
     z.object({
       id,
       definitionId: id,
+      dangerSceneId: id.optional(),
       crewOfferId: id.optional(),
       sourceEventId: id.optional(),
       incidentId: id.optional(),
@@ -403,6 +409,7 @@ export function deserialize(raw: string): GameState {
       "Incompatible or damaged save. Expected Hood Hero save version 8. Start a new test run from the new game menu.",
     );
   const s: GameState = envelope.data.state;
+  validateDangerReferences(s);
   const exists = (id: string) => !!s.characters[id];
   const st = s.street;
   const strategy = s.strategic;

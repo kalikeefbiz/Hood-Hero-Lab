@@ -1,3 +1,4 @@
+import { DANGER_ENCOUNTER } from "./dangerEncounters";
 import { SUPPLIER_ENCOUNTER, SUPPLIER_REACTION } from "./streetEncounters";
 import { CREW_CONVERSATION, CREW_OFFER } from "./crewEncounters";
 import { WORKPLACE_ENCOUNTER } from "./workplaceEncounters";
@@ -94,6 +95,7 @@ function requestResponses(
   return responses;
 }
 export const ENCOUNTERS: EncounterDefinition[] = [
+  DANGER_ENCOUNTER,
   SUPPLIER_ENCOUNTER,
   SUPPLIER_REACTION,
   WORKPLACE_ENCOUNTER,

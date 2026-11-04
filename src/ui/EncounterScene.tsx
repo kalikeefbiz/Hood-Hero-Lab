@@ -54,7 +54,7 @@ export function EncounterScene({
           onClick={() => dismiss(e.id)}
           aria-label="Close conversation"
         >
-          Close ×
+          {d.id === "living-danger" && !historical ? "Walk away ×" : "Close ×"}
         </button>
       </div>
       <div
