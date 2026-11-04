@@ -907,10 +907,14 @@ export function initiateConflict(
   const supporters = s.crew.members
     .map((id) => s.characters[id])
     .filter(
-      (n) => n.status === "active" && (n.relationships[p.id]?.trust ?? 0) >= 45,
+      (n) =>
+        n.id !== target &&
+        n.status === "active" &&
+        (n.relationships[p.id]?.trust ?? 0) >= 45,
     );
   const backing = npc.connections.filter(
     (id) =>
+      id !== p.id &&
       s.characters[id]?.status === "active" &&
       s.characters[id].affiliation === npc.affiliation,
   ).length;

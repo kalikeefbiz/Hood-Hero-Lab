@@ -29,6 +29,7 @@ import { advanceDay, recoverInHospital } from "../core/TimeSystem";
 import { performAction } from "../core/ActionEngine";
 import { serialize, deserialize } from "../persistence/SaveSystem";
 import { visibleEvents, record } from "../core/EventLog";
+import { arrest } from "../systems/Incarceration";
 import { STREET_BALANCE } from "../content/street";
 function start(faction: FactionId | null = null, seed = 2026) {
   const s = newGame("Morgan", "south", seed);
@@ -351,6 +352,9 @@ describe("directional consignment, collection and persistent relationships", () 
     transact(s, "quanny", "reservoir");
     expect(s.street.transactions.length).toBe(before + 1);
     expect(s.street.transactions.at(-1)?.actor).toBe("quanny");
+    arrest(s, "quanny", "Witnessed street work", 1);
+    expect(s.characters.quanny.status).toBe("arrested");
+    expect(receivable(s, "quanny")!.balance).toBe(a.original);
     expect(
       deserialize(serialize(s)).street.agreements.find((x) => x.id === a.id)
         ?.balance,
@@ -472,4 +476,20 @@ describe("Quanny business boundaries", () => {
     expect(s.street.transactions.some((t) => t.actor === "quanny")).toBe(true);
     expect(deserialize(serialize(s)).street).toEqual(s.street);
   });
+});
+
+it("pending Quanny collection cannot be used from custody or while he is committed elsewhere", () => {
+  const base = agreement(35);
+  base.day = receivable(base, "quanny")!.dueDay;
+  openQuanny(base);
+  syncEncounters(base);
+  const id = currentEncounter(base)!.id;
+  for (const unavailable of ["player", "quanny"]) {
+    const s = structuredClone(base);
+    if (unavailable === "player") player(s).status = "arrested";
+    else s.characters.quanny.availableDay = s.day + 1;
+    const before = serialize(s);
+    expect(respondEncounter(s, id, "collect").error).toBeTruthy();
+    expect(serialize(s)).toBe(before);
+  }
 });

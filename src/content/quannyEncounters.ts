@@ -25,7 +25,9 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
   eligible: (s) =>
     !s.end &&
     !hospitalStay(s) &&
+    player(s).status === "active" &&
     s.characters.quanny?.status === "active" &&
+    s.characters.quanny.availableDay <= s.day &&
     presenceOf(s).location === s.quanny.location,
   dialogue: (s, e) => {
     if (!s.quanny.claim) return "Aye, where you from?";
