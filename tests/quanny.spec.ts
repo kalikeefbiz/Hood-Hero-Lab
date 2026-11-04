@@ -37,6 +37,30 @@ const snapshot = (page: Page): Promise<GameState> =>
   );
 const modal = (page: Page) =>
   page.getByRole("dialog", { name: "Character encounter" });
+async function closeQuannyOutcome(
+  page: Page,
+  expression: "pleased" | "disappointed",
+) {
+  const image = modal(page).locator(".character-portrait img");
+  await expect(image).toHaveAttribute(
+    "src",
+    new RegExp(`quanny-${expression}[.]webp$`),
+  );
+  await expect(image).toBeVisible();
+  await expect
+    .poll(() =>
+      image.evaluate(
+        (img: HTMLImageElement) => img.complete && img.naturalWidth > 0,
+      ),
+    )
+    .toBe(true);
+  const before = await snapshot(page);
+  await modal(page)
+    .getByRole("button", { name: "Return to City", exact: true })
+    .click();
+  expect(await snapshot(page)).toEqual(before);
+}
+
 async function visitReservoir(page: Page, place = "Lil Jay's Market") {
   await page
     .getByRole("group", { name: "Board location" })
@@ -99,6 +123,7 @@ test("intentional board visit introduces Quanny once, fronts physical stock and 
   await modal(page)
     .getByRole("button", { name: /Agree · front/ })
     .click();
+  await closeQuannyOutcome(page, "pleased");
   await expect(modal(page)).toHaveCount(0);
   const after = await snapshot(page);
   expect(after.street.agreements[0]).toMatchObject({
@@ -164,6 +189,10 @@ for (const notoriety of [34, 35])
     await modal(page)
       .getByRole("button", { name: /Collect \$/ })
       .click();
+    await closeQuannyOutcome(
+      page,
+      notoriety >= 35 ? "pleased" : "disappointed",
+    );
     await expect(modal(page)).toHaveCount(0);
     const after = await snapshot(page),
       a = after.street.agreements[0];
@@ -186,6 +215,7 @@ test("false BB dismissal reveals no private intention and cannot be rerolled by 
   await modal(page)
     .getByRole("button", { name: /This Big BB/ })
     .click();
+  await closeQuannyOutcome(page, "disappointed");
   await expect(modal(page)).toHaveCount(0);
   await expect(page.locator("body")).not.toContainText(
     "recognized a false Blocc Boys claim immediately",
@@ -223,6 +253,7 @@ test("Angels first-contact shooting uses hospital presentation and persists its 
   await modal(page)
     .getByRole("button", { name: /You see the wings/ })
     .click();
+  await closeQuannyOutcome(page, "disappointed");
   await expect(
     page.getByRole("heading", { name: "Recovering in hospital" }),
   ).toBeVisible();

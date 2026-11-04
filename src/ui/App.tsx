@@ -423,6 +423,15 @@ export function App() {
         setGroup("Streets");
         setHistoryEncounterId(null);
       }
+      // Reuse the existing read-only outcome view so Quanny's terminal reaction is visible.
+      // The encounter is already completed; closing this view performs no simulation action.
+      if (
+        finished?.status === "acknowledged" &&
+        sourceEncounter.participants[0] === "quanny"
+      ) {
+        setHistoryEncounterId(id);
+        setScreen("City");
+      }
       setNotice(reply);
       if (response !== "clarify") setActionFeedback(reply);
     }
