@@ -1,3 +1,4 @@
+import { QUANNY_ENCOUNTER } from "./quannyEncounters";
 import { DANGER_ENCOUNTER } from "./dangerEncounters";
 import { SUPPLIER_ENCOUNTER, SUPPLIER_REACTION } from "./streetEncounters";
 import { CREW_CONVERSATION, CREW_OFFER } from "./crewEncounters";
@@ -95,6 +96,7 @@ function requestResponses(
   return responses;
 }
 export const ENCOUNTERS: EncounterDefinition[] = [
+  QUANNY_ENCOUNTER,
   DANGER_ENCOUNTER,
   SUPPLIER_ENCOUNTER,
   SUPPLIER_REACTION,

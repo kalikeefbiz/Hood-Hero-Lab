@@ -58,6 +58,7 @@ export const dangerSchema = z.object({
       id,
       eventId: id,
       kind: z.enum(["assault", "shooting"]),
+      severity: z.enum(["minor", "serious"]).optional(),
       admittedDay: day,
       releaseDay: day,
       bill: z.number().int().nonnegative(),

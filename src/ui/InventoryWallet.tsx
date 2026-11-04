@@ -33,8 +33,9 @@ export function InventoryWallet({
         {money(l.crewPaid)}
       </p>
       <p>
-        {l.remaining} held / {l.received} received · {l.lost} lost · result
-        after supplier cost {money(lotProfit(l))}
+        {l.remaining} held / {l.received} received · {l.lost} lost ·{" "}
+        {l.transferred ?? 0} fronted · result after supplier cost{" "}
+        {money(lotProfit(l))}
         {l.remaining ? " (goods remain)" : ""}
       </p>
     </div>
@@ -106,6 +107,31 @@ export function InventoryWallet({
           Unmet living expenses: {money(s.street.arrears)}
         </p>
       </section>
+      {s.street.agreements.some((a) => a.supplier === p.id) && (
+        <section className="panel" aria-label="Merchandise fronted to others">
+          <h3>Merchandise fronted to others</h3>
+          {s.street.agreements
+            .filter((a) => a.supplier === p.id)
+            .map((a) => (
+              <div key={a.id}>
+                <p>
+                  {s.characters[a.debtor].name} owes you {money(a.balance)} ·{" "}
+                  {a.quantity} night goods · {a.status}
+                </p>
+                <p>
+                  Agreed {money(a.original)} · paid {money(a.repaid)} ·
+                  collection day {a.dueDay}. Meet at Lil Jay’s Market in the
+                  Reservoir.
+                </p>
+                {a.collections?.map((c) => (
+                  <p key={c.eventId}>
+                    Day {c.day} · {c.result} · notoriety {c.notoriety}
+                  </p>
+                ))}
+              </div>
+            ))}
+        </section>
+      )}
       <section
         className="panel transaction-history"
         aria-label="Transaction history"

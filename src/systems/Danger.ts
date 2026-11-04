@@ -1,4 +1,6 @@
 /** Gameplay only. No camera, renderer, wall clock, or UI randomness. */
+import { beginQuanny } from "./Quanny";
+import { quannyConversation } from "./QuannyState";
 import {
   cash,
   clamp,
@@ -11,7 +13,7 @@ import { record } from "../core/EventLog";
 import { locationById, LOCATIONS } from "../board/locations";
 import { homeBase, presenceOf } from "../board/presence";
 import { change, connect, remember } from "./Relationships";
-import { expense } from "./Economy";
+import { expense, earn } from "./Economy";
 import { arrest } from "./Incarceration";
 import { finalizeEnding } from "./EndConditions";
 import type { Conflict, StreetScene } from "./DangerState";
@@ -33,7 +35,7 @@ export function exceptionalFatalityRoll(draw: () => number): boolean {
   return n % EXCEPTIONAL_FATALITY_DENOMINATOR === 0;
 }
 export const hospitalStay = (s: GameState) =>
-  s.danger.injuries.find((i) => !i.discharged);
+  s.danger.injuries.find((i) => !i.discharged && i.severity !== "minor");
 export const streetConversation = (s: GameState) =>
   s.danger.scenes.find((e) => e.status === "open");
 const active = (c: Conflict) => c.state !== "settled";
@@ -169,7 +171,7 @@ function conflictOutcome(
 }
 
 /** Immediate injury has no artificial ladder prerequisite. Only lethal contexts can kill. */
-function violence(
+export function violence(
   s: GameState,
   npc: Character,
   c: Conflict | undefined,
@@ -334,6 +336,10 @@ export function sceneDialogue(s: GameState, scene: StreetScene) {
   const c = scene.conflictId
     ? s.danger.conflicts.find((c) => c.id === scene.conflictId)
     : undefined;
+  if (scene.npc === "quanny" && scene.motive === "introduction")
+    return s.quanny.business === "blocked"
+      ? "I know your face. What are you coming around for?"
+      : "I remember you. Got any business to discuss?";
   switch (scene.motive) {
     case "history":
       return `Last time between us — ${c?.cause.toLowerCase()}. We never really talked that through. What are you saying now?`;
@@ -469,9 +475,11 @@ export function expose(
     s.end ||
     p.status !== "active" ||
     hospitalStay(s) ||
-    streetConversation(s)
+    streetConversation(s) ||
+    quannyConversation(s)
   )
     return;
+  if (beginQuanny(s, location, kind)) return;
   const ex = s.danger.exposure;
   if (ex.day !== s.day) {
     ex.day = s.day;
@@ -514,7 +522,12 @@ export function expose(
   }
   if (sheltered) return;
   const candidates = Object.values(s.characters).filter((npc) => {
-    if (npc.id === p.id || npc.status !== "active" || npc.availableDay > s.day)
+    if (
+      (npc.id === "quanny" && (!s.quanny.met || !s.quanny.claim)) ||
+      npc.id === p.id ||
+      npc.status !== "active" ||
+      npc.availableDay > s.day
+    )
       return false;
     const c = playerConflictFor(s, npc.id);
     if (npc.home === l.zone)
@@ -795,7 +808,8 @@ export function validateDangerReferences(s: GameState) {
         e.definitionId === "living-danger" &&
         !d.scenes.some((x) => x.id === e.dangerSceneId),
     ) ||
-    d.injuries.filter((i) => !i.discharged).length > 1 ||
+    d.injuries.filter((i) => !i.discharged && i.severity !== "minor").length >
+      1 ||
     d.injuries.some(
       (i) =>
         !hasEvent(i.eventId) ||
@@ -811,3 +825,149 @@ export function validateDangerReferences(s: GameState) {
 /** Registry anchor for remote activities whose location is explicit in existing action data. */
 export const streetLocation = (zone: string) =>
   LOCATIONS.find((l) => l.zone === zone && l.links.street)?.id;
+
+/** Authored first contact only. Later violence still uses the ordinary lethal resolver. */
+export function introductoryShooting(
+  s: GameState,
+  npc: Character,
+  eventId: string,
+): "escape" | "minor" | "hospital" {
+  const roll = random(s),
+    p = player(s);
+  if (roll < 1 / 3) {
+    record(
+      s,
+      "risk",
+      `${name(npc)} fired. You escaped without injury.`,
+      [npc.id, p.id],
+      undefined,
+      { title: "Escaped gunfire", importance: "major" },
+    );
+    return "escape";
+  }
+  if (roll < 2 / 3) {
+    s.danger.injuries.push({
+      id: `injury-${s.nextId++}`,
+      eventId,
+      kind: "shooting",
+      severity: "minor",
+      admittedDay: s.day,
+      releaseDay: s.day + 2,
+      bill: 0,
+      paid: 0,
+      discharged: false,
+    });
+    s.ap = Math.max(0, s.ap - 1);
+    record(
+      s,
+      "risk",
+      "You escaped with a minor gunshot injury. One fewer AP per day until day " +
+        (s.day + 2) +
+        ".",
+      [p.id],
+      undefined,
+      { title: "Minor shooting injury", importance: "major" },
+    );
+    return "minor";
+  }
+  hospitalize(s, "shooting", eventId);
+  return "hospital";
+}
+
+/** Reusable player initiation for a later, physically present dispute. No early instant kills. */
+export function initiateConflict(
+  s: GameState,
+  target: string,
+  approach: "rob" | "retaliate" | "fight" | "disrespect",
+) {
+  const p = player(s),
+    npc = s.characters[target];
+  if (!npc || npc.status !== "active" || s.end || hospitalStay(s) || s.ap < 1)
+    return;
+  s.ap--;
+  const e = record(
+    s,
+    "risk",
+    `${p.name} chose to ${approach === "retaliate" ? "attempt violent retaliation against" : approach === "disrespect" ? "publicly disrespect" : approach === "fight" ? "challenge" : "attempt to rob"} ${name(npc)}.`,
+    [p.id, npc.id],
+  );
+  const c = addGrievance(
+    s,
+    npc.id,
+    p.id,
+    `Player-initiated ${approach}`,
+    e.id,
+    approach === "disrespect" ? 35 : 80,
+    approach === "rob" || approach === "retaliate",
+  );
+  c.intent = "seek";
+  p.police = clamp(p.police + (approach === "disrespect" ? 0 : 20));
+  p.rivalThreat = clamp(p.rivalThreat + 20);
+  if (approach === "disrespect") return;
+  const supporters = s.crew.members
+    .map((id) => s.characters[id])
+    .filter(
+      (n) => n.status === "active" && (n.relationships[p.id]?.trust ?? 0) >= 45,
+    );
+  const backing = npc.connections.filter(
+    (id) =>
+      s.characters[id]?.status === "active" &&
+      s.characters[id].affiliation === npc.affiliation,
+  ).length;
+  // A reachable mid-game route: real trading experience and recovered confrontations,
+  // alongside the existing skill, improve capability. Conversation spam is not training.
+  const experience =
+    s.street.transactions.filter((t) => t.actor === p.id && t.sold > 0).length +
+    s.danger.injuries.filter((i) => i.discharged).length * 3 +
+    s.assignments.filter(
+      (a) =>
+        a.activity === "partner-crime" && a.status === "resolved" && a.success,
+    ).length;
+  const practicedSkill = clamp(
+    p.skills.recovery + Math.min(40, experience * 1.5),
+  );
+  const capable = practicedSkill >= 70 && p.notoriety >= 35 && experience >= 6;
+  const chance = clamp(
+    0.02 +
+      (practicedSkill - npc.skills.recovery) / 120 +
+      p.notoriety / 300 +
+      supporters.length * 0.08 -
+      backing * 0.025 -
+      p.stress / 600,
+    0.005,
+    capable ? 0.8 : 0.015,
+  );
+  if (random(s) >= chance) {
+    violence(s, npc, c, approach === "retaliate" || approach === "rob");
+    return;
+  }
+  if (approach === "rob") {
+    const amount = Math.min(60, cash(npc));
+    expense(s, npc, amount, "Robbery loss");
+    earn(s, p, amount, "illicit", `Robbery of ${name(npc)}`);
+    record(
+      s,
+      "risk",
+      `${name(npc)} lost $${amount} in the robbery. The debt and retaliation risk remain.`,
+      [p.id, npc.id],
+    );
+  } else if (capable) {
+    npc.status =
+      approach === "retaliate" && random(s) < 0.2 ? "dead" : "laying-low";
+    npc.availableDay = s.day + (approach === "retaliate" ? 5 : 2);
+    record(
+      s,
+      "risk",
+      `${name(npc)} was ${npc.status === "dead" ? "killed" : "hospitalized"} during the confrontation.`,
+      [p.id, npc.id],
+      undefined,
+      { importance: "critical" },
+    );
+  } else
+    record(s, "risk", `You broke free of ${name(npc)}. He is still standing.`, [
+      p.id,
+      npc.id,
+    ]);
+  if (random(s) < s.zones[npc.home].police / 160)
+    arrest(s, p.id, "witnessed violence", approach === "retaliate" ? 3 : 1);
+}

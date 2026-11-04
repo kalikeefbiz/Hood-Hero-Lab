@@ -1,3 +1,4 @@
+import { newQuannyState } from "../systems/QuannyState";
 import { newDangerState } from "../systems/DangerState";
 import { syncTerritory, newStrategy } from "../systems/Territory";
 import { newStreetState } from "../systems/StreetEconomy";
@@ -29,6 +30,7 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
   );
   const s: GameState = {
     version: 8,
+    quanny: newQuannyState(),
     danger: newDangerState(seed),
     strategic: newStrategy({ zones: ZONES, factions: FACTIONS }),
     street: newStreetState(),
@@ -38,7 +40,16 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
     nextId: 1,
     playerId: "player",
     characters: Object.fromEntries(
-      [p, ...canonicalCharacters(), ...residents()].map((c) => [c.id, c]),
+      [
+        p,
+        ...canonicalCharacters().filter(
+          (c) => !["quanny", "mr-lewis"].includes(c.id),
+        ),
+        ...residents(),
+        ...canonicalCharacters().filter((c) =>
+          ["quanny", "mr-lewis"].includes(c.id),
+        ),
+      ].map((c) => [c.id, c]),
     ),
     zones: structuredClone(ZONES),
     factions: structuredClone(FACTIONS),

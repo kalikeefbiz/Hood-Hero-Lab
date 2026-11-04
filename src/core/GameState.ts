@@ -214,6 +214,7 @@ export interface Asset {
 }
 export interface GameState {
   /** Strategy-board lab: the player's physical presence in the city. */
+  quanny: import("../systems/QuannyState").QuannyState;
   danger: import("../systems/DangerState").DangerState;
   presence?: import("../board/presence").Presence;
   version: 8;

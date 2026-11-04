@@ -581,7 +581,7 @@ export function PersonInspector({
           ? c.description
           : "You haven't been introduced. Ask around, or get someone you know to vouch for you."}
       </p>
-      {known && rel && (
+      {known && rel && c.id !== "quanny" && (
         <p className="board-facts">
           Trust {Math.round(rel.trust)} · Respect {Math.round(rel.respect)}
           {rel.grievance > 10

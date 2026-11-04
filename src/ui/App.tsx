@@ -344,7 +344,7 @@ export function App() {
       if (
         result.state.encounters.some(
           (e) =>
-            ["workplace", "living-danger"].includes(e.definitionId) &&
+            ["workplace", "living-danger", "quanny"].includes(e.definitionId) &&
             e.status === "active",
         )
       )
@@ -377,35 +377,41 @@ export function App() {
           .find((e) => e.category === "money") ??
         result.state.events.slice(s.events.length).at(-1);
       const dangerResponse = sourceEncounter.definitionId === "living-danger";
-      const reply = dangerResponse
-        ? (result.state.danger.scenes.find(
-            (x) => x.id === sourceEncounter.dangerSceneId,
-          )?.outcome ?? "The conversation ended.")
-        : actionResponse
-          ? (actionResult?.text ?? "Action completed.")
-          : streetResponse
-            ? (result.state.events.slice(s.events.length).at(-1)?.text ??
-              (response === "terms"
-                ? "Supplier terms clarified; no goods or debt accepted."
-                : "Supplier conversation concluded."))
-            : crewResponse
+      const quannyResponse = sourceEncounter.definitionId === "quanny";
+      const reply = quannyResponse
+        ? (result.state.events
+            .slice(s.events.length)
+            .filter((e) => e.observedBy.includes(s.playerId))
+            .at(-1)?.text ?? "Your conversation with Quanny continues.")
+        : dangerResponse
+          ? (result.state.danger.scenes.find(
+              (x) => x.id === sourceEncounter.dangerSceneId,
+            )?.outcome ?? "The conversation ended.")
+          : actionResponse
+            ? (actionResult?.text ?? "Action completed.")
+            : streetResponse
               ? (result.state.events.slice(s.events.length).at(-1)?.text ??
-                (response === "details"
-                  ? "They shared more about their plans."
-                  : "Conversation concluded."))
-              : response === "promise"
-                ? "Cuzzo: ‘I’m counting on you.’ Your promise is recorded. Return through City → Storylines."
-                : response === "decline"
-                  ? "Cuzzo: ‘Alright. I heard you. I’ll figure out what I can do.’ No promise was made."
-                  : response === "delay"
-                    ? "You asked for time to think. The situation continues; resume the conversation from City."
-                    : response === "acknowledge"
-                      ? "Outcome acknowledged. The city moves on; the history remains."
-                      : s.encounters.find((e) => e.id === id)?.definitionId ===
-                          "workplace"
-                        ? (result.state.events.at(-1)?.text ??
-                          "Workplace choice recorded.")
-                        : "Cuzzo explains what happened.";
+                (response === "terms"
+                  ? "Supplier terms clarified; no goods or debt accepted."
+                  : "Supplier conversation concluded."))
+              : crewResponse
+                ? (result.state.events.slice(s.events.length).at(-1)?.text ??
+                  (response === "details"
+                    ? "They shared more about their plans."
+                    : "Conversation concluded."))
+                : response === "promise"
+                  ? "Cuzzo: ‘I’m counting on you.’ Your promise is recorded. Return through City → Storylines."
+                  : response === "decline"
+                    ? "Cuzzo: ‘Alright. I heard you. I’ll figure out what I can do.’ No promise was made."
+                    : response === "delay"
+                      ? "You asked for time to think. The situation continues; resume the conversation from City."
+                      : response === "acknowledge"
+                        ? "Outcome acknowledged. The city moves on; the history remains."
+                        : s.encounters.find((e) => e.id === id)
+                              ?.definitionId === "workplace"
+                          ? (result.state.events.at(-1)?.text ??
+                            "Workplace choice recorded.")
+                          : "Cuzzo explains what happened.";
       const finished = result.state.encounters.find((e) => e.id === id);
       if (
         finished?.status === "acknowledged" &&

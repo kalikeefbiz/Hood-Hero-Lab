@@ -1,3 +1,4 @@
+import { advanceQuanny } from "../systems/Quanny";
 import {
   advanceConflicts,
   dischargePatient,
@@ -32,6 +33,16 @@ export function advanceDay(state: GameState): GameState {
   settleAttendance(s);
   s.day++;
   advanceConflicts(s);
+  advanceQuanny(s);
+  for (const i of s.danger.injuries)
+    if (i.severity === "minor" && s.day >= i.releaseDay) i.discharged = true;
+  for (const c of Object.values(s.characters))
+    if (
+      c.id !== s.playerId &&
+      c.status === "laying-low" &&
+      c.availableDay <= s.day
+    )
+      c.status = "active";
   releaseEligible(s);
   advanceStreet(s);
   generateShifts(s);
@@ -89,11 +100,17 @@ export function advanceDay(state: GameState): GameState {
       : 0;
   finalizeEnding(s);
   dischargePatient(s);
-  s.ap = hospitalStay(s) || s.end ? 0 : BALANCE.dailyAP;
+  s.ap =
+    hospitalStay(s) || s.end
+      ? 0
+      : BALANCE.dailyAP -
+        (s.danger.injuries.some((i) => !i.discharged && i.severity === "minor")
+          ? 1
+          : 0);
   record(
     s,
     "system",
-    `Day ${s.day}. ${hospitalStay(s) ? "Inpatient recovery continues." : s.end ? "This life has ended." : "Two action points available."}`,
+    `Day ${s.day}. ${hospitalStay(s) ? "Inpatient recovery continues." : s.end ? "This life has ended." : `${s.ap} action points available.`}`,
     [p.id],
     [p.id],
     { importance: "routine" },

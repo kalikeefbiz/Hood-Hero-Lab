@@ -1,3 +1,4 @@
+import { quannyConversation } from "../systems/QuannyState";
 import { expose, hospitalStay, streetConversation } from "../systems/Danger";
 import { syncEncounters } from "../systems/EncounterLifecycle";
 import {
@@ -118,7 +119,8 @@ export function moveTo(s: GameState, location: string): GameState {
     s.end ||
     player(s).status !== "active" ||
     hospitalStay(s) ||
-    streetConversation(s)
+    streetConversation(s) ||
+    quannyConversation(s)
   )
     return s;
   const prev = presenceOf(s);
