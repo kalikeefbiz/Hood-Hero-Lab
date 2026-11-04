@@ -1,5 +1,21 @@
 # GOAL 009 validation
 
+## First-arrival and meeting-location correction — current revision
+
+This correction supersedes the original non-residential first-contact restriction. The introduction now starts once on any actual Reservoir arrival, including a residence or the player's home. Reservoir starts/resumes trigger it on explicit gameplay entry; raw world initialization and map inspection remain inert. Peaceful affiliation paths disclose and save `reservoir.lil-jays`; hostile branches do not disclose it. Character information and receivables show the saved meeting place. Later business and collection require physical presence at Lil Jay's Market, including after dismissing a peaceful introduction elsewhere.
+
+Collection instructions read `Collect from Quanny — Lil Jay's Market, The Reservoir. Due Day N.` N comes from the existing agreement `dueDay`. A deterministic day-10 agreement test verifies day 16; no deadline, inventory, price, payment, retaliation or combat calculation changed.
+
+Correction checks:
+
+- `npm test`: **244 passed**, **13 files**, **45.10 seconds**, exit **0**; includes **39 Quanny cases**.
+- `npm run build`: **passed**, exit **0**; Vite build phase **5.39 seconds**, with existing dependency/chunk warnings.
+- `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1 npm run test:e2e -- tests/quanny.spec.ts --workers=2`: **12 passed**, **2.3 minutes**, exit **0**, Chromium and WebKit.
+- Browser cases verify a first arrival at Reservoir homes from outside the neighborhood, an actual Reservoir new-game start before travel, no map-inspection trigger, the spoken reveal, saved character location, explicit Wallet collection instructions, travel back to the market for collection at notoriety 34/35, and unchanged hostile introductions.
+- The earlier broad **152-case** browser suite was **not repeated** for this bounded correction. Its historical **105 passed / 47 failed** result and baseline comparisons below remain recorded; these targeted passes do not mean the whole browser suite is green.
+
+The sections below document the original GOAL 009 delivery and its historical runs.
+
 ## Environment
 
 Managed Debian cloud workspace, Node v24.22.1. Local Vite preview only. No public URL, deployment or production repository was used.

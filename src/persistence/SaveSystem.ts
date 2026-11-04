@@ -1,7 +1,14 @@
-import { change, relationship as relationshipOf } from "../systems/Relationships";
+import {
+  change,
+  relationship as relationshipOf,
+} from "../systems/Relationships";
 import { validateConsignments } from "../systems/Consignment";
 import { STREET_BALANCE } from "../content/street";
-import { quannySchema, newQuannyState } from "../systems/QuannyState";
+import {
+  quannySchema,
+  newQuannyState,
+  QUANNY_HOME,
+} from "../systems/QuannyState";
 import { canonicalCharacters } from "../content/characters";
 import { validateQuanny } from "../systems/Quanny";
 import { dangerSchema, newDangerState } from "../systems/DangerState";
@@ -442,6 +449,15 @@ export function deserialize(raw: string): GameState {
     }
     relationshipOf(q, "mega").respect = 35;
   }
+  if (
+    s.quanny.met &&
+    !s.quanny.knownLocation &&
+    (s.quanny.business === "open" ||
+      s.street.agreements.some(
+        (a) => a.debtor === "quanny" && a.supplier === s.playerId,
+      ))
+  )
+    s.quanny.knownLocation = QUANNY_HOME;
   validateDangerReferences(s);
   validateQuanny(s);
   validateConsignments(s);

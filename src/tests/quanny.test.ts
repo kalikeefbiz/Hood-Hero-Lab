@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame, enterGameplay } from "../core/Simulation";
 import {
   cash,
   player,
@@ -7,6 +7,13 @@ import {
   type GameState,
 } from "../core/GameState";
 import { moveTo, presenceOf } from "../board/presence";
+import { LOCATIONS } from "../board/locations";
+import {
+  QUANNY_HOME,
+  QUANNY_LOCATION_REVEAL,
+  quannyCollectionInstruction,
+} from "../systems/QuannyState";
+import { quannyError } from "../systems/Quanny";
 import { boardPeople } from "../board/people";
 import {
   currentEncounter,
@@ -68,27 +75,129 @@ function collection(s: GameState) {
   return respond(s, "collect");
 }
 describe("Quanny first intentional contact", () => {
-  it("initialization, inspection and waiting at Reservoir home do not trigger; intentional eligible activity does, once", () => {
-    let s = newGame("Morgan", "reservoir");
-    expect(s.quanny.met).toBe(false);
-    boardPeople(s);
-    presenceOf(s);
-    syncEncounters(s);
-    expect(s.quanny.met).toBe(false);
-    s = advanceDay(s);
-    expect(s.quanny.met).toBe(false);
-    s = moveTo(s, "reservoir.lil-jays");
+  it("enters the Reservoir home introduction only on gameplay entry, once, not during initialization or inspection", () => {
+    const initial = newGame("Morgan", "reservoir");
+    boardPeople(initial);
+    presenceOf(initial);
+    syncEncounters(initial);
+    expect(initial.quanny.met).toBe(false);
+    let s = enterGameplay(initial);
+    expect(initial.quanny.met).toBe(false); // owns a new simulation snapshot
     expect(currentEncounter(s)?.definitionId).toBe("quanny");
-    expect(s.danger.scenes).toHaveLength(0);
+    expect(s.quanny.location).toBe("reservoir.homes");
     expect(boardPeople(s).find((p) => p.id === "quanny")?.placeId).toBe(
-      presenceOf(s).location,
+      "reservoir.homes",
     );
+    expect(s.danger.scenes).toHaveLength(0);
+    expect(enterGameplay(s)).toBe(s);
     s = respond(s, "claim:unaffiliated");
     s = respond(s, "leave");
+    expect(enterGameplay(deserialize(serialize(s))).quanny).toEqual(s.quanny);
     s = moveTo(s, "reservoir.lot-court");
     expect(
       s.encounters.filter((e) => e.definitionId === "quanny"),
     ).toHaveLength(1);
+  });
+  it.each(LOCATIONS.filter((l) => l.zone === "reservoir").map((l) => l.id))(
+    "first entry introduces Quanny at any Reservoir arrival: %s",
+    (location) => {
+      const initial = enterGameplay(newGame("Morgan", "south"));
+      expect(initial.quanny.met).toBe(false);
+      const s = moveTo(initial, location);
+      expect(s.quanny.met).toBe(true);
+      expect(s.quanny.location).toBe(location);
+      expect(currentEncounter(s)?.definitionId).toBe("quanny");
+      expect(s.danger.scenes).toHaveLength(0);
+    },
+  );
+  it("discloses and saves the meeting place after peaceful answers, never after hostile claims", () => {
+    for (const faction of [
+      null,
+      "blocks",
+      "backstreet",
+      "muds",
+      "blips",
+    ] as const) {
+      let s = respond(start(faction), `claim:${faction ?? "unaffiliated"}`);
+      if (s.quanny.business === "new") s = respond(s, "decline-details");
+      expect(s.quanny.knownLocation).toBe(QUANNY_HOME);
+      const e = currentEncounter(s)!;
+      expect(encounterDefinition(e).dialogue(s, e)).toContain(
+        QUANNY_LOCATION_REVEAL,
+      );
+      expect(deserialize(serialize(s)).quanny.knownLocation).toBe(QUANNY_HOME);
+    }
+    for (const claim of ["blocks", "angels"]) {
+      const s = respond(start(), `claim:${claim}`);
+      expect(s.quanny.knownLocation).toBeUndefined();
+      expect(
+        visibleEvents(s).some((e) => e.text.includes(QUANNY_LOCATION_REVEAL)),
+      ).toBe(false);
+      expect(deserialize(serialize(s)).quanny.knownLocation).toBeUndefined();
+    }
+  });
+  it("later business and collection require the market, including deferred introductions", () => {
+    let s = respond(
+      moveTo(newGame("Morgan", "south"), "reservoir.homes"),
+      "claim:unaffiliated",
+    );
+    const intro = currentEncounter(s)!;
+    s = dismissEncounter(s, intro.id);
+    expect(s.encounters.find((e) => e.id === intro.id)?.status).toBe("closed");
+    expect(quannyError(s)).toMatch(/Lil Jay/);
+    openQuanny(s);
+    syncEncounters(s);
+    expect(
+      respondEncounter(s, s.encounters.at(-1)!.id, "terms").error,
+    ).toBeTruthy();
+    s = moveTo(s, QUANNY_HOME);
+    expect(quannyError(s)).toBeNull();
+    openQuanny(s);
+    syncEncounters(s);
+    expect(currentEncounter(s)?.definitionId).toBe("quanny");
+    expect(
+      encounterDefinition(currentEncounter(s)!).dialogue(
+        s,
+        currentEncounter(s)!,
+      ),
+    ).not.toMatch(/where you from/);
+  });
+  it("records the actual agreement due date and collection address when goods are fronted away from the market", () => {
+    let s = stocked();
+    s.day = 10;
+    s = moveTo(s, "reservoir.homes");
+    s = respond(s, "claim:unaffiliated");
+    s = respond(s, "terms");
+    s = respond(s, "front");
+    const a = receivable(s, "quanny")!;
+    expect(a.createdDay).toBe(10);
+    expect(a.dueDay).toBe(16);
+    expect(
+      visibleEvents(s).some((e) =>
+        e.text.includes(quannyCollectionInstruction(s, 16)),
+      ),
+    ).toBe(true);
+    s.day = 16;
+    expect(quannyError(s)).toMatch(/Lil Jay/);
+    openQuanny(s);
+    syncEncounters(s);
+    expect(
+      respondEncounter(s, s.encounters.at(-1)!.id, "collect").error,
+    ).toBeTruthy();
+    expect(a.balance).toBe(a.original);
+  });
+  it("migrates established peaceful customers' known location without revealing it for hostile introductions", () => {
+    const s = respond(start(), "claim:unaffiliated");
+    const raw = JSON.parse(serialize(s));
+    delete raw.state.quanny.knownLocation;
+    expect(deserialize(JSON.stringify(raw)).quanny.knownLocation).toBe(
+      QUANNY_HOME,
+    );
+    const hostile = JSON.parse(serialize(respond(start(), "claim:blocks")));
+    delete hostile.state.quanny.knownLocation;
+    expect(
+      deserialize(JSON.stringify(hostile)).quanny.knownLocation,
+    ).toBeUndefined();
   });
   it.each([null, "blocks", "angels", "backstreet", "muds", "blips"] as const)(
     "offers only true membership and two permitted false identities: %s",

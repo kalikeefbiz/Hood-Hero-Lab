@@ -4,6 +4,7 @@ import { record } from "../core/EventLog";
 import { STREET_BALANCE, MERCHANDISE } from "../content/street";
 import { saleLot, unitPrice } from "./StreetEconomy";
 import { earn, expense } from "./Economy";
+import { quannyCollectionInstruction } from "./QuannyState";
 import { change } from "./Relationships";
 export const receivable = (s: GameState, debtor: string) =>
   s.street.agreements.find(
@@ -75,7 +76,7 @@ export function frontMerchandise(
   const e = record(
     s,
     "money",
-    `Quanny: “I can make some happen but I need a front.” You transferred ${quantity} night goods. Quanny owes you $${amount}, collectible day ${dueDay}. No money paid up front.`,
+    `Quanny: “I can make some happen but I need a front.” You transferred ${quantity} night goods. Quanny owes you $${amount}, collectible day ${dueDay}. No money paid up front. ${quannyCollectionInstruction(s, dueDay)}`,
     ["quanny", s.playerId],
     undefined,
     { title: "Merchandise fronted", importance: "major", commitmentId },

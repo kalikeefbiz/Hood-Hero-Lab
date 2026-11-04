@@ -1,3 +1,4 @@
+import { KnownCharacterLocation } from "./KnownCharacterLocation";
 import { hospitalStay, streetConversation } from "../systems/Danger";
 import {
   NeighborhoodStrategy,
@@ -23,7 +24,7 @@ import {
   player,
   cash,
 } from "../core/GameState";
-import { newGame } from "../core/Simulation";
+import { newGame, enterGameplay } from "../core/Simulation";
 import {
   advanceDay,
   recoverInHospital,
@@ -271,7 +272,7 @@ export function App() {
   function start() {
     window.scrollTo(0, 0);
     setActionFeedback(null);
-    const next = newGame(name, home);
+    const next = enterGameplay(newGame(name, home));
     setState(next);
     setSelected(home);
     setBoard({ zone: home, block: null, place: null });
@@ -282,9 +283,10 @@ export function App() {
   function load(resume = false) {
     setActionFeedback(null);
     try {
-      const next = resume
+      const saved = resume
         ? loadGame(localStorage, AUTO_KEY) || loadGame(localStorage)
         : loadGame(localStorage) || loadGame(localStorage, AUTO_KEY);
+      const next = saved && enterGameplay(saved);
       if (next) {
         window.scrollTo(0, 0);
         setState(next);
@@ -1249,6 +1251,7 @@ export function App() {
                     {person.alias && <small> / {person.alias}</small>}
                   </h3>
                   <p>{person.description}</p>
+                  <KnownCharacterLocation s={s} id={person.id} />
                   {p.connections.includes(person.id) && (
                     <p className="muted">{knownCapabilities(person)}</p>
                   )}

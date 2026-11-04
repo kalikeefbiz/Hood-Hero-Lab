@@ -5,7 +5,7 @@ Base: `feat/goal-008-living-danger` at `4024f35` (`Implement persistent danger a
 
 ## Playing the feature
 
-Make an intentional visit to a non-residential Reservoir location. Starting at Reservoir homes, inspecting the board, and waiting at home do not introduce Quanny. The first eligible accepted arrival/activity opens his authored introduction before generic danger. His board figure is placed at the actual encounter location. Dismissed conversations retain their state; answering the affiliation question never resets on later visits.
+Quanny approaches automatically on the first actual arrival in the Reservoir, at any location, including residences and the player's home. A Reservoir start or an unintroduced Reservoir save triggers the approach when gameplay is entered/resumed. Raw world construction and map inspection do not trigger it. The introduction takes priority over generic danger and occurs once; his board figure stands at the actual arrival location. After a peaceful affiliation response he says, ‘If you need me again, pull up to Lil Jay’s Market. I’m usually outside.’ The saved `quanny.knownLocation` records that meeting place. Hostile introductions do not disclose it. Subsequent business and collection require a physical visit to `reservoir.lil-jays`; closing the peaceful introduction outside the market cannot leave a remote business conversation available.
 
 Truthful membership and unaffiliated answers use the player's current affiliation. Only Blocc Boys and Gabriel's Angels can be falsely claimed. False BB is detected immediately and ends business; the visible dismissal does not expose his private retaliation decision. Both Angels claims cause a first-contact shooting with seeded escape, minor injury or serious hospitalization. Only that resolver excludes death. Future war/personal-conflict exposure remains lethal.
 
@@ -43,7 +43,7 @@ On later days, a disputed consignment permits separate location-based decisions:
 6. Collection credits the existing player wallet, illicit-income progression and ledger exactly once. The debt commitment and merchandise debt fields settle together. Quanny's later sales are his own transaction history, not duplicate player income.
 7. NPC-debtor collection does not run the player-debtor default/refund path. Existing suppliers and repayments retain their behavior. The generic supplier-reaction modal is restricted to player-debtor agreements so Quanny's authored conversation does not produce a duplicate conversation.
 
-The Wallet separately lists merchandise fronted to others, its receivables, status and collection history. It never labels Quanny's balance as money the player owes. Collection itself remains a physical board interaction.
+The Wallet separately lists merchandise fronted to others, its receivables, status and collection history. Each Quanny receivable explicitly says `Collect from Quanny — Lil Jay's Market, The Reservoir. Due Day N.`, with N read from the agreement's actual `dueDay`. The agreement event, board facts and collection dialogue use the same instruction; character profiles show his disclosed location. It never labels Quanny's balance as money the player owes. Collection itself remains a physical board interaction.
 
 ## Repair and rivalry
 
@@ -51,7 +51,7 @@ Business repair requires at least 30 new evidence points beyond the baseline at 
 
 ## Saves
 
-The existing Lab v8 envelope and isolated storage keys remain. Additive schemas default missing Quanny state and add the two canonical characters to pre-feature v8 saves. Existing records are preserved. New optional lot/agreement fields and injury severity are validated. Transfer conservation includes remaining, lost, sold and transferred inventory; child lots must match source custody. Agreements, commitments, events, collection chronology, threshold outcome, reserve/balance and participant references are checked. Save/load retains private intent, recognition, debt, relationship, repair and conflict state.
+The existing Lab v8 envelope and isolated storage keys remain. Additive schemas default missing Quanny state and add the two canonical characters to pre-feature v8 saves. Existing records are preserved. New optional lot/agreement fields, injury severity and the disclosed `knownLocation` are validated. Pre-correction peaceful customers and existing Quanny receivables retain the market hint on load; hostile introductions alone do not gain it. Transfer conservation includes remaining, lost, sold and transferred inventory; child lots must match source custody. Agreements, commitments, events, collection chronology, threshold outcome, reserve/balance and participant references are checked. Save/load retains private intent, recognition, debt, relationship, repair and conflict state.
 
 ## Scope and remaining integration
 

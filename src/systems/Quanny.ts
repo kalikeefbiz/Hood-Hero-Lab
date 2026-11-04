@@ -7,7 +7,7 @@ import {
 } from "../core/GameState";
 import { record } from "../core/EventLog";
 import { locationById } from "../board/locations";
-import { presenceOf, homeBase } from "../board/presence";
+import { presenceOf } from "../board/presence";
 import {
   addGrievance,
   hospitalStay,
@@ -22,7 +22,11 @@ import {
   frontMerchandise,
   receivable,
 } from "./Consignment";
-import { quannyConversation, quannyLocation } from "./QuannyState";
+import {
+  quannyConversation,
+  QUANNY_HOME,
+  QUANNY_LOCATION_REVEAL,
+} from "./QuannyState";
 export { quannyConversation };
 const evidenceScore = (s: GameState) => {
   const p = player(s);
@@ -43,11 +47,9 @@ export function beginQuanny(s: GameState, location: string, kind: string) {
     l = locationById(location);
   if (
     s.quanny.met ||
-    kind === "linger" ||
+    !["arrival", "gameplay"].includes(kind) ||
     !l ||
     l.zone !== "reservoir" ||
-    location === homeBase(s) ||
-    ["residence", "apartment"].includes(l.kind) ||
     !q ||
     q.status !== "active" ||
     q.availableDay > s.day ||
@@ -102,7 +104,7 @@ export function quannyError(s: GameState) {
     s.characters.quanny.availableDay > s.day
   )
     return "Quanny is unavailable; his history and debts remain.";
-  if (presenceOf(s).location !== quannyLocation(s))
+  if (presenceOf(s).location !== QUANNY_HOME)
     return "Meet Quanny outside Lil Jay’s Market in the Reservoir.";
   return null;
 }
@@ -147,6 +149,15 @@ export function repairError(s: GameState) {
   )
     return "An active faction rivalry still blocks business.";
   return null;
+}
+function revealQuannyLocation(s: GameState) {
+  if (s.quanny.knownLocation) return;
+  s.quanny.knownLocation = QUANNY_HOME;
+  const e = record(s, "social", `Quanny: “${QUANNY_LOCATION_REVEAL}”`, [
+    "quanny",
+    s.playerId,
+  ]);
+  s.quanny.history.push(e.id);
 }
 function blockBusiness(s: GameState) {
   s.quanny.business = "blocked";
@@ -242,6 +253,7 @@ export function resolveQuanny(
         : "Quanny: “You don’t bang. Alright. What you got?”",
     );
     state.business = "open";
+    revealQuannyLocation(s);
     return;
   }
   if (["explain", "decline-details"].includes(choice)) {
@@ -262,6 +274,7 @@ export function resolveQuanny(
         "You keep the details to yourself. Quanny: “Alright. What you got?”",
       );
     state.business = "open";
+    revealQuannyLocation(s);
     return;
   }
   if (choice === "terms") return;
@@ -363,7 +376,10 @@ export function validateQuanny(s: GameState) {
         q.meetingDay > s.day ||
         !locationById(q.location ?? "") ||
         !s.characters.quanny)) ||
-    (!q.met && (q.claim !== null || q.history.length > 0)) ||
+    (!q.met &&
+      (q.claim !== null ||
+        q.history.length > 0 ||
+        q.knownLocation !== undefined)) ||
     ![...q.history, ...q.repairHistory].every((id) =>
       s.events.some((e) => e.id === id),
     )

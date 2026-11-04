@@ -1,5 +1,7 @@
 # Complete GOAL 009 browser run
 
+Historical broad-suite run before the first-arrival/known-location correction. Case line numbers refer to that implementation build. Current correction checks are recorded in [validation](GOAL_009_VALIDATION.md).
+
 `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1 npm run test:e2e -- --workers=2`
 
 Both projects use the configured iPhone 13 profile against local Vite preview. No tests are excluded.

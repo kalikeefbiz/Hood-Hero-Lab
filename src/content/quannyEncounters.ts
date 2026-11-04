@@ -1,4 +1,9 @@
 import type { EncounterDefinition, EncounterResponse } from "../core/Encounter";
+import {
+  QUANNY_HOME,
+  QUANNY_LOCATION_REVEAL,
+  quannyCollectionInstruction,
+} from "../systems/QuannyState";
 import { presenceOf } from "../board/presence";
 import { player } from "../core/GameState";
 import { hospitalStay } from "../systems/Danger";
@@ -22,20 +27,25 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
   participants: ["quanny"],
   priority: 100,
   trigger: () => [],
-  eligible: (s) =>
+  eligible: (s, e) =>
     !s.end &&
     !hospitalStay(s) &&
     player(s).status === "active" &&
     s.characters.quanny?.status === "active" &&
     s.characters.quanny.availableDay <= s.day &&
-    presenceOf(s).location === s.quanny.location,
+    // Once a peaceful introduction is closed, resume business only at the revealed meeting place.
+    (!e.deferred ||
+      !s.quanny.knownLocation ||
+      presenceOf(s).location === QUANNY_HOME) &&
+    presenceOf(s).location ===
+      (e.sourceEventId ? s.quanny.location : QUANNY_HOME),
   dialogue: (s, e) => {
     if (!s.quanny.claim) return "Aye, where you from?";
     if (s.quanny.business === "new")
       return "I ain’t never heard of you. Who put you on?";
     const a = receivable(s, "quanny");
     if (a)
-      return `We got an arrangement. $${a.balance}. Collection day ${a.dueDay}.`;
+      return `We got an arrangement. $${a.balance}. ${quannyCollectionInstruction(s, a.dueDay)}`;
     if (s.quanny.business === "blocked") return "What you coming around for?";
     if (e.selectedResponses.at(-1)?.id === "terms") {
       const t = consignmentTerms(s);
@@ -43,7 +53,7 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
         ? `I can make some happen but I need a front. ${t.quantity} night goods. I owe you $${t.amount}, six days from now. I don't pay up front.`
         : "Bring something real before we talk business.";
     }
-    return "What you got?";
+    return `${e.sourceEventId && s.quanny.knownLocation ? QUANNY_LOCATION_REVEAL + " " : ""}What you got?`;
   },
   responses: (s, e) => {
     const q = s.quanny,
@@ -82,7 +92,7 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
         response(
           "collect",
           `Collect $${a.balance}`,
-          `Due day ${a.dueDay} · Quanny owes you`,
+          quannyCollectionInstruction(s, a.dueDay),
           (state) =>
             state.day < a.dueDay ? `Return on day ${a.dueDay}.` : null,
         ),

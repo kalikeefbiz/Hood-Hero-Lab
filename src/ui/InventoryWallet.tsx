@@ -1,3 +1,4 @@
+import { quannyCollectionInstruction } from "../systems/QuannyState";
 import { player, type GameState } from "../core/GameState";
 import { lotProfit } from "../systems/StreetEconomy";
 import { ITEMS } from "../content/economy";
@@ -119,9 +120,12 @@ export function InventoryWallet({
                   {a.quantity} night goods · {a.status}
                 </p>
                 <p>
-                  Agreed {money(a.original)} · paid {money(a.repaid)} ·
-                  collection day {a.dueDay}. Meet at Lil Jay’s Market in the
-                  Reservoir.
+                  Agreed {money(a.original)} · paid {money(a.repaid)}
+                </p>
+                <p>
+                  {a.debtor === "quanny"
+                    ? quannyCollectionInstruction(s, a.dueDay)
+                    : `Collection day ${a.dueDay}.`}
                 </p>
                 {a.collections?.map((c) => (
                   <p key={c.eventId}>

@@ -1,4 +1,8 @@
-import { quannyLocation, QUANNY_HOME } from "../systems/QuannyState";
+import {
+  quannyLocation,
+  QUANNY_HOME,
+  quannyCollectionInstruction,
+} from "../systems/QuannyState";
 import { receivable } from "../systems/Consignment";
 import { player, type GameState } from "../core/GameState";
 import { availableActions, type Action } from "../core/ActionEngine";
@@ -86,7 +90,9 @@ export function placeFacts(s: GameState, l: LocationDef): string[] {
   if (l.id === QUANNY_HOME && s.quanny.met) {
     const a = receivable(s, "quanny");
     if (a)
-      facts.push(`Quanny owes you $${a.balance} · collection day ${a.dueDay}`);
+      facts.push(
+        `${quannyCollectionInstruction(s, a.dueDay)} $${a.balance} owed.`,
+      );
     if (
       s.street.agreements.some(
         (a) => a.debtor === "quanny" && a.status === "disputed",

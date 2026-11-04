@@ -1,15 +1,14 @@
 import { expect, test, type Page } from "@playwright/test";
+import {
+  QUANNY_LOCATION_REVEAL,
+  quannyCollectionInstruction,
+} from "../src/systems/QuannyState";
 import { newGame } from "../src/core/Simulation";
 import { player, type GameState } from "../src/core/GameState";
 import { moveTo } from "../src/board/presence";
 import { acquire } from "../src/systems/StreetEconomy";
 import { connect } from "../src/systems/Relationships";
-import {
-  currentEncounter,
-  respondEncounter,
-  syncEncounters,
-} from "../src/systems/Encounters";
-import { openQuanny } from "../src/systems/Quanny";
+import { currentEncounter, respondEncounter } from "../src/systems/Encounters";
 import { AUTO_KEY, SAVE_KEY, serialize } from "../src/persistence/SaveSystem";
 async function seed(page: Page, s: GameState) {
   // Isolate the encounter under test from unrelated historical notification overlays.
@@ -38,7 +37,7 @@ const snapshot = (page: Page): Promise<GameState> =>
   );
 const modal = (page: Page) =>
   page.getByRole("dialog", { name: "Character encounter" });
-async function visitMarket(page: Page) {
+async function visitReservoir(page: Page, place = "Lil Jay's Market") {
   await page
     .getByRole("group", { name: "Board location" })
     .getByRole("button", { name: "Stixx City" })
@@ -48,10 +47,12 @@ async function visitMarket(page: Page) {
     .click();
   await page
     .getByRole("region", { name: "Places in The Reservoir" })
-    .getByRole("button", { name: /Lil Jay's Market/ })
+    .getByRole("button", { name: new RegExp(place) })
     .click();
+  if (!(await snapshot(page)).quanny.met)
+    await expect(modal(page)).toHaveCount(0);
   await page
-    .getByRole("region", { name: "Lil Jay's Market", exact: true })
+    .getByRole("region", { name: place, exact: true })
     .getByRole("button", { name: "Go here" })
     .click();
 }
@@ -69,14 +70,14 @@ test("intentional board visit introduces Quanny once, fronts physical stock and 
   page,
 }) => {
   test.setTimeout(120000);
-  let s = newGame("Morgan", "reservoir", 9009);
+  let s = newGame("Morgan", "south", 9009);
   connect(s, s.playerId, "contact-blocks");
   s.characters["contact-blocks"].relationships.player.trust = 45;
   acquire(s, "contact-blocks", "cash");
   await seed(page, s);
   expect((await snapshot(page)).quanny.met).toBe(false);
   await expect(page.locator(".board-canvas")).toBeVisible({ timeout: 30000 });
-  await visitMarket(page);
+  await visitReservoir(page, "Reservoir homes");
   await expect(modal(page)).toContainText("Aye, where you from?", {
     timeout: 25000,
   });
@@ -87,6 +88,7 @@ test("intentional board visit introduces Quanny once, fronts physical stock and 
     .getByRole("button", { name: /Ion bang/ })
     .click();
   await expect(modal(page)).toContainText("What you got?");
+  await expect(modal(page)).toContainText(QUANNY_LOCATION_REVEAL);
   await expect(
     modal(page).getByRole("button", { name: /Ask Quanny for work/ }),
   ).toBeDisabled();
@@ -105,6 +107,22 @@ test("intentional board visit introduces Quanny once, fronts physical stock and 
     dueDay: after.day + 6,
   });
   expect(after.street.lots[0].remaining).toBe(0);
+  expect(after.quanny.knownLocation).toBe("reservoir.lil-jays");
+  const nav = page.getByRole("navigation", { name: "Main navigation" });
+  await nav.getByRole("button", { name: "Wallet", exact: true }).click();
+  await expect(
+    page.getByRole("region", { name: "Merchandise fronted to others" }),
+  ).toContainText(
+    quannyCollectionInstruction(after, after.street.agreements[0].dueDay),
+  );
+  await nav.getByRole("button", { name: "People", exact: true }).click();
+  await page
+    .locator(".people-list")
+    .getByRole("button", { name: /Quanny/ })
+    .click();
+  await expect(page.getByLabel("Known location for Quanny")).toContainText(
+    "Lil Jay's Market, The Reservoir",
+  );
   await page.reload();
   await page.getByRole("button", { name: "Resume saved game" }).click();
   expect((await snapshot(page)).quanny).toEqual(after.quanny);
@@ -123,9 +141,22 @@ for (const notoriety of [34, 35])
     s.day = s.street.agreements[0].dueDay;
     const before = player(s).wallet.clean + player(s).wallet.illicit,
       amount = s.street.agreements[0].original;
-    openQuanny(s);
-    syncEncounters(s);
+    s = moveTo(s, "south.towers");
     await seed(page, s);
+    await visitReservoir(page);
+    if (
+      (await snapshot(page)).danger.scenes.some(
+        (scene) => scene.status === "open",
+      )
+    )
+      await modal(page)
+        .getByRole("button", { name: /Hear them out/ })
+        .click();
+    await page
+      .getByRole("region", { name: "Lil Jay's Market", exact: true })
+      .locator('[data-action="quanny"]')
+      .getByRole("button")
+      .click();
     await expect(modal(page)).toContainText(`$${amount}`);
     await expect(
       modal(page).getByRole("button", { name: /Attempt violent/ }),
@@ -161,6 +192,7 @@ test("false BB dismissal reveals no private intention and cannot be rerolled by 
   );
   const after = await snapshot(page);
   expect(after.quanny.deception).toBe("known");
+  expect(after.quanny.knownLocation).toBeUndefined();
   expect(after.danger.injuries).toHaveLength(0);
   await page.reload();
   await page.getByRole("button", { name: "Resume saved game" }).click();
@@ -201,4 +233,25 @@ test("Angels first-contact shooting uses hospital presentation and persists its 
   await page.reload();
   await page.getByRole("button", { name: "Resume saved game" }).click();
   expect((await snapshot(page)).danger.injuries).toEqual(after.danger.injuries);
+});
+
+test("a Reservoir home starts the introduction on entering gameplay, before any travel", async ({
+  page,
+}) => {
+  test.setTimeout(90000);
+  await page.goto("/");
+  await page.getByRole("radio", { name: /The Reservoir/ }).check();
+  await expect(modal(page)).toHaveCount(0);
+  await page.getByRole("button", { name: /Enter Stixx City/ }).click();
+  await expect(modal(page)).toContainText("Aye, where you from?");
+  const s = await snapshot(page);
+  expect(s.quanny.location).toBe("reservoir.homes");
+  expect(s.presence?.trail ?? []).toHaveLength(0);
+  await modal(page)
+    .getByRole("button", { name: /Ion bang/ })
+    .click();
+  await expect(modal(page)).toContainText(QUANNY_LOCATION_REVEAL);
+  expect((await snapshot(page)).quanny.knownLocation).toBe(
+    "reservoir.lil-jays",
+  );
 });
