@@ -22,7 +22,7 @@ async function load(page: Page, atSpot = false, session = false) {
     s = startStreetSession(s, "south.the-lot").state;
     s.activeSession!.beats.forEach((b) => {
       b.kind = "buyer";
-      b.seed = 1;
+      b.seed = 2;
     });
   }
   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
@@ -105,6 +105,11 @@ test("City presence, approaching visitor, paid outcomes, mid-session reload, and
   await page.waitForTimeout(2800);
   await page.screenshot({ path: info.outputPath("visitor-approaching.png") });
   await panel.getByRole("button", { name: "Skip visitor" }).click();
+  // Capture a real paused checkpoint; an active timer is allowed to settle while a screenshot runs.
+  await panel.getByRole("button", { name: "Pause", exact: true }).click();
+  await expect
+    .poll(async () => (await state(page)).activeSession.status)
+    .toBe("paused");
   const settled = (await state(page)).activeSession.cursor;
   await page.reload();
   await page.getByRole("button", { name: "Resume saved game" }).click();
@@ -192,9 +197,12 @@ test("background, menu unmount, stale/double touches, reduced motion and End Day
   await expect
     .poll(async () => (await state(page)).activeSession.status)
     .toBe("paused");
+  const menuPaused = await state(page);
+  await page.waitForTimeout(7500);
   expect((await state(page)).activeSession.cursor).toBe(
-    before.activeSession.cursor,
+    menuPaused.activeSession.cursor,
   );
+  expect((await state(page)).ap).toBe(before.ap);
   await nav(page, "City");
   await panel.getByRole("button", { name: "Continue session" }).click();
   await page.evaluate(() => {
@@ -221,14 +229,15 @@ test("background, menu unmount, stale/double touches, reduced motion and End Day
   });
   await panel.getByRole("button", { name: "Continue session" }).click();
   await panel.getByRole("button", { name: "Skip visitor" }).click();
+  const expectedCursor = paused.activeSession.cursor + 1;
   await expect
     .poll(async () => (await state(page)).activeSession.cursor)
-    .toBe(1);
+    .toBe(expectedCursor);
   await page.getByRole("button", { name: "End day", exact: true }).click();
   await expect
     .poll(async () => (await state(page)).activeSession.status)
     .toBe("ended");
-  expect((await state(page)).activeSession.cursor).toBe(1);
+  expect((await state(page)).activeSession.cursor).toBe(expectedCursor);
 });
 
 test("WebGL unavailable: physically present accessible session settles the same persisted buyer", async ({
