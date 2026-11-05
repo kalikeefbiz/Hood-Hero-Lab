@@ -139,3 +139,43 @@ test("lab saves never touch production keys and The Reservoir is spelled right",
   expect(keys.some((k) => k.startsWith("blackhouse.syndicate"))).toBe(false);
   await expect(page.getByText(/Resevoir/)).toHaveCount(0);
 });
+
+test("leaving the city mid-walk never locks input: the walk lands and play continues", async ({
+  page,
+}) => {
+  test.setTimeout(180000);
+  await seed(page, newGame("Morgan", "south"));
+  await expect(page.locator(".board-canvas")).toBeVisible({ timeout: 30000 });
+  const dock = page.getByRole("navigation");
+  // A long walk across town, interrupted at once by switching tabs.
+  await crumbs(page).getByRole("button", { name: "Stixx City" }).click();
+  await page
+    .getByRole("button", { name: "Select The Nawf", exact: true })
+    .click();
+  await places(page, "The Nawf")
+    .getByRole("button", { name: /Nawf Bodega/ })
+    .click();
+  await page
+    .getByRole("region", { name: "Nawf Bodega" })
+    .getByRole("button", { name: "Go here" })
+    .click();
+  await dock.getByRole("button", { name: "People", exact: true }).click();
+  await dock.getByRole("button", { name: "City", exact: true }).click();
+  // The trip still counts...
+  await expect
+    .poll(async () => (await saved(page)).presence?.location, {
+      timeout: 20000,
+    })
+    .toBe("nawf.bodega");
+  // ...and the board takes the next move.
+  await crumbs(page).getByRole("button", { name: "Stixx City" }).click();
+  await page
+    .getByRole("button", { name: "Select Southside", exact: true })
+    .click();
+  await places(page, "Southside")
+    .getByRole("button", { name: /Southside Food Mart/ })
+    .click();
+  const mart = page.getByRole("region", { name: "Southside Food Mart" });
+  await mart.getByRole("button", { name: "Go here" }).click();
+  await expect(mart).toContainText("You're here", { timeout: 20000 });
+});

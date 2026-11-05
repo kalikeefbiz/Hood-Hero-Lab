@@ -38,6 +38,7 @@ export default function BoardStage({
   onStory,
   popups,
   onInteract,
+  paused = false,
 }: {
   view: BoardView;
   focus: Focus;
@@ -55,6 +56,8 @@ export default function BoardStage({
   onStory: () => void;
   popups: Popup[];
   onInteract?: () => void;
+  /** Another tab covers the board: stop drawing it (and land any walk). */
+  paused?: boolean;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const board = useRef<BoardRenderer | null>(null);
@@ -83,6 +86,7 @@ export default function BoardStage({
       board.current = null;
     };
   }, []);
+  useEffect(() => board.current?.setPaused(paused), [paused, ready]);
   useEffect(() => board.current?.setView(view), [view, ready]);
   useEffect(() => board.current?.setLens(lens), [lens, ready]);
   useEffect(() => board.current?.setTimeOfDay(time), [time, ready]);
