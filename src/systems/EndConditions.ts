@@ -1,3 +1,4 @@
+import { interruptSession } from "./SessionLifecycle";
 import { type GameState, player } from "../core/GameState";
 import { BALANCE } from "../content/balance";
 import { STRATEGY_BALANCE as B } from "../content/strategy";
@@ -78,6 +79,7 @@ export function finalizeEnding(s: GameState) {
   if (s.strategic.ending) return;
   const ending = evaluateEnd(s);
   s.end = ending;
+  if (ending) interruptSession(s, "Campaign ended. Unresolved visitors cancelled.");
   if (!ending || ending === "arrested") return;
   const p = player(s),
     text =

@@ -947,10 +947,10 @@ export function initiateConflict(
     violence(s, npc, c, approach === "retaliate" || approach === "rob");
     return;
   }
-  awardCombat(s, p.id, e.id, "success");
   if (approach === "rob") {
-    awardRobbery(s, p.id, e.id, "strong-arm", true);
     const amount = Math.min(60, cash(npc));
+    awardRobbery(s, p.id, e.id, "strong-arm", amount > 0);
+    awardCombat(s, p.id, e.id, amount > 0 ? "success" : "failed");
     expense(s, npc, amount, "Robbery loss");
     earn(s, p, amount, "illicit", `Robbery of ${name(npc)}`);
     record(
@@ -960,6 +960,7 @@ export function initiateConflict(
       [p.id, npc.id],
     );
   } else if (capable) {
+    awardCombat(s, p.id, e.id, "success");
     npc.status =
       approach === "retaliate" && random(s) < 0.2 ? "dead" : "laying-low";
     npc.availableDay = s.day + (approach === "retaliate" ? 5 : 2);
@@ -971,11 +972,14 @@ export function initiateConflict(
       undefined,
       { importance: "critical" },
     );
-  } else
+  } else {
+    awardCombat(s, p.id, e.id, "defense");
+    awardSkill(s, p.id, "survival", 50, `escape:${c.id}`);
     record(s, "risk", `You broke free of ${name(npc)}. He is still standing.`, [
       p.id,
       npc.id,
     ]);
+  }
   if (random(s) < s.zones[npc.home].police / 160)
     arrest(s, p.id, "witnessed violence", approach === "retaliate" ? 3 : 1);
 }

@@ -2451,7 +2451,7 @@ export class BoardRenderer {
       this.yaw = THREE.MathUtils.lerp(f.from.yaw, f.to.yaw, e);
       if (f.t >= 1) this.flight = null;
     }
-    this.sessionVisitors.update(dt);
+    this.sessionVisitors.update(Math.min(1, interval / 1000));
     for (const a of this.animated) a(this.clock, dt);
     for (const a of this.dynamicAnimated) a(this.clock, dt);
     for (const a of this.focusAnimated) a(this.clock, dt);

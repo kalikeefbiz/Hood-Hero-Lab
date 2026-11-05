@@ -25,7 +25,7 @@ async function load(page: Page, atSpot = false, session = false) {
       b.seed = 1;
     });
   }
-  await page.goto("/");
+  await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
   await page.evaluate(
     ({ key, raw }) => {
       localStorage.clear();

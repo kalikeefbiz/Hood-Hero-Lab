@@ -1,3 +1,5 @@
+import { initiateConflict, violence } from "../systems/Danger";
+import { finalizeEnding } from "../systems/EndConditions";
 import { requestActivity } from "../systems/CrewAgency";
 import { grantEquipment } from "../systems/Equipment";
 import { repay, supplierError } from "../systems/StreetEconomy";
@@ -184,6 +186,18 @@ describe("eight canonical persistent skill tracks", () => {
     expect(p.xp.robbery).toBe(3150);
     expect(p.milestones.robberySuccess).toBe(4);
     expect(p.xp.trapper).toBe(0);
+  });
+  it("awards actual defensive escape separately from successful violent operations and mere victimhood", () => {
+    let s = ready();
+    vi.spyOn(RNG, "random").mockReturnValue(0);
+    initiateConflict(s, "quanny", "fight");
+    expect(skillsOf(player(s)).xp.combat).toBe(200);
+    expect(skillsOf(player(s)).milestones.violentSuccess).toBeUndefined();
+    expect(skillsOf(player(s)).xp.survival).toBe(50);
+    s = ready();
+    violence(s, s.characters.quanny, undefined, false);
+    expect(skillsOf(player(s)).xp.combat).toBe(0);
+    expect(skillsOf(player(s)).xp.trapper).toBe(0);
   });
   it("records meaningful lawful outcomes, avoids transfer/application/contact-spam farming", () => {
     let s = ready();
@@ -427,6 +441,11 @@ describe("physical and transactional City sessions", () => {
       expect(advanceStreetSession(end, a.id, 0)).toBe(end);
       expect(end.activeSession!.totals.sold).toBe(0);
     }
+    const terminal = structuredClone(base);
+    player(terminal).status = "dead";
+    finalizeEnding(terminal);
+    expect(terminal.activeSession!.status).toBe("ended");
+    expect(step(terminal)).toBe(terminal);
     let s = structuredClone(base);
     arrest(s, "player", "test confinement");
     expect(step(s).activeSession!.status).toBe("ended");
