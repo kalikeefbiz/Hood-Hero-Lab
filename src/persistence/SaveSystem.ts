@@ -1,3 +1,6 @@
+import { skillProgressSchema, skillsOf } from "../systems/Skills";
+import { equipmentSchema, equipmentOf } from "../systems/Equipment";
+import { streetSessionSchema, validateSessionReferences } from "../systems/StreetSessions";
 import {
   change,
   relationship as relationshipOf,
@@ -58,6 +61,8 @@ const character = z.object({
   availableDay: integer,
   lastActionDay: integer,
   traits: z.object({ loyalty: n, ambition: n, risk: n, lawful: n }),
+  skillProgress: skillProgressSchema.optional(),
+  equipment: equipmentSchema.optional(),
   skills: z.object({ social: n, work: n, recovery: n }),
   agency: z.object({
     lastAssignmentDay: integer,
@@ -118,7 +123,8 @@ const schema = z.object({
   presence: presenceSchema.optional(),
   quanny: quannySchema.default(newQuannyState),
   danger: dangerSchema.default(() => newDangerState()),
-  version: z.literal(8),
+  version: z.union([z.literal(8), z.literal(9)]),
+  activeSession: streetSessionSchema.optional(),
   street: streetSchema,
   strategic: strategicSchema,
   day: integer.min(1),
@@ -404,7 +410,7 @@ export const SAVE_KEY =
   ((import.meta.env?.VITE_SAVE_SUFFIX as string | undefined) ?? "");
 export const AUTO_KEY = SAVE_KEY + ".auto";
 export function serialize(s: GameState): string {
-  return JSON.stringify({ format: "syndicate", version: 8, state: s });
+  return JSON.stringify({ format: "syndicate", version: s.version, state: s });
 }
 export function deserialize(raw: string): GameState {
   let parsed: unknown;
@@ -418,15 +424,25 @@ export function deserialize(raw: string): GameState {
   const envelope = z
     .object({
       format: z.literal("syndicate"),
-      version: z.literal(8),
+      version: z.union([z.literal(8), z.literal(9)]),
       state: schema,
     })
     .safeParse(parsed);
   if (!envelope.success)
     throw new Error(
-      "Incompatible or damaged save. Expected Hood Hero save version 8. Start a new test run from the new game menu.",
+      "Incompatible or damaged save. Expected Hood Hero save version 8 or 9. Start a new test run from the new game menu.",
     );
   const s: GameState = envelope.data.state;
+  if (s.version === 8) {
+    for (const e of s.events) {
+      e.text = e.text.replace(/night goods/gi, "Pink Magic");
+      if (e.title) e.title = e.title.replace(/night goods/gi, "Pink Magic");
+    }
+    for (const c of Object.values(s.characters)) for (const m of c.memories) m.meaning = m.meaning.replace(/night goods/gi, "Pink Magic");
+    for (const a of s.assignments) if (a.outcome) a.outcome = a.outcome.replace(/night goods/gi, "Pink Magic");
+    for (const l of s.ledger) l.reason = l.reason.replace(/night goods/gi, "Pink Magic");
+  }
+  s.version = 9;
   const addQuanny = !s.characters.quanny;
   // Additive v8 migration: older Lab saves retain every existing character and record.
   for (const c of canonicalCharacters().filter((c) =>
@@ -464,6 +480,11 @@ export function deserialize(raw: string): GameState {
     s.quanny.knownLocation = QUANNY_HOME;
   validateDangerReferences(s);
   validateQuanny(s);
+  for (const c of Object.values(s.characters)) {
+    const p = skillsOf(c); equipmentOf(c);
+    if (new Set(p.awards.map(a => a.id)).size !== p.awards.length || p.awards.some(a => a.day > s.day)) throw new Error("Invalid skill award records.");
+  }
+  validateSessionReferences(s);
   validateConsignments(s);
   const exists = (id: string) => !!s.characters[id];
   const st = s.street;

@@ -1,7 +1,9 @@
 // Abstract fictional merchandise, intentionally without real-world product/procedure details.
 export const MERCHANDISE = {
   nightgoods: {
-    name: "Night goods",
+    name: "Pink Magic",
+    description: "Fictional Pink Magic in a clear nickel bag.",
+    tier: 1,
     quantity: 6,
     wholesale: 90,
     consignment: 102,

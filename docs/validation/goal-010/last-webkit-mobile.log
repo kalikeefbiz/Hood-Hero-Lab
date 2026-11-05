@@ -1,0 +1,47 @@
+[WebServer] (node:3744) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:3762) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  1 [webkit-mobile] › tests/corrections.spec.ts:192:3 › all three categories and inventory fit 390px (15.3s)
+  ✘  2 [webkit-mobile] › tests/skills-sessions.spec.ts:93:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session (53.2s)
+
+
+  1) [webkit-mobile] › tests/skills-sessions.spec.ts:93:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 20000ms exceeded while waiting on the predicate
+
+       at helpers.ts:49
+
+      47 |       { timeout, intervals: [500, 800, 1200] },
+      48 |     )
+    > 49 |     .toBe(true);
+         |      ^
+      50 | }
+      51 |
+      52 | /** A discarded stale tap is intentional. Retap navigation after the guard settles,
+        at tapUntil (/workspace/lab-validation/tests/helpers.ts:49:6)
+        at /workspace/lab-validation/tests/skills-sessions.spec.ts:133:9
+
+    Error Context: ../scratch/goal010-last-webkit-mobile/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-last-webkit-mobile/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-last-webkit-mobile/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [webkit-mobile] › tests/skills-sessions.spec.ts:93:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+  1 passed (1.2m)

@@ -1,3 +1,4 @@
+import { awardSkill, proficiency } from "./Skills";
 import { applyInfluence } from "./Territory";
 import { clamp, type Employment, type GameState } from "../core/GameState";
 import { record } from "../core/EventLog";
@@ -47,7 +48,7 @@ export function jobError(
     )
   )
     return "This workplace is not ready to rehire you yet";
-  if (c.skills.work < j.minWork || c.skills.social < j.minSocial)
+  if (proficiency(c, "work") < j.minWork || proficiency(c, "social") < j.minSocial)
     return `Requires work ${j.minWork} and social ${j.minSocial}`;
   if (
     j.id.startsWith("retail") &&
@@ -243,8 +244,9 @@ export function workShift(s: GameState, actor: string) {
     s,
     e,
     "worked",
-    `${c.name} worked a scheduled shift and earned $${e.wage} in lawful pay. +1 work skill, +8 stress.`,
+    `${c.name} worked a scheduled shift and earned $${e.wage} in lawful pay. +2.00 Work XP, +8 stress.`,
   )!;
+  awardSkill(s, actor, "work", 200, `shift:${e.id}:${s.day}`);
   if (
     !e.raised &&
     e.attendance.filter((a) => a.status === "worked").length >= B.raiseShifts &&

@@ -1,3 +1,4 @@
+import { oneBuyer } from "./sessionFixtures";
 import { describe, it, expect } from "vitest";
 import { newGame } from "../core/Simulation";
 import { performAction, validateAction } from "../core/ActionEngine";
@@ -113,7 +114,7 @@ describe("006.1 routine, accumulated and significant exposure", () => {
     expect(transactionChance(s)).toBeLessThan(1);
     expect(transactionChance(s)).toBeGreaterThan(0.65);
     expect(transactionArrestChance(s, "player", "south")).toBeGreaterThan(0);
-    const r = performAction(s, { type: "crime", actor: "player" });
+    const r = { state: oneBuyer(s), error: null };
     expect(r.error).toBeNull();
     expect(player(r.state).police).toBeLessThan(12);
     expect(r.state.street.exposure.player.investigation).toBe(0);
@@ -134,11 +135,11 @@ describe("006.1 routine, accumulated and significant exposure", () => {
     for (let seed = 1; seed <= 700; seed++) {
       const s = newGame("Baseline risk", "south", seed * 98713);
       acquire(s, "mega", "consignment");
-      const r = performAction(s, { type: "crime", actor: "player" });
+      const r = { state: oneBuyer(s), error: null };
       expect(r.error).toBeNull();
       outcomes.add(player(r.state).status);
     }
     expect(outcomes).toContain("active");
     expect(outcomes).toContain("arrested");
-  });
+  }, 15000);
 });

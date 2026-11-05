@@ -1,0 +1,66 @@
+[
+  {
+    "engine": "webkit-mobile",
+    "name": "corrections.spec.ts >> all three categories and inventory fit 390px",
+    "status": "failed",
+    "duration_ms": 27922,
+    "error": "Error: Timeout 15000ms exceeded while waiting on the predicate",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 320px",
+    "status": "passed",
+    "duration_ms": 16326,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 375px",
+    "status": "passed",
+    "duration_ms": 17226,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 390px",
+    "status": "passed",
+    "duration_ms": 18900,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "danger.spec.ts >> a meaningful Wallet activity opens a contextual street conversation on the City board",
+    "status": "passed",
+    "duration_ms": 12246,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "mobile.spec.ts >> mobile city and new game remain readable at narrow widths",
+    "status": "passed",
+    "duration_ms": 11221,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session",
+    "status": "failed",
+    "duration_ms": 87959,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeEnabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('button', { name: 'Start trapping \u2014 1 AP' })\nExpected: enabled\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeEnabled\" getByRole('button', { name: 'Start trapping \u2014 1 AP' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Start trapping \u2014 1 AP' })\u001b[22m\n",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls",
+    "status": "passed",
+    "duration_ms": 186067,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  }
+]

@@ -1,0 +1,89 @@
+[WebServer] (node:2909) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:2927) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  1 [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px (27.9s)
+(node:3021) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  2 [webkit-mobile] › tests/crew.spec.ts:197:3 › crew dialogue and Set fit 320px (16.3s)
+  ✓  3 [webkit-mobile] › tests/crew.spec.ts:197:3 › crew dialogue and Set fit 375px (17.2s)
+  ✓  4 [webkit-mobile] › tests/crew.spec.ts:197:3 › crew dialogue and Set fit 390px (18.9s)
+  ✓  5 [webkit-mobile] › tests/danger.spec.ts:199:1 › a meaningful Wallet activity opens a contextual street conversation on the City board (12.2s)
+  ✓  6 [webkit-mobile] › tests/mobile.spec.ts:127:1 › mobile city and new game remain readable at narrow widths (11.2s)
+  ✘  7 [webkit-mobile] › tests/skills-sessions.spec.ts:93:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session (1.5m)
+(node:3481) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+JOURNEY {"engine":"webkit-mobile","day":2,"cash":{"clean":0,"illicit":265},"lot":{"id":"lot-3","category":"nightgoods","owner":"player","supplier":"mega","zone":"south","received":6,"remaining":0,"lost":0,"cost":102,"expectedGross":282,"collected":278,"owed":0,"paid":102,"losses":18,"crewPaid":0,"dueDay":7,"acquiredDay":1,"arrangement":"consignment","status":"settled","agreementId":"agreement-6"},"transactions":[{"id":"transaction-10","sessionId":"session-7","sessionCursor":0,"day":1,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":47,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-9"},{"id":"transaction-13","sessionId":"session-7","sessionCursor":2,"day":1,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":47,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-12"},{"id":"transaction-62","sessionId":"session-58","sessionCursor":1,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":47,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-61"},{"id":"transaction-65","sessionId":"session-58","sessionCursor":2,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":46,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-64"},{"id":"transaction-71","sessionId":"session-68","sessionCursor":0,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":0,"lost":0,"gross":0,"loss":18,"crewPaid":0,"crewLoss":0,"outcome":"money-loss","eventId":"event-70"},{"id":"transaction-74","sessionId":"session-68","sessionCursor":1,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":46,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-73"},{"id":"transaction-77","sessionId":"session-68","sessionCursor":2,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":45,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-76"}],"agreement":{"id":"agreement-6","lotId":"lot-3","supplier":"mega","debtor":"player","original":102,"repaid":102,"balance":0,"dueDay":7,"status":"fulfilled","commitmentId":"commitment-5","history":["event-4","event-9","event-12","event-61","event-64","event-70","event-73","event-76","event-81"]}}
+  ✓  8 [webkit-mobile] › tests/street.spec.ts:157:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls (3.1m)
+
+
+  1) [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px
+
+    Error: Timeout 15000ms exceeded while waiting on the predicate
+
+       at helpers.ts:67
+
+      65 |       { timeout: 15000, intervals: [500, 800, 1200] },
+      66 |     )
+    > 67 |     .toBe("page");
+         |      ^
+      68 | }
+      69 | export async function category(page: Page, name: string) {
+      70 |   const button = page.getByRole("button", { name, exact: true });
+        at navigate (/workspace/lab-validation/tests/helpers.ts:67:6)
+        at nav (/workspace/lab-validation/tests/corrections.spec.ts:16:9)
+        at /workspace/lab-validation/tests/corrections.spec.ts:209:11
+
+    Error Context: ../scratch/goal010-finish-webkit-mobile/corrections-all-three-categories-and-inventory-fit-390px-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-finish-webkit-mobile/corrections-all-three-categories-and-inventory-fit-390px-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-finish-webkit-mobile/corrections-all-three-categories-and-inventory-fit-390px-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit-mobile] › tests/skills-sessions.spec.ts:93:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator: getByRole('button', { name: 'Start trapping — 1 AP' })
+    Expected: enabled
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeEnabled" getByRole('button', { name: 'Start trapping — 1 AP' }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Start trapping — 1 AP' })
+
+
+      173 |   ) {
+      174 |     await page.getByRole("button", { name: "Show details" }).click();
+    > 175 |     await expect(start).toBeEnabled();
+          |                         ^
+      176 |     await tapUntil(
+      177 |       page,
+      178 |       start,
+        at /workspace/lab-validation/tests/skills-sessions.spec.ts:175:25
+
+    Error Context: ../scratch/goal010-finish-webkit-mobile/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-finish-webkit-mobile/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-finish-webkit-mobile/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px
+    [webkit-mobile] › tests/skills-sessions.spec.ts:93:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+  6 passed (6.4m)

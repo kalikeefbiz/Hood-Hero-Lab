@@ -1,0 +1,480 @@
+
+> syndicate@0.1.0 test:e2e
+> playwright test --workers=2
+
+[WebServer] (node:2216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 160 tests using 2 workers
+
+(node:2255) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2254) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    2 [chromium-mobile] › tests/board.spec.ts:130:1 › lab saves never touch production keys and The Reservoir is spelled right (26.7s)
+  ✓    1 [chromium-mobile] › tests/board.spec.ts:40:1 › the player lives on the board: walks to places, acts there, and their location is saved (1.5m)
+  ✘    4 [chromium-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions (18.3s)
+(node:2847) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    5 [chromium-mobile] › tests/city-menu.spec.ts:160:1 › storyline uses the active demand and opens its existing City conversation (24.5s)
+  ✓    6 [chromium-mobile] › tests/city-menu.spec.ts:202:1 › City activity preserves visible history, reverse chronology, day groups, limits and filters (13.9s)
+  ✘    3 [chromium-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues (3.1m)
+(node:3608) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    8 [chromium-mobile] › tests/corrections.spec.ts:105:1 › known suspects and leaders need real introductions; access and inventory survive reload (25.2s)
+  ✘    7 [chromium-mobile] › tests/corrections.spec.ts:55:1 › Actions separate Streets, Honest and Connects; completed reach-out returns to Streets (1.6m)
+(node:3715) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   10 [chromium-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 320px (16.0s)
+  ✓   11 [chromium-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 375px (9.9s)
+  ✘    9 [chromium-mobile] › tests/corrections.spec.ts:163:1 › active Chains lives in City; fulfillment leaves only completed history (1.8m)
+(node:4133) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   13 [chromium-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 430px (9.8s)
+  ✘   12 [chromium-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px (1.6m)
+(node:4234) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   14 [chromium-mobile] › tests/crew.spec.ts:46:1 › Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences (1.6m)
+(node:4796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   16 [chromium-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 320px (12.1s)
+  ✓   17 [chromium-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 375px (13.4s)
+  ✘   18 [chromium-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 390px (34.3s)
+(node:5045) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   19 [chromium-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 430px (33.7s)
+(node:5506) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   15 [chromium-mobile] › tests/crew.spec.ts:133:1 › independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting (3.1m)
+(node:5587) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   21 [chromium-mobile] › tests/danger.spec.ts:101:1 › a recognized war member can be injured directly; recovery advances city time and preserves consequences (12.5s)
+  ✘   20 [chromium-mobile] › tests/danger.spec.ts:49:1 › board street conversation: choices, persistent grievance, menus cannot reroll, reload (17.1s)
+
+
+  1) [chromium-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Places in The Nawf' }).getByRole('button', { name: /Nawf Bodega/ })
+
+
+      155 |   await places(page, "The Nawf")
+      156 |     .getByRole("button", { name: /Nawf Bodega/ })
+    > 157 |     .click();
+          |      ^
+      158 |   await page
+      159 |     .getByRole("region", { name: "Nawf Bodega" })
+      160 |     .getByRole("button", { name: "Go here" })
+        at /workspace/lab-baseline/tests/board.spec.ts:157:6
+
+    Error Context: test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+    Expected: "true"
+    Received: "false"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true }) with timeout 5000ms
+      - waiting for getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+        14 × locator resolved to <button aria-pressed="false" aria-label="Select Downtown" aria-describedby="chip-desc-downtown">…</button>
+           - unexpected value "false"
+
+
+      62 |     });
+      63 |     await button.click();
+    > 64 |     await expect(button).toHaveAttribute("aria-pressed", "true");
+         |                          ^
+      65 |     await expect(page.locator(".zone-details h3")).toHaveText(zone.name);
+      66 |     await expect(
+      67 |       page.getByRole("meter", { name: "Police presence", exact: true }),
+        at /workspace/lab-baseline/tests/city-menu.spec.ts:64:26
+
+    Error Context: test-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium-mobile] › tests/corrections.spec.ts:55:1 › Actions separate Streets, Honest and Connects; completed reach-out returns to Streets
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.screenshot: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('.actions-hub')
+
+
+      36 |     timeout: 7000,
+      37 |   });
+    > 38 |   await page.locator(selector).screenshot({
+         |                                ^
+      39 |     path: `docs/screenshots/goal-006-1/${process.env.PLAYWRIGHT_PUBLIC_URL ? "live-" : ""}${test.info().project.name}-${name}.png`,
+      40 |     scale: "css",
+      41 |     animations: "disabled",
+        at shot (/workspace/lab-baseline/tests/corrections.spec.ts:38:32)
+        at /workspace/lab-baseline/tests/corrections.spec.ts:68:3
+
+    Error Context: test-results/corrections-Actions-separa-e3349-each-out-returns-to-Streets-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/corrections-Actions-separa-e3349-each-out-returns-to-Streets-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/corrections-Actions-separa-e3349-each-out-returns-to-Streets-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium-mobile] › tests/corrections.spec.ts:163:1 › active Chains lives in City; fulfillment leaves only completed history
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Browser logs:
+
+    <launching> /home/agent/.cache/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,AvoidCorsURLLoaderRestartOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-w6DRAb --remote-debugging-pipe --no-startup-window
+    <launched> pid=3620
+    [pid=3620][err] [1105/052844.798938:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+    [pid=3620][err] [1105/052844.799053:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=3620][err] [1105/052844.799078:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+    [pid=3620][err] [1105/052844.799100:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+    [pid=3620][err] [1105/052844.803121:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+    [pid=3620][err] [1105/052844.803169:WARNING:device/bluetooth/dbus/bluez_dbus_manager.cc:209] Floss manager service not available, cannot set Floss enable/disable.
+    [pid=3620][err] [1105/052844.804229:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+    [pid=3620][err] [1105/052844.806856:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+    [pid=3620][err] [1105/052844.859567:WARNING:media/gpu/vaapi/vaapi_wrapper.cc:1655] drmGetDevices2() has not found any devices
+    [pid=3620][err] [1105/052844.862728:WARNING:sandbox/policy/linux/sandbox_linux.cc:405] InitializeSandbox() called with multiple threads in process gpu-process.
+    [pid=3620][err] [1105/052846.276568:ERROR:gpu/command_buffer/service/gl_utils.cc:431] [.WebGL-0x2ac401a2e600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+    [pid=3620][err] [1105/052846.815875:INFO:CONSOLE:0] "[.WebGL-0x2ac401a2e600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels", source: http://127.0.0.1:4174/ (0)
+    [pid=3620][err] [1105/052846.839954:ERROR:gpu/command_buffer/service/gl_utils.cc:431] [.WebGL-0x2ac401a2e600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+    [pid=3620][err] [1105/052846.961243:INFO:CONSOLE:0] "[.WebGL-0x2ac401a2e600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels", source: http://127.0.0.1:4174/ (0)
+    [pid=3620][err] [1105/052846.966068:ERROR:gpu/command_buffer/service/gl_utils.cc:431] [.WebGL-0x2ac401a2e600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+    [pid=3620][err] [1105/052847.155555:INFO:CONSOLE:0] "[.WebGL-0x2ac401a2e600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels", source: http://127.0.0.1:4174/ (0)
+    [pid=3620][err] [1105/052847.161167:ERROR:gpu/command_buffer/service/gl_utils.cc:431] [.WebGL-0x2ac401a2e600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)
+    [pid=3620][err] [1105/052847.382260:INFO:CONSOLE:0] "[.WebGL-0x2ac401a2e600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)", source: http://127.0.0.1:4174/ (0)
+    [pid=3620] <gracefully close start>
+    Call log:
+      - waiting for getByRole('navigation').getByRole('button', { name: 'Actions', exact: true })
+        - locator resolved to <button class="" aria-label="Actions">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <p class="encounter-footer">Closing makes no new promise. Unfinished conversa…</p> from <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> subtree intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <p class="encounter-footer">Closing makes no new promise. Unfinished conversa…</p> from <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> subtree intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        160 × waiting for element to be visible, enabled and stable
+            - element is visible, enabled and stable
+            - scrolling into view if needed
+            - done scrolling
+            - <p class="encounter-footer">Closing makes no new promise. Unfinished conversa…</p> from <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> subtree intercepts pointer events
+          - retrying click action
+            - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+       at helpers.ts:15
+
+      13 |     .getByRole("navigation")
+      14 |     .getByRole("button", { name: "Actions", exact: true })
+    > 15 |     .click();
+         |      ^
+      16 |   await page.getByRole("button", { name: "Honest", exact: true }).click();
+      17 | }
+      18 | export async function connects(page: Page, person?: string) {
+        at honest (/workspace/lab-baseline/tests/helpers.ts:15:6)
+        at /workspace/lab-baseline/tests/corrections.spec.ts:171:9
+
+    Error Context: test-results/corrections-active-Chains--c22f3-aves-only-completed-history-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/corrections-active-Chains--c22f3-aves-only-completed-history-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/corrections-active-Chains--c22f3-aves-only-completed-history-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Talk terms with Cuzzo' })
+
+
+      202 |       ).toBeLessThanOrEqual(width);
+      203 |     }
+    > 204 |     await page.getByRole("button", { name: "Talk terms with Cuzzo" }).click();
+          |                                                                       ^
+      205 |     await page
+      206 |       .getByRole("dialog", { name: "Character encounter" })
+      207 |       .getByRole("button", { name: /Accept consignment/ })
+        at /workspace/lab-baseline/tests/corrections.spec.ts:204:71
+
+    Error Context: test-results/corrections-all-three-categories-and-inventory-fit-390px-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/corrections-all-three-categories-and-inventory-fit-390px-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/corrections-all-three-categories-and-inventory-fit-390px-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [chromium-mobile] › tests/crew.spec.ts:46:1 › Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })
+
+
+      34 |   await page
+      35 |     .getByRole("button", { name: `Interact with ${name}`, exact: true })
+    > 36 |     .click();
+         |      ^
+      37 | }
+      38 | async function card(page: Page, label: string) {
+      39 |   await page
+        at interact (/workspace/lab-baseline/tests/crew.spec.ts:36:6)
+        at /workspace/lab-baseline/tests/crew.spec.ts:53:3
+
+    Error Context: test-results/crew-Flacco-cooperation-pa-d0667-ment-and-saved-consequences-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/crew-Flacco-cooperation-pa-d0667-ment-and-saved-consequences-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/crew-Flacco-cooperation-pa-d0667-ment-and-saved-consequences-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [chromium-mobile] › tests/crew.spec.ts:133:1 › independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Hear the offer', exact: true })
+
+
+      150 |       await page
+      151 |         .getByRole("button", { name: "Hear the offer", exact: true })
+    > 152 |         .click();
+          |          ^
+      153 |       if (!accepted) {
+      154 |         await expect(modal).toContainText("You tryna come?");
+      155 |         await snap(page, "05-npc-initiated-offer");
+        at /workspace/lab-baseline/tests/crew.spec.ts:152:10
+
+    Error Context: test-results/crew-independent-offer-ins-bea02--while-the-NPC-keeps-acting-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/crew-independent-offer-ins-bea02--while-the-NPC-keeps-acting-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/crew-independent-offer-ins-bea02--while-the-NPC-keeps-acting-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [chromium-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 390px ────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('navigation').getByRole('button', { name: 'Set', exact: true })
+        - locator resolved to <button class="" aria-label="Set">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <p class="encounter-footer">Closing makes no new promise. Unfinished conversa…</p> from <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> subtree intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <p class="encounter-footer">Closing makes no new promise. Unfinished conversa…</p> from <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> subtree intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        27 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <p class="encounter-footer">Closing makes no new promise. Unfinished conversa…</p> from <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> subtree intercepts pointer events
+         - retrying click action
+           - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      10 |     .getByRole("navigation")
+      11 |     .getByRole("button", { name, exact: true })
+    > 12 |     .click();
+         |      ^
+      13 |   if (name === "Actions")
+      14 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+      15 | }
+        at nav (/workspace/lab-baseline/tests/crew.spec.ts:12:6)
+        at /workspace/lab-baseline/tests/crew.spec.ts:216:11
+
+    Error Context: test-results/crew-crew-dialogue-and-Set-fit-390px-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/crew-crew-dialogue-and-Set-fit-390px-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/crew-crew-dialogue-and-Set-fit-390px-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [chromium-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 430px ────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })
+
+
+      34 |   await page
+      35 |     .getByRole("button", { name: `Interact with ${name}`, exact: true })
+    > 36 |     .click();
+         |      ^
+      37 | }
+      38 | async function card(page: Page, label: string) {
+      39 |   await page
+        at interact (/workspace/lab-baseline/tests/crew.spec.ts:36:6)
+        at /workspace/lab-baseline/tests/crew.spec.ts:203:5
+
+    Error Context: test-results/crew-crew-dialogue-and-Set-fit-430px-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/crew-crew-dialogue-and-Set-fit-430px-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/crew-crew-dialogue-and-Set-fit-430px-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [chromium-mobile] › tests/danger.spec.ts:49:1 › board street conversation: choices, persistent grievance, menus cannot reroll, reload
+
+    Test was interrupted.
+
+    Error: locator.click: Test ended.
+    Call log:
+      - waiting for getByRole('button', { name: 'Select The Nawf', exact: true })
+        - locator resolved to <button aria-pressed="false" aria-label="Select The Nawf" aria-describedby="chip-desc-nawf">…</button>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+        - done scrolling
+        - performing click action
+
+
+      61 |   await page
+      62 |     .getByRole("button", { name: "Select The Nawf", exact: true })
+    > 63 |     .click();
+         |      ^
+      64 |   await page
+      65 |     .getByRole("region", { name: "Places in The Nawf" })
+      66 |     .getByRole("button", { name: /Nawf Deli/ })
+        at /workspace/lab-baseline/tests/danger.spec.ts:63:6
+
+    Error Context: test-results/danger-board-street-conver-85282--menus-cannot-reroll-reload-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/danger-board-street-conver-85282--menus-cannot-reroll-reload-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/danger-board-street-conver-85282--menus-cannot-reroll-reload-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11) [chromium-mobile] › tests/danger.spec.ts:101:1 › a recognized war member can be injured directly; recovery advances city time and preserves consequences
+
+    Test was interrupted.
+
+    Error: locator.click: Test ended.
+    Call log:
+      - waiting for getByRole('button', { name: 'Complete hospital recovery' })
+        - locator resolved to <button>Complete hospital recovery</button>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+        - done scrolling
+        - <section class="panel ">…</section> from <div class="city-layout board-district">…</div> subtree intercepts pointer events
+      - retrying click action
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+
+
+      136 |   await page
+      137 |     .getByRole("button", { name: "Complete hospital recovery" })
+    > 138 |     .click();
+          |      ^
+      139 |   await expect(
+      140 |     page.getByRole("heading", { name: "Recovering in hospital" }),
+      141 |   ).toHaveCount(0);
+        at /workspace/lab-baseline/tests/danger.spec.ts:138:6
+
+    Error Context: test-results/danger-a-recognized-war-me-35be8--and-preserves-consequences-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/danger-a-recognized-war-me-35be8--and-preserves-consequences-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/danger-a-recognized-war-me-35be8--and-preserves-consequences-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9 failed
+    [chromium-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues
+    [chromium-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions
+    [chromium-mobile] › tests/corrections.spec.ts:55:1 › Actions separate Streets, Honest and Connects; completed reach-out returns to Streets
+    [chromium-mobile] › tests/corrections.spec.ts:163:1 › active Chains lives in City; fulfillment leaves only completed history
+    [chromium-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px
+    [chromium-mobile] › tests/crew.spec.ts:46:1 › Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences
+    [chromium-mobile] › tests/crew.spec.ts:133:1 › independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting
+    [chromium-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 390px ─────────────────
+    [chromium-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 430px ─────────────────
+  2 interrupted
+    [chromium-mobile] › tests/danger.spec.ts:49:1 › board street conversation: choices, persistent grievance, menus cannot reroll, reload
+    [chromium-mobile] › tests/danger.spec.ts:101:1 › a recognized war member can be injured directly; recovery advances city time and preserves consequences
+  139 did not run
+  10 passed (9.9m)

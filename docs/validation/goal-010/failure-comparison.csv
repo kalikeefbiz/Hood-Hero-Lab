@@ -1,0 +1,1767 @@
+engine,case,candidate_error,main_result,main_error,final_feature_result,resolution
+webkit-mobile,overhaul.spec.ts >> negotiated demand comes from state; ended and damaged saves remain inspectable and safe,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,"encounters.spec.ts >> activity preserves chronology, true faction IDs, severity, private knowledge and routine detail","```
+Error: expect(locator).not.toContainText(expected) failed
+
+Locator: locator('.timeline')
+Expected substring: not ""PRIVATE GANG PLAN""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""not toContainText"" locator('.timeline') with timeout 5000ms
+  - waiting for locator('.timeline')
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 02
+  - heading ""Test(3)"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Test(3): your character""'
+  - text: AP 2/2 Cash
+  - strong: $107
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: Loaded day 2.
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $150 · Awaiting your help
+- region ""Important developments"":
+  - paragraph: 7 UNSEEN IMPORTANT DEVELOPMENTS
+  - heading ""Broken word"" [level=3]
+  - paragraph: An earlier major betrayal.
+  - button ""Acknowledge""
+- button ""Hide details"": ✕
+- text: Old loyalty. New ambition.
+- heading ""Southside"" [level=3]
+- parag",passed,,passed,passed final feature check
+webkit-mobile,mobile.spec.ts >> buyback resolves the incident and the ordinary loop remains playable,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('dialog', { name: 'Character encounter' }).getByRole('button', { name: 'Close conversation' })
+    - locator resolved to <button class=""text-button"" aria-label=""Close conversation"">Close ×</button>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,street.spec.ts >> seeded real-play arrest serves every day and releases into continued gameplay,"```
+Error: Session interrupted by an encounter.
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,"board.spec.ts >> the player lives on the board: walks to places, acts there, and their location is saved","```
+Test timeout of 240000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 240000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Select The Nawf', exact: true })
+
+```",failed,"Error: expect(locator).toBeVisible() failed
+
+Locator: locator('.action-feedback')
+Expected: visible
+Timeout: 20000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toBeVisible"" locator('.action-feedback') with timeout 20000ms
+  - waiting for locator('.action-feedback')
+",not repeated in final selection,case also fails on untouched main
+chromium-mobile,"crew.spec.ts >> independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting","```
+Test timeout of 180000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 180000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Hear the offer', exact: true })
+
+```",failed (initial run),,not repeated in final selection,case also fails on untouched main
+webkit-mobile,"encounters.spec.ts >> true City modal, sequential questions, promise closure, queued fulfillment, history and Resume","```
+Error: expect(locator).toHaveCount(expected) failed
+
+Locator:  getByRole('dialog', { name: 'Character encounter', exact: true })
+Expected: 0
+Received: 1
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveCount"" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+    10 × locator resolved to 1 element
+       - unexpected value ""1""
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,"skills-sessions.spec.ts >> background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes","```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: ""paused""
+Received: ""ended""
+
+Call Log:
+- Timeout 5000ms exceeded while waiting on the predicate
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,quanny.spec.ts >> board collection at notoriety 35 records the correct permanent outcome,"```
+Test timeout of 90000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 90000ms exceeded.
+Call log:
+  - waiting for getByRole('region', { name: 'Places in The Reservoir' }).getByRole('button', { name: /Lil Jay's Market/ })
+
+```",timedOut,Test timeout of 90000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,"employment.spec.ts >> hire, scheduled wages, save and a thirty-day employment playthrough","```
+Test timeout of 180000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 180000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 180000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,overhaul.spec.ts >> valid sponsored angels membership keeps the shell neutral and survives checkpoint reload,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,overhaul.spec.ts >> valid sponsored blips membership keeps the shell neutral and survives checkpoint reload,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",passed,,passed,passed final feature check
+chromium-mobile,"visual-correction.spec.ts >> GOAL 002B mandatory visual review: new run, independent and Blips at 390","```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter' })
+Expected substring: ""Cuzzo""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toContainText"" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' })
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 01
+  - heading ""Morgan"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Morgan: your character""'
+  - text: AP 2/2 Cash
+  - strong: $125
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: You’re home. Find work, check on Cuzzo, or see who’s around.
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $150 · Awaiting your help
+- button ""Continue conversation with Cuzzo""
+- button ""Hide details"": ✕
+- text: Old loyalty. New ambition.
+- heading ""Southside"" [level=3]
+- paragraph: Back Street is pol",passed,,passed,passed final feature check
+webkit-mobile,illustrated.spec.ts >> GOAL 002C mobile visual review and usable narrow controls,"```
+Error: expect(locator).toHaveAttribute(expected) failed
+
+Locator:  getByRole('button', { name: 'Select The Nawf', exact: true })
+Expected: ""true""
+Received: ""false""
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveAttribute"" getByRole('button', { name: 'Select The Nawf', exact: true }) with timeout 5000ms
+  - waiting for getByRole('button', { name: 'Select The Nawf', exact: true })
+    14 × locator resolved to <button aria-pressed=""false"" aria-label=""Select The Nawf"" aria-describedby=""chip-desc-nawf"">…</button>
+       - unexpected value ""false""
+
+```
+
+```yaml
+- button ""Select The Nawf"": The Nawf
+```",passed,,passed,passed final feature check
+webkit-mobile,corrections.spec.ts >> active Chains lives in City; fulfillment leaves only completed history,"```
+Error: Timeout 15000ms exceeded while waiting on the predicate
+```",timedOut,Test timeout of 90000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,"encounters.spec.ts >> refusing, postponing, Escape and backdrop leave no accidental obligation or daily reopening","```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: locator('.day-transition')
+Expected substring: ""DAY 02""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toContainText"" locator('.day-transition') with timeout 5000ms
+  - waiting for locator('.day-transition')
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 02
+  - heading ""Test(3)"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Test(3): your character""'
+  - text: AP 2/2 Cash
+  - strong: $107
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: ""Day 2: living costs processed, the city has moved, and AP is restored.""
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $150 · Awaiting your help
+- button ""Continue conversation with Cuzzo""
+- region ""Important developments"":
+  - paragraph: 1 UNSEEN IMPORTANT DEVELOPMENT
+  - heading ""Leadership conflict"" [level=3]
+  - paragraph: Back Street repaired internal loyalty and resour",failed,"Error: expect(locator).toContainText(expected) failed
+
+Locator: locator('.day-transition')
+Expected substring: ""DAY 02""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toContainText"" locator('.day-transition') with timeout 5000ms
+  - waiting for locator('.day-transition')
+",not repeated in final selection,case also fails on untouched main
+chromium-mobile,quanny.spec.ts >> board collection at notoriety 34 records the correct permanent outcome,"```
+Test timeout of 90000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 90000ms exceeded.
+Call log:
+  - waiting for getByRole('region', { name: 'Places in The Reservoir' }).getByRole('button', { name: /Lil Jay's Market/ })
+
+```",passed,,passed,passed final feature check
+webkit-mobile,mobile.spec.ts >> mobile city and new game remain readable at narrow widths,"```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: locator('.zone-details')
+Expected substring: ""The Blips""
+Received string:    ""Old loyalty. New ambition.SouthsideBack Street is politically isolated. Younger members question Justice’s turn toward legitimate business.Control: Back StreetNeighborhood balanceRecognized control since day 1: Back Street. Civilian climate 45/100 · Lawful economy 45/100. Local trade faces ordinary competition.Back StreetPresence 75 · Economy 62 · Support 45 · Pressure 0Influence this neighborhoodOne investment every 3 days. Organizational actions require an accessible, trusted representative.Build Community Support · $25 · 1 APSupport Local Interests · $40 · 1 APJoin an established organization through a trusted sponsor firstBack a Neighborhood Operation · $100 · 1 APJoin an established organization through a trusted sponsor firstChallenge Rival Influence · $80 · 1 APJoin an established organization through a trusted sponsor firstNegotiate Cooperation · $30 · 1 APJoin an established organization through a trusted sponsor firstPropose Territorial Priority · $60 · 1 APJoin an established organization through a trusted sponsor firstRecent faction decisionsBack StreetPolice presenceElevatedYour local standingUnknownMeet local people →""
+Timeout: 5000ms
+
+Call log:
+  - Expect ""toContainText"" locator('.zone-details') with timeout 5000ms
+  - waiting for locator('.zone-details')
+    12 × locator resolved to <div class=""zone-details"">…</div>
+       - unexpected value ""Old loyalty. New ambition.SouthsideBack Street is politically isolated. Younger members question Justice’s turn toward legitimate business.Control: Back StreetNeighborhood balanceRecognized control since day 1: Back Street. Civilian climate 45/100 · Lawful economy 45/100. Local trade faces ordinary competition.Back StreetPresence 75 · Economy 62 · Support 45 · Pressure 0Influence this neighborhoodOne investment every 3 days. Organizational actions require an accessible",passed,,passed,passed final feature check
+chromium-mobile,strategy.spec.ts >> earned affiliation authority restriction and advancement use existing sponsorship,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Request advancement · 1 AP' })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,quanny-portraits.spec.ts >> all five Quanny portraits display and follow real iPhone encounter states without changing outcomes,"```
+Error: expect(locator).toHaveAttribute(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')
+Expected pattern: /quanny-talking[.]webp$/
+Received string:  ""/assets/characters/quanny/quanny-neutral.webp""
+Timeout: 5000ms
+
+Call log:
+  - Expect ""toHaveAttribute"" getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img') with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')
+    14 × locator resolved to <img width=""370"" height=""581"" loading=""lazy"" decoding=""async"" alt=""Quanny, neutral"" src=""/assets/characters/quanny/quanny-neutral.webp""/>
+       - unexpected value ""/assets/characters/quanny/quanny-neutral.webp""
+
+```
+
+```yaml
+- img ""Quanny, neutral""
+```",timedOut,Test timeout of 180000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,quanny.spec.ts >> false BB dismissal reveals no private intention and cannot be rerolled by reloading,"```
+Error: expect(locator).toHaveAttribute(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')
+Expected pattern: /quanny-disappointed[.]webp$/
+Received string:  ""/assets/characters/quanny/quanny-neutral.webp""
+Timeout: 5000ms
+
+Call log:
+  - Expect ""toHaveAttribute"" getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img') with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')
+    10 × locator resolved to <img width=""370"" height=""581"" loading=""lazy"" decoding=""async"" alt=""Quanny, neutral"" src=""/assets/characters/quanny/quanny-neutral.webp""/>
+       - unexpected value ""/assets/characters/quanny/quanny-neutral.webp""
+
+```
+
+```yaml
+- img ""Quanny, neutral""
+```",failed,"Error: expect(locator).toHaveCount(expected) failed
+
+Locator:  getByRole('dialog', { name: 'Character encounter' })
+Expected: 0
+Received: 1
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveCount"" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' })
+    11 × locator resolved to 1 element
+       - unexpected value ""1""
+",not repeated in final selection,case also fails on untouched main
+chromium-mobile,"skills-sessions.spec.ts >> City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session","```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 1
+Received: 2
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,corrections.spec.ts >> all three categories and inventory fit 390px,"```
+Test timeout of 90000ms exceeded.
+```",passed,,passed,passed final feature check
+webkit-mobile,"encounters.spec.ts >> refusing, postponing, Escape and backdrop leave no accidental obligation or daily reopening","```
+Error: expect(locator).toHaveCount(expected) failed
+
+Locator:  getByRole('dialog', { name: 'Character encounter', exact: true })
+Expected: 0
+Received: 1
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveCount"" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+    14 × locator resolved to 1 element
+       - unexpected value ""1""
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,encounters.spec.ts >> 40 days after fulfilled: one storyline reaction while independent offers continue,"```
+Test timeout of 180000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 180000ms exceeded.
+Call log:
+  - waiting for getByRole('dialog', { name: 'Character encounter' }).getByRole('button', { name: /Pay to return the chains/ })
+
+```",timedOut,Test timeout of 180000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,"mobile.spec.ts >> phone gameplay: contact, lawful income, days, save and load","```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('status')
+Expected substring: ""Saved day 2""
+Received string:    ""Day 2: living costs processed, the city has moved, and AP is restored.""
+Timeout: 5000ms
+
+Call log:
+  - Expect ""toContainText"" getByRole('status') with timeout 5000ms
+  - waiting for getByRole('status')
+    12 × locator resolved to <div role=""status"" class=""notice"" aria-live=""polite"">Day 2: living costs processed, the city has moved…</div>
+       - unexpected value ""Day 2: living costs processed, the city has moved, and AP is restored.""
+
+```
+
+```yaml
+- status: ""Day 2: living costs processed, the city has moved, and AP is restored.""
+```",failed,"Error: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('status')
+Expected substring: ""Saved day 2""
+Received string:    ""Day 2: living costs processed, the city has moved, and AP is restored.""
+Timeout: 5000ms
+
+Call log:
+  - Expect ""toContainText"" getByRole('status') with timeout 5000ms
+  - waiting for getByRole('status')
+    10 × locator resolved to <div role=""status"" class=""notice"" aria-live=""polite"">Day 2: living costs processed, the city has moved…</div>
+       - unexpected value ""Day 2: living costs processed, the city has moved, and AP is restored.""
+",not repeated in final selection,case also fails on untouched main
+webkit-mobile,board.spec.ts >> leaving the city mid-walk never locks input: the walk lands and play continues,"```
+Test timeout of 180000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 180000ms exceeded.
+Call log:
+  - waiting for getByRole('region', { name: 'Nawf Bodega' }).getByRole('button', { name: 'Go here' })
+
+```",timedOut,Test timeout of 180000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,danger.spec.ts >> a meaningful Wallet activity opens a contextual street conversation on the City board,"```
+Error: expect(received).toContain(expected) // indexOf
+
+Matcher error: received value must not be null nor undefined
+
+Received has value: undefined
+```",passed,,passed,passed final feature check
+webkit-mobile,"visual-correction.spec.ts >> GOAL 002B mandatory visual review: new run, independent and Blips at 390","```
+Test timeout of 30000ms exceeded.
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,"quanny.spec.ts >> intentional board visit introduces Quanny once, fronts physical stock and persists on reload","```
+Test timeout of 120000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 120000ms exceeded.
+Call log:
+  - waiting for getByRole('region', { name: 'Places in The Reservoir' }).getByRole('button', { name: /Reservoir homes/ })
+
+```",passed,,passed,passed final feature check
+webkit-mobile,"quanny.spec.ts >> intentional board visit introduces Quanny once, fronts physical stock and persists on reload","```
+Test timeout of 120000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 120000ms exceeded.
+Call log:
+  - waiting for getByRole('region', { name: 'Places in The Reservoir' }).getByRole('button', { name: /Reservoir homes/ })
+
+```",timedOut,Test timeout of 120000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,quanny.spec.ts >> Angels first-contact shooting uses hospital presentation and persists its nonfatal outcome,"```
+Error: expect(locator).toHaveAttribute(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')
+Expected pattern: /quanny-disappointed[.]webp$/
+Received string:  ""/assets/characters/quanny/quanny-neutral.webp""
+Timeout: 5000ms
+
+Call log:
+  - Expect ""toHaveAttribute"" getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img') with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')
+    9 × locator resolved to <img width=""370"" height=""581"" loading=""lazy"" decoding=""async"" alt=""Quanny, neutral"" src=""/assets/characters/quanny/quanny-neutral.webp""/>
+      - unexpected value ""/assets/characters/quanny/quanny-neutral.webp""
+
+```
+
+```yaml
+- img ""Quanny, neutral""
+```",failed,"Error: expect(locator).toHaveAttribute(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')
+Expected pattern: /quanny-disappointed[.]webp$/
+Received string:  ""/assets/characters/quanny/quanny-neutral.webp""
+Timeout: 5000ms
+
+Call log:
+  - Expect ""toHaveAttribute"" getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img') with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')
+    7 × locator resolved to <img width=""370"" height=""581"" loading=""lazy"" decoding=""async"" alt=""Quanny, neutral"" src=""/assets/characters/quanny/quanny-neutral.webp""/>
+      - unexpected value ""/assets/characters/quanny/quanny-neutral.webp""
+",not repeated in final selection,case also fails on untouched main
+webkit-mobile,overhaul.spec.ts >> valid sponsored backstreet membership keeps the shell neutral and survives checkpoint reload,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,quanny.spec.ts >> board collection at notoriety 34 records the correct permanent outcome,"```
+Test timeout of 90000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 90000ms exceeded.
+Call log:
+  - waiting for getByRole('region', { name: 'Places in The Reservoir' }).getByRole('button', { name: /Lil Jay's Market/ })
+
+```",timedOut,Test timeout of 90000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,"corrections.spec.ts >> Actions separate Streets, Honest and Connects; completed reach-out returns to Streets","```
+Test timeout of 90000ms exceeded.
+```
+
+```
+Error: locator.screenshot: Test timeout of 90000ms exceeded.
+Call log:
+  - waiting for locator('.actions-hub')
+
+```",timedOut,Test timeout of 90000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,"overhaul.spec.ts >> directional trust, witnessed events, activity filters and day grouping preserve visibility","```
+Error: expect(locator).not.toContainText(expected) failed
+
+Locator: locator('main')
+Expected substring: not ""PRIVATE NPC ONLY""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""not toContainText"" locator('main') with timeout 5000ms
+  - waiting for locator('main')
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 01
+  - heading ""Morgan"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Morgan: your character""'
+  - text: AP 2/2 Cash
+  - strong: $125
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: Loaded day 1.
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $150 · Awaiting your help
+- button ""Continue conversation with Cuzzo""
+- button ""Hide details"": ✕
+- text: Old loyalty. New ambition.
+- heading ""Southside"" [level=3]
+- paragraph: Back Street is politically isolated. Younger members question Justice’s turn toward legitimate business.
+- paragraph: ""Control: Back Street""
+- region ""Ne",passed,,passed,passed final feature check
+chromium-mobile,employment.spec.ts >> absence warning can be cancelled; repeated absences fire and gigs survive cooldown,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'End day' })
+    - locator resolved to <button aria-label=""End day"" class=""advance board-end-day"">…</button>
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,street.spec.ts >> crew-assisted street work uses an earned willing partner and actual inventory,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.scrollIntoViewIfNeeded: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByText(/with Flacco/).last()
+
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,overhaul.spec.ts >> valid sponsored muds membership keeps the shell neutral and survives checkpoint reload,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,"mobile.spec.ts >> phone gameplay: contact, lawful income, days, save and load","```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: expect(locator).toHaveText(expected) failed
+
+Locator:  locator('.day')
+Expected: ""DAY 02""
+Received: ""DAY 03""
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveText"" locator('.day') with timeout 5000ms
+  - waiting for locator('.day')
+    14 × locator resolved to <strong class=""day"">DAY 03</strong>
+       - unexpected value ""DAY 03""
+
+```
+
+```yaml
+- strong: DAY 03
+```",passed,,passed,passed final feature check
+webkit-mobile,corrections.spec.ts >> all three categories and inventory fit 430px,"```
+Test timeout of 90000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 90000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 90000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,street.spec.ts >> default reaction and accumulated heat are rendered from real simulated consequences,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.scrollIntoViewIfNeeded: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('heading', { name: 'Inventory', exact: true })
+
+```",no unchanged counterpart,,passed,passed final feature check
+chromium-mobile,street.spec.ts >> seeded real-play arrest serves every day and releases into continued gameplay,"```
+Error: Session interrupted by an encounter.
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,"employment.spec.ts >> employment competes with The Chains through actual AP, wages, attendance and promises","```
+Error: expect(locator).toBeDisabled() failed
+
+Locator: getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ })
+Expected: disabled
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toBeDisabled"" getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ })
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 02
+  - heading ""Test(4)"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Test(4): your character""'
+  - text: AP 0/2 Cash
+  - strong: $241
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: Test(4) worked a scheduled shift and earned $96 in lawful pay. +1 work skill, +8 stress.
+- button ""Open The Chains storyline"":
+  - strong:",failed,"Error: expect(locator).toBeDisabled() failed
+
+Locator: getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ })
+Expected: disabled
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toBeDisabled"" getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ })
+",not repeated in final selection,case also fails on untouched main
+webkit-mobile,"strategy.spec.ts >> business acquisition, real operating income, sale, and voluntary retirement","```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: /Acquire Southside repair/ })
+
+```",failed,"Error: expect(locator).toContainText(expected) failed
+
+Locator: locator('.business-panel')
+Expected substring: ""Latest net""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toContainText"" locator('.business-panel') with timeout 5000ms
+  - waiting for locator('.business-panel')
+",not repeated in final selection,case also fails on untouched main
+webkit-mobile,city-menu.spec.ts >> City centers the five state-backed neighborhoods and keeps actions in Actions,"```
+Error: expect(locator).toHaveAttribute(expected) failed
+
+Locator:  getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+Expected: ""true""
+Received: ""false""
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveAttribute"" getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true }) with timeout 5000ms
+  - waiting for getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+    14 × locator resolved to <button aria-pressed=""false"" aria-label=""Select Downtown"" aria-describedby=""chip-desc-downtown"">…</button>
+       - unexpected value ""false""
+
+```
+
+```yaml
+- button ""Select Downtown"": Downtown
+```",failed,"Error: expect(locator).toHaveAttribute(expected) failed
+
+Locator:  getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+Expected: ""true""
+Received: ""false""
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveAttribute"" getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true }) with timeout 5000ms
+  - waiting for getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+    14 × locator resolved to <button aria-pressed=""false"" aria-label=""Select Downtown"" aria-describedby=""chip-desc-downtown"">…</button>
+       - unexpected value ""false""
+",not repeated in final selection,case also fails on untouched main
+chromium-mobile,"encounters.spec.ts >> true City modal, sequential questions, promise closure, queued fulfillment, history and Resume","```
+Test timeout of 30000ms exceeded.
+```",failed,"Error: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter', exact: true })
+Expected substring: ""This wasn’t authorized""
+Received string:    ""A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, three young Angels took my diamond chain while I was out with my girl. I’m alright. They want $150 to give it back. Can you help me get it home?”I’ll help you get it back. I give you my word.Conversation · No APTell me what happened. Who was involved?Conversation · No API can’t get involved in this.Conversation · No APLet me think. I’m not promising yet.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.""
+Timeout: 5000ms
+
+Call log:
+  - Expect ""toContainText"" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+    14 × locator resolved to <dialog open="""" class=""encounter-modal"" aria-label=""Character encounter"">…</dialog>
+       - unexpected value ""A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, three young Angels took my diamond chain while I was out with my girl. I’m alright. They want $150 to give it back. Can you help me get it home?”I’ll help you get it back. I give you my word.Conversation · No APTell me what happened. Who was involved?Conversation · No API can’t get involved in this.Conversation · No APLet me think. I’m not promising yet.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.""
+",not repeated in final selection,case also fails on untouched main
+webkit-mobile,"employment.spec.ts >> hire, scheduled wages, save and a thirty-day employment playthrough","```
+Test timeout of 180000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 180000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 180000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,"overhaul.spec.ts >> all destinations fit 320/375/390/430 and desktop, including long names and every dock target","```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,street.spec.ts >> default reaction and accumulated heat are rendered from real simulated consequences,"```
+Error: Session interrupted by an encounter.
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,"strategy.spec.ts >> actual local investment, contested map, autonomous decisions and persisted continuation","```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: /Build Community Support/ })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,overhaul.spec.ts >> all approved scenes load; every home starts independent and map selection cannot change affiliation,"```
+Error: expect(locator).toHaveText(expected) failed
+
+Locator:  locator('.zone-details h3')
+Expected: ""The Reservoir""
+Received: ""Southside""
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveText"" locator('.zone-details h3') with timeout 5000ms
+  - waiting for locator('.zone-details h3')
+    11 × locator resolved to <h3>Southside</h3>
+       - unexpected value ""Southside""
+
+```
+
+```yaml
+- heading ""Southside"" [level=3]
+```",failed,"Error: expect(locator).toHaveText(expected) failed
+
+Locator:  locator('.zone-details h3')
+Expected: ""Southside""
+Received: ""Rio Gabriel""
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveText"" locator('.zone-details h3') with timeout 5000ms
+  - waiting for locator('.zone-details h3')
+    12 × locator resolved to <h3>Rio Gabriel</h3>
+       - unexpected value ""Rio Gabriel""
+",not repeated in final selection,case also fails on untouched main
+chromium-mobile,overhaul.spec.ts >> all approved scenes load; every home starts independent and map selection cannot change affiliation,"```
+Error: expect(locator).toHaveText(expected) failed
+
+Locator:  locator('.zone-details h3')
+Expected: ""Rio Gabriel""
+Received: ""Downtown""
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveText"" locator('.zone-details h3') with timeout 5000ms
+  - waiting for locator('.zone-details h3')
+    14 × locator resolved to <h3>Downtown</h3>
+       - unexpected value ""Downtown""
+
+```
+
+```yaml
+- heading ""Downtown"" [level=3]
+```",failed,"Error: expect(locator).toHaveText(expected) failed
+
+Locator:  locator('.zone-details h3')
+Expected: ""The Reservoir""
+Received: ""Southside""
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveText"" locator('.zone-details h3') with timeout 5000ms
+  - waiting for locator('.zone-details h3')
+    14 × locator resolved to <h3>Southside</h3>
+       - unexpected value ""Southside""
+",not repeated in final selection,case also fails on untouched main
+chromium-mobile,corrections.spec.ts >> known suspects and leaders need real introductions; access and inventory survive reload,"```
+Test timeout of 90000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 90000ms exceeded.
+Call log:
+  - waiting for locator('.person-row').filter({ has: getByText('Pablo', { exact: true }) })
+
+```",passed,,passed,passed final feature check
+chromium-mobile,street.spec.ts >> crew-assisted street work uses an earned willing partner and actual inventory,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.scrollIntoViewIfNeeded: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByText(/with Flacco/).last()
+
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,"danger.spec.ts >> board street conversation: choices, persistent grievance, menus cannot reroll, reload","```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter' })
+Expected substring: ""Mudgang contact""
+Timeout: 25000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toContainText"" getByRole('dialog', { name: 'Character encounter' }) with timeout 25000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' })
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Nawf Deli & Grocery"":
+  - emphasis: Nawf Deli & Grocery
+- button ""Open Nawf Barbershop"":
+  - emphasis: Nawf Barbershop
+- button ""Open Street market"":
+  - emphasis: Street market
+- button ""Talk to Taylor"":
+  - emphasis: Stranger
+- banner ""Player status"":
+  - strong: DAY 01
+  - heading ""Morgan"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Morgan: your character""'
+  - text: AP 2/2 Cash
+  - strong: $125
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem:
+      - text: ›
+      - button ""The Nawf""
+    - listitem:
+      - text: ›
+      - button ""Block 5·2""
+    - listitem: ›Nawf Deli & Grocery
+  - button ""End day""
+- status: Loaded day 1.
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $150 · Awaiting your help
+- button ""Continue conversation with Cuzzo""
+- button ""Hide details"": ✕
+- region ""Nawf Deli & Grocery"":
+  - paragraph: The Nawf · Corner store · The Muds / Mudgang turf
+  - heading ""Nawf Deli & Grocery"" [level=3]
+  - button ""Go here""
+  - strong: Tense
+  - text: Contested ground — rivals are pushing in. The Muds / Mudgang turf. Independents are watched, not targeted.
+  - paragraph: Snacks, lotto, EBT, ATM. Mudgang holds this corner.
+  - group ""Moves at Nawf Deli & Grocery"":
+    - article:
+      - text: 1 AP
+      - heading ""Groceries & necessities"" [level=3]
+      - paragraph: Buy a personal item and reduce stress.
+    ",timedOut,Test timeout of 120000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,crew.spec.ts >> crew dialogue and Set fit 320px,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })
+
+```",passed,,passed,passed final feature check
+chromium-mobile,"skills-sessions.spec.ts >> background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes","```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: ""paused""
+Received: ""ended""
+
+Call Log:
+- Timeout 5000ms exceeded while waiting on the predicate
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,"crew.spec.ts >> Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences","```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter' })
+Expected substring: ""Flacco""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toContainText"" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' })
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 01
+  - heading ""Test(5)"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Test(5): your character""'
+  - text: AP 2/2 Cash
+  - strong: $125
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- navigation ""Main navigation"":
+  - button ""City""
+  - button ""People""
+  - button ""Actions""
+  - button ""Set""
+  - button ""Wallet""
+  - button ""Journal""
+- main:
+  - paragraph: STIXX CITY / SET
+  - heading ""Your people. Your Set."" [level=2]
+  - button ""End day""
+  - button ""Back to the city"": ✕
+  - status: You’re home. Find work, check on Cuzzo, or see who’s around.
+  - region ""Organizational progression"":
+    - paragraph: POWER & SUCCESSION
+    - heading ""Unaffiliated"" [level=3]
+    - paragraph: A personal Set does not own territory. Build trust with connected members and earn sponsorship in Connects.
+    - group: Successor eligibility
+  - heading ""A personal crew."" [level=3]
+  - text: 1/1 MEMBERS
+  - paragraph: Your Set is a circle of up to five trusted people, distinct from the city’s five organizations. Influence expands capacity at 5, 15, 30 and 50.
+  - paragraph: ""Current influence: 0. Members keep thei",timedOut,Test timeout of 180000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,encounters.spec.ts >> 40 days after broken: one storyline reaction while independent offers continue,"```
+Test timeout of 180000ms exceeded.
+```",failed,"Error: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter', exact: true })
+Expected substring: ""I’m not forgetting it""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toContainText"" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+",not repeated in final selection,case also fails on untouched main
+chromium-mobile,mobile.spec.ts >> buyback resolves the incident and the ordinary loop remains playable,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('dialog', { name: 'Character encounter' }).getByRole('button', { name: /Pay to return the chains/ })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,encounters.spec.ts >> all homes and affiliation themes retain the City-only modal and normal navigation,"```
+Test timeout of 30000ms exceeded.
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,crew.spec.ts >> crew dialogue and Set fit 390px,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })
+
+```",passed,,passed,passed final feature check
+webkit-mobile,"overhaul.spec.ts >> Actions update cash/AP, explain disabled prerequisites, and autosave","```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,"city-menu.spec.ts >> City activity preserves visible history, reverse chronology, day groups, limits and filters","```
+Error: expect(locator).not.toContainText(expected) failed
+
+Locator: locator('main')
+Expected substring: not ""PRIVATE NPC ONLY""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""not toContainText"" locator('main') with timeout 5000ms
+  - waiting for locator('main')
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 03
+  - heading ""Morgan"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Morgan: your character""'
+  - text: AP 2/2 Cash
+  - strong: $125
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: Loaded day 3.
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $150 · Awaiting your help
+- button ""Continue conversation with Cuzzo""
+- button ""Hide details"": ✕
+- text: Old loyalty. New ambition.
+- heading ""Southside"" [level=3]
+- paragraph: Back Street is politically isolated. Younger members question Justice’s turn toward legitimate business.
+- paragraph: ""Control: Back Street""
+- region ""Ne",failed,"Error: expect(locator).not.toContainText(expected) failed
+
+Locator: locator('main')
+Expected substring: not ""PRIVATE NPC ONLY""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""not toContainText"" locator('main') with timeout 5000ms
+  - waiting for locator('main')
+",not repeated in final selection,case also fails on untouched main
+webkit-mobile,employment.spec.ts >> absence warning can be cancelled; repeated absences fire and gigs survive cooldown,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",failed,"Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: ""terminated""
+Received: ""employed""",not repeated in final selection,case also fails on untouched main
+webkit-mobile,crew.spec.ts >> crew dialogue and Set fit 375px,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })
+
+```",passed,,passed,passed final feature check
+chromium-mobile,street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls,"```
+Test timeout of 90000ms exceeded.
+```
+
+```
+Error: locator.count: Target page, context or browser has been closed
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,"overhaul.spec.ts >> directional trust, witnessed events, activity filters and day grouping preserve visibility","```
+Error: expect(locator).not.toContainText(expected) failed
+
+Locator: locator('main')
+Expected substring: not ""PRIVATE NPC ONLY""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""not toContainText"" locator('main') with timeout 5000ms
+  - waiting for locator('main')
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 01
+  - heading ""Morgan"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Morgan: your character""'
+  - text: AP 2/2 Cash
+  - strong: $125
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: Loaded day 1.
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $150 · Awaiting your help
+- button ""Continue conversation with Cuzzo""
+- button ""Hide details"": ✕
+- text: Old loyalty. New ambition.
+- heading ""Southside"" [level=3]
+- paragraph: Back Street is politically isolated. Younger members question Justice’s turn toward legitimate business.
+- paragraph: ""Control: Back Street""
+- region ""Ne",failed,"Error: expect(locator).not.toContainText(expected) failed
+
+Locator: locator('main')
+Expected substring: not ""PRIVATE NPC ONLY""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""not toContainText"" locator('main') with timeout 5000ms
+  - waiting for locator('main')
+",not repeated in final selection,case also fails on untouched main
+chromium-mobile,crew.spec.ts >> crew dialogue and Set fit 430px,"```
+Test timeout of 30000ms exceeded.
+```",failed (initial run),,not repeated in final selection,case also fails on untouched main
+chromium-mobile,city-menu.spec.ts >> City centers the five state-backed neighborhoods and keeps actions in Actions,"```
+Error: expect(locator).toHaveAttribute(expected) failed
+
+Locator:  getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Rio Gabriel', exact: true })
+Expected: ""true""
+Received: ""false""
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveAttribute"" getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Rio Gabriel', exact: true }) with timeout 5000ms
+  - waiting for getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Rio Gabriel', exact: true })
+    14 × locator resolved to <button aria-pressed=""false"" aria-label=""Select Rio Gabriel"" aria-describedby=""chip-desc-rio"">…</button>
+       - unexpected value ""false""
+
+```
+
+```yaml
+- button ""Select Rio Gabriel"": Rio Gabriel
+```",failed (initial run),,not repeated in final selection,case also fails on untouched main
+webkit-mobile,corrections.spec.ts >> known suspects and leaders need real introductions; access and inventory survive reload,"```
+Test timeout of 90000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 90000ms exceeded.
+Call log:
+  - waiting for locator('.person-row').filter({ has: getByText('Pablo', { exact: true }) })
+
+```",timedOut,Test timeout of 90000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,review.spec.ts >> review captures and WCAG checks cover every M1 screen and faction palette,"```
+Test timeout of 120000ms exceeded.
+```",passed,,passed,passed final feature check
+webkit-mobile,"employment.spec.ts >> workplace scene consequence, skip, close and no replay across tabs or reload","```
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByRole('dialog', { name: 'Character encounter', exact: true })
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toBeVisible"" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 02
+  - heading ""Test(4)"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Test(4): your character""'
+  - text: AP 0/2 Cash
+  - strong: $203
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: Loaded day 2.
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $150 · Awaiting your help
+- button ""Resume workplace conversation""
+- region ""Important developments"":
+  - paragraph: 2 UNSEEN IMPORTANT DEVELOPMENTS
+  - heading ""Leadership conflict"" [level=3]
+  - paragraph: Back Street rep",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,"strategy.spec.ts >> actual local investment, contested map, autonomous decisions and persisted continuation","```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: /Build Community Support/ })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls,"```
+Test timeout of 180000ms exceeded.
+```
+
+```
+Error: locator.isDisabled: Test timeout of 180000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Start trapping — 1 AP' })
+
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,corrections.spec.ts >> all three categories and inventory fit 375px,"```
+Test timeout of 90000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 90000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 90000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,encounters.spec.ts >> 40 days after fulfilled: one storyline reaction while independent offers continue,"```
+Test timeout of 180000ms exceeded.
+```",failed,"Error: expect(locator).toHaveCount(expected) failed
+
+Locator:  getByRole('dialog', { name: 'Character encounter', exact: true })
+Expected: 0
+Received: 1
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveCount"" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+    11 × locator resolved to 1 element
+       - unexpected value ""1""
+",not repeated in final selection,case also fails on untouched main
+webkit-mobile,"crew.spec.ts >> independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting","```
+Test timeout of 180000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 180000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Hear the offer', exact: true })
+
+```",timedOut,Test timeout of 180000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,city-menu.spec.ts >> storyline uses the active demand and opens its existing City conversation,"```
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByRole('dialog', { name: 'Character encounter' })
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toBeVisible"" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' })
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 01
+  - heading ""Morgan"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Morgan: your character""'
+  - text: AP 2/2 Cash
+  - strong: $125
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: Loaded day 1.
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $105 · Leadership is considering its response
+- button ""Continue conversation with Cuzzo""
+- button ""Hide details"": ✕
+- text: Old loyalty. New ambition.
+- heading ""Southside"" [level=3]
+- paragraph: Back Street is politically isolated. Younger members question Justi",failed,"Error: expect(locator).toBeVisible() failed
+
+Locator: getByRole('dialog', { name: 'Character encounter' })
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toBeVisible"" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter' })
+",not repeated in final selection,case also fails on untouched main
+webkit-mobile,"skills-sessions.spec.ts >> City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session","```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: ""ended""
+Received: ""paused""
+```",no unchanged counterpart,,passed,passed final feature check
+webkit-mobile,"overhaul.spec.ts >> all destinations fit 320/375/390/430 and desktop, including long names and every dock target","```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('navigation').getByRole('button', { name: 'Set', exact: true })
+    - locator resolved to <button class="""" aria-label=""Set"">…</button>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,encounters.spec.ts >> queued simultaneous encounters are acknowledged in sequence without duplicate outcome banners,"```
+Error: expect(locator).toHaveCount(expected) failed
+
+Locator:  getByRole('dialog', { name: 'Character encounter', exact: true })
+Expected: 0
+Received: 1
+Timeout:  5000ms
+
+Call log:
+  - Expect ""toHaveCount"" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+    13 × locator resolved to 1 element
+       - unexpected value ""1""
+
+```",failed,"Error: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter', exact: true })
+Expected substring: ""personal follow-up""
+Received string:    ""Leadership involvedClose ×Back StreetMega / Cuzzo“Cuzzo, three young Angels took my diamond chain while I was out with my girl. I’m alright. They want $150 to give it back. Can you help me get it home?”DAY 1 · Pablo has heard about the robbery.I hear you. Return to the city.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.""
+Timeout: 5000ms
+
+Call log:
+  - Expect ""toContainText"" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+    12 × locator resolved to <dialog open="""" class=""encounter-modal"" aria-label=""Character encounter"">…</dialog>
+       - unexpected value ""Leadership involvedClose ×Back StreetMega / Cuzzo“Cuzzo, three young Angels took my diamond chain while I was out with my girl. I’m alright. They want $150 to give it back. Can you help me get it home?”DAY 1 · Pablo has heard about the robbery.I hear you. Return to the city.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.""
+",not repeated in final selection,case also fails on untouched main
+webkit-mobile,encounters.spec.ts >> all homes and affiliation themes retain the City-only modal and normal navigation,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+```",timedOut,Test timeout of 30000ms exceeded.,not repeated in final selection,case also fails on untouched main
+webkit-mobile,encounters.spec.ts >> 40 days after broken: one storyline reaction while independent offers continue,"```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: getByRole('dialog', { name: 'Character encounter', exact: true })
+Expected substring: ""I’m not forgetting it""
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect ""toContainText"" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+
+```
+
+```yaml
+- link ""Skip to game"":
+  - /url: ""#main-content""
+- button ""Open Southside Towers""
+- button ""Open Rowhouses""
+- button ""Open The Lot""
+- button ""Open Southside Food Mart""
+- button ""Open Back Street Liquor""
+- button ""Open Southside Auto Repair""
+- button ""Open The Court""
+- button ""Open Southside Community Center""
+- button ""Open Southside Gym""
+- button ""Open The Church""
+- 'button ""The Chains: story at Southside Towers""'
+- banner ""Player status"":
+  - strong: DAY 04
+  - heading ""Test(3)"" [level=1]
+  - text: Southside ·
+  - strong: Independent
+  - 'button ""Test(3): your character""'
+  - text: AP 2/2 Cash
+  - strong: $71
+  - text: Heat
+  - strong: ""0""
+  - button ""Save game""
+  - button ""Load game""
+- group ""Board location"":
+  - button ""Zoom out"": ‹
+  - list:
+    - listitem:
+      - button ""Stixx City""
+    - listitem: ›Southside
+  - button ""End day""
+- group ""Map lens"":
+  - button ""Streets"" [pressed]
+  - button ""Influence""
+  - button ""Police""
+  - button ""Moves""
+- 'button ""Time of day: dusk. Change""': 🌆
+- group ""Five neighborhoods of Stixx City"":
+  - button ""Select The Nawf"": The Nawf
+  - button ""Select The Reservoir"": The Reservoir
+  - button ""Select Downtown"": Downtown
+  - button ""Select Rio Gabriel"": Rio Gabriel
+  - button ""Select Southside"" [pressed]: Southside
+- status: ""Day 4: living costs processed, the city has moved, and AP is restored.""
+- button ""Open The Chains storyline"":
+  - strong: The Chains
+  - text: Demand $165 · Awaiting your help
+- region ""Important developments"":
+  - paragraph: 1 UNSEEN IMPORTANT DEVELOPMENT
+  - heading ""Leaders",timedOut,Test timeout of 180000ms exceeded.,not repeated in final selection,case also fails on untouched main
+chromium-mobile,overhaul.spec.ts >> negotiated demand comes from state; ended and damaged saves remain inspectable and safe,"```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Open The Chains storyline', exact: true })
+
+```",passed,,passed,passed final feature check

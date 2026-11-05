@@ -39,7 +39,9 @@ export default function BoardStage({
   popups,
   onInteract,
   paused = false,
+  sessionVisitor,
 }: {
+  sessionVisitor?: import("../SessionVisitors").SessionVisitor | null;
   view: BoardView;
   focus: Focus;
   onPick: (f: Focus) => void;
@@ -87,6 +89,7 @@ export default function BoardStage({
     };
   }, []);
   useEffect(() => board.current?.setPaused(paused), [paused, ready]);
+  useEffect(() => { board.current?.setSessionVisitor(sessionVisitor ?? null); }, [sessionVisitor?.id, !!sessionVisitor, ready]);
   useEffect(() => board.current?.setView(view), [view, ready]);
   useEffect(() => board.current?.setLens(lens), [lens, ready]);
   useEffect(() => board.current?.setTimeOfDay(time), [time, ready]);
@@ -153,7 +156,7 @@ export default function BoardStage({
     (p) => locationById(p.placeId)?.zone === focus.zone,
   );
   return (
-    <div className="board-stage city-map" ref={host}>
+    <div className="board-stage city-map" ref={host} data-session-visitor={sessionVisitor?.id}>
       {ready &&
         ZONE_ORDER.map((id) => {
           const z = view.zones[id];

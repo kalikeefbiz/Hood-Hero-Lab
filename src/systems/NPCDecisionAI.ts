@@ -1,3 +1,4 @@
+import { proficiency } from "./Skills";
 import { considerCrewOffer } from "./CrewAgency";
 import { shiftToday } from "./Employment";
 import { cash, type GameState, type Character } from "../core/GameState";
@@ -43,14 +44,15 @@ function decide(s: GameState, c: Character): Action | null {
     { actor: c.id, type: "gig" },
     (cash(c) < 100 ? 65 : 15) +
       (c.goals.includes("income") ? 15 : 0) +
-      c.skills.work / 10,
+      proficiency(c, "work") / 10,
   );
   add({ actor: c.id, type: "rest" }, c.stress > 45 ? 90 : 5);
   if (c.traits.risk > 60)
     add(
       { actor: c.id, type: "crime" },
       (c.goals.includes("status") ? 35 : 10) +
-        c.traits.ambition / 5 -
+        c.traits.ambition / 5 +
+        (proficiency(c, "trapper") - 20) / 20 -
         c.police / 2,
     );
   for (const target of c.known) {

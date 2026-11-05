@@ -46,6 +46,8 @@ export interface SupplierAgreement {
   history: string[];
 }
 export interface StreetTransaction {
+  sessionId?: string;
+  sessionCursor?: number;
   id: string;
   day: number;
   lotId: string;

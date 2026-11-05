@@ -1,0 +1,13 @@
+
+> syndicate@0.1.0 test
+> vitest run src/tests/previewSaves.test.ts
+
+
+ RUN  v3.2.7 /workspace/Hood-Hero-Lab
+
+ ✓ src/tests/previewSaves.test.ts (1 test) 185ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  17:58:55
+   Duration  845ms (transform 376ms, setup 0ms, collect 483ms, tests 185ms, environment 0ms, prepare 59ms)

@@ -1,0 +1,1570 @@
+[WebServer] (node:27229) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 49 tests using 2 workers
+
+(node:27247) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27248) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   2 [webkit-mobile] › tests/board.spec.ts:40:1 › the player lives on the board: walks to places, acts there, and their location is saved (42.9s)
+(node:27433) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   3 [webkit-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions (19.7s)
+(node:27532) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   4 [webkit-mobile] › tests/city-menu.spec.ts:160:1 › storyline uses the active demand and opens its existing City conversation (18.4s)
+(node:27628) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   5 [webkit-mobile] › tests/city-menu.spec.ts:202:1 › City activity preserves visible history, reverse chronology, day groups, limits and filters (17.9s)
+(node:27720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   1 [webkit-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues (3.1m)
+(node:27854) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   6 [webkit-mobile] › tests/corrections.spec.ts:55:1 › Actions separate Streets, Honest and Connects; completed reach-out returns to Streets (1.6m)
+(node:27952) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   7 [webkit-mobile] › tests/corrections.spec.ts:105:1 › known suspects and leaders need real introductions; access and inventory survive reload (1.5m)
+(node:28074) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   8 [webkit-mobile] › tests/corrections.spec.ts:163:1 › active Chains lives in City; fulfillment leaves only completed history (1.6m)
+(node:28170) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  10 [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px (16.5s)
+  ✘   9 [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 375px (1.6m)
+(node:28345) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  11 [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 430px (1.5m)
+(node:28450) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  12 [webkit-mobile] › tests/crew.spec.ts:46:1 › Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences (3.1m)
+(node:28587) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  14 [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 320px (14.0s)
+  ✘  13 [webkit-mobile] › tests/crew.spec.ts:133:1 › independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting (3.0m)
+(node:28746) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  15 [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 375px (20.1s)
+  ✓  16 [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 390px (23.3s)
+  ✓  18 [webkit-mobile] › tests/danger.spec.ts:198:1 › a meaningful Wallet activity opens a contextual street conversation on the City board (8.6s)
+  ✘  17 [webkit-mobile] › tests/danger.spec.ts:49:1 › board street conversation: choices, persistent grievance, menus cannot reroll, reload (2.0m)
+(node:29042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  20 [webkit-mobile] › tests/employment.spec.ts:154:1 › absence warning can be cancelled; repeated absences fire and gigs survive cooldown (21.6s)
+(node:29137) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  21 [webkit-mobile] › tests/employment.spec.ts:203:1 › workplace scene consequence, skip, close and no replay across tabs or reload (31.1s)
+(node:29243) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  22 [webkit-mobile] › tests/employment.spec.ts:258:1 › employment competes with The Chains through actual AP, wages, attendance and promises (20.8s)
+(node:29338) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  19 [webkit-mobile] › tests/employment.spec.ts:90:1 › hire, scheduled wages, save and a thirty-day employment playthrough (3.1m)
+(node:29432) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  23 [webkit-mobile] › tests/encounters.spec.ts:74:1 › true City modal, sequential questions, promise closure, queued fulfillment, history and Resume (31.6s)
+(node:29530) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  24 [webkit-mobile] › tests/encounters.spec.ts:176:1 › refusing, postponing, Escape and backdrop leave no accidental obligation or daily reopening (31.1s)
+(node:29623) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  25 [webkit-mobile] › tests/encounters.spec.ts:211:3 › 40 days after fulfilled: one storyline reaction while independent offers continue (3.0m)
+(node:29731) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  26 [webkit-mobile] › tests/encounters.spec.ts:211:3 › 40 days after broken: one storyline reaction while independent offers continue (3.0m)
+(node:29835) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  27 [webkit-mobile] › tests/encounters.spec.ts:384:1 › queued simultaneous encounters are acknowledged in sequence without duplicate outcome banners (13.7s)
+(node:29896) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  28 [webkit-mobile] › tests/encounters.spec.ts:426:1 › all homes and affiliation themes retain the City-only modal and normal navigation (32.1s)
+(node:30027) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  29 [webkit-mobile] › tests/illustrated.spec.ts:189:1 › GOAL 002C mobile visual review and usable narrow controls (33.8s)
+  ✘  30 [webkit-mobile] › tests/mobile.spec.ts:42:1 › phone gameplay: contact, lawful income, days, save and load (29.4s)
+(node:30185) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  31 [webkit-mobile] › tests/mobile.spec.ts:84:1 › buyback resolves the incident and the ordinary loop remains playable (32.1s)
+(node:30269) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  32 [webkit-mobile] › tests/mobile.spec.ts:126:1 › mobile city and new game remain readable at narrow widths (11.8s)
+  ✘  33 [webkit-mobile] › tests/overhaul.spec.ts:58:1 › all approved scenes load; every home starts independent and map selection cannot change affiliation (25.4s)
+(node:30430) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  34 [webkit-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored angels membership keeps the shell neutral and survives checkpoint reload (31.9s)
+(node:30522) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  35 [webkit-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored muds membership keeps the shell neutral and survives checkpoint reload (31.9s)
+(node:30615) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  36 [webkit-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored backstreet membership keeps the shell neutral and survives checkpoint reload (31.7s)
+(node:30710) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  37 [webkit-mobile] › tests/overhaul.spec.ts:172:1 › all destinations fit 320/375/390/430 and desktop, including long names and every dock target (32.3s)
+(node:30804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  38 [webkit-mobile] › tests/overhaul.spec.ts:203:1 › Actions update cash/AP, explain disabled prerequisites, and autosave (31.0s)
+(node:30895) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  39 [webkit-mobile] › tests/overhaul.spec.ts:237:1 › directional trust, witnessed events, activity filters and day grouping preserve visibility (17.9s)
+(node:30984) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  40 [webkit-mobile] › tests/overhaul.spec.ts:284:1 › negotiated demand comes from state; ended and damaged saves remain inspectable and safe (31.0s)
+(node:31078) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  42 [webkit-mobile] › tests/quanny.spec.ts:93:1 › intentional board visit introduces Quanny once, fronts physical stock and persists on reload (2.0m)
+(node:31197) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  41 [webkit-mobile] › tests/quanny-portraits.spec.ts:42:1 › all five Quanny portraits display and follow real iPhone encounter states without changing outcomes (3.1m)
+(node:31296) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  43 [webkit-mobile] › tests/quanny.spec.ts:160:3 › board collection at notoriety 34 records the correct permanent outcome (1.5m)
+(node:31398) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  45 [webkit-mobile] › tests/quanny.spec.ts:207:1 › false BB dismissal reveals no private intention and cannot be rerolled by reloading (13.4s)
+(node:31491) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  44 [webkit-mobile] › tests/quanny.spec.ts:160:3 › board collection at notoriety 35 records the correct permanent outcome (1.5m)
+(node:31881) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  47 [webkit-mobile] › tests/strategy.spec.ts:49:1 › actual local investment, contested map, autonomous decisions and persisted continuation (31.8s)
+(node:32100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  46 [webkit-mobile] › tests/review.spec.ts:9:1 › review captures and WCAG checks cover every M1 screen and faction palette (1.5m)
+  ✘  48 [webkit-mobile] › tests/strategy.spec.ts:145:1 › business acquisition, real operating income, sale, and voluntary retirement (28.9s)
+  ✘  49 [webkit-mobile] › tests/visual-correction.spec.ts:9:1 › GOAL 002B mandatory visual review: new run, independent and Blips at 390 (31.2s)
+
+
+  1) [webkit-mobile] › tests/board.spec.ts:40:1 › the player lives on the board: walks to places, acts there, and their location is saved
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.action-feedback')
+    Expected: visible
+    Timeout: 20000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.action-feedback') with timeout 20000ms
+      - waiting for locator('.action-feedback')
+
+
+      65 |     .getByRole("button", { name: /Go/ })
+      66 |     .click();
+    > 67 |   await expect(page.locator(".action-feedback")).toBeVisible({
+         |                                                  ^
+      68 |     timeout: 20000,
+      69 |   });
+      70 |   await expect(card).toContainText("You're here");
+        at /workspace/lab-baseline/tests/board.spec.ts:67:50
+
+    attachment #1: 01-home-district (image/png) ────────────────────────────────────────────────────
+    test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/attachments/01-home-district-ef5f868db3ce6b187bdbde31a01950d4a1ff302a.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: 02-food-mart (image/png) ────────────────────────────────────────────────────────
+    test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/attachments/02-food-mart-969418b58086b7252053bb26abda7d1e1f03f1b1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Places in The Nawf' }).getByRole('button', { name: /Nawf Bodega/ })
+
+
+      155 |   await places(page, "The Nawf")
+      156 |     .getByRole("button", { name: /Nawf Bodega/ })
+    > 157 |     .click();
+          |      ^
+      158 |   await page
+      159 |     .getByRole("region", { name: "Nawf Bodega" })
+      160 |     .getByRole("button", { name: "Go here" })
+        at /workspace/lab-baseline/tests/board.spec.ts:157:6
+
+    Error Context: test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [webkit-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+    Expected: "true"
+    Received: "false"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true }) with timeout 5000ms
+      - waiting for getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+        14 × locator resolved to <button aria-pressed="false" aria-label="Select Downtown" aria-describedby="chip-desc-downtown">…</button>
+           - unexpected value "false"
+
+
+      62 |     });
+      63 |     await button.click();
+    > 64 |     await expect(button).toHaveAttribute("aria-pressed", "true");
+         |                          ^
+      65 |     await expect(page.locator(".zone-details h3")).toHaveText(zone.name);
+      66 |     await expect(
+      67 |       page.getByRole("meter", { name: "Police presence", exact: true }),
+        at /workspace/lab-baseline/tests/city-menu.spec.ts:64:26
+
+    Error Context: test-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [webkit-mobile] › tests/city-menu.spec.ts:160:1 › storyline uses the active demand and opens its existing City conversation
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog', { name: 'Character encounter' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Character encounter' })
+
+
+      175 |   await expect(
+      176 |     page.getByRole("dialog", { name: "Character encounter" }),
+    > 177 |   ).toBeVisible();
+          |     ^
+      178 |   await expect(
+      179 |     page.getByRole("dialog", { name: "Character encounter" }),
+      180 |   ).toContainText("$105");
+        at /workspace/lab-baseline/tests/city-menu.spec.ts:177:5
+
+    Error Context: test-results/city-menu-storyline-uses-t-bc580--existing-City-conversation-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/city-menu-storyline-uses-t-bc580--existing-City-conversation-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/city-menu-storyline-uses-t-bc580--existing-City-conversation-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [webkit-mobile] › tests/city-menu.spec.ts:202:1 › City activity preserves visible history, reverse chronology, day groups, limits and filters
+
+    Error: expect(locator).not.toContainText(expected) failed
+
+    Locator: locator('main')
+    Expected substring: not "PRIVATE NPC ONLY"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "not toContainText" locator('main') with timeout 5000ms
+      - waiting for locator('main')
+
+
+      223 |   await seed(page, state);
+      224 |   await nav(page, "Journal");
+    > 225 |   await expect(page.locator("main")).not.toContainText("PRIVATE NPC ONLY");
+          |                                          ^
+      226 |   const feed = page.locator(".timeline");
+      227 |   await expect(feed.locator("article")).toHaveCount(80);
+      228 |   await expect(feed.locator("article p").first()).toHaveText(
+        at /workspace/lab-baseline/tests/city-menu.spec.ts:225:42
+
+    Error Context: test-results/city-menu-City-activity-pr-f50b4-y-groups-limits-and-filters-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/city-menu-City-activity-pr-f50b4-y-groups-limits-and-filters-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/city-menu-City-activity-pr-f50b4-y-groups-limits-and-filters-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [webkit-mobile] › tests/corrections.spec.ts:55:1 › Actions separate Streets, Honest and Connects; completed reach-out returns to Streets
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.screenshot: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('.actions-hub')
+
+
+      36 |     timeout: 7000,
+      37 |   });
+    > 38 |   await page.locator(selector).screenshot({
+         |                                ^
+      39 |     path: `docs/screenshots/goal-006-1/${process.env.PLAYWRIGHT_PUBLIC_URL ? "live-" : ""}${test.info().project.name}-${name}.png`,
+      40 |     scale: "css",
+      41 |     animations: "disabled",
+        at shot (/workspace/lab-baseline/tests/corrections.spec.ts:38:32)
+        at /workspace/lab-baseline/tests/corrections.spec.ts:68:3
+
+    Error Context: test-results/corrections-Actions-separa-e3349-each-out-returns-to-Streets-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/corrections-Actions-separa-e3349-each-out-returns-to-Streets-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/corrections-Actions-separa-e3349-each-out-returns-to-Streets-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [webkit-mobile] › tests/corrections.spec.ts:105:1 › known suspects and leaders need real introductions; access and inventory survive reload
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('.person-row').filter({ has: getByText('Pablo', { exact: true }) })
+
+
+      112 |     .locator(".person-row")
+      113 |     .filter({ has: page.getByText("Pablo", { exact: true }) })
+    > 114 |     .click();
+          |      ^
+      115 |   await expect(
+      116 |     page.getByRole("button", { name: "Interact with Pablo →" }),
+      117 |   ).toBeDisabled();
+        at /workspace/lab-baseline/tests/corrections.spec.ts:114:6
+
+    Error Context: test-results/corrections-known-suspects-51e32-nd-inventory-survive-reload-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/corrections-known-suspects-51e32-nd-inventory-survive-reload-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/corrections-known-suspects-51e32-nd-inventory-survive-reload-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [webkit-mobile] › tests/corrections.spec.ts:163:1 › active Chains lives in City; fulfillment leaves only completed history
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('dialog', { name: 'Character encounter' }).getByRole('button', { name: /I’ll help you/ })
+
+
+      168 |   await storyline(page);
+      169 |   const modal = page.getByRole("dialog", { name: "Character encounter" });
+    > 170 |   await modal.getByRole("button", { name: /I’ll help you/ }).click();
+          |                                                              ^
+      171 |   await honest(page);
+      172 |   await clickAction(page, "gig");
+      173 |   await storyAction(page, "buyback");
+        at /workspace/lab-baseline/tests/corrections.spec.ts:170:62
+
+    Error Context: test-results/corrections-active-Chains--c22f3-aves-only-completed-history-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/corrections-active-Chains--c22f3-aves-only-completed-history-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/corrections-active-Chains--c22f3-aves-only-completed-history-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 375px
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      197 |     await nav(page, "Actions");
+      198 |     for (const group of ["Streets", "Honest", "Connects"]) {
+    > 199 |       await page.getByRole("button", { name: group, exact: true }).click();
+          |                                                                    ^
+      200 |       expect(
+      201 |         await page.evaluate(() => document.documentElement.scrollWidth),
+      202 |       ).toBeLessThanOrEqual(width);
+        at /workspace/lab-baseline/tests/corrections.spec.ts:199:68
+
+    Error Context: test-results/corrections-all-three-categories-and-inventory-fit-375px-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/corrections-all-three-categories-and-inventory-fit-375px-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/corrections-all-three-categories-and-inventory-fit-375px-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 430px
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('navigation').getByRole('button', { name: 'Wallet', exact: true })
+        - locator resolved to <button class="" aria-label="Wallet">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        123 × waiting for element to be visible, enabled and stable
+            - element is visible, enabled and stable
+            - scrolling into view if needed
+            - done scrolling
+            - <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> intercepts pointer events
+          - retrying click action
+            - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      15 |     .getByRole("navigation")
+      16 |     .getByRole("button", { name, exact: true })
+    > 17 |     .click();
+         |      ^
+      18 | }
+      19 | async function start(page: Page, home = "Southside") {
+      20 |   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
+        at nav (/workspace/lab-baseline/tests/corrections.spec.ts:17:6)
+        at /workspace/lab-baseline/tests/corrections.spec.ts:209:11
+
+    Error Context: test-results/corrections-all-three-categories-and-inventory-fit-430px-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/corrections-all-three-categories-and-inventory-fit-430px-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/corrections-all-three-categories-and-inventory-fit-430px-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11) [webkit-mobile] › tests/crew.spec.ts:46:1 › Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })
+
+
+      34 |   await page
+      35 |     .getByRole("button", { name: `Interact with ${name}`, exact: true })
+    > 36 |     .click();
+         |      ^
+      37 | }
+      38 | async function card(page: Page, label: string) {
+      39 |   await page
+        at interact (/workspace/lab-baseline/tests/crew.spec.ts:36:6)
+        at /workspace/lab-baseline/tests/crew.spec.ts:53:3
+
+    Error Context: test-results/crew-Flacco-cooperation-pa-d0667-ment-and-saved-consequences-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/crew-Flacco-cooperation-pa-d0667-ment-and-saved-consequences-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/crew-Flacco-cooperation-pa-d0667-ment-and-saved-consequences-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  12) [webkit-mobile] › tests/crew.spec.ts:133:1 › independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Hear the offer', exact: true })
+
+
+      150 |       await page
+      151 |         .getByRole("button", { name: "Hear the offer", exact: true })
+    > 152 |         .click();
+          |          ^
+      153 |       if (!accepted) {
+      154 |         await expect(modal).toContainText("You tryna come?");
+      155 |         await snap(page, "05-npc-initiated-offer");
+        at /workspace/lab-baseline/tests/crew.spec.ts:152:10
+
+    Error Context: test-results/crew-independent-offer-ins-bea02--while-the-NPC-keeps-acting-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/crew-independent-offer-ins-bea02--while-the-NPC-keeps-acting-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/crew-independent-offer-ins-bea02--while-the-NPC-keeps-acting-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  13) [webkit-mobile] › tests/danger.spec.ts:49:1 › board street conversation: choices, persistent grievance, menus cannot reroll, reload
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Places in The Nawf' }).getByRole('button', { name: /Nawf Deli/ })
+
+
+      65 |     .getByRole("region", { name: "Places in The Nawf" })
+      66 |     .getByRole("button", { name: /Nawf Deli/ })
+    > 67 |     .click();
+         |      ^
+      68 |   await page
+      69 |     .getByRole("region", { name: "Nawf Deli & Grocery", exact: true })
+      70 |     .getByRole("button", { name: "Go here" })
+        at /workspace/lab-baseline/tests/danger.spec.ts:67:6
+
+    Error Context: test-results/danger-board-street-conver-85282--menus-cannot-reroll-reload-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/danger-board-street-conver-85282--menus-cannot-reroll-reload-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/danger-board-street-conver-85282--menus-cannot-reroll-reload-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  14) [webkit-mobile] › tests/employment.spec.ts:90:1 › hire, scheduled wages, save and a thirty-day employment playthrough
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      17 |     .click();
+      18 |   if (name === "Actions")
+    > 19 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                     ^
+      20 | };
+      21 | const state = async (page: Page): Promise<GameState> =>
+      22 |   page.evaluate(
+        at nav (/workspace/lab-baseline/tests/employment.spec.ts:19:69)
+        at /workspace/lab-baseline/tests/employment.spec.ts:101:3
+
+    Error Context: test-results/employment-hire-scheduled--00424--day-employment-playthrough-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/employment-hire-scheduled--00424--day-employment-playthrough-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/employment-hire-scheduled--00424--day-employment-playthrough-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  15) [webkit-mobile] › tests/employment.spec.ts:154:1 › absence warning can be cancelled; repeated absences fire and gigs survive cooldown
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "terminated"
+    Received: "employed"
+
+      175 |   for (let d = 2; d <= 6; d++) await endDay(page);
+      176 |   s = await state(page);
+    > 177 |   expect(s.employment[0].status).toBe("terminated");
+          |                                  ^
+      178 |   expect(s.employmentSearch.player.eligibleDay).toBe(13);
+      179 |   await expect(page.locator(".major-notification")).toContainText(
+      180 |     "Employment terminated",
+        at /workspace/lab-baseline/tests/employment.spec.ts:177:34
+
+    attachment #1: 05-scheduled-choice (image/png) ─────────────────────────────────────────────────
+    test-results/employment-absence-warning-8ee84-e-and-gigs-survive-cooldown-webkit-mobile/attachments/05-scheduled-choice-8c691cafb3caa4bc25af648a34ac19470c7874b7.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/employment-absence-warning-8ee84-e-and-gigs-survive-cooldown-webkit-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/employment-absence-warning-8ee84-e-and-gigs-survive-cooldown-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/employment-absence-warning-8ee84-e-and-gigs-survive-cooldown-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  16) [webkit-mobile] › tests/employment.spec.ts:203:1 › workplace scene consequence, skip, close and no replay across tabs or reload
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      17 |     .click();
+      18 |   if (name === "Actions")
+    > 19 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                     ^
+      20 | };
+      21 | const state = async (page: Page): Promise<GameState> =>
+      22 |   page.evaluate(
+        at nav (/workspace/lab-baseline/tests/employment.spec.ts:19:69)
+        at /workspace/lab-baseline/tests/employment.spec.ts:246:5
+
+    attachment #1: 08-workplace-choice (image/png) ─────────────────────────────────────────────────
+    test-results/employment-workplace-scene-69957-eplay-across-tabs-or-reload-webkit-mobile/attachments/08-workplace-choice-71e20aa2a96fd92be26a10a98249550d0ddf9f4f.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/employment-workplace-scene-69957-eplay-across-tabs-or-reload-webkit-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/employment-workplace-scene-69957-eplay-across-tabs-or-reload-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/employment-workplace-scene-69957-eplay-across-tabs-or-reload-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  17) [webkit-mobile] › tests/employment.spec.ts:258:1 › employment competes with The Chains through actual AP, wages, attendance and promises
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator: getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ })
+    Expected: disabled
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeDisabled" getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ }) with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ })
+
+
+      289 |   await expect(
+      290 |     modal(page).getByRole("button", { name: /Pay to return the chains/ }),
+    > 291 |   ).toBeDisabled();
+          |     ^
+      292 |   await close(page);
+      293 |   await endDay(page);
+      294 |   await nav(page, "Actions");
+        at /workspace/lab-baseline/tests/employment.spec.ts:291:5
+
+    Error Context: test-results/employment-employment-comp-a6252-ges-attendance-and-promises-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/employment-employment-comp-a6252-ges-attendance-and-promises-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/employment-employment-comp-a6252-ges-attendance-and-promises-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  18) [webkit-mobile] › tests/encounters.spec.ts:74:1 › true City modal, sequential questions, promise closure, queued fulfillment, history and Resume
+
+    Test timeout of 30000ms exceeded.
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: 'Your promises' })
+    Expected substring: "8 days remaining"
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Your promises' }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Your promises' })
+      - Test timeout of 30000ms exceeded.
+
+
+      114 |   await expect(
+      115 |     page.getByRole("region", { name: "Your promises" }),
+    > 116 |   ).toContainText("8 days remaining");
+          |     ^
+      117 |   expect(incidentPromise(await saved(page), "the-chains")?.status).toBe(
+      118 |     "pending",
+      119 |   );
+        at /workspace/lab-baseline/tests/encounters.spec.ts:116:5
+
+    attachment #1: 01-modal-over-city (image/png) ──────────────────────────────────────────────────
+    test-results/encounters-true-City-modal-43ffa-fillment-history-and-Resume-webkit-mobile/attachments/01-modal-over-city-a0fdecdb3ac3b6b7fb361408555e1f903cee7a25.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: 02-contextual-exchange (image/png) ──────────────────────────────────────────────
+    test-results/encounters-true-City-modal-43ffa-fillment-history-and-Resume-webkit-mobile/attachments/02-contextual-exchange-d1c176760e6e698e2cc635e7dbb4de98571459f1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/encounters-true-City-modal-43ffa-fillment-history-and-Resume-webkit-mobile/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/encounters-true-City-modal-43ffa-fillment-history-and-Resume-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/encounters-true-City-modal-43ffa-fillment-history-and-Resume-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  19) [webkit-mobile] › tests/encounters.spec.ts:176:1 › refusing, postponing, Escape and backdrop leave no accidental obligation or daily reopening
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: 'Let me think' })
+
+
+      184 |     .getByRole("button", { name: "Continue conversation with Cuzzo" })
+      185 |     .click();
+    > 186 |   await reply(page, "Let me think").click();
+          |                                     ^
+      187 |   await expect(modal(page)).toHaveCount(0);
+      188 |   await nav(page, "Wallet");
+      189 |   await endDay(page);
+        at /workspace/lab-baseline/tests/encounters.spec.ts:186:37
+
+    Error Context: test-results/encounters-refusing-postpo-9fdf4-ligation-or-daily-reopening-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/encounters-refusing-postpo-9fdf4-ligation-or-daily-reopening-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/encounters-refusing-postpo-9fdf4-ligation-or-daily-reopening-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  20) [webkit-mobile] › tests/encounters.spec.ts:211:3 › 40 days after fulfilled: one storyline reaction while independent offers continue
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for locator('[data-action="gig"]').getByRole('button')
+
+
+      220 |     if (outcome === "fulfilled") {
+      221 |       await nav(page, "Actions");
+    > 222 |       await page.locator('[data-action="gig"]').getByRole("button").click();
+          |                                                                     ^
+      223 |       await storyline(page);
+      224 |       await page
+      225 |         .getByRole("dialog", { name: "Character encounter" })
+        at /workspace/lab-baseline/tests/encounters.spec.ts:222:69
+
+    Error Context: test-results/encounters-40-days-after-f-d1547-independent-offers-continue-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/encounters-40-days-after-f-d1547-independent-offers-continue-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/encounters-40-days-after-f-d1547-independent-offers-continue-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  21) [webkit-mobile] › tests/encounters.spec.ts:211:3 › 40 days after broken: one storyline reaction while independent offers continue
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'End day' })
+        - locator resolved to <button aria-label="End day" class="advance board-end-day">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="encounter-top">…</div> from <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> subtree intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="encounter-top">…</div> from <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> subtree intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        308 × waiting for element to be visible, enabled and stable
+            - element is visible, enabled and stable
+            - scrolling into view if needed
+            - done scrolling
+            - <div class="encounter-top">…</div> from <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog> subtree intercepts pointer events
+          - retrying click action
+            - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      69 | }
+      70 | async function endDay(page: Page) {
+    > 71 |   await page.getByRole("button", { name: "End day" }).click();
+         |                                                       ^
+      72 | }
+      73 |
+      74 | test("true City modal, sequential questions, promise closure, queued fulfillment, history and Resume", async ({
+        at endDay (/workspace/lab-baseline/tests/encounters.spec.ts:71:55)
+        at /workspace/lab-baseline/tests/encounters.spec.ts:230:15
+
+    Error Context: test-results/encounters-40-days-after-b-6bea0-independent-offers-continue-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/encounters-40-days-after-b-6bea0-independent-offers-continue-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/encounters-40-days-after-b-6bea0-independent-offers-continue-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  22) [webkit-mobile] › tests/encounters.spec.ts:384:1 › queued simultaneous encounters are acknowledged in sequence without duplicate outcome banners
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('dialog', { name: 'Character encounter', exact: true })
+    Expected substring: "personal follow-up"
+    Received string:    "Leadership involvedClose ×Back StreetMega / Cuzzo“Cuzzo, three young Angels took my diamond chain while I was out with my girl. I’m alright. They want $150 to give it back. Can you help me get it home?”DAY 1 · Pablo has heard about the robbery.I hear you. Return to the city.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })
+        12 × locator resolved to <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog>
+           - unexpected value "Leadership involvedClose ×Back StreetMega / Cuzzo“Cuzzo, three young Angels took my diamond chain while I was out with my girl. I’m alright. They want $150 to give it back. Can you help me get it home?”DAY 1 · Pablo has heard about the robbery.I hear you. Return to the city.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City."
+
+
+      418 |   await acknowledge(page);
+      419 |   await expect(modal(page)).toHaveCount(1);
+    > 420 |   await expect(modal(page)).toContainText("personal follow-up");
+          |                             ^
+      421 |   await acknowledge(page);
+      422 |   await expect(modal(page)).toHaveCount(0);
+      423 |   await expect(page.locator(".major-notification")).toHaveCount(0);
+        at /workspace/lab-baseline/tests/encounters.spec.ts:420:29
+
+    Error Context: test-results/encounters-queued-simultan-dfdd0-t-duplicate-outcome-banners-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/encounters-queued-simultan-dfdd0-t-duplicate-outcome-banners-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/encounters-queued-simultan-dfdd0-t-duplicate-outcome-banners-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  23) [webkit-mobile] › tests/encounters.spec.ts:426:1 › all homes and affiliation themes retain the City-only modal and normal navigation
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      22 |     .click();
+      23 |   if (name === "Actions")
+    > 24 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                     ^
+      25 | }
+      26 | async function seed(page: Page, s = newGame("Test(3)", "south")) {
+      27 |   await page.goto(root);
+        at nav (/workspace/lab-baseline/tests/encounters.spec.ts:24:69)
+        at /workspace/lab-baseline/tests/encounters.spec.ts:451:7
+
+    Error Context: test-results/encounters-all-homes-and-a-99cd1-modal-and-normal-navigation-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/encounters-all-homes-and-a-99cd1-modal-and-normal-navigation-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/encounters-all-homes-and-a-99cd1-modal-and-normal-navigation-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  24) [webkit-mobile] › tests/mobile.spec.ts:42:1 › phone gameplay: contact, lawful income, days, save and load
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('status')
+    Expected substring: "Saved day 2"
+    Received string:    "Day 2: living costs processed, the city has moved, and AP is restored."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('status') with timeout 5000ms
+      - waiting for getByRole('status')
+        10 × locator resolved to <div role="status" class="notice" aria-live="polite">Day 2: living costs processed, the city has moved…</div>
+           - unexpected value "Day 2: living costs processed, the city has moved, and AP is restored."
+
+
+      60 |   await expect(page.locator(".day")).toHaveText("DAY 02");
+      61 |   await page.getByLabel("Save game", { exact: true }).click();
+    > 62 |   await expect(page.getByRole("status")).toContainText("Saved day 2");
+         |                                          ^
+      63 |   await action(page, "Pick up a gig");
+      64 |   await page.getByRole("button", { name: "End day" }).click();
+      65 |   await dismissEncounter(page);
+        at /workspace/lab-baseline/tests/mobile.spec.ts:62:42
+
+    Error Context: test-results/mobile-phone-gameplay-cont-b9df3-l-income-days-save-and-load-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/mobile-phone-gameplay-cont-b9df3-l-income-days-save-and-load-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/mobile-phone-gameplay-cont-b9df3-l-income-days-save-and-load-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  25) [webkit-mobile] › tests/mobile.spec.ts:84:1 › buyback resolves the incident and the ordinary loop remains playable
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+       at helpers.ts:16
+
+      14 |     .getByRole("button", { name: "Actions", exact: true })
+      15 |     .click();
+    > 16 |   await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                   ^
+      17 | }
+      18 | export async function connects(page: Page, person?: string) {
+      19 |   await page
+        at honest (/workspace/lab-baseline/tests/helpers.ts:16:67)
+        at action (/workspace/lab-baseline/tests/mobile.spec.ts:28:8)
+        at /workspace/lab-baseline/tests/mobile.spec.ts:89:3
+
+    Error Context: test-results/mobile-buyback-resolves-th-c9430-inary-loop-remains-playable-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/mobile-buyback-resolves-th-c9430-inary-loop-remains-playable-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/mobile-buyback-resolves-th-c9430-inary-loop-remains-playable-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  26) [webkit-mobile] › tests/overhaul.spec.ts:58:1 › all approved scenes load; every home starts independent and map selection cannot change affiliation
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  locator('.zone-details h3')
+    Expected: "Southside"
+    Received: "Rio Gabriel"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveText" locator('.zone-details h3') with timeout 5000ms
+      - waiting for locator('.zone-details h3')
+        12 × locator resolved to <h3>Rio Gabriel</h3>
+           - unexpected value "Rio Gabriel"
+
+
+      89 |         .getByRole("button", { name: `Select ${zone.name}`, exact: true })
+      90 |         .click();
+    > 91 |       await expect(page.locator(".zone-details h3")).toHaveText(zone.name);
+         |                                                      ^
+      92 |       await expect(page.locator(".game-shell")).toHaveAttribute(
+      93 |         "data-theme",
+      94 |         "independent",
+        at /workspace/lab-baseline/tests/overhaul.spec.ts:91:54
+
+    Error Context: test-results/overhaul-all-approved-scen-05f49-n-cannot-change-affiliation-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/overhaul-all-approved-scen-05f49-n-cannot-change-affiliation-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/overhaul-all-approved-scen-05f49-n-cannot-change-affiliation-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  27) [webkit-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored angels membership keeps the shell neutral and survives checkpoint reload
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      20 |     .click();
+      21 |   if (name === "Actions")
+    > 22 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                     ^
+      23 | }
+      24 | async function seed(page: Page, state: GameState) {
+      25 |   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
+        at nav (/workspace/lab-baseline/tests/overhaul.spec.ts:22:69)
+        at /workspace/lab-baseline/tests/overhaul.spec.ts:135:5
+
+    Error Context: test-results/overhaul-valid-sponsored-a-3b660--survives-checkpoint-reload-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/overhaul-valid-sponsored-a-3b660--survives-checkpoint-reload-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/overhaul-valid-sponsored-a-3b660--survives-checkpoint-reload-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  28) [webkit-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored muds membership keeps the shell neutral and survives checkpoint reload
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      20 |     .click();
+      21 |   if (name === "Actions")
+    > 22 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                     ^
+      23 | }
+      24 | async function seed(page: Page, state: GameState) {
+      25 |   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
+        at nav (/workspace/lab-baseline/tests/overhaul.spec.ts:22:69)
+        at /workspace/lab-baseline/tests/overhaul.spec.ts:135:5
+
+    Error Context: test-results/overhaul-valid-sponsored-m-ae4c4--survives-checkpoint-reload-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/overhaul-valid-sponsored-m-ae4c4--survives-checkpoint-reload-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/overhaul-valid-sponsored-m-ae4c4--survives-checkpoint-reload-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  29) [webkit-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored backstreet membership keeps the shell neutral and survives checkpoint reload
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      20 |     .click();
+      21 |   if (name === "Actions")
+    > 22 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                     ^
+      23 | }
+      24 | async function seed(page: Page, state: GameState) {
+      25 |   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
+        at nav (/workspace/lab-baseline/tests/overhaul.spec.ts:22:69)
+        at /workspace/lab-baseline/tests/overhaul.spec.ts:135:5
+
+    Error Context: test-results/overhaul-valid-sponsored-b-6ceb5--survives-checkpoint-reload-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/overhaul-valid-sponsored-b-6ceb5--survives-checkpoint-reload-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/overhaul-valid-sponsored-b-6ceb5--survives-checkpoint-reload-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  30) [webkit-mobile] › tests/overhaul.spec.ts:172:1 › all destinations fit 320/375/390/430 and desktop, including long names and every dock target
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('navigation').getByRole('button', { name: 'People', exact: true })
+
+
+      18 |     .getByRole("navigation")
+      19 |     .getByRole("button", { name, exact: true })
+    > 20 |     .click();
+         |      ^
+      21 |   if (name === "Actions")
+      22 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+      23 | }
+        at nav (/workspace/lab-baseline/tests/overhaul.spec.ts:20:6)
+        at /workspace/lab-baseline/tests/overhaul.spec.ts:179:13
+
+    Error Context: test-results/overhaul-all-destinations--116b5-names-and-every-dock-target-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/overhaul-all-destinations--116b5-names-and-every-dock-target-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/overhaul-all-destinations--116b5-names-and-every-dock-target-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  31) [webkit-mobile] › tests/overhaul.spec.ts:203:1 › Actions update cash/AP, explain disabled prerequisites, and autosave
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      20 |     .click();
+      21 |   if (name === "Actions")
+    > 22 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                     ^
+      23 | }
+      24 | async function seed(page: Page, state: GameState) {
+      25 |   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
+        at nav (/workspace/lab-baseline/tests/overhaul.spec.ts:22:69)
+        at /workspace/lab-baseline/tests/overhaul.spec.ts:209:3
+
+    Error Context: test-results/overhaul-Actions-update-ca-9258b--prerequisites-and-autosave-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/overhaul-Actions-update-ca-9258b--prerequisites-and-autosave-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/overhaul-Actions-update-ca-9258b--prerequisites-and-autosave-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  32) [webkit-mobile] › tests/overhaul.spec.ts:237:1 › directional trust, witnessed events, activity filters and day grouping preserve visibility
+
+    Error: expect(locator).not.toContainText(expected) failed
+
+    Locator: locator('main')
+    Expected substring: not "PRIVATE NPC ONLY"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "not toContainText" locator('main') with timeout 5000ms
+      - waiting for locator('main')
+
+
+      259 |   await seed(page, s);
+      260 |   await openJournal(page);
+    > 261 |   await expect(page.locator("main")).not.toContainText("PRIVATE NPC ONLY");
+          |                                          ^
+      262 |   await nav(page, "People");
+      263 |   await expect(
+      264 |     page.getByRole("meter", { name: "Their trust in you" }),
+        at /workspace/lab-baseline/tests/overhaul.spec.ts:261:42
+
+    Error Context: test-results/overhaul-directional-trust-6ce73-rouping-preserve-visibility-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/overhaul-directional-trust-6ce73-rouping-preserve-visibility-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/overhaul-directional-trust-6ce73-rouping-preserve-visibility-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  33) [webkit-mobile] › tests/overhaul.spec.ts:284:1 › negotiated demand comes from state; ended and damaged saves remain inspectable and safe
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      20 |     .click();
+      21 |   if (name === "Actions")
+    > 22 |     await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                     ^
+      23 | }
+      24 | async function seed(page: Page, state: GameState) {
+      25 |   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
+        at nav (/workspace/lab-baseline/tests/overhaul.spec.ts:22:69)
+        at /workspace/lab-baseline/tests/overhaul.spec.ts:292:3
+
+    Error Context: test-results/overhaul-negotiated-demand-a10eb-remain-inspectable-and-safe-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/overhaul-negotiated-demand-a10eb-remain-inspectable-and-safe-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/overhaul-negotiated-demand-a10eb-remain-inspectable-and-safe-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  34) [webkit-mobile] › tests/quanny-portraits.spec.ts:42:1 › all five Quanny portraits display and follow real iPhone encounter states without changing outcomes
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Places in The Reservoir' }).getByRole('button', { name: /Lil Jay's Market/ })
+
+
+      105 |     .getByRole("region", { name: "Places in The Reservoir" })
+      106 |     .getByRole("button", { name: /Lil Jay's Market/ })
+    > 107 |     .click();
+          |      ^
+      108 |   await page
+      109 |     .getByRole("region", { name: "Lil Jay's Market", exact: true })
+      110 |     .locator('[data-action="quanny"]')
+        at /workspace/lab-baseline/tests/quanny-portraits.spec.ts:107:6
+
+    Error Context: test-results/quanny-portraits-all-five--01a61-s-without-changing-outcomes-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quanny-portraits-all-five--01a61-s-without-changing-outcomes-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quanny-portraits-all-five--01a61-s-without-changing-outcomes-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  35) [webkit-mobile] › tests/quanny.spec.ts:93:1 › intentional board visit introduces Quanny once, fronts physical stock and persists on reload
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Reservoir homes', exact: true }).getByRole('button', { name: 'Go here' })
+
+
+      79 |     .getByRole("region", { name: place, exact: true })
+      80 |     .getByRole("button", { name: "Go here" })
+    > 81 |     .click();
+         |      ^
+      82 | }
+      83 | function fronted() {
+      84 |   let s = newGame("Morgan", "south", 9009);
+        at visitReservoir (/workspace/lab-baseline/tests/quanny.spec.ts:81:6)
+        at /workspace/lab-baseline/tests/quanny.spec.ts:104:3
+
+    Error Context: test-results/quanny-intentional-board-v-da157-tock-and-persists-on-reload-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quanny-intentional-board-v-da157-tock-and-persists-on-reload-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quanny-intentional-board-v-da157-tock-and-persists-on-reload-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  36) [webkit-mobile] › tests/quanny.spec.ts:160:3 › board collection at notoriety 34 records the correct permanent outcome
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Lil Jay\'s Market', exact: true }).getByRole('button', { name: 'Go here' })
+
+
+      79 |     .getByRole("region", { name: place, exact: true })
+      80 |     .getByRole("button", { name: "Go here" })
+    > 81 |     .click();
+         |      ^
+      82 | }
+      83 | function fronted() {
+      84 |   let s = newGame("Morgan", "south", 9009);
+        at visitReservoir (/workspace/lab-baseline/tests/quanny.spec.ts:81:6)
+        at /workspace/lab-baseline/tests/quanny.spec.ts:171:5
+
+    Error Context: test-results/quanny-board-collection-at-6a1c3-e-correct-permanent-outcome-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quanny-board-collection-at-6a1c3-e-correct-permanent-outcome-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quanny-board-collection-at-6a1c3-e-correct-permanent-outcome-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  37) [webkit-mobile] › tests/quanny.spec.ts:160:3 › board collection at notoriety 35 records the correct permanent outcome
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Browser logs:
+
+    <launching> /home/agent/.cache/ms-playwright/webkit-2370/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=31308
+    [pid=31308][err]
+    [pid=31308][err] ** (MiniBrowser:31314): CRITICAL **: 07:45:17.874: WebKitWebView is-controlled-by-automation set but automation is not allowed in the context, falling back to default session.
+    [pid=31308] <gracefully close start>
+    [pid=31308] <process did exit: exitCode=0, signal=null>
+    [pid=31308] starting temporary directories cleanup
+    Call log:
+      - waiting for getByRole('region', { name: 'Lil Jay\'s Market', exact: true }).locator('[data-action="quanny"]').getByRole('button')
+        - locator resolved to <button disabled aria-describedby="quanny-quanny-reason">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        151 × waiting for element to be visible, enabled and stable
+            - element is not enabled
+          - retrying click action
+            - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      182 |       .locator('[data-action="quanny"]')
+      183 |       .getByRole("button")
+    > 184 |       .click();
+          |        ^
+      185 |     await expect(modal(page)).toContainText(`$${amount}`);
+      186 |     await expect(
+      187 |       modal(page).getByRole("button", { name: /Attempt violent/ }),
+        at /workspace/lab-baseline/tests/quanny.spec.ts:184:8
+
+    Error Context: test-results/quanny-board-collection-at-27768-e-correct-permanent-outcome-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quanny-board-collection-at-27768-e-correct-permanent-outcome-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quanny-board-collection-at-27768-e-correct-permanent-outcome-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  38) [webkit-mobile] › tests/quanny.spec.ts:207:1 › false BB dismissal reveals no private intention and cannot be rerolled by reloading
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByRole('dialog', { name: 'Character encounter' })
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Character encounter' })
+        11 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      217 |     .click();
+      218 |   await closeQuannyOutcome(page, "disappointed");
+    > 219 |   await expect(modal(page)).toHaveCount(0);
+          |                             ^
+      220 |   await expect(page.locator("body")).not.toContainText(
+      221 |     "recognized a false Blocc Boys claim immediately",
+      222 |   );
+        at /workspace/lab-baseline/tests/quanny.spec.ts:219:29
+
+    Error Context: test-results/quanny-false-BB-dismissal--a48b9-ot-be-rerolled-by-reloading-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/quanny-false-BB-dismissal--a48b9-ot-be-rerolled-by-reloading-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/quanny-false-BB-dismissal--a48b9-ot-be-rerolled-by-reloading-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  39) [webkit-mobile] › tests/strategy.spec.ts:49:1 › actual local investment, contested map, autonomous decisions and persisted continuation
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /Build Community Support/ })
+
+
+      56 |   await dismissEncounter(page);
+      57 |   await page.locator(".strategic-actions summary").click();
+    > 58 |   await page.getByRole("button", { name: /Build Community Support/ }).click();
+         |                                                                       ^
+      59 |   await expect(page.locator(".strategy-neighborhood")).toContainText(
+      60 |     "Civilian climate 48",
+      61 |   );
+        at /workspace/lab-baseline/tests/strategy.spec.ts:58:71
+
+    Error Context: test-results/strategy-actual-local-inve-168ea--and-persisted-continuation-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/strategy-actual-local-inve-168ea--and-persisted-continuation-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/strategy-actual-local-inve-168ea--and-persisted-continuation-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  40) [webkit-mobile] › tests/strategy.spec.ts:145:1 › business acquisition, real operating income, sale, and voluntary retirement
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.business-panel')
+    Expected substring: "Latest net"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" locator('.business-panel') with timeout 5000ms
+      - waiting for locator('.business-panel')
+
+
+      156 |   await dismissEncounter(page);
+      157 |   await nav(page, "Wallet");
+    > 158 |   await expect(page.locator(".business-panel")).toContainText("Latest net");
+          |                                                 ^
+      159 |   await page.getByText("Operating history", { exact: true }).click();
+      160 |   await shot(page, ".business-panel", "06-business-income");
+      161 |   await shot(page, ".retirement-panel", "08-legitimate-progress");
+        at /workspace/lab-baseline/tests/strategy.spec.ts:158:49
+
+    Error Context: test-results/strategy-business-acquisit-d6f72-le-and-voluntary-retirement-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/strategy-business-acquisit-d6f72-le-and-voluntary-retirement-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/strategy-business-acquisit-d6f72-le-and-voluntary-retirement-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  41) [webkit-mobile] › tests/visual-correction.spec.ts:9:1 › GOAL 002B mandatory visual review: new run, independent and Blips at 390
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+       at helpers.ts:16
+
+      14 |     .getByRole("button", { name: "Actions", exact: true })
+      15 |     .click();
+    > 16 |   await page.getByRole("button", { name: "Honest", exact: true }).click();
+         |                                                                   ^
+      17 | }
+      18 | export async function connects(page: Page, person?: string) {
+      19 |   await page
+        at honest (/workspace/lab-baseline/tests/helpers.ts:16:67)
+        at /workspace/lab-baseline/tests/visual-correction.spec.ts:59:3
+
+    attachment #1: 01-new-run-390 (image/png) ──────────────────────────────────────────────────────
+    test-results/visual-correction-GOAL-002-4e887-ndependent-and-Blips-at-390-webkit-mobile/attachments/01-new-run-390-ac1413e571850999c6c51a6ab7e56cef6cddc5ad.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: 01-new-run-full-390 (image/png) ─────────────────────────────────────────────────
+    test-results/visual-correction-GOAL-002-4e887-ndependent-and-Blips-at-390-webkit-mobile/attachments/01-new-run-full-390-2ee68f07471f5e650afd134e3f432c56bfcdbd04.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: 02-independent-city-390 (image/png) ─────────────────────────────────────────────
+    test-results/visual-correction-GOAL-002-4e887-ndependent-and-Blips-at-390-webkit-mobile/attachments/02-independent-city-390-7eed3b49b1a41cafd8114ad8361d249b268ac511.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/visual-correction-GOAL-002-4e887-ndependent-and-Blips-at-390-webkit-mobile/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/visual-correction-GOAL-002-4e887-ndependent-and-Blips-at-390-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/visual-correction-GOAL-002-4e887-ndependent-and-Blips-at-390-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  41 failed
+    [webkit-mobile] › tests/board.spec.ts:40:1 › the player lives on the board: walks to places, acts there, and their location is saved
+    [webkit-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues
+    [webkit-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions
+    [webkit-mobile] › tests/city-menu.spec.ts:160:1 › storyline uses the active demand and opens its existing City conversation
+    [webkit-mobile] › tests/city-menu.spec.ts:202:1 › City activity preserves visible history, reverse chronology, day groups, limits and filters
+    [webkit-mobile] › tests/corrections.spec.ts:55:1 › Actions separate Streets, Honest and Connects; completed reach-out returns to Streets
+    [webkit-mobile] › tests/corrections.spec.ts:105:1 › known suspects and leaders need real introductions; access and inventory survive reload
+    [webkit-mobile] › tests/corrections.spec.ts:163:1 › active Chains lives in City; fulfillment leaves only completed history
+    [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 375px
+    [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 430px
+    [webkit-mobile] › tests/crew.spec.ts:46:1 › Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences
+    [webkit-mobile] › tests/crew.spec.ts:133:1 › independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting
+    [webkit-mobile] › tests/danger.spec.ts:49:1 › board street conversation: choices, persistent grievance, menus cannot reroll, reload
+    [webkit-mobile] › tests/employment.spec.ts:90:1 › hire, scheduled wages, save and a thirty-day employment playthrough
+    [webkit-mobile] › tests/employment.spec.ts:154:1 › absence warning can be cancelled; repeated absences fire and gigs survive cooldown
+    [webkit-mobile] › tests/employment.spec.ts:203:1 › workplace scene consequence, skip, close and no replay across tabs or reload
+    [webkit-mobile] › tests/employment.spec.ts:258:1 › employment competes with The Chains through actual AP, wages, attendance and promises
+    [webkit-mobile] › tests/encounters.spec.ts:74:1 › true City modal, sequential questions, promise closure, queued fulfillment, history and Resume
+    [webkit-mobile] › tests/encounters.spec.ts:176:1 › refusing, postponing, Escape and backdrop leave no accidental obligation or daily reopening
+    [webkit-mobile] › tests/encounters.spec.ts:211:3 › 40 days after fulfilled: one storyline reaction while independent offers continue
+    [webkit-mobile] › tests/encounters.spec.ts:211:3 › 40 days after broken: one storyline reaction while independent offers continue
+    [webkit-mobile] › tests/encounters.spec.ts:384:1 › queued simultaneous encounters are acknowledged in sequence without duplicate outcome banners
+    [webkit-mobile] › tests/encounters.spec.ts:426:1 › all homes and affiliation themes retain the City-only modal and normal navigation
+    [webkit-mobile] › tests/mobile.spec.ts:42:1 › phone gameplay: contact, lawful income, days, save and load
+    [webkit-mobile] › tests/mobile.spec.ts:84:1 › buyback resolves the incident and the ordinary loop remains playable
+    [webkit-mobile] › tests/overhaul.spec.ts:58:1 › all approved scenes load; every home starts independent and map selection cannot change affiliation
+    [webkit-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored angels membership keeps the shell neutral and survives checkpoint reload
+    [webkit-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored muds membership keeps the shell neutral and survives checkpoint reload
+    [webkit-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored backstreet membership keeps the shell neutral and survives checkpoint reload
+    [webkit-mobile] › tests/overhaul.spec.ts:172:1 › all destinations fit 320/375/390/430 and desktop, including long names and every dock target
+    [webkit-mobile] › tests/overhaul.spec.ts:203:1 › Actions update cash/AP, explain disabled prerequisites, and autosave
+    [webkit-mobile] › tests/overhaul.spec.ts:237:1 › directional trust, witnessed events, activity filters and day grouping preserve visibility
+    [webkit-mobile] › tests/overhaul.spec.ts:284:1 › negotiated demand comes from state; ended and damaged saves remain inspectable and safe
+    [webkit-mobile] › tests/quanny-portraits.spec.ts:42:1 › all five Quanny portraits display and follow real iPhone encounter states without changing outcomes
+    [webkit-mobile] › tests/quanny.spec.ts:93:1 › intentional board visit introduces Quanny once, fronts physical stock and persists on reload
+    [webkit-mobile] › tests/quanny.spec.ts:160:3 › board collection at notoriety 34 records the correct permanent outcome
+    [webkit-mobile] › tests/quanny.spec.ts:160:3 › board collection at notoriety 35 records the correct permanent outcome
+    [webkit-mobile] › tests/quanny.spec.ts:207:1 › false BB dismissal reveals no private intention and cannot be rerolled by reloading
+    [webkit-mobile] › tests/strategy.spec.ts:49:1 › actual local investment, contested map, autonomous decisions and persisted continuation
+    [webkit-mobile] › tests/strategy.spec.ts:145:1 › business acquisition, real operating income, sale, and voluntary retirement
+    [webkit-mobile] › tests/visual-correction.spec.ts:9:1 › GOAL 002B mandatory visual review: new run, independent and Blips at 390
+  8 passed (26.8m)

@@ -1,3 +1,5 @@
+import { interruptSession } from "../systems/SessionLifecycle";
+import { awardSkill } from "../systems/Skills";
 import { advanceQuanny } from "../systems/Quanny";
 import {
   advanceConflicts,
@@ -29,13 +31,14 @@ import { settleWorkplaceScenes } from "../systems/Workplace";
 export function advanceDay(state: GameState): GameState {
   if (state.end) return state;
   const s = structuredClone(state);
+  interruptSession(s, "Day ended. Unresolved visitors cancelled.");
   settleWorkplaceScenes(s);
   settleAttendance(s);
   s.day++;
   advanceConflicts(s);
   advanceQuanny(s);
   for (const i of s.danger.injuries)
-    if (i.severity === "minor" && s.day >= i.releaseDay) i.discharged = true;
+    if (i.severity === "minor" && !i.discharged && s.day >= i.releaseDay) { i.discharged = true; awardSkill(s, s.playerId, "survival", 50, `recovery:${i.id}`); }
   for (const c of Object.values(s.characters))
     if (
       c.id !== s.playerId &&

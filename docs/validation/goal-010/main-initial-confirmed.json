@@ -1,0 +1,38 @@
+[
+  [
+    "chromium-mobile",
+    "board.spec.ts >> leaving the city mid-walk never locks input: the walk lands and play continues"
+  ],
+  [
+    "chromium-mobile",
+    "city-menu.spec.ts >> City centers the five state-backed neighborhoods and keeps actions in Actions"
+  ],
+  [
+    "chromium-mobile",
+    "corrections.spec.ts >> Actions separate Streets, Honest and Connects; completed reach-out returns to Streets"
+  ],
+  [
+    "chromium-mobile",
+    "corrections.spec.ts >> active Chains lives in City; fulfillment leaves only completed history"
+  ],
+  [
+    "chromium-mobile",
+    "corrections.spec.ts >> all three categories and inventory fit 390px"
+  ],
+  [
+    "chromium-mobile",
+    "crew.spec.ts >> Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences"
+  ],
+  [
+    "chromium-mobile",
+    "crew.spec.ts >> crew dialogue and Set fit 390px"
+  ],
+  [
+    "chromium-mobile",
+    "crew.spec.ts >> crew dialogue and Set fit 430px"
+  ],
+  [
+    "chromium-mobile",
+    "crew.spec.ts >> independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting"
+  ]
+]

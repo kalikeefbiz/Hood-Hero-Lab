@@ -1,3 +1,4 @@
+import { awardSkill, proficiency } from "./Skills";
 import { clamp, player, type GameState } from "../core/GameState";
 import { BUSINESSES } from "../content/strategy";
 import { earn, expense } from "./Economy";
@@ -14,6 +15,7 @@ export function businessError(
   const p = player(s),
     d = BUSINESSES.find((d) => d.id === id),
     b = s.strategic.businesses.find((b) => b.definition === id);
+  if (s.activeSession && s.activeSession.status !== "ended") return "End your trapping session before managing a business.";
   if (!d) return "Unknown business opportunity";
   if (s.end || p.status !== "active" || s.ap < 1)
     return "Requires an active player and 1 AP";
@@ -137,7 +139,7 @@ export function advanceBusinesses(s: GameState) {
       Math.round(
         d.revenue *
           demand *
-          (0.35 + b.condition / 130) *
+          (0.35 + b.condition / 130 + (proficiency(p, "business") - 20) / 1000) *
           (0.65 + random(s) * 0.7 - disruption),
       ),
     );
@@ -165,6 +167,8 @@ export function advanceBusinesses(s: GameState) {
     asset.value = Math.round((d.cost * 0.65 * b.condition) / 100);
     updateBusinessIncome(s, b);
     if (b.provenance === "clean" && net > 0) {
+      if (b.history.some(h => h.expenses === 120 && h.revenue === 0 && h.day >= s.day - 7))
+        awardSkill(s, p.id, "business", 100, `managed-business:${s.day}`);
       applyInfluence(s, {
         actor: p.id,
         faction: null,

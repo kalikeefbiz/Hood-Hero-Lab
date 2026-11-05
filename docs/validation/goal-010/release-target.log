@@ -1,0 +1,218 @@
+
+> syndicate@0.1.0 test:e2e
+> playwright test tests/skills-sessions.spec.ts tests/input-guard.spec.ts tests/street.spec.ts --workers=1 --reporter=list,json
+
+[WebServer] (node:32901) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 28 tests using 1 worker
+
+(node:32918) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓   1 [chromium-mobile] › tests/input-guard.spec.ts:12:1 › taps queued while the page is frozen never fire; the next tap does (10.2s)
+  ✓   2 [chromium-mobile] › tests/skills-sessions.spec.ts:89:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session (1.1m)
+  ✓   3 [chromium-mobile] › tests/skills-sessions.spec.ts:182:1 › Actions gives directions only; Skills and inventory remain readable on iPhone (5.4s)
+  ✓   4 [chromium-mobile] › tests/skills-sessions.spec.ts:216:1 › background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes (30.0s)
+  ✓   5 [chromium-mobile] › tests/skills-sessions.spec.ts:276:1 › a real session arrest opens custody, reloads safely, and releases without unresolved buyers (13.1s)
+  ✓   6 [chromium-mobile] › tests/skills-sessions.spec.ts:318:1 › WebGL unavailable: physically present accessible session settles the same persisted buyer (1.8s)
+  ✘   7 [chromium-mobile] › tests/street.spec.ts:152:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls (1.1m)
+(node:33127) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+CUSTODY {"engine":"chromium-mobile","arrestDay":2,"releaseDay":3,"cashBefore":154,"cashAfter":136,"debtAfter":102,"loco":"arrested","campaignEnd":null}
+  ✓   8 [chromium-mobile] › tests/street.spec.ts:289:1 › seeded real-play arrest serves every day and releases into continued gameplay (13.1s)
+  ✓   9 [chromium-mobile] › tests/street.spec.ts:342:1 › default reaction and accumulated heat are rendered from real simulated consequences (8.6s)
+  ✓  10 [chromium-mobile] › tests/street.spec.ts:362:1 › crew-assisted street work uses an earned willing partner and actual inventory (4.8s)
+  ✓  11 [chromium-mobile] › tests/street.spec.ts:379:3 › street inventory and supplier modal fit 320px (6.6s)
+  ✓  12 [chromium-mobile] › tests/street.spec.ts:379:3 › street inventory and supplier modal fit 375px (6.9s)
+  ✓  13 [chromium-mobile] › tests/street.spec.ts:379:3 › street inventory and supplier modal fit 390px (6.9s)
+  ✓  14 [chromium-mobile] › tests/street.spec.ts:379:3 › street inventory and supplier modal fit 430px (8.2s)
+(node:33320) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  15 [webkit-mobile] › tests/input-guard.spec.ts:12:1 › taps queued while the page is frozen never fire; the next tap does (13.7s)
+  ✘  16 [webkit-mobile] › tests/skills-sessions.spec.ts:89:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session (14.3s)
+(node:33483) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  17 [webkit-mobile] › tests/skills-sessions.spec.ts:182:1 › Actions gives directions only; Skills and inventory remain readable on iPhone (8.5s)
+  ✓  18 [webkit-mobile] › tests/skills-sessions.spec.ts:216:1 › background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes (38.8s)
+  ✘  19 [webkit-mobile] › tests/skills-sessions.spec.ts:276:1 › a real session arrest opens custody, reloads safely, and releases without unresolved buyers (21.5s)
+(node:33728) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  20 [webkit-mobile] › tests/skills-sessions.spec.ts:318:1 › WebGL unavailable: physically present accessible session settles the same persisted buyer (2.2s)
+  ✘  21 [webkit-mobile] › tests/street.spec.ts:152:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls (1.4m)
+(node:33933) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+CUSTODY {"engine":"webkit-mobile","arrestDay":2,"releaseDay":2,"cashBefore":154,"cashAfter":154,"debtAfter":102,"loco":"arrested","campaignEnd":null}
+  ✘  22 [webkit-mobile] › tests/street.spec.ts:289:1 › seeded real-play arrest serves every day and releases into continued gameplay (9.0s)
+(node:34020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  23 [webkit-mobile] › tests/street.spec.ts:342:1 › default reaction and accumulated heat are rendered from real simulated consequences (13.7s)
+  ✓  24 [webkit-mobile] › tests/street.spec.ts:362:1 › crew-assisted street work uses an earned willing partner and actual inventory (10.0s)
+  ✓  25 [webkit-mobile] › tests/street.spec.ts:379:3 › street inventory and supplier modal fit 320px (10.6s)
+  ✓  26 [webkit-mobile] › tests/street.spec.ts:379:3 › street inventory and supplier modal fit 375px (9.7s)
+  ✓  27 [webkit-mobile] › tests/street.spec.ts:379:3 › street inventory and supplier modal fit 390px (10.3s)
+  ✓  28 [webkit-mobile] › tests/street.spec.ts:379:3 › street inventory and supplier modal fit 430px (12.4s)
+
+
+  1) [chromium-mobile] › tests/street.spec.ts:152:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 45000ms exceeded while waiting on the predicate
+
+       at helpers.ts:33
+
+      31 |       { timeout, intervals: [500, 800, 1200] },
+      32 |     )
+    > 33 |     .toBe(true);
+         |      ^
+      34 | }
+      35 |
+      36 | /** A discarded stale tap is intentional. Retap navigation after the guard settles,
+        at tapUntil (/workspace/lab-validation/tests/helpers.ts:33:6)
+        at /workspace/lab-validation/tests/street.spec.ts:217:13
+
+    Error Context: test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit-mobile] › tests/skills-sessions.spec.ts:89:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator: getByRole('button', { name: 'Start trapping — 1 AP' })
+    Expected: disabled
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeDisabled" getByRole('button', { name: 'Start trapping — 1 AP' }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Start trapping — 1 AP' })
+
+
+      94 |   await spot(page);
+      95 |   const start = page.getByRole("button", { name: "Start trapping — 1 AP" });
+    > 96 |   await expect(start).toBeDisabled();
+         |                       ^
+      97 |   const go = page.getByRole("button", { name: "Go here", exact: true });
+      98 |   await tapUntil(
+      99 |     page,
+        at /workspace/lab-validation/tests/skills-sessions.spec.ts:96:23
+
+    Error Context: test-results/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [webkit-mobile] › tests/skills-sessions.spec.ts:276:1 › a real session arrest opens custody, reloads safely, and releases without unresolved buyers
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "active"
+    Received: "arrested"
+
+      304 |   await dismissEncounter(page);
+      305 |   const released = await state(page);
+    > 306 |   expect(released.characters.player.status).toBe("active");
+          |                                             ^
+      307 |   expect(released.day).toBeGreaterThan(arrested.day);
+      308 |   expect(released.activeSession.status).toBe("ended");
+      309 |   expect(released.activeSession.cursor).toBe(1);
+        at /workspace/lab-validation/tests/skills-sessions.spec.ts:306:45
+
+    Error Context: test-results/skills-sessions-a-real-ses-4abbb-s-without-unresolved-buyers-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/skills-sessions-a-real-ses-4abbb-s-without-unresolved-buyers-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/skills-sessions-a-real-ses-4abbb-s-without-unresolved-buyers-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [webkit-mobile] › tests/street.spec.ts:152:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 20000ms exceeded while waiting on the predicate
+
+       at helpers.ts:33
+
+      31 |       { timeout, intervals: [500, 800, 1200] },
+      32 |     )
+    > 33 |     .toBe(true);
+         |      ^
+      34 | }
+      35 |
+      36 | /** A discarded stale tap is intentional. Retap navigation after the guard settles,
+        at tapUntil (/workspace/lab-validation/tests/helpers.ts:33:6)
+        at /workspace/lab-validation/tests/street.spec.ts:239:13
+
+    Error Context: test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [webkit-mobile] › tests/street.spec.ts:289:1 › seeded real-play arrest serves every day and releases into continued gameplay
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "active"
+    Received: "arrested"
+
+      320 |     }),
+      321 |   );
+    > 322 |   expect(after.characters.player.status).toBe("active");
+          |                                          ^
+      323 |   expect(after.day).toBeGreaterThan(before.day);
+      324 |   expect(after.characters.loco.status).toBe("arrested");
+      325 |   expect(after.end).toBeNull();
+        at /workspace/lab-validation/tests/street.spec.ts:322:42
+
+    Error Context: test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5 failed
+    [chromium-mobile] › tests/street.spec.ts:152:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls
+    [webkit-mobile] › tests/skills-sessions.spec.ts:89:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+    [webkit-mobile] › tests/skills-sessions.spec.ts:276:1 › a real session arrest opens custody, reloads safely, and releases without unresolved buyers
+    [webkit-mobile] › tests/street.spec.ts:152:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls
+    [webkit-mobile] › tests/street.spec.ts:289:1 › seeded real-play arrest serves every day and releases into continued gameplay
+  23 passed (8.6m)

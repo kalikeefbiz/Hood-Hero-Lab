@@ -1,0 +1,39 @@
+[WebServer] (node:665) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:683) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  1 [chromium-mobile] › tests/street.spec.ts:157:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls (1.6m)
+
+
+  1) [chromium-mobile] › tests/street.spec.ts:157:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls
+
+    Error: Test timeout of 90000ms exceeded
+
+       at helpers.ts:49
+
+      47 |       { timeout, intervals: [500, 800, 1200] },
+      48 |     )
+    > 49 |     .toBe(true);
+         |      ^
+      50 | }
+      51 |
+      52 | /** A discarded stale tap is intentional. Retap navigation after the guard settles,
+        at tapUntil (/workspace/lab-validation/tests/helpers.ts:49:6)
+        at /workspace/lab-validation/tests/street.spec.ts:250:13
+
+    Error Context: ../scratch/goal010-pending-chromium-mobile/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-pending-chromium-mobile/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-pending-chromium-mobile/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium-mobile] › tests/street.spec.ts:157:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls

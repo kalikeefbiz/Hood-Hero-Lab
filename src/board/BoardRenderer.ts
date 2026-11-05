@@ -1,3 +1,4 @@
+import { SessionVisitors, type SessionVisitor } from "./SessionVisitors";
 import * as THREE from "three";
 import type { FactionId, ZoneId } from "../core/GameState";
 import {
@@ -337,6 +338,21 @@ export class BoardRenderer {
     done: () => void;
   } | null = null;
   private figures = new THREE.Group();
+  private sessionVisitors = new SessionVisitors();
+  private sessionLocation: string | null = null;
+  setSessionVisitor(visitor: SessionVisitor | null) {
+    if (visitor && visitor.location !== this.sessionLocation) {
+      // Reuse the existing camera flight to frame the physical sidewalk actors.
+      // The place anchor can be deep inside a building; it hides small figures.
+      this.placeToken(visitor.location);
+      const [x, z] = BoardRenderer.frontOf(visitor.location);
+      this.flyTo(x + 0.25, z + 0.7, 18, 0);
+    }
+    this.sessionVisitors.set(visitor, this.token.position, this.reducedMotion);
+    this.sessionLocation = visitor?.location ?? null;
+    this.host.dataset.visitorPhase = this.sessionVisitors.phase ?? "";
+    this.wake();
+  }
   private tokenBody = new THREE.Group();
   private appearanceKey = "";
   private focusLayer = new THREE.Group();
@@ -436,7 +452,7 @@ export class BoardRenderer {
     w.__stixxBuildMs = performance.now() - t0;
     // Exposed for the inspect-runtime workflow and automated checks.
     w.__stixxBoard = this;
-    this.scene.add(this.dynamic, this.focusLayer, this.figures);
+    this.scene.add(this.dynamic, this.focusLayer, this.figures, this.sessionVisitors.root);
     this.buildToken();
     this.setTimeOfDay("dusk");
     this.bindInput(el);
@@ -2671,7 +2687,7 @@ export class BoardRenderer {
       now - this.lastActive < 1200 ||
       this.pointers.size > 0 ||
       !!this.flight ||
-      !!this.tokenWalk;
+      !!this.tokenWalk || (this.sessionVisitors.active && !this.reducedMotion);
     if (!active && (this.lite || this.eco || this.reducedMotion)) {
       this.running = false;
       cancelAnimationFrame(this.frame);
@@ -2699,6 +2715,9 @@ export class BoardRenderer {
       this.lastShadowBake = now;
       this.renderer.shadowMap.needsUpdate = true;
     }
+    this.sessionVisitors.update(Math.min(1, interval / 1000));
+    const visitorPhase = this.sessionVisitors.phase ?? "";
+    if (this.host.dataset.visitorPhase !== visitorPhase) this.host.dataset.visitorPhase = visitorPhase;
     for (const a of this.animated) a(this.clock, dt);
     for (const a of this.dynamicAnimated) a(this.clock, dt);
     for (const a of this.focusAnimated) a(this.clock, dt);

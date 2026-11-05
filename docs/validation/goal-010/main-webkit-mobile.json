@@ -1,0 +1,345 @@
+[
+  {
+    "engine": "webkit-mobile",
+    "name": "board.spec.ts >> the player lives on the board: walks to places, acts there, and their location is saved",
+    "status": "failed",
+    "duration_ms": 42937,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.action-feedback')\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('.action-feedback') with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('.action-feedback')\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "board.spec.ts >> leaving the city mid-walk never locks input: the walk lands and play continues",
+    "status": "timedOut",
+    "duration_ms": 186635,
+    "error": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "city-menu.spec.ts >> City centers the five state-backed neighborhoods and keeps actions in Actions",
+    "status": "failed",
+    "duration_ms": 19675,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })\nExpected: \u001b[32m\"\u001b[7mtru\u001b[27me\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7mfals\u001b[27me\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to <button aria-pressed=\"false\" aria-label=\"Select Downtown\" aria-describedby=\"chip-desc-downtown\">\u2026</button>\u001b[22m\n\u001b[2m       - unexpected value \"false\"\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "city-menu.spec.ts >> storyline uses the active demand and opens its existing City conversation",
+    "status": "failed",
+    "duration_ms": 18434,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Character encounter' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter' })\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "city-menu.spec.ts >> City activity preserves visible history, reverse chronology, day groups, limits and filters",
+    "status": "failed",
+    "duration_ms": 17851,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('main')\nExpected substring: not \u001b[32m\"PRIVATE NPC ONLY\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"not toContainText\" locator('main') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('main')\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "corrections.spec.ts >> Actions separate Streets, Honest and Connects; completed reach-out returns to Streets",
+    "status": "timedOut",
+    "duration_ms": 94264,
+    "error": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "corrections.spec.ts >> known suspects and leaders need real introductions; access and inventory survive reload",
+    "status": "timedOut",
+    "duration_ms": 90992,
+    "error": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "corrections.spec.ts >> active Chains lives in City; fulfillment leaves only completed history",
+    "status": "timedOut",
+    "duration_ms": 94029,
+    "error": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "corrections.spec.ts >> all three categories and inventory fit 375px",
+    "status": "timedOut",
+    "duration_ms": 94111,
+    "error": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "corrections.spec.ts >> all three categories and inventory fit 390px",
+    "status": "passed",
+    "duration_ms": 16479,
+    "error": ""
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "corrections.spec.ts >> all three categories and inventory fit 430px",
+    "status": "timedOut",
+    "duration_ms": 91786,
+    "error": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences",
+    "status": "timedOut",
+    "duration_ms": 185345,
+    "error": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting",
+    "status": "timedOut",
+    "duration_ms": 182064,
+    "error": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 320px",
+    "status": "passed",
+    "duration_ms": 13989,
+    "error": ""
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 375px",
+    "status": "passed",
+    "duration_ms": 20080,
+    "error": ""
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 390px",
+    "status": "passed",
+    "duration_ms": 23314,
+    "error": ""
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "danger.spec.ts >> board street conversation: choices, persistent grievance, menus cannot reroll, reload",
+    "status": "timedOut",
+    "duration_ms": 121226,
+    "error": "\u001b[31mTest timeout of 120000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "danger.spec.ts >> a meaningful Wallet activity opens a contextual street conversation on the City board",
+    "status": "passed",
+    "duration_ms": 8599,
+    "error": ""
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "employment.spec.ts >> hire, scheduled wages, save and a thirty-day employment playthrough",
+    "status": "timedOut",
+    "duration_ms": 187742,
+    "error": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "employment.spec.ts >> absence warning can be cancelled; repeated absences fire and gigs survive cooldown",
+    "status": "failed",
+    "duration_ms": 21623,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7mterminat\u001b[27med\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7memploy\u001b[27med\"\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "employment.spec.ts >> workplace scene consequence, skip, close and no replay across tabs or reload",
+    "status": "timedOut",
+    "duration_ms": 31099,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "employment.spec.ts >> employment competes with The Chains through actual AP, wages, attendance and promises",
+    "status": "failed",
+    "duration_ms": 20801,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeDisabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ })\nExpected: disabled\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeDisabled\" getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true }).getByRole('button', { name: /Pay to return the chains/ })\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "encounters.spec.ts >> true City modal, sequential questions, promise closure, queued fulfillment, history and Resume",
+    "status": "timedOut",
+    "duration_ms": 31626,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "encounters.spec.ts >> refusing, postponing, Escape and backdrop leave no accidental obligation or daily reopening",
+    "status": "timedOut",
+    "duration_ms": 31142,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "encounters.spec.ts >> 40 days after fulfilled: one storyline reaction while independent offers continue",
+    "status": "timedOut",
+    "duration_ms": 181358,
+    "error": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "encounters.spec.ts >> 40 days after broken: one storyline reaction while independent offers continue",
+    "status": "timedOut",
+    "duration_ms": 181493,
+    "error": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "encounters.spec.ts >> queued simultaneous encounters are acknowledged in sequence without duplicate outcome banners",
+    "status": "failed",
+    "duration_ms": 13727,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Character encounter', exact: true })\nExpected substring: \u001b[32m\"personal follow-up\"\u001b[39m\nReceived string:    \u001b[31m\"Leadership involvedClose \u00d7Back StreetMega / Cuzzo\u201cCuzzo, three young Angels took my diamond chain while I was out with my girl. I\u2019m alright. They want $150 to give it back. Can you help me get it home?\u201dDAY 1 \u00b7 Pablo has heard about the robbery.I hear you. Return to the city.Conversation \u00b7 No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })\u001b[22m\n\u001b[2m    12 \u00d7 locator resolved to <dialog open=\"\" class=\"encounter-modal\" aria-label=\"Character encounter\">\u2026</dialog>\u001b[22m\n\u001b[2m       - unexpected value \"Leadership involvedClose \u00d7Back StreetMega / Cuzzo\u201cCuzzo, three young Angels took my diamond chain while I was out with my girl. I\u2019m alright. They want $150 to give it back. Can you help me get it home?\u201dDAY 1 \u00b7 Pablo has heard about the robbery.I hear you. Return to the city.Conversation \u00b7 No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "encounters.spec.ts >> all homes and affiliation themes retain the City-only modal and normal navigation",
+    "status": "timedOut",
+    "duration_ms": 32085,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "illustrated.spec.ts >> GOAL 002C mobile visual review and usable narrow controls",
+    "status": "passed",
+    "duration_ms": 33818,
+    "error": ""
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "mobile.spec.ts >> phone gameplay: contact, lawful income, days, save and load",
+    "status": "failed",
+    "duration_ms": 29436,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status')\nExpected substring: \u001b[32m\"Saved day 2\"\u001b[39m\nReceived string:    \u001b[31m\"Day 2: living costs processed, the city has moved, and AP is restored.\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('status') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status')\u001b[22m\n\u001b[2m    10 \u00d7 locator resolved to <div role=\"status\" class=\"notice\" aria-live=\"polite\">Day 2: living costs processed, the city has moved\u2026</div>\u001b[22m\n\u001b[2m       - unexpected value \"Day 2: living costs processed, the city has moved, and AP is restored.\"\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "mobile.spec.ts >> buyback resolves the incident and the ordinary loop remains playable",
+    "status": "timedOut",
+    "duration_ms": 32064,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "mobile.spec.ts >> mobile city and new game remain readable at narrow widths",
+    "status": "passed",
+    "duration_ms": 11766,
+    "error": ""
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "overhaul.spec.ts >> all approved scenes load; every home starts independent and map selection cannot change affiliation",
+    "status": "failed",
+    "duration_ms": 25397,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.zone-details h3')\nExpected: \u001b[32m\"Southside\"\u001b[39m\nReceived: \u001b[31m\"Rio Gabriel\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" locator('.zone-details h3') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.zone-details h3')\u001b[22m\n\u001b[2m    12 \u00d7 locator resolved to <h3>Rio Gabriel</h3>\u001b[22m\n\u001b[2m       - unexpected value \"Rio Gabriel\"\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "overhaul.spec.ts >> valid sponsored angels membership keeps the shell neutral and survives checkpoint reload",
+    "status": "timedOut",
+    "duration_ms": 31925,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "overhaul.spec.ts >> valid sponsored muds membership keeps the shell neutral and survives checkpoint reload",
+    "status": "timedOut",
+    "duration_ms": 31876,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "overhaul.spec.ts >> valid sponsored backstreet membership keeps the shell neutral and survives checkpoint reload",
+    "status": "timedOut",
+    "duration_ms": 31664,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "overhaul.spec.ts >> all destinations fit 320/375/390/430 and desktop, including long names and every dock target",
+    "status": "timedOut",
+    "duration_ms": 32288,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "overhaul.spec.ts >> Actions update cash/AP, explain disabled prerequisites, and autosave",
+    "status": "timedOut",
+    "duration_ms": 30994,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "overhaul.spec.ts >> directional trust, witnessed events, activity filters and day grouping preserve visibility",
+    "status": "failed",
+    "duration_ms": 17945,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('main')\nExpected substring: not \u001b[32m\"PRIVATE NPC ONLY\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"not toContainText\" locator('main') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('main')\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "overhaul.spec.ts >> negotiated demand comes from state; ended and damaged saves remain inspectable and safe",
+    "status": "timedOut",
+    "duration_ms": 31008,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "quanny-portraits.spec.ts >> all five Quanny portraits display and follow real iPhone encounter states without changing outcomes",
+    "status": "timedOut",
+    "duration_ms": 183828,
+    "error": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "quanny.spec.ts >> intentional board visit introduces Quanny once, fronts physical stock and persists on reload",
+    "status": "timedOut",
+    "duration_ms": 120915,
+    "error": "\u001b[31mTest timeout of 120000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "quanny.spec.ts >> board collection at notoriety 34 records the correct permanent outcome",
+    "status": "timedOut",
+    "duration_ms": 90660,
+    "error": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "quanny.spec.ts >> board collection at notoriety 35 records the correct permanent outcome",
+    "status": "timedOut",
+    "duration_ms": 91591,
+    "error": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "quanny.spec.ts >> false BB dismissal reveals no private intention and cannot be rerolled by reloading",
+    "status": "failed",
+    "duration_ms": 13373,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('dialog', { name: 'Character encounter' })\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter' })\u001b[22m\n\u001b[2m    11 \u00d7 locator resolved to 1 element\u001b[22m\n\u001b[2m       - unexpected value \"1\"\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "review.spec.ts >> review captures and WCAG checks cover every M1 screen and faction palette",
+    "status": "passed",
+    "duration_ms": 87294,
+    "error": ""
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "strategy.spec.ts >> actual local investment, contested map, autonomous decisions and persisted continuation",
+    "status": "timedOut",
+    "duration_ms": 31833,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "strategy.spec.ts >> business acquisition, real operating income, sale, and voluntary retirement",
+    "status": "failed",
+    "duration_ms": 28867,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.business-panel')\nExpected substring: \u001b[32m\"Latest net\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" locator('.business-panel') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.business-panel')\u001b[22m\n"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "visual-correction.spec.ts >> GOAL 002B mandatory visual review: new run, independent and Blips at 390",
+    "status": "timedOut",
+    "duration_ms": 31230,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  }
+]

@@ -1,3 +1,4 @@
+import { awardBuyer, skillsOf, skillRank } from "./Skills";
 import { applyInfluence } from "./Territory";
 import { STRATEGY_BALANCE } from "../content/strategy";
 import { arrest } from "./Incarceration";
@@ -141,6 +142,7 @@ export function supplierError(
   supplier: string,
   arrangement: "cash" | "consignment",
 ) {
+  if (s.activeSession && s.activeSession.status !== "ended") return "End your trapping session before arranging supply.";
   const p = player(s),
     n = s.characters[supplier];
   if (s.end || p.status !== "active")
@@ -199,7 +201,7 @@ export function acquire(
   s.ap--;
   const paid =
     arrangement === "cash"
-      ? expense(s, p, cost, `Night goods purchase · ${n.name}`)
+      ? expense(s, p, cost, `Pink Magic purchase · ${n.name}`)
       : null;
   if (paid) {
     n.wallet.clean += paid.clean;
@@ -231,7 +233,7 @@ export function acquire(
   const e = record(
     s,
     "money",
-    `${n.name} supplied ${def.quantity} night goods. ${arrangement === "cash" ? `$${cost} paid up front.` : `$${cost} owed by the end of day ${lot.dueDay}.`} Expected gross $${lot.expectedGross} is an estimate, not income.`,
+    `${n.name} supplied ${def.quantity} Pink Magic. ${arrangement === "cash" ? `$${cost} paid up front.` : `$${cost} owed by the end of day ${lot.dueDay}.`} Expected gross $${lot.expectedGross} is an estimate, not income.`,
     [p.id, n.id],
     [p.id, n.id],
     {
@@ -307,6 +309,7 @@ export function transactionError(
   zone = saleMarket(s, actor),
 ) {
   const c = s.characters[actor];
+  if (actor === s.playerId) return "Visit a City street spot and start a trapping session.";
   if (!c || c.status !== "active")
     return "Street actions require an active character.";
   if (actor === s.playerId && s.ap < 1) return "Requires 1 AP.";
@@ -335,7 +338,7 @@ export function transactionChance(
     n = partner ? s.characters[partner] : undefined;
   const support = n
     ? clamp(
-        (n.skills.recovery - 35) / 300 +
+        0 +
           (n.relationships[actor]?.trust ?? 0) / 1200 -
           n.stress / 650 -
           n.police / 900,
@@ -352,10 +355,11 @@ export function transactionChance(
       : 0;
   return clamp(
     B.baseSuccess +
-      c.skills.recovery / 700 +
+      (m.demand - 50) / 500 +
       support -
       exposureScore(s, actor, zone) / 220 -
       c.stress / 650 -
+      c.rivalThreat / 1000 -
       m.pressure / 500 -
       (m.competition + (s.strategic.territories[zone].contested ? 10 : 0)) /
         900 -
@@ -364,13 +368,14 @@ export function transactionChance(
     B.maxSuccess,
   );
 }
-export function transact(
+function resolveTransaction(
   s: GameState,
   actor = s.playerId,
   zone = saleMarket(s, actor),
   partner?: string,
+  buyer = false,
 ) {
-  if (s.end || transactionError(s, actor, zone)) return;
+  if (s.end || (buyer ? buyerError(s, actor, zone) : transactionError(s, actor, zone))) return;
   if (
     partner &&
     (!s.crew.members.includes(partner) ||
@@ -384,7 +389,7 @@ export function transact(
       ))
   )
     return;
-  if (actor === s.playerId) s.ap--;
+  if (actor === s.playerId && !buyer) s.ap--;
   else s.characters[actor].lastActionDay = s.day;
   const l = saleLot(s, actor)!,
     c = s.characters[actor],
@@ -398,7 +403,7 @@ export function transact(
   }
   const capacity = Math.min(
     l.remaining,
-    2 + (m.demand >= 60 ? 1 : 0),
+    buyer ? Math.min(1 + Math.floor((skillRank(c, "trapper") - 1) / 2), l.remaining) : 2 + (m.demand >= 60 ? 1 : 0),
     B.marketDailyCapacity - m.used,
   );
   let sold = 0,
@@ -411,21 +416,21 @@ export function transact(
   } else {
     const failure = random(s);
     if (failure < 0.35) {
-      lost = Math.min(l.remaining, 2);
+      lost = Math.min(l.remaining, buyer ? 1 : 2);
       outcome = "goods-loss";
     } else if (failure < 0.65) {
       loss = Math.min(18, cash(c));
       outcome = "money-loss";
     }
   }
-  const gross = sold * unitPrice(s, zone),
+  const gross = sold * (unitPrice(s, zone) + (skillRank(c, "trapper") - 1) * 2),
     share = partner ? Math.floor(gross * B.crewShare) : 0;
   l.remaining -= sold + lost;
   l.lost += lost;
   l.collected += gross;
   l.losses += loss;
   l.crewPaid += share;
-  if (gross) earn(s, c, gross, "illicit", "Night goods transaction");
+  if (gross) earn(s, c, gross, "illicit", "Pink Magic transaction");
   if (loss) expense(s, c, loss, "Street transaction loss");
   const crewLoss =
     partner && loss ? Math.min(B.crewLoss, cash(s.characters[partner])) : 0;
@@ -439,7 +444,7 @@ export function transact(
   }
   if (!l.remaining)
     l.status = l.owed ? (l.lost ? "lost" : "distributed") : "settled";
-  m.used += capacity;
+  m.used += buyer ? Math.max(1, sold + lost) : capacity;
   m.activity += sold;
   m.pressure = clamp(m.pressure + 3 + lost * 2);
   m.actors[actor] = (m.actors[actor] ?? 0) + sold;
@@ -462,8 +467,8 @@ export function transact(
     if (actor === s.playerId)
       s.strategic.contributions[c.affiliation] += Math.min(3, gross * 0.01);
   }
-  c.stress = clamp(c.stress + 7);
-  c.rivalThreat = clamp(c.rivalThreat + 2 + m.competition / 25);
+  c.stress = clamp(c.stress + (buyer ? 2 : 7));
+  c.rivalThreat = clamp(c.rivalThreat + (buyer ? 0.6 : 2) + m.competition / (buyer ? 100 : 25));
   const weight = lost
     ? B.goodsLossExposure
     : loss
@@ -471,16 +476,16 @@ export function transact(
       : sold
         ? B.actionExposure
         : B.noBuyerExposure;
-  addExposure(s, actor, zone, weight);
+  addExposure(s, actor, zone, buyer ? weight / 3 : weight);
   if (actor === s.playerId || partner === s.playerId)
     s.strategic.lastCrimeDay = s.day;
   if (partner) {
     const n = s.characters[partner];
-    addExposure(s, partner, zone, weight * B.crewExposureShare, lost > 0);
-    n.stress = clamp(n.stress + 7);
+    addExposure(s, partner, zone, weight * B.crewExposureShare / (buyer ? 3 : 1), lost > 0);
+    n.stress = clamp(n.stress + (buyer ? 2 : 7));
     n.rivalThreat = clamp(n.rivalThreat + 3);
   }
-  const text = `${c.name} · ${s.zones[zone].name}: ${sold ? `${outcome === "partial" ? "Partial sale" : "Successful sale"}, ${sold} night goods for $${gross}.` : `Failed transaction. No proceeds.${lost ? ` ${lost} goods lost; supplier debt remains.` : loss ? ` $${loss} lost.` : " No buyer committed."}`} ${l.remaining} held.${partner ? ` ${s.characters[partner].name} participated; $${share} share from actual proceeds.` : ""}`;
+  const text = `${c.name} · ${s.zones[zone].name}: ${sold ? `${outcome === "partial" ? "Partial sale" : "Successful sale"}, ${sold} Pink Magic for $${gross}.` : `Failed transaction. No proceeds.${lost ? ` ${lost} goods lost; supplier debt remains.` : loss ? ` $${loss} lost.` : " No buyer committed."}`} ${l.remaining} held.${partner ? ` ${s.characters[partner].name} participated; $${share} share from actual proceeds.` : ""}`;
   const e = record(
     s,
     "money",
@@ -500,6 +505,7 @@ export function transact(
   }
   s.street.transactions.push({
     id: `transaction-${s.nextId++}`,
+    ...(buyer ? { sessionId: s.activeSession!.id, sessionCursor: s.activeSession!.cursor } : {}),
     day: s.day,
     lotId: l.id,
     market: zone,
@@ -514,11 +520,41 @@ export function transact(
     outcome,
     eventId: e.id,
   });
+  awardBuyer(s, actor, e.id, sold ? "sale" : "failed");
+  if (partner) awardBuyer(s, partner, e.id, sold ? "sale" : "failed");
+  const progress = skillsOf(c);
+  if (sold) {
+    progress.milestones[`zone:${zone}`] = 1;
+    progress.milestones.commercialZones = Object.keys(progress.milestones).filter(k => k.startsWith("zone:")).length;
+  }
+  if (!l.remaining && sold && s.street.transactions.filter(t => t.lotId === l.id).reduce((n,t) => n + t.sold, 0) >= Math.ceil(l.received / 2) && !progress.milestones[`lot:${l.id}`]) {
+    progress.milestones[`lot:${l.id}`] = 1;
+    progress.milestones.supplyHistory = (progress.milestones.supplyHistory ?? 0) + 1;
+  }
   if (random(s) < policeChance)
     arrest(s, actor, "police intervention during street work", 1);
   if (partner && random(s) < transactionArrestChance(s, partner, zone))
     arrest(s, partner, "participating in street work", 1);
   return e;
+}
+/** Autonomous NPC activity keeps the existing economy; the player uses City sessions. */
+export function transact(s: GameState, actor = s.playerId, zone = saleMarket(s, actor), partner?: string) {
+  if (actor === s.playerId) return;
+  return resolveTransaction(s, actor, zone, partner);
+}
+export function buyerError(s: GameState, actor: string, zone: ZoneId) {
+  if (s.end || s.characters[actor]?.status !== 'active') return 'Requires an active character.';
+  if (!saleLot(s, actor)) return 'No Pink Magic on hand.';
+  const access = marketAccess(s, actor, zone);
+  if (access) return access;
+  const m = s.street.markets[zone];
+  return m.usedDay === s.day && m.used >= B.marketDailyCapacity ? "Today's local demand is filled." : null;
+}
+/** Only a currently unpaid beat of an already paid session may settle a player buyer. */
+export function resolveStreetBuyer(s: GameState, sessionId: string, cursor: number) {
+  const a = s.activeSession;
+  if (!a || a.id !== sessionId || a.cursor !== cursor || a.status !== 'active' || a.settled.includes(`${a.id}:${cursor}`) || a.beats[cursor]?.kind !== 'buyer' || s.street.transactions.some(t => t.sessionId === sessionId && t.sessionCursor === cursor)) return;
+  return resolveTransaction(s, s.playerId, a.zone, a.partner, true);
 }
 export function paymentError(
   s: GameState,
@@ -584,6 +620,9 @@ export function repay(s: GameState, agreementId: string, amount: number) {
         weight: 7,
       });
     if (!l.remaining) l.status = "settled";
+    const p = skillsOf(player(s));
+    p.milestones.supplierPaid = 1;
+    if ((n.relationships[s.playerId]?.trust ?? 0) >= 30) p.milestones.supplierCredible = 1;
   }
 }
 export function advanceStreet(s: GameState) {

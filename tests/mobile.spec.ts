@@ -1,3 +1,4 @@
+import { tapUntil } from "./helpers";
 import { openJournal } from "./journal";
 import { honest, connects, storyAction, storyline } from "./helpers";
 import { dismissEncounter } from "./helpers";
@@ -135,7 +136,14 @@ test("mobile city and new game remain readable at narrow widths", async ({
   await page.getByRole("button", { name: "Enter Stixx City" }).click();
   await dismissEncounter(page);
   await noOverflow(page);
-  await page.getByRole("button", { name: "Select The Nawf" }).click();
+  await tapUntil(
+    page,
+    page.getByRole("button", { name: "Select The Nawf" }),
+    async () =>
+      (await page.locator(".zone-details").textContent())!.includes(
+        "The Blips",
+      ),
+  );
   await expect(page.locator(".zone-details")).toContainText("The Blips");
   await expect(page.locator(".zone-details")).toContainText("Mudgang");
   await page.screenshot({
