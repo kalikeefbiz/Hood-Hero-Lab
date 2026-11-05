@@ -3,6 +3,7 @@ import {
   SETTLE_MS,
   STALL_MS,
   droppedTaps,
+  eventAge,
   installInputGuard,
   setGuardClock,
 } from "../ui/inputGuard";
@@ -67,6 +68,38 @@ describe("input guard", () => {
     expect(droppedTaps() - before).toBe(3);
     // The heartbeat runs again; after a short settle, input works.
     run(500);
+    tap(button);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("drops a tap whose touch landed long before the page could handle it", () => {
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"] });
+    let offset = 0;
+    setGuardClock(() => performance.now() + offset);
+    const button = new EventTarget();
+    remove = installInputGuard(button);
+    const onClick = vi.fn();
+    button.addEventListener("click", onClick);
+    const pass = (ms: number) => {
+      for (let t = 0; t < ms; t += 50) {
+        offset += 50;
+        vi.advanceTimersByTime(50);
+      }
+    };
+    pass(200);
+    // The finger lands now; the page only gets to it 2 s later, after its
+    // heartbeat has already recovered.
+    const touch = new Event("pointerdown");
+    offset += 2000;
+    pass(STALL_MS);
+    expect(eventAge(touch)).toBeGreaterThan(STALL_MS);
+    button.dispatchEvent(touch);
+    tap(button);
+    expect(onClick).not.toHaveBeenCalled();
+    // A fresh touch goes through (back on the event clock's own time base).
+    offset = 0;
+    vi.advanceTimersByTime(150);
+    button.dispatchEvent(new Event("pointerdown"));
     tap(button);
     expect(onClick).toHaveBeenCalledTimes(1);
   });
