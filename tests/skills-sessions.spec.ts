@@ -11,7 +11,12 @@ const state = (page: Page) =>
     (key) => JSON.parse(localStorage.getItem(key)!).state,
     AUTO_KEY,
   );
-async function load(page: Page, atSpot = false, session = false) {
+async function load(
+  page: Page,
+  atSpot = false,
+  session = false,
+  buyerSeed = 2,
+) {
   let s = newGame("Morgan", "south", 123);
   acquire(s, "mega", "consignment");
   s.ap = 2; // fixture has a prepared lot and two untouched activity AP.
@@ -22,7 +27,7 @@ async function load(page: Page, atSpot = false, session = false) {
     s = startStreetSession(s, "south.the-lot").state;
     s.activeSession!.beats.forEach((b) => {
       b.kind = "buyer";
-      b.seed = 2;
+      b.seed = buyerSeed;
     });
   }
   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
@@ -244,6 +249,48 @@ test("background, menu unmount, stale/double touches, reduced motion and End Day
     .poll(async () => (await state(page)).activeSession.status)
     .toBe("ended");
   expect((await state(page)).activeSession.cursor).toBe(expectedCursor);
+});
+
+test("a real session arrest opens custody, reloads safely, and releases without unresolved buyers", async ({
+  page,
+}, info) => {
+  test.setTimeout(90000);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await load(page, true, true, 1); // Real low-probability arrest from the shared seeded buyer resolver.
+  const panel = page.getByRole("region", { name: "Trapping session" });
+  await panel.getByRole("button", { name: "Continue session" }).click();
+  await panel.getByRole("button", { name: "Skip visitor" }).click();
+  await expect(
+    page.getByRole("heading", { name: "In custody", exact: true }),
+  ).toBeVisible();
+  const arrested = await state(page);
+  expect(arrested.characters.player.status).toBe("arrested");
+  expect(arrested.activeSession.status).toBe("ended");
+  expect(arrested.activeSession.cursor).toBe(1);
+  expect(
+    arrested.street.transactions.filter(
+      (t: { actor: string }) => t.actor === "player",
+    ),
+  ).toHaveLength(1);
+  await page.reload();
+  await page.getByRole("button", { name: "Resume saved game" }).click();
+  await expect(
+    page.getByRole("heading", { name: "In custody", exact: true }),
+  ).toBeVisible();
+  await page.screenshot({ path: info.outputPath("session-custody.png") });
+  await page.getByRole("button", { name: "Serve remaining sentence" }).click();
+  await dismissEncounter(page);
+  const released = await state(page);
+  expect(released.characters.player.status).toBe("active");
+  expect(released.day).toBeGreaterThan(arrested.day);
+  expect(released.activeSession.status).toBe("ended");
+  expect(released.activeSession.cursor).toBe(1);
+  expect(
+    released.street.transactions.filter(
+      (t: { actor: string }) => t.actor === "player",
+    ),
+  ).toHaveLength(1);
+  expect(released.characters.loco.status).toBe("arrested");
 });
 
 test("WebGL unavailable: physically present accessible session settles the same persisted buyer", async ({

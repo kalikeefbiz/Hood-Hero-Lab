@@ -272,6 +272,9 @@ export function App() {
         setNotice((e as Error).message);
       }
   }, [s]);
+  useEffect(() => {
+    if (s && (s.end || hospitalStay(s) || player(s).status === 'arrested')) setPanelOpen(true);
+  }, [s]);
   function start() {
     window.scrollTo(0, 0);
     setActionFeedback(null);
@@ -293,10 +296,10 @@ export function App() {
       if (next) {
         window.scrollTo(0, 0);
         if (next.activeSession?.status === "active") next.activeSession.status = "paused";
-        if (next.activeSession) setPanelOpen(false);
+        setPanelOpen(!next.activeSession || next.activeSession.status === "ended");
         setState(next);
         setSelected(player(next).home);
-        setBoard({ zone: next.activeSession?.zone ?? player(next).home, block: null, place: next.activeSession?.location ?? null });
+        setBoard({ zone: next.activeSession?.status !== "ended" ? next.activeSession?.zone ?? player(next).home : player(next).home, block: null, place: next.activeSession?.status !== "ended" ? next.activeSession?.location ?? null : null });
         setScreen("City");
         setHistoryEncounterId(null);
         setNotice(`Loaded day ${next.day}.`);

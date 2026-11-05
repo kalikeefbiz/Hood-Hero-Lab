@@ -1,3 +1,4 @@
+import { hospitalStay } from "../systems/Danger";
 import { useEffect, type Dispatch, type SetStateAction } from "react";
 import { player, type GameState } from "../core/GameState";
 import { locationById } from "../board/locations";
@@ -89,7 +90,8 @@ export function StreetSessionPlayback({
     }, a.beats[cursor]?.duration ?? 7200);
     return () => window.clearTimeout(timer);
   }, [a?.id, a?.cursor, a?.status, visible, change]);
-  if (!a || !visible) return null;
+  if (!a || !visible || player(s).status !== "active" || hospitalStay(s))
+    return null;
   const advance = () =>
     change((cur) =>
       cur && !document.hidden ? advanceStreetSession(cur, a.id, a.cursor) : cur,
