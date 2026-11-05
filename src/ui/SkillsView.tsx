@@ -60,18 +60,20 @@ export function SkillsView({ character }: { character: Character }) {
           </details>
         );
       })}
-      <details>
-        <summary>Recent XP records</summary>
-        {progress.awards
-          .slice(-16)
-          .reverse()
-          .map((a) => (
-            <p key={a.id}>
-              Day {a.day} · {SKILLS[a.skill].name} +
-              {(a.amount / 100).toFixed(2)}
-            </p>
-          ))}
-      </details>
+      {character.id === "player" && (
+        <details>
+          <summary>Recent XP records</summary>
+          {progress.awards
+            .slice(-16)
+            .reverse()
+            .map((a) => (
+              <p key={a.id}>
+                Day {a.day} · {SKILLS[a.skill].name} +
+                {(a.amount / 100).toFixed(2)}
+              </p>
+            ))}
+        </details>
+      )}
     </section>
   );
 }
