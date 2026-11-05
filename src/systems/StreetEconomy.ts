@@ -359,6 +359,7 @@ export function transactionChance(
       support -
       exposureScore(s, actor, zone) / 220 -
       c.stress / 650 -
+      c.rivalThreat / 1000 -
       m.pressure / 500 -
       (m.competition + (s.strategic.territories[zone].contested ? 10 : 0)) /
         900 -

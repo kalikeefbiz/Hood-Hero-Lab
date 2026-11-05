@@ -519,6 +519,38 @@ describe("physical and transactional City sessions", () => {
     );
     expect(s.activeSession!.status).toBe("ended");
   });
+  it("includes rare local personal-conflict risk for a neutral player without making every visitor hostile", () => {
+    let rival = false,
+      ordinary = false;
+    for (let seed = 1; seed <= 80; seed++) {
+      const s = ready(seed),
+        event = record(s, "risk", "Real local conflict fixture", [
+          "mega",
+          "player",
+        ]);
+      addGrievance(
+        s,
+        "mega",
+        "player",
+        "Existing local history",
+        event.id,
+        90,
+        true,
+      );
+      const session = startStreetSession(s, "south.the-lot").state
+        .activeSession!;
+      rival ||= session.beats.some((b) => b.kind === "rival");
+      ordinary ||= session.beats.some(
+        (b) => b.kind === "buyer" || b.kind === "pass",
+      );
+    }
+    expect(rival).toBe(true);
+    expect(ordinary).toBe(true);
+    const s = ready(),
+      quiet = transactionChance(s);
+    player(s).rivalThreat = 80;
+    expect(transactionChance(s)).toBeLessThan(quiet);
+  });
   it("migrates historical v8 state additively and rejects corrupt progress, equipment, or session references", () => {
     const s = ready(),
       old = JSON.parse(serialize(s));

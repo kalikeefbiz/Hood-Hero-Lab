@@ -1,3 +1,5 @@
+import { progress } from "./Progression";
+import { finalizeEnding } from "./EndConditions";
 import { finishSessionPartner, interruptSession } from "./SessionLifecycle";
 import { z } from "zod";
 import { player, type GameState } from "../core/GameState";
@@ -104,6 +106,15 @@ export function startStreetSession(state: GameState, location: string) {
     Math.floor(
       random(s) * (SESSION_BALANCE.maxBeats - SESSION_BALANCE.minBeats + 1),
     );
+  const localConflict = s.danger.conflicts.some(
+    (c) =>
+      c.state !== "settled" &&
+      c.seriousness >= 35 &&
+      c.participants.includes(s.playerId) &&
+      c.participants.some(
+        (id) => id !== s.playerId && s.characters[id]?.home === l.zone,
+      ),
+  );
   const beats: StreetSession["beats"] = [];
   for (let i = 0; i < count; i++) {
     const roll = random(s),
@@ -115,7 +126,7 @@ export function startStreetSession(state: GameState, location: string) {
           ? "pass"
           : roll < 0.9
             ? "buyer"
-            : roll < 0.98 || risk.score < 25
+            : roll < 0.98 || (risk.score < 25 && !localConflict)
               ? "witness"
               : "rival";
     beats.push({
@@ -220,6 +231,8 @@ export function advanceStreetSession(
   session.totals.heat += Math.max(0, player(s).police - heat);
   session.settled.push(key);
   session.cursor++;
+  progress(s);
+  finalizeEnding(s);
   syncEncounters(s);
   const reason = interruption(s);
   if (reason || session.cursor === session.beats.length || !saleLot(s)) {
