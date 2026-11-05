@@ -704,6 +704,7 @@ export function App() {
           time={time}
           insets={insets}
           onInteract={() => screen !== "City" && setScreen("City")}
+          paused={screen !== "City"}
           people={people}
           personId={personId}
           onPerson={(id) => {

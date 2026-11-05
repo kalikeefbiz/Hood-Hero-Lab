@@ -459,6 +459,7 @@ export class BoardRenderer {
     this.wake();
   }
   detach() {
+    this.finishWalk(true);
     cancelAnimationFrame(this.frame);
     this.running = false;
     this.observer?.disconnect();
@@ -578,20 +579,72 @@ export class BoardRenderer {
     const b = locationBlock(l);
     return [x, b && !b.waterfront ? b.maxZ + 1.3 : z + 3];
   }
+  /**
+   * End the current walk now and settle its promise. The UI locks input while
+   * a walk is pending, so a walk must never be dropped unsettled: not when
+   * the piece is re-placed, a new walk starts, the board pauses or detaches.
+   */
+  private finishWalk(snap: boolean) {
+    const w = this.tokenWalk;
+    if (!w) return;
+    this.tokenWalk = null;
+    if (snap) {
+      const [x, z] = w.path[w.path.length - 1];
+      this.token.position.set(x, 0, z);
+    }
+    this.token.position.y = 0;
+    this.tokenBody.rotation.y = 0;
+    w.done();
+  }
+  private paused = false;
+  /**
+   * Eco mode: the device can't keep the board at an interactive frame rate,
+   * so it drops to 1x resolution and stops drawing between interactions (the
+   * way the software-GL fallback does). Taps must never queue behind frames.
+   */
+  private eco = false;
+  private slowAvg = 0;
+  private slowSince = 0;
+  private watchFrame(interval: number, now: number) {
+    if (this.eco || this.lite) return;
+    this.slowAvg = this.slowAvg * 0.9 + interval * 0.1;
+    if (this.slowAvg < 50) {
+      this.slowSince = 0;
+      return;
+    }
+    if (!this.slowSince) this.slowSince = now;
+    else if (now - this.slowSince > 1500) {
+      this.eco = true;
+      this.renderer.setPixelRatio(1);
+      this.resize();
+      (window as unknown as { __stixxEco?: boolean }).__stixxEco = true;
+    }
+  }
+  /** Pause while another screen covers the board; nothing is drawn. */
+  setPaused(paused: boolean) {
+    if (paused === this.paused) return;
+    this.paused = paused;
+    if (paused) {
+      this.finishWalk(true);
+      cancelAnimationFrame(this.frame);
+      this.running = false;
+    } else this.wake();
+  }
   /** Put the player's piece somewhere without animating. */
   placeToken(placeId: string | null) {
     if (!placeId) return;
+    this.finishWalk(false);
     const [x, z] = BoardRenderer.frontOf(placeId);
     this.token.position.set(x, 0, z);
-    this.tokenWalk = null;
     this.wake();
   }
   /** Walk the player's piece along the streets to a place; resolves on arrival. */
   walkTo(placeId: string): Promise<void> {
+    this.finishWalk(true);
     const [tx, tz] = BoardRenderer.frontOf(placeId);
     const fx = this.token.position.x,
       fz = this.token.position.z;
-    if (Math.hypot(tx - fx, tz - fz) < 0.5 || this.reducedMotion) {
+    if (Math.hypot(tx - fx, tz - fz) < 0.5 || this.reducedMotion || this.paused) {
       this.placeToken(placeId);
       return Promise.resolve();
     }
@@ -2344,14 +2397,14 @@ export class BoardRenderer {
     this.start();
   }
   private start() {
-    if (this.running || this.disposed) return;
+    if (this.running || this.disposed || this.paused) return;
     this.running = true;
     this.lastFrame = performance.now();
     this.frame = requestAnimationFrame(this.tick);
   }
   private tick = (now: number) => {
     if (this.disposed) return;
-    if (document.hidden || !this.visible) {
+    if (document.hidden || !this.visible || this.paused) {
       this.running = false;
       return;
     }
@@ -2361,13 +2414,16 @@ export class BoardRenderer {
       this.pointers.size > 0 ||
       !!this.flight ||
       !!this.tokenWalk;
-    if (!active && (this.lite || this.reducedMotion)) {
+    if (!active && (this.lite || this.eco || this.reducedMotion)) {
       this.running = false;
       cancelAnimationFrame(this.frame);
       return;
     }
     if (!active && now - this.lastFrame < 32) return;
-    const dt = Math.min(0.1, (now - this.lastFrame) / 1000);
+    const interval = now - this.lastFrame;
+    // Only judge frames drawn back to back (not the first after a wake).
+    if (active && interval < 1000) this.watchFrame(interval, now);
+    const dt = Math.min(0.1, interval / 1000);
     this.lastFrame = now;
     this.clock += dt;
     if (this.flight) {

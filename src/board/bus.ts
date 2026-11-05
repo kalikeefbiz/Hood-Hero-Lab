@@ -12,7 +12,17 @@ export function connectBoard(w: Walker, pulse: () => void) {
     dayPulse = null;
   };
 }
-/** Walk the player's figure to a place. Resolves immediately without a board. */
+/**
+ * Walk the player's figure to a place. Resolves immediately without a board,
+ * and never later than WALK_LIMIT_MS: the UI holds input while a walk is
+ * pending, so a stalled board must not be able to lock the game.
+ */
+export const WALK_LIMIT_MS = 4000;
 export const walkTo = (placeId: string) =>
-  walker ? walker(placeId) : Promise.resolve();
+  walker
+    ? Promise.race([
+        walker(placeId),
+        new Promise<void>((r) => window.setTimeout(r, WALK_LIMIT_MS)),
+      ])
+    : Promise.resolve();
 export const pulseDay = () => dayPulse?.();
