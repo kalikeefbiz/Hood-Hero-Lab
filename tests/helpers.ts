@@ -17,13 +17,20 @@ export async function navigate(page: Page, name: string) {
     return button.getAttribute('aria-current');
   },{timeout:15000,intervals:[500,800,1200]}).toBe('page');
 }
+async function category(page: Page, name: string) {
+  const button = page.getByRole('button', {name, exact:true});
+  await expect.poll(async()=>{
+    if(await button.getAttribute('aria-pressed') !== 'true') await button.click();
+    return button.getAttribute('aria-pressed');
+  },{timeout:15000,intervals:[500,800,1200]}).toBe('true');
+}
 export async function honest(page: Page) {
   await navigate(page, 'Actions');
-  await page.getByRole('button', {name:'Honest', exact:true}).click();
+  await category(page, 'Honest');
 }
 export async function connects(page: Page, person?: string) {
   await navigate(page, 'Actions');
-  await page.getByRole('button', {name:'Connects', exact:true}).click();
+  await category(page, 'Connects');
   if(person) await page.getByLabel('Connected contacts', {exact:true}).selectOption(person);
 }
 export async function storyline(page: Page) {
