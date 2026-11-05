@@ -4,8 +4,12 @@ import { expect, errors, type Page, type Locator } from "@playwright/test";
 export async function dismissEncounter(page: Page) {
   await expect(page.locator(".game-shell")).toBeVisible();
   const modal = page.getByRole("dialog", { name: "Character encounter" });
-  for (let i = 0; i < 8 && (await modal.count()); i++)
-    await modal.getByRole("button", { name: "Close conversation" }).click();
+  if (await modal.count())
+    await tapUntil(
+      page,
+      modal.getByRole("button", { name: "Close conversation" }),
+      async () => (await modal.count()) === 0,
+    );
 }
 
 /** Retap a user command only while its expected state has not been acknowledged.

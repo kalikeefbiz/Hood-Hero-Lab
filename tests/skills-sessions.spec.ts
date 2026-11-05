@@ -63,10 +63,14 @@ async function nav(page: Page, name: string) {
 
 async function spot(page: Page) {
   // Accessible City location list also serves the WebGL fallback.
-  await page
-    .getByRole("region", { name: "Places in Southside" })
-    .getByRole("button", { name: /The Lot/ })
-    .click();
+  await tapUntil(
+    page,
+    page
+      .getByRole("region", { name: "Places in Southside" })
+      .getByRole("button", { name: /The Lot/ }),
+    async () =>
+      page.getByRole("region", { name: "City trapping spot" }).isVisible(),
+  );
 }
 
 async function continueSession(page: Page) {
@@ -300,7 +304,11 @@ test("a real session arrest opens custody, reloads safely, and releases without 
     page.getByRole("heading", { name: "In custody", exact: true }),
   ).toBeVisible();
   await page.screenshot({ path: info.outputPath("session-custody.png") });
-  await page.getByRole("button", { name: "Serve remaining sentence" }).click();
+  await tapUntil(
+    page,
+    page.getByRole("button", { name: "Serve remaining sentence" }),
+    async () => (await state(page)).characters.player.status !== "arrested",
+  );
   await dismissEncounter(page);
   const released = await state(page);
   expect(released.characters.player.status).toBe("active");

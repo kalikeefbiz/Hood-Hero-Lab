@@ -38,7 +38,12 @@ async function nav(page: Page, name: string) {
 
 async function day(page: Page) {
   await dismissEncounter(page);
-  await page.getByRole("button", { name: "End day" }).click();
+  const before = (await state(page)).day;
+  await tapUntil(
+    page,
+    page.getByRole("button", { name: "End day" }),
+    async () => (await state(page)).day > before,
+  );
   await dismissEncounter(page);
 }
 async function snap(page: Page, name: string) {
@@ -296,7 +301,11 @@ test("seeded real-play arrest serves every day and releases into continued gamep
   ).toBeVisible();
   await snap(page, "08-arrest-and-incarceration");
   const before = await state(page);
-  await page.getByRole("button", { name: "Serve remaining sentence" }).click();
+  await tapUntil(
+    page,
+    page.getByRole("button", { name: "Serve remaining sentence" }),
+    async () => (await state(page)).characters.player.status !== "arrested",
+  );
   await dismissEncounter(page);
   const after = await state(page);
   console.log(
