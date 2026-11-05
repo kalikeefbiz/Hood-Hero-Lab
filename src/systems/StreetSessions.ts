@@ -99,7 +99,11 @@ export function startStreetSession(state: GameState, location: string) {
   if (error) return { state, error };
   const s = structuredClone(state),
     l = locationById(location)!;
-  const count = SESSION_BALANCE.minBeats + Math.floor(random(s) * (SESSION_BALANCE.maxBeats - SESSION_BALANCE.minBeats + 1));
+  const count =
+    SESSION_BALANCE.minBeats +
+    Math.floor(
+      random(s) * (SESSION_BALANCE.maxBeats - SESSION_BALANCE.minBeats + 1),
+    );
   const beats: StreetSession["beats"] = [];
   for (let i = 0; i < count; i++) {
     const roll = random(s),

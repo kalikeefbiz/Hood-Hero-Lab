@@ -180,7 +180,11 @@ export function awardSkill(
   const c = s.characters[actor],
     p = skillsOf(c),
     key = `${skill}:${id}`;
-  if (p.awards.some((a) => a.id === key) || !Number.isSafeInteger(p.xp[skill] + amount)) return false;
+  if (
+    p.awards.some((a) => a.id === key) ||
+    !Number.isSafeInteger(p.xp[skill] + amount)
+  )
+    return false;
   p.awards.push({ id: key, skill, amount, day: s.day });
   p.xp[skill] += amount;
   if (milestone) p.milestones[milestone] = (p.milestones[milestone] ?? 0) + 1;
