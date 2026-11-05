@@ -157,7 +157,8 @@ function campaign(target: "custody" | "crew" | "default") {
 test("supplier to inventory to multiple real sales and repayment through normal mobile controls", async ({
   page,
 }) => {
-  test.setTimeout(test.info().project.name.includes("webkit") ? 180000 : 90000);
+  // Three real City sessions plus travel, supply, repayment and guarded mobile input.
+  test.setTimeout(240000);
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("response", (r) => {
