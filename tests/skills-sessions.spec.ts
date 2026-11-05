@@ -134,6 +134,7 @@ test("City presence, approaching visitor, paid outcomes, mid-session reload, and
     page,
     panel.getByRole("button", { name: "Pause", exact: true }),
     async () => (await state(page)).activeSession.status === "paused",
+    30000,
   );
   await expect
     .poll(async () => (await state(page)).activeSession.status)

@@ -1,4 +1,10 @@
-import { expect, errors, type Page, type Locator } from "@playwright/test";
+import {
+  expect,
+  errors,
+  test,
+  type Page,
+  type Locator,
+} from "@playwright/test";
 // Baseline UI tests intentionally put aside the opening conversation first.
 // Modal behavior itself is exercised in encounters.spec.ts.
 export async function dismissEncounter(page: Page) {
@@ -38,7 +44,7 @@ export async function tapUntil(
             try {
               // The iPhone projects dispatch a native touch gesture atomically.
               // Separate emulated mouse down/up commands can age during software WebGL frames.
-              if (await page.evaluate(() => navigator.maxTouchPoints > 0))
+              if (test.info().project.use.hasTouch)
                 await button.tap({ timeout: 5000 });
               else await button.click({ timeout: 5000 });
             } catch (error) {
