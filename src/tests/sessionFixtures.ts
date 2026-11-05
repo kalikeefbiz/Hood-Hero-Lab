@@ -1,3 +1,4 @@
+import { resolveStreetScene } from "../systems/Danger";
 import type { GameState } from "../core/GameState";
 import { presenceOf } from "../board/presence";
 import { LOCATIONS } from "../board/locations";
@@ -13,6 +14,11 @@ export function oneBuyer(state: GameState, zone = saleMarket(state)) {
   let s = structuredClone(state);
   const location = LOCATIONS.find((l) => l.zone === zone && l.links.street)!.id;
   s.presence = { ...presenceOf(s), location, zone };
+  // Finish actual contextual conversations before this isolated buyer probe.
+  for (const scene of s.danger.scenes.filter(
+    (scene) => scene.status === "open",
+  ))
+    resolveStreetScene(s, scene, "listen");
   // Opening story dialogue is outside these isolated economy probes.
   for (const e of s.encounters) if (e.status === "active") e.status = "closed";
   const seed = s.rng;

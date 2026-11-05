@@ -24,6 +24,9 @@ export class SessionVisitors {
   private duration = 7.2;
   private at = new THREE.Vector3();
   private reduced = false;
+  get phase(): string | null {
+    return this.visitor?.visible ? (this.visitor.userData.phase ?? null) : null;
+  }
   get active() {
     return !!this.visitor && this.elapsed < this.duration;
   }
@@ -68,16 +71,16 @@ export class SessionVisitors {
       phase = visitorPhase(t);
     const offset =
       t < 0.35
-        ? 9 - (t / 0.35) * 7.6
+        ? 6 - (t / 0.35) * 4.6
         : t < 0.68
           ? 1.4
           : 1.4 + ((t - 0.68) / 0.32) * 9;
     this.visitor.position.set(
-      this.at.x + (this.reduced ? 1.4 : offset),
+      this.at.x + 0.5,
       this.at.y,
-      this.at.z + 0.6,
+      this.at.z + (this.reduced ? 1.4 : offset),
     );
-    this.visitor.rotation.y = phase === "leaving" ? Math.PI / 2 : -Math.PI / 2;
+    this.visitor.rotation.y = phase === "leaving" ? 0 : Math.PI;
     this.visitor.visible = phase !== "gone";
     this.visitor.userData.phase = phase;
   }

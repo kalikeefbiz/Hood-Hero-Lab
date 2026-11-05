@@ -605,10 +605,10 @@ describe("focused progression balance and presentation adapter", () => {
       new Vector3(10, 0, 20),
     );
     const figure = actor.root.children[0],
-      far = figure.position.x;
+      far = figure.position.z;
     actor.update(4);
     expect(figure.userData.phase).toBe("interacting");
-    expect(figure.position.x).toBeLessThan(far);
+    expect(figure.position.z).toBeLessThan(far);
     actor.update(4);
     expect(figure.userData.phase).toBe("leaving");
     actor.update(2);

@@ -1,6 +1,6 @@
 import { oneBuyer } from "../src/tests/sessionFixtures";
 import { buyerError } from "../src/systems/StreetEconomy";
-import { connects, honest } from "./helpers";
+import { connects, honest, navigate } from "./helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { dismissEncounter } from "./helpers";
 import { newGame } from "../src/core/Simulation";
@@ -32,12 +32,8 @@ test.beforeEach(async ({ page }) => {
 async function state(page: Page) {
   return page.evaluate((k) => JSON.parse(localStorage.getItem(k)!).state, key);
 }
-async function nav(page: Page, name: string) {
-  await page
-    .getByRole("navigation")
-    .getByRole("button", { name, exact: true })
-    .click();
-}
+async function nav(page: Page, name: string) { await navigate(page, name); }
+
 async function day(page: Page) {
   await dismissEncounter(page);
   await page.getByRole("button", { name: "End day" }).click();
@@ -89,7 +85,7 @@ async function resume(page: Page, s: GameState) {
   await dismissEncounter(page);
 }
 function campaign(target: "custody" | "crew" | "default") {
-  let s = newGame("Test(6) seeded journey", "south", 98713);
+  let s = newGame("Test(6) seeded journey", "south", target === "custody" ? 1 : 98713);
   const act = (type: "crime" | "gig" | "contact", target?: string) => {
     if (type === "crime") { s = oneBuyer(s); return; }
     const r = performAction(s, { actor: "player", type, target });

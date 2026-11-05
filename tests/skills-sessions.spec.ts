@@ -102,8 +102,13 @@ test("City presence, approaching visitor, paid outcomes, mid-session reload, and
   expect(queue.length).toBeLessThanOrEqual(6);
   const stage = page.locator(".board-stage[data-session-visitor]");
   await expect(stage).toBeVisible();
-  await page.waitForTimeout(2800);
+  await expect(stage).toHaveAttribute("data-visitor-phase", "interacting", {
+    timeout: 15000,
+  });
   await page.screenshot({ path: info.outputPath("visitor-approaching.png") });
+  await expect(stage).toHaveAttribute("data-visitor-phase", "leaving", {
+    timeout: 15000,
+  });
   await panel.getByRole("button", { name: "Skip visitor" }).click();
   // Capture a real paused checkpoint; an active timer is allowed to settle while a screenshot runs.
   await panel.getByRole("button", { name: "Pause", exact: true }).click();
