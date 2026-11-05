@@ -403,7 +403,11 @@ const schema = z.object({
 });
 // The strategy-board lab keeps its own slots so it can never touch saves from
 // the production game, even on the same web origin.
-export const SAVE_KEY = "blackhouse.hoodhero-lab.v1";
+// The /next/ preview build sets VITE_SAVE_SUFFIX so it never reads or
+// overwrites the main Lab's saves.
+export const SAVE_KEY =
+  "blackhouse.hoodhero-lab.v1" +
+  ((import.meta.env?.VITE_SAVE_SUFFIX as string | undefined) ?? "");
 export const AUTO_KEY = SAVE_KEY + ".auto";
 export function serialize(s: GameState): string {
   return JSON.stringify({ format: "syndicate", version: s.version, state: s });
