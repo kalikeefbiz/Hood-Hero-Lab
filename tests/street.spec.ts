@@ -208,7 +208,12 @@ test("supplier to inventory to multiple real sales and repayment through normal 
     const summary = page.getByRole("button", {
       name: "Dismiss session summary",
     });
-    if (await summary.count()) await summary.click();
+    if (await summary.count())
+      await tapUntil(
+        page,
+        summary,
+        async () => !(await state(page)).activeSession,
+      );
     const district = page
       .getByRole("group", { name: "Board location" })
       .getByRole("button", { name: "Southside", exact: true });
@@ -240,12 +245,12 @@ test("supplier to inventory to multiple real sales and repayment through normal 
     for (let beat = 0; beat < 6; beat++) {
       const skip = panel.getByRole("button", { name: "Skip visitor" });
       if (!(await skip.count())) break;
-      const cursor = (await state(page)).activeSession.cursor;
-      await tapUntil(
-        page,
-        skip,
-        async () => (await state(page)).activeSession.cursor !== cursor,
-      );
+      const current = (await state(page)).activeSession;
+      if (current.status !== "active") break;
+      await tapUntil(page, skip, async () => {
+        const next = (await state(page)).activeSession;
+        return next.status !== "active" || next.cursor !== current.cursor;
+      });
     }
     s = await state(page);
     for (const t of s.street.transactions) {
@@ -253,7 +258,12 @@ test("supplier to inventory to multiple real sales and repayment through normal 
       else failures++;
     }
     const ended = page.getByRole("button", { name: "Dismiss session summary" });
-    if (await ended.count()) await ended.click();
+    if (await ended.count())
+      await tapUntil(
+        page,
+        ended,
+        async () => !(await state(page)).activeSession,
+      );
   }
   expect(successes).toBeGreaterThan(0);
   expect((await state(page)).street.transactions.length).toBeGreaterThan(1);
