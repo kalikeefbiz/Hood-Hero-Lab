@@ -10,6 +10,7 @@ export function arrest(s: GameState, id: string, cause: string, severity = 1) {
     B.minSentence + Math.min(2, prior) + Math.max(0, severity - 1),
   );
   c.status = "arrested";
+  if (id === s.playerId && s.activeSession && s.activeSession.status !== "ended") { s.activeSession.status = "ended"; s.activeSession.reason = "Arrested. Unresolved visitors cancelled."; }
   const e = record(
     s,
     "risk",

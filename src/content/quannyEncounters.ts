@@ -1,3 +1,4 @@
+import { skillRank } from "../systems/Skills";
 import type { EncounterDefinition, EncounterResponse } from "../core/Encounter";
 import {
   QUANNY_HOME,
@@ -50,7 +51,7 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
     if (e.selectedResponses.at(-1)?.id === "terms") {
       const t = consignmentTerms(s);
       return t
-        ? `I can make some happen but I need a front. ${t.quantity} night goods. I owe you $${t.amount}, six days from now. I don't pay up front.`
+        ? `I can make some happen but I need a front. ${t.quantity} Pink Magic. I owe you $${t.amount}, six days from now. I don't pay up front.`
         : "Bring something real before we talk business.";
     }
     return `${e.sourceEventId && s.quanny.knownLocation ? QUANNY_LOCATION_REVEAL + " " : ""}What you got?`;
@@ -177,7 +178,7 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
     for (const r of responses)
       if (["rob", "retaliate", "fight", "disrespect"].includes(r.id)) {
         r.detail = `1 AP · ${r.detail}`;
-        r.requirement = (state) => (state.ap < 1 ? "Requires 1 AP." : null);
+        r.requirement = (state) => state.ap < 1 ? "Requires 1 AP." : r.id === "retaliate" && skillRank(state.characters[state.playerId], "combat") < 2 ? "Requires story Combat certification — not yet available in the game." : null;
       }
     return responses;
   },

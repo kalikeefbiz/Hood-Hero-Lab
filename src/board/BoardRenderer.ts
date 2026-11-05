@@ -1,3 +1,4 @@
+import { SessionVisitors, type SessionVisitor } from "./SessionVisitors";
 import * as THREE from "three";
 import type { FactionId, ZoneId } from "../core/GameState";
 import {
@@ -332,6 +333,11 @@ export class BoardRenderer {
     done: () => void;
   } | null = null;
   private figures = new THREE.Group();
+  private sessionVisitors = new SessionVisitors();
+  setSessionVisitor(visitor: SessionVisitor | null) {
+    this.sessionVisitors.set(visitor, this.token.position, this.reducedMotion);
+    this.wake();
+  }
   private tokenBody = new THREE.Group();
   private appearanceKey = "";
   private focusLayer = new THREE.Group();
@@ -430,7 +436,7 @@ export class BoardRenderer {
     w.__stixxBuildMs = performance.now() - t0;
     // Exposed for the inspect-runtime workflow and automated checks.
     w.__stixxBoard = this;
-    this.scene.add(this.dynamic, this.focusLayer, this.figures);
+    this.scene.add(this.dynamic, this.focusLayer, this.figures, this.sessionVisitors.root);
     this.buildToken();
     this.setTimeOfDay("dusk");
     this.bindInput(el);
@@ -2413,7 +2419,7 @@ export class BoardRenderer {
       now - this.lastActive < 1200 ||
       this.pointers.size > 0 ||
       !!this.flight ||
-      !!this.tokenWalk;
+      !!this.tokenWalk || (this.sessionVisitors.active && !this.reducedMotion);
     if (!active && (this.lite || this.eco || this.reducedMotion)) {
       this.running = false;
       cancelAnimationFrame(this.frame);
@@ -2436,6 +2442,7 @@ export class BoardRenderer {
       this.yaw = THREE.MathUtils.lerp(f.from.yaw, f.to.yaw, e);
       if (f.t >= 1) this.flight = null;
     }
+    this.sessionVisitors.update(dt);
     for (const a of this.animated) a(this.clock, dt);
     for (const a of this.dynamicAnimated) a(this.clock, dt);
     for (const a of this.focusAnimated) a(this.clock, dt);

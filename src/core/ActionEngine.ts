@@ -1,3 +1,5 @@
+import { awardSkill, proficiency, skillsOf } from "../systems/Skills";
+import { equipmentBonus } from "../systems/Equipment";
 import { openQuanny, quannyError, quannyConversation } from "../systems/Quanny";
 import {
   expose,
@@ -417,6 +419,8 @@ export function validateAction(s: GameState, a: Action): string | null {
     c.possessions.includes(a.item)
   )
     return "Already owned";
+  if (a.type === "crime" && a.actor === s.playerId) return "Visit a City street spot and start a trapping session.";
+  if (a.actor === s.playerId && s.activeSession && s.activeSession.status !== "ended") return "End your trapping session before another action.";
   if (a.type === "crime") {
     if (a.market && !s.zones[a.market]) return "Unknown market";
     return transactionError(s, a.actor, a.market);
@@ -466,13 +470,13 @@ export function actionSuccessChance(s: GameState, a: Action): number | null {
   const c = s.characters[a.actor];
   if (!c) return null;
   if (a.type === "negotiate")
-    return clamp(0.35 + c.skills.social / 150 - c.stress / 500, 0.1, 0.85);
+    return clamp(0.35 + proficiency(c, "social") / 150 - c.stress / 500, 0.1, 0.85);
   if (a.type === "recover") {
     const i = a.incidentId ? s.incidents[a.incidentId] : undefined;
     return i
       ? clamp(
           0.22 +
-            c.skills.recovery / 200 +
+            (proficiency(c, "combat") + equipmentBonus(c).attack * 3) / 200 +
             recoverySupport(s, c.id, i.organization) -
             c.stress / 500 -
             i.escalation / 400,
@@ -489,7 +493,7 @@ export function partnerContribution(s: GameState, id: string) {
   const c = s.characters[id],
     r = c.relationships[s.playerId];
   return clamp(
-    (c.skills.recovery - 35) / 250 +
+    (proficiency(c, "trapper") - 35) / 250 +
       (r?.trust ?? 0) / 1000 -
       c.stress / 600 -
       (r?.grievance ?? 0) / 500,
@@ -516,6 +520,7 @@ export function resolveAction(s: GameState, a: Action) {
   }
   let text = "";
   let category: "social" | "money" | "crew" | "incident" | "risk" = "social";
+  const initialStress = c.stress;
   const socialGain = Math.max(3, 10 - Math.floor(c.stress / 25));
   switch (a.type) {
     case "apply":
@@ -725,6 +730,17 @@ export function resolveAction(s: GameState, a: Action) {
     [c.id, ...(t ? [t.id] : [])],
     [c.id, ...(t ? [t.id] : [])],
   );
+  if (a.type === 'gig') awardSkill(s, c.id, 'work', 100, `gig:${s.day}`);
+  if (['contact', 'socialize'].includes(a.type) && t) {
+    const trust = t.relationships[c.id]?.trust ?? 0;
+    for (const gate of [25, 50, 75]) if (trust >= gate)
+      awardSkill(s, c.id, 'social', 100, `trust:${t.id}:${gate}`);
+  }
+  if (a.type === 'introduce') awardSkill(s, c.id, 'social', 100, `introduction:${t!.id}`);
+  if (a.type === 'negotiate' && i?.negotiated && text.includes('lowered')) awardSkill(s, c.id, 'social', 200, `negotiation:${i.id}`);
+  if (a.type === 'buyback') awardSkill(s, c.id, 'social', 200, `reconciliation:${i!.id}`);
+  if (a.type === 'rest' && initialStress >= 14 && c.stress <= 30 && !skillsOf(c).awards.some(x => x.skill === 'survival' && x.day > s.day - 7))
+    awardSkill(s, c.id, 'survival', 25, `rest:${s.day}`);
   if (
     i &&
     ["negotiate", "settlement", "buyback", "recover", "favor"].includes(a.type)

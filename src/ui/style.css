@@ -1738,3 +1738,17 @@ html {
   font-size: 12px;
   color: var(--muted);
 }
+
+/* GOAL 010: compact state-backed skills and City activity status. */
+.skill-track { padding: .7rem 0; border-bottom: 1px solid #ffffff24; }
+.skill-track summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: .35rem .8rem; }
+.skill-track summary span { color: var(--muted, #b8bbc3); }
+.session-playback { position: fixed; z-index: 24; bottom: calc(var(--nav-h, 64px) + 10px); left: 12px; width: min(360px, calc(100vw - 24px)); background: #171a21ed; color: #eee; border: 1px solid #b88a4566; border-radius: 12px; padding: 12px; box-shadow: 0 4px 16px #0006; font-size: 13px; }
+.session-playback p { margin: .4em 0; }
+.session-controls { display: flex; flex-wrap: wrap; gap: 6px; }
+.session-controls button { min-height: 44px; padding: 6px 10px; }
+@media (min-width: 900px) { .session-playback { bottom: calc(var(--nav-h, 64px) + 12px); left: 20px; } }
+
+.session-playback { max-height: 38vh; overflow-y: auto; font-size: 12px; }
+.session-playback details { font-size: 11px; margin: 4px 0; }
+.session-controls button { font-size: 12px; }

@@ -1,3 +1,5 @@
+import { oneBuyer } from "../src/tests/sessionFixtures";
+import { buyerError } from "../src/systems/StreetEconomy";
 import { connects, honest } from "./helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { dismissEncounter } from "./helpers";
@@ -23,8 +25,8 @@ test.beforeEach(async ({ page }) => {
     expect(r.ok()).toBe(true);
     const info = await r.json();
     expect(info.commit).toBe(process.env.PLAYWRIGHT_EXPECTED_COMMIT);
-    expect(info.milestone).toBe("GOAL 007");
-    expect(info.saveSchema).toBe(8);
+    expect(info.milestone).toBe("GOAL 010");
+    expect(info.saveSchema).toBe(9);
   }
 });
 async function state(page: Page) {
@@ -89,6 +91,7 @@ async function resume(page: Page, s: GameState) {
 function campaign(target: "custody" | "crew" | "default") {
   let s = newGame("Test(6) seeded journey", "south", 98713);
   const act = (type: "crime" | "gig" | "contact", target?: string) => {
+    if (type === "crime") { s = oneBuyer(s); return; }
     const r = performAction(s, { actor: "player", type, target });
     if (r.error) throw Error(r.error);
     s = r.state;
@@ -124,9 +127,10 @@ function campaign(target: "custody" | "crew" | "default") {
       repay(s, debt.id, debt.balance);
     if (s.ap && !saleLot(s) && !supplierError(s, "mega", "consignment"))
       acquire(s, "mega", "consignment");
-    while (s.ap && !transactionError(s)) {
+    while (s.ap && !buyerError(s, s.playerId, "south")) {
       if (target === "crew") {
         requestActivity(s, "flacco", "partner-crime");
+        s = oneBuyer(s);
         if (s.street.transactions.at(-1)?.partner) return s;
         break;
       }
@@ -182,24 +186,30 @@ test("supplier to inventory to multiple real sales and repayment through normal 
     let s = await state(page);
     if (!s.street.lots[0].remaining) break;
     if (!s.ap) await day(page);
-    await nav(page, "Actions");
-    const sell = page.getByRole("button", {
-      name: "Pursue local transaction · 1 AP",
-    });
-    if (await sell.isDisabled()) {
-      await day(page);
-      continue;
-    }
+    await nav(page, "City");
+    const ack = page.getByRole("button", {name: "Acknowledge", exact:true});
+    while(await ack.count()) await ack.click();
+    const summary = page.getByRole("button",{name:"Dismiss session summary"});
+    if(await summary.count())await summary.click();
+    const district=page.getByRole("group",{name:"Board location"}).getByRole("button",{name:"Southside",exact:true});
+    if(await district.count())await district.click();
+    await page.getByRole("region",{name:"Places in Southside"}).getByRole("button",{name:/The Lot/}).click();
+    const go=page.getByRole("button",{name:"Go here",exact:true});
+    if(await go.count())await go.click();
+    await dismissEncounter(page);
+    const sell=page.getByRole("button",{name:"Start trapping — 1 AP"});
+    if(await sell.isDisabled()){await day(page);continue;}
     await sell.click();
-    s = await state(page);
-    const t = s.street.transactions.at(-1);
-    if (t.gross) {
-      successes++;
-      await snap(page, "03-successful-transaction");
-    } else {
-      failures++;
-      await snap(page, "04-failed-transaction");
+    const panel=page.getByRole("region",{name:"Trapping session"});
+    for(let beat=0;beat<6;beat++){
+      const skip=panel.getByRole("button",{name:"Skip visitor"});
+      if(!await skip.count())break;
+      await skip.click();
     }
+    s=await state(page);
+    for(const t of s.street.transactions){if(t.gross)successes++;else failures++;}
+    const ended=page.getByRole("button",{name:"Dismiss session summary"});
+    if(await ended.count())await ended.click();
   }
   expect(successes).toBeGreaterThan(0);
   expect((await state(page)).street.transactions.length).toBeGreaterThan(1);
@@ -286,9 +296,7 @@ test("seeded real-play arrest serves every day and releases into continued gamep
   );
   await snap(page, "09-release");
   await nav(page, "Actions");
-  await expect(
-    page.getByRole("button", { name: "Pursue local transaction · 1 AP" }),
-  ).toBeVisible();
+  await expect(page.getByRole("region", {name:"Street operations"})).toContainText("Go to City");
 });
 test("default reaction and accumulated heat are rendered from real simulated consequences", async ({
   page,

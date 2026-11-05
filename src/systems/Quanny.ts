@@ -132,7 +132,7 @@ export function businessError(s: GameState) {
   if (consignmentTerms(s) && cash(q) < consignmentTerms(s, true)!.amount)
     return "Quanny has his operating money tied up. Try again after he earns more.";
   if (!consignmentTerms(s))
-    return "Requires real night goods in your available inventory.";
+    return "Requires real Pink Magic in your available inventory.";
   return null;
 }
 export function repairError(s: GameState) {

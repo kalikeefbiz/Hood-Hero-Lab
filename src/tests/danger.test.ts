@@ -1,3 +1,4 @@
+import { oneBuyer } from "./sessionFixtures";
 import { acquire, transact } from "../systems/StreetEconomy";
 import { connect } from "../systems/Relationships";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -117,13 +118,13 @@ describe("contextual street life", () => {
     expect(s.danger.conflicts[0].state).toBe("settled");
   });
   it("derives a corner objection from an actual transaction and debt from an actual supplier", () => {
-    const s = world("contact-muds");
+    let s = world("contact-muds");
     connect(s, s.playerId, "contact-muds");
     s.characters["contact-muds"].relationships.player.trust = 40;
     player(s).neighborhoodStanding.nawf = 20;
     acquire(s, "contact-muds", "consignment");
     expect(s.street.agreements).toHaveLength(1);
-    transact(s, s.playerId, "nawf");
+    s = oneBuyer(s, "nawf");
     player(s).status = "active";
     roll();
     expose(s, "nawf.deli", "activity", "2");
@@ -200,7 +201,7 @@ describe("recognition, war and non-linear conflict", () => {
   });
   it("allows immediate nonlethal assault from a personal dispute without granting lethal permission", () => {
     roll(0.01);
-    const s = world("contact-muds");
+    let s = world("contact-muds");
     beef(s, "contact-muds", 70, false);
     const next = moveTo(s, "nawf.deli");
     expect(hospitalStay(next)?.kind).toBe("assault");
@@ -313,7 +314,7 @@ describe("bounded exposure and exact exceptional fatalities", () => {
       performAction(next, { actor: next.playerId, type: "rest" }).error,
     ).toMatch(/ended/);
     expect(deserialize(serialize(next)).end).toBe("killed");
-    const s = world("contact-muds");
+    let s = world("contact-muds");
     player(s).affiliation = "blips";
     expect(lethalConflict(s)).toBe(true);
     const warState = moveTo(s, "nawf.deli");

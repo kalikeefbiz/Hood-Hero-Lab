@@ -116,7 +116,6 @@ export function ActionsHub({
         <>
           <StreetWork
             s={s}
-            sell={(market) => act({ type: "crime", actor: p.id, market })}
             connects={() => setCategory("Connects")}
           />
           <div className="quiet-option">
@@ -199,7 +198,7 @@ export function ActionsHub({
                     <strong>
                       {debt
                         ? `Outstanding: $${debt.balance} · due day ${debt.dueDay}`
-                        : "Night goods · limited lot"}
+                        : "Pink Magic · limited lot"}
                     </strong>
                     {!debt && (
                       <p>

@@ -76,7 +76,7 @@ export function frontMerchandise(
   const e = record(
     s,
     "money",
-    `Quanny: “I can make some happen but I need a front.” You transferred ${quantity} night goods. Quanny owes you $${amount}, collectible day ${dueDay}. No money paid up front. ${quannyCollectionInstruction(s, dueDay)}`,
+    `Quanny: “I can make some happen but I need a front.” You transferred ${quantity} Pink Magic. Quanny owes you $${amount}, collectible day ${dueDay}. No money paid up front. ${quannyCollectionInstruction(s, dueDay)}`,
     ["quanny", s.playerId],
     undefined,
     { title: "Merchandise fronted", importance: "major", commitmentId },

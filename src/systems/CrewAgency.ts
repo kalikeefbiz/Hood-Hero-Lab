@@ -1,3 +1,4 @@
+import { awardSkill, proficiency, skillRank } from "./Skills";
 import { applyInfluence } from "./Territory";
 import { saleLot, transactionChance } from "./StreetEconomy";
 import {
@@ -74,7 +75,7 @@ export const knownCapabilities = (c: Character) =>
   [
     `Work: ${c.skills.work >= 55 ? "experienced" : c.skills.work >= 35 ? "practiced" : "learning"}`,
     `Connections: ${c.skills.social >= 55 ? "well connected" : c.skills.social >= 35 ? "local ties" : "limited"}`,
-    `Street experience: ${c.skills.recovery >= 55 ? "seasoned" : c.skills.recovery >= 35 ? "practical" : "inexperienced"}`,
+    `Street experience: ${skillRank(c, "trapper") >= 3 ? "seasoned" : skillRank(c, "trapper") >= 2 ? "practical" : "inexperienced"}`,
   ].join(" · ");
 export function cooperation(
   s: GameState,
@@ -135,7 +136,7 @@ export function cooperation(
     activity === "information" || activity === "social"
       ? c.skills.social
       : risky
-        ? c.skills.recovery
+        ? proficiency(c, "trapper")
         : c.skills.work;
   const score =
     (r?.trust ?? 0) * 0.45 +
@@ -166,11 +167,12 @@ export function assignmentChance(
     activity === "information" || activity === "social"
       ? c.skills.social
       : activity === "partner-crime"
-        ? c.skills.recovery
+        ? proficiency(c, "trapper")
         : c.skills.work;
   return clamp(
     0.36 +
       skill / 180 +
+      (proficiency(player(s), "leadership") - 20) / 1500 +
       (r?.trust ?? 0) / 600 -
       c.stress / 350 -
       (r?.grievance ?? 0) / 500,
@@ -184,6 +186,7 @@ export function requestError(
   activity: CrewActivity,
   compensation = CREW_BALANCE.compensation,
 ): string | null {
+  if (s.activeSession && s.activeSession.status !== "ended") return "End your trapping session before another commitment.";
   if (s.end) return "This run has ended";
   if (player(s).status !== "active")
     return "You are unavailable while in custody.";
@@ -202,10 +205,11 @@ export function requestError(
     return "You already discussed this request today. Give them some space.";
   if (activity === "work" && cash(player(s)) < compensation)
     return `Requires $${compensation} compensation held until completion`;
-  if (["partner-gig", "partner-crime"].includes(activity))
+  if (activity === "partner-crime") return saleLot(s) ? null : "No Pink Magic on hand.";
+  if (activity === "partner-gig")
     return validateAction(s, {
       actor: s.playerId,
-      type: activity === "partner-gig" ? "gig" : "crime",
+      type: "gig",
     });
   return null;
 }
@@ -344,7 +348,7 @@ export function requestActivity(
     logAssignment(s, a, a.outcome, repeated ? -2 : 0);
     return;
   }
-  s.ap--;
+  if (activity !== "partner-crime") s.ap--;
   c.agency.lastAssignmentDay = s.day;
   c.agency.unreasonableRequests = Math.max(
     0,
@@ -360,9 +364,9 @@ export function requestActivity(
   logAssignment(
     s,
     a,
-    `${c.name} accepted ${a.objective.toLowerCase()}. ${activity === "work" ? `$${compensation} reserved for their time; possible $${a.expectedBenefit} on day ${a.dueDay}. No earnings yet.` : "1 AP committed; both of you participate."}`,
+    `${c.name} accepted ${a.objective.toLowerCase()}. ${activity === "work" ? `$${compensation} reserved for their time; possible $${a.expectedBenefit} on day ${a.dueDay}. No earnings yet.` : activity === "partner-crime" ? "Ready to accompany your next City trapping session; its 1 AP is charged there." : "1 AP committed; both of you participate."}`,
   );
-  if (activity !== "work") resolveAssignment(s, a);
+  if (!["work", "partner-crime"].includes(activity)) resolveAssignment(s, a);
 }
 function shareInformation(s: GameState, a: CrewAssignment) {
   const c = s.characters[a.member],
@@ -387,8 +391,18 @@ function shareInformation(s: GameState, a: CrewAssignment) {
 }
 export function resolveAssignment(s: GameState, a: CrewAssignment) {
   if (a.status !== "active" || a.dueDay > s.day) return;
+  if (a.activity === "partner-crime") {
+    // Session resolver owns sales. An unattended invitation expires without invented proceeds.
+    if (a.createdDay >= s.day) return;
+    a.status = "resolved"; a.success = false; a.outcome = "No City session attended.";
+    const promise = s.commitments.find(c => c.id === a.commitmentId);
+    if (promise) promise.status = "released";
+    return;
+  }
   const c = s.characters[a.member],
     p = player(s);
+  const knownBefore = new Set(p.known);
+  const informedBefore = s.incidents["the-chains"]?.informed;
   // Membership changes do not erase promises; incapacitation can still break them.
   a.success =
     c.status === "active" &&
@@ -403,8 +417,8 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
     outcome = a.success
       ? `$${a.expectedBenefit} clean pay produced; ${c.name} received the reserved $${a.compensation}.`
       : `The work fell through. No pay for you; ${c.name} received $${a.compensation} for their time.`;
-  } else if (a.activity === "partner-gig" || a.activity === "partner-crime") {
-    const type = a.activity === "partner-gig" ? "gig" : "crime";
+  } else if (a.activity === "partner-gig") {
+    const type = "gig" as const;
     const error = validateAction({ ...s, ap: s.ap + 1 }, { actor: p.id, type });
     // AP has already been paid by the assignment, so restore it only around the existing resolver.
     if (c.status !== "active" || error) {
@@ -416,17 +430,11 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
       const before = cash(p);
       resolveAction(s, { actor: p.id, type, partner: c.id });
       a.success = cash(p) > before;
-      if (type === "gig") {
-        const bonus = Math.max(0, Math.floor((c.skills.work - 25) / 8));
-        earn(s, p, bonus, "clean", "Partner's work contribution");
-        c.wallet.clean += 16;
-        c.stress = clamp(c.stress + 5);
-        outcome = `Shared local gig: you earned $${38 + bonus}; ${c.name} earned $16. Work experience determined the extra pay.`;
-      } else {
-        const transaction = s.street.transactions.at(-1);
-        a.success = !!transaction?.gross;
-        outcome = `Shared street transaction: ${transaction?.sold ?? 0} goods sold. ${c.name} received $${transaction?.crewPaid ?? 0} from actual proceeds${transaction?.crewLoss ? ` and lost $${transaction.crewLoss}` : ""}; only participants gained exposure. Supplier debt remains with the owner.`;
-      }
+      const bonus = Math.max(0, Math.floor((proficiency(c, 'work') - 25) / 8));
+      earn(s, p, bonus, 'clean', "Partner's work contribution");
+      c.wallet.clean += 16;
+      c.stress = clamp(c.stress + 5);
+      outcome = `Shared local gig: you earned $${38 + bonus}; ${c.name} earned $16. Work experience determined the extra pay.`;
     }
   } else if (a.activity === "social") {
     a.success = true;
@@ -470,6 +478,15 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
   a.outcome = `${c.name} · ${a.objective}: ${outcome}${a.experience ? ` +${a.experience} ${a.skill} experience.` : ""}`;
   c.agency.lastAssignmentDay = s.day;
   const e = logAssignment(s, a, a.outcome, a.success ? 5 : -2);
+  if (a.success) {
+    const newContact = p.known.find(id => !knownBefore.has(id));
+    const meaningful = a.activity !== 'information' || !!newContact || (!informedBefore && s.incidents['the-chains']?.informed);
+    const key = a.activity === 'social' ? `crew-trust:${c.id}:${Math.floor((c.relationships[p.id]?.trust ?? 0) / 25)}` : a.activity === 'information' ? `crew-information:${newContact ?? 'chains'}` : a.id;
+    if (meaningful) {
+      awardSkill(s, p.id, 'leadership', 100, key);
+      awardSkill(s, c.id, a.activity === 'work' || a.activity === 'partner-gig' ? 'work' : 'social', 100, key);
+    }
+  }
   const promise = s.commitments.find((x) => x.id === a.commitmentId);
   if (promise) {
     promise.status = a.success ? "fulfilled" : "failed";

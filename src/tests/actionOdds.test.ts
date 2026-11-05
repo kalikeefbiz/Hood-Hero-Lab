@@ -1,3 +1,4 @@
+import { oneBuyer } from "./sessionFixtures";
 import { acquire } from "../systems/StreetEconomy";
 import { describe, expect, test } from "vitest";
 import { newGame } from "../core/Simulation";
@@ -24,7 +25,7 @@ describe("odds presented to the player", () => {
         expect(chance).toBeLessThanOrEqual(1);
         expect(s).toEqual(before);
         const succeeds = random(structuredClone(s)) < chance;
-        const result = performAction(s, a);
+        const result = type === "crime" ? { state: oneBuyer(s), error: null } : performAction(s, a);
         expect(result.error).toBeNull();
         if (type === "negotiate")
           expect(

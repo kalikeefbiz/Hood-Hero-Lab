@@ -1,3 +1,4 @@
+import { skillsOf } from "../systems/Skills";
 import { describe, expect, it } from "vitest";
 import { newGame, enterGameplay } from "../core/Simulation";
 import {
@@ -352,7 +353,7 @@ describe("directional consignment, collection and persistent relationships", () 
     const rs = choices(s);
     expect(
       rs.find((r) => r.id === "terms")!.requirement!(s, currentEncounter(s)!),
-    ).toMatch(/real night goods/);
+    ).toMatch(/real Pink Magic/);
     expect(
       rs.find((r) => r.id === "ask-work")!.requirement!(
         s,
@@ -479,9 +480,14 @@ describe("directional consignment, collection and persistent relationships", () 
       expect(s.characters.quanny.status).not.toBe("dead");
       const experienced = structuredClone(base);
       experienced.danger.rng = seed;
-      // A survivor can become capable through actual confrontation history without a new skill meter.
+      // Only genuine combat progression can make a capable opponent; recovery is not training.
       expect(player(experienced).skills.recovery).toBe(35);
       player(experienced).notoriety = 100;
+      const progress = skillsOf(player(experienced));
+      progress.xp.combat = 6000;
+      progress.milestones.certified = 1;
+      progress.milestones.violentSuccess = 12;
+      experienced.rng = seed;
       for (let i = 0; i < 8; i++)
         experienced.danger.injuries.push({
           id: `past-${i}`,

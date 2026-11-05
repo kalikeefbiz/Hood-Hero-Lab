@@ -31,7 +31,7 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
         : n.id === "pablo"
           ? "You give your word, you keep it. I remember who does."
           : "Small lot. Clear terms. We see how this goes before there's any more.";
-    return `${tone} ${MERCHANDISE.nightgoods.quantity} night goods: $90 cash now, or $102 on consignment by the end of day ${s.day + B.deadline}. Expected gross here is $${6 * unitPrice(s, n.home)} if it all sells. ${e.selectedResponses.some((r) => r.id === "terms") ? "That's gross, before supplier cost, losses and a partner's share. No guaranteed buyers. Police scrutiny, competition and repeated activity can interrupt trade; you still owe me if goods disappear." : "Buyers aren't promised. Police and local organizations are watching."}`;
+    return `${tone} ${MERCHANDISE.nightgoods.quantity} Pink Magic: $90 cash now, or $102 on consignment by the end of day ${s.day + B.deadline}. Expected gross here is $${6 * unitPrice(s, n.home)} if it all sells. ${e.selectedResponses.some((r) => r.id === "terms") ? "That's gross, before supplier cost, losses and a partner's share. No guaranteed buyers. Police scrutiny, competition and repeated activity can interrupt trade; you still owe me if goods disappear." : "Buyers aren't promised. Police and local organizations are watching."}`;
   },
   responses: (s, e) => {
     const supplier = e.participants[0],

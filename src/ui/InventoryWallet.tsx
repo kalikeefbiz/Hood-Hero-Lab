@@ -1,3 +1,4 @@
+import { equip, equipError, equipmentOf, EQUIPMENT } from "../systems/Equipment";
 import { quannyCollectionInstruction } from "../systems/QuannyState";
 import { player, type GameState } from "../core/GameState";
 import { lotProfit } from "../systems/StreetEconomy";
@@ -7,8 +8,10 @@ import { Icon } from "./Icon";
 export function InventoryWallet({
   s,
   open,
+  change,
 }: {
   s: GameState;
+  change: (s: GameState) => void;
   open: (id: string) => void;
 }) {
   const p = player(s),
@@ -53,7 +56,7 @@ export function InventoryWallet({
                 <span className="item-placeholder" aria-hidden="true">
                   ▧
                 </span>
-                <strong>Night goods</strong>
+                <strong>Pink Magic</strong>
                 <b>×{l.remaining}</b>
                 <small>View lot details</small>
               </summary>
@@ -64,6 +67,14 @@ export function InventoryWallet({
             <p className="empty-slot">No merchandise on hand.</p>
           )}
         </div>
+        <h4>Equipment</h4>
+        <p>Only equipped, rank-eligible tools grant bonuses. Story/contact rewards may grant equipment; stores do not sell it.</p>
+        {equipmentOf(p).owned.length === 0 && <p>No equipment owned.</p>}
+        {equipmentOf(p).owned.map(id => { const def = EQUIPMENT[id], equipped = p.equipment?.equipped === id, reason = equipError(p, id); return <div key={id}>
+          <strong>{def.name} · {def.type}</strong><p>Attack +{def.attack} · Defense +{def.defense} · Combat rank {def.rank}{equipped ? ' · Equipped' : ''}</p>
+          <button disabled={!equipped && !!reason} onClick={() => { const next = structuredClone(s); equip(player(next), equipped ? null : id); change(next); }}>{equipped ? 'Unequip' : 'Equip'} {def.name}</button>
+          {reason && <p>{reason}</p>}
+        </div>; })}
         {p.possessions.length > 0 && (
           <>
             <h4>Personal possessions</h4>
@@ -117,7 +128,7 @@ export function InventoryWallet({
               <div key={a.id}>
                 <p>
                   {s.characters[a.debtor].name} owes you {money(a.balance)} ·{" "}
-                  {a.quantity} night goods · {a.status}
+                  {a.quantity} Pink Magic · {a.status}
                 </p>
                 <p>
                   Agreed {money(a.original)} · paid {money(a.repaid)}
@@ -160,7 +171,7 @@ export function InventoryWallet({
           {lots.map((l) => (
             <details key={l.id}>
               <summary>
-                Night goods · day {l.acquiredDay} · {l.status}
+                Pink Magic · day {l.acquiredDay} · {l.status}
               </summary>
               {detail(l)}
             </details>

@@ -1,3 +1,5 @@
+import { awardSkill, awardCombat, awardRobbery, proficiency, skillsOf, skillRank } from "./Skills";
+import { equipmentBonus } from "./Equipment";
 /** Gameplay only. No camera, renderer, wall clock, or UI randomness. */
 import { beginQuanny } from "./Quanny";
 import { quannyConversation } from "./QuannyState";
@@ -180,7 +182,7 @@ export function violence(
   const p = player(s),
     canKill = war || !!c?.lethal;
   const shooting = canKill && random(s) < 0.35 + npc.traits.risk / 250;
-  const fatal = shooting && random(s) < 0.12;
+  const fatal = shooting && random(s) < Math.max(0.03, 0.12 - proficiency(p, "survival") / 1400 - equipmentBonus(p).defense / 200);
   const e = record(
     s,
     "risk",
@@ -236,6 +238,7 @@ export function hospitalize(
   eventId: string,
 ) {
   if (s.end || hospitalStay(s)) return;
+  if (s.activeSession && s.activeSession.status !== "ended") { s.activeSession.status = "ended"; s.activeSession.reason = "Hospitalized. Unresolved visitors cancelled."; }
   const p = player(s),
     days = kind === "shooting" ? 5 : 2,
     bill = kind === "shooting" ? 480 : 180;
@@ -278,6 +281,7 @@ export function dischargePatient(s: GameState) {
   const stay = hospitalStay(s);
   if (stay && s.day >= stay.releaseDay && player(s).status !== "dead") {
     stay.discharged = true;
+    awardSkill(s, s.playerId, "survival", 100, `recovery:${stay.id}`);
     if (player(s).status === "laying-low") player(s).status = "active";
     player(s).stress = clamp(player(s).stress - 10);
     record(
@@ -413,8 +417,11 @@ export function resolveStreetScene(
   } else if (response === "leave") {
     text = `You left the conversation with ${name(npc)}. No agreement was made.`;
     const e = record(s, "social", text, [p.id, npc.id]);
-    if (c) conflictOutcome(s, c, e.id, "Left without agreement");
-    if ((war || c?.lethal) && random(s) < npc.traits.risk / 400)
+    if (c) {
+      conflictOutcome(s, c, e.id, "Left without agreement");
+      awardSkill(s, p.id, "survival", 50, `escape:${c.id}`);
+    }
+    if ((war || c?.lethal) && random(s) < Math.max(.015, npc.traits.risk / 400 - proficiency(p, "survival") / 2000 - equipmentBonus(p).defense / 500))
       text = violence(s, npc, c, war);
   } else if (
     response === "identify" &&
@@ -429,7 +436,7 @@ export function resolveStreetScene(
         clamp(
           65 +
             npc.traits.lawful / 4 +
-            p.skills.social / 5 +
+            proficiency(p, "social") / 5 +
             (npc.relationships[p.id]?.trust ?? 0) / 5 -
             c.seriousness / 2,
           12,
@@ -440,6 +447,7 @@ export function resolveStreetScene(
       ? `${name(npc)} heard you out. The conversation ended peacefully.`
       : `${name(npc)} heard you out but made no promises. You parted without resolving the disagreement.`;
     const e = record(s, "social", text, [p.id, npc.id]);
+    if (resolved && c) awardSkill(s, p.id, "social", 200, `mediation:${c.id}`);
     connect(s, p.id, npc.id);
     change(npc, p.id, { trust: 4, respect: 2, grievance: -5 });
     remember(s, npc.id, p.id, e.id, "Tried to talk things through.", 3);
@@ -884,6 +892,7 @@ export function initiateConflict(
     npc = s.characters[target];
   if (!npc || npc.status !== "active" || s.end || hospitalStay(s) || s.ap < 1)
     return;
+  if (approach === "retaliate" && skillRank(p, "combat") < 2) return;
   s.ap--;
   const e = record(
     s,
@@ -918,22 +927,12 @@ export function initiateConflict(
       s.characters[id]?.status === "active" &&
       s.characters[id].affiliation === npc.affiliation,
   ).length;
-  // A reachable mid-game route: real trading experience and recovered confrontations,
-  // alongside the existing skill, improve capability. Conversation spam is not training.
-  const experience =
-    s.street.transactions.filter((t) => t.actor === p.id && t.sold > 0).length +
-    s.danger.injuries.filter((i) => i.discharged).length * 3 +
-    s.assignments.filter(
-      (a) =>
-        a.activity === "partner-crime" && a.status === "resolved" && a.success,
-    ).length;
-  const practicedSkill = clamp(
-    p.skills.recovery + Math.min(40, experience * 1.5),
-  );
-  const capable = practicedSkill >= 70 && p.notoriety >= 35 && experience >= 6;
+  const experience = skillsOf(p).milestones.violentSuccess ?? 0;
+  const practicedSkill = proficiency(p, 'combat') + equipmentBonus(p).attack * 3;
+  const capable = skillRank(p, 'combat') >= 3 && p.notoriety >= 35 && experience >= 3;
   const chance = clamp(
     0.02 +
-      (practicedSkill - npc.skills.recovery) / 120 +
+      (practicedSkill - proficiency(npc, "combat") - equipmentBonus(npc).defense * 3) / 120 +
       p.notoriety / 300 +
       supporters.length * 0.08 -
       backing * 0.025 -
@@ -942,10 +941,14 @@ export function initiateConflict(
     capable ? 0.8 : 0.015,
   );
   if (random(s) >= chance) {
+    if (approach === "rob") awardRobbery(s, p.id, e.id, "strong-arm", false);
+    awardCombat(s, p.id, e.id, "failed");
     violence(s, npc, c, approach === "retaliate" || approach === "rob");
     return;
   }
+  awardCombat(s, p.id, e.id, "success");
   if (approach === "rob") {
+    awardRobbery(s, p.id, e.id, "strong-arm", true);
     const amount = Math.min(60, cash(npc));
     expense(s, npc, amount, "Robbery loss");
     earn(s, p, amount, "illicit", `Robbery of ${name(npc)}`);

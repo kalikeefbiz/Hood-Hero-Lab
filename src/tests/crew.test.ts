@@ -1,3 +1,4 @@
+import { oneBuyer } from "./sessionFixtures";
 import { acquire } from "../systems/StreetEconomy";
 import { describe, expect, it } from "vitest";
 import { newGame } from "../core/Simulation";
@@ -333,14 +334,15 @@ describe("assignment boundaries and personal consequences", () => {
       c.skills.recovery = 60;
       acquire(s, "mega", "consignment");
       requestActivity(s, c.id, "partner-crime");
+      Object.assign(s, oneBuyer(s));
       const a = s.assignments[0];
       expect(a.status).toBe("resolved");
       outcomes.add(a.success!);
       expect(s.ap).toBe(0);
       expect(player(s).police).toBeGreaterThan(0);
-      expect(c.police).toBeGreaterThan(0);
+      expect(s.characters[c.id].police).toBeGreaterThan(0);
       const t = s.street.transactions.at(-1)!;
-      expect(c.wallet.clean + c.wallet.illicit).toBe(
+      expect(s.characters[c.id].wallet.clean + s.characters[c.id].wallet.illicit).toBe(
         80 + t.crewPaid - t.crewLoss,
       );
       expect(t.partner).toBe(c.id);

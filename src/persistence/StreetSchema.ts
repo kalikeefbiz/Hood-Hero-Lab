@@ -63,6 +63,8 @@ export const streetSchema = z.object({
   transactions: z.array(
     z.object({
       id,
+      sessionId: id.optional(),
+      sessionCursor: i.max(5).optional(),
       day: i,
       lotId: id,
       market: zone,
