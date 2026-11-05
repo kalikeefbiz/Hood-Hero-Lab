@@ -1,0 +1,226 @@
+[
+  {
+    "engine": "chromium-mobile",
+    "name": "input-guard.spec.ts >> taps queued while the page is frozen never fire; the next tap does",
+    "status": "passed",
+    "duration_ms": 10228,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "input-guard.spec.ts >> taps queued while the page is frozen never fire; the next tap does",
+    "status": "passed",
+    "duration_ms": 13701,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session",
+    "status": "passed",
+    "duration_ms": 63708,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> Actions gives directions only; Skills and inventory remain readable on iPhone",
+    "status": "passed",
+    "duration_ms": 5424,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes",
+    "status": "passed",
+    "duration_ms": 29962,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> a real session arrest opens custody, reloads safely, and releases without unresolved buyers",
+    "status": "passed",
+    "duration_ms": 13063,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> WebGL unavailable: physically present accessible session settles the same persisted buyer",
+    "status": "passed",
+    "duration_ms": 1792,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session",
+    "status": "failed",
+    "duration_ms": 14267,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeDisabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('button', { name: 'Start trapping \u2014 1 AP' })\nExpected: disabled\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeDisabled\" getByRole('button', { name: 'Start trapping \u2014 1 AP' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Start trapping \u2014 1 AP' })\u001b[22m\n",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> Actions gives directions only; Skills and inventory remain readable on iPhone",
+    "status": "passed",
+    "duration_ms": 8452,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes",
+    "status": "passed",
+    "duration_ms": 38807,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> a real session arrest opens custody, reloads safely, and releases without unresolved buyers",
+    "status": "failed",
+    "duration_ms": 21546,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"a\u001b[7mctive\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"a\u001b[7mrrested\u001b[27m\"\u001b[39m",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> WebGL unavailable: physically present accessible session settles the same persisted buyer",
+    "status": "passed",
+    "duration_ms": 2209,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls",
+    "status": "failed",
+    "duration_ms": 66255,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nCall Log:\n- Timeout 45000ms exceeded while waiting on the predicate",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> seeded real-play arrest serves every day and releases into continued gameplay",
+    "status": "passed",
+    "duration_ms": 13097,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> default reaction and accumulated heat are rendered from real simulated consequences",
+    "status": "passed",
+    "duration_ms": 8642,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> crew-assisted street work uses an earned willing partner and actual inventory",
+    "status": "passed",
+    "duration_ms": 4842,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 320px",
+    "status": "passed",
+    "duration_ms": 6621,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 375px",
+    "status": "passed",
+    "duration_ms": 6919,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 390px",
+    "status": "passed",
+    "duration_ms": 6938,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 430px",
+    "status": "passed",
+    "duration_ms": 8247,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls",
+    "status": "failed",
+    "duration_ms": 85251,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nCall Log:\n- Timeout 20000ms exceeded while waiting on the predicate",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> seeded real-play arrest serves every day and releases into continued gameplay",
+    "status": "failed",
+    "duration_ms": 9025,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"a\u001b[7mctive\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"a\u001b[7mrrested\u001b[27m\"\u001b[39m",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> default reaction and accumulated heat are rendered from real simulated consequences",
+    "status": "passed",
+    "duration_ms": 13724,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> crew-assisted street work uses an earned willing partner and actual inventory",
+    "status": "passed",
+    "duration_ms": 9978,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 320px",
+    "status": "passed",
+    "duration_ms": 10568,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 375px",
+    "status": "passed",
+    "duration_ms": 9658,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 390px",
+    "status": "passed",
+    "duration_ms": 10327,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 430px",
+    "status": "passed",
+    "duration_ms": 12416,
+    "error": "",
+    "source_log": "release-target.log"
+  }
+]

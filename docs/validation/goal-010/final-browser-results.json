@@ -1,0 +1,362 @@
+[
+  {
+    "engine": "chromium-mobile",
+    "name": "corrections.spec.ts >> known suspects and leaders need real introductions; access and inventory survive reload",
+    "status": "passed",
+    "duration_ms": 20482,
+    "error": "",
+    "source_log": "recheck-chromium-mobile.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "encounters.spec.ts >> activity preserves chronology, true faction IDs, severity, private knowledge and routine detail",
+    "status": "passed",
+    "duration_ms": 1568,
+    "error": "",
+    "source_log": "recheck-chromium-mobile.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "input-guard.spec.ts >> taps queued while the page is frozen never fire; the next tap does",
+    "status": "passed",
+    "duration_ms": 10228,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "mobile.spec.ts >> phone gameplay: contact, lawful income, days, save and load",
+    "status": "passed",
+    "duration_ms": 18903,
+    "error": "",
+    "source_log": "recheck-chromium-mobile.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "overhaul.spec.ts >> directional trust, witnessed events, activity filters and day grouping preserve visibility",
+    "status": "passed",
+    "duration_ms": 6243,
+    "error": "",
+    "source_log": "recheck-chromium-mobile.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "overhaul.spec.ts >> negotiated demand comes from state; ended and damaged saves remain inspectable and safe",
+    "status": "passed",
+    "duration_ms": 13922,
+    "error": "",
+    "source_log": "recheck-chromium-mobile.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "overhaul.spec.ts >> valid sponsored blips membership keeps the shell neutral and survives checkpoint reload",
+    "status": "passed",
+    "duration_ms": 7340,
+    "error": "",
+    "source_log": "recheck-chromium-mobile.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "quanny.spec.ts >> board collection at notoriety 34 records the correct permanent outcome",
+    "status": "passed",
+    "duration_ms": 15743,
+    "error": "",
+    "source_log": "recheck-chromium-mobile.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "quanny.spec.ts >> intentional board visit introduces Quanny once, fronts physical stock and persists on reload",
+    "status": "passed",
+    "duration_ms": 17643,
+    "error": "",
+    "source_log": "recheck-chromium-mobile.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> Actions gives directions only; Skills and inventory remain readable on iPhone",
+    "status": "passed",
+    "duration_ms": 5424,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session",
+    "status": "passed",
+    "duration_ms": 63708,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> WebGL unavailable: physically present accessible session settles the same persisted buyer",
+    "status": "passed",
+    "duration_ms": 1792,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> a real session arrest opens custody, reloads safely, and releases without unresolved buyers",
+    "status": "passed",
+    "duration_ms": 13063,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "skills-sessions.spec.ts >> background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes",
+    "status": "passed",
+    "duration_ms": 29962,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> crew-assisted street work uses an earned willing partner and actual inventory",
+    "status": "passed",
+    "duration_ms": 4842,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> default reaction and accumulated heat are rendered from real simulated consequences",
+    "status": "passed",
+    "duration_ms": 8642,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> seeded real-play arrest serves every day and releases into continued gameplay",
+    "status": "passed",
+    "duration_ms": 13097,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 320px",
+    "status": "passed",
+    "duration_ms": 6621,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 375px",
+    "status": "passed",
+    "duration_ms": 6919,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 390px",
+    "status": "passed",
+    "duration_ms": 6938,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 430px",
+    "status": "passed",
+    "duration_ms": 8247,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls",
+    "status": "passed",
+    "duration_ms": 130978,
+    "error": "",
+    "source_log": "finish-chromium-mobile.log"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "visual-correction.spec.ts >> GOAL 002B mandatory visual review: new run, independent and Blips at 390",
+    "status": "passed",
+    "duration_ms": 17003,
+    "error": "",
+    "source_log": "recheck-chromium-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "corrections.spec.ts >> all three categories and inventory fit 390px",
+    "status": "passed",
+    "duration_ms": 15331,
+    "error": "",
+    "source_log": "last-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 320px",
+    "status": "passed",
+    "duration_ms": 16326,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 375px",
+    "status": "passed",
+    "duration_ms": 17226,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 390px",
+    "status": "passed",
+    "duration_ms": 18900,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "danger.spec.ts >> a meaningful Wallet activity opens a contextual street conversation on the City board",
+    "status": "passed",
+    "duration_ms": 12246,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "illustrated.spec.ts >> GOAL 002C mobile visual review and usable narrow controls",
+    "status": "passed",
+    "duration_ms": 25701,
+    "error": "",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "input-guard.spec.ts >> taps queued while the page is frozen never fire; the next tap does",
+    "status": "passed",
+    "duration_ms": 13701,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "mobile.spec.ts >> mobile city and new game remain readable at narrow widths",
+    "status": "passed",
+    "duration_ms": 11221,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "review.spec.ts >> review captures and WCAG checks cover every M1 screen and faction palette",
+    "status": "passed",
+    "duration_ms": 70521,
+    "error": "",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> Actions gives directions only; Skills and inventory remain readable on iPhone",
+    "status": "passed",
+    "duration_ms": 8452,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session",
+    "status": "passed",
+    "duration_ms": 97674,
+    "error": "",
+    "source_log": "touch-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> WebGL unavailable: physically present accessible session settles the same persisted buyer",
+    "status": "passed",
+    "duration_ms": 2209,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> a real session arrest opens custody, reloads safely, and releases without unresolved buyers",
+    "status": "passed",
+    "duration_ms": 24028,
+    "error": "",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes",
+    "status": "passed",
+    "duration_ms": 38807,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> crew-assisted street work uses an earned willing partner and actual inventory",
+    "status": "passed",
+    "duration_ms": 9978,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> default reaction and accumulated heat are rendered from real simulated consequences",
+    "status": "passed",
+    "duration_ms": 13724,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> seeded real-play arrest serves every day and releases into continued gameplay",
+    "status": "passed",
+    "duration_ms": 16414,
+    "error": "",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 320px",
+    "status": "passed",
+    "duration_ms": 10568,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 375px",
+    "status": "passed",
+    "duration_ms": 9658,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 390px",
+    "status": "passed",
+    "duration_ms": 10327,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> street inventory and supplier modal fit 430px",
+    "status": "passed",
+    "duration_ms": 12416,
+    "error": "",
+    "source_log": "release-target.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls",
+    "status": "passed",
+    "duration_ms": 186067,
+    "error": "",
+    "source_log": "finish-webkit-mobile.log"
+  }
+]

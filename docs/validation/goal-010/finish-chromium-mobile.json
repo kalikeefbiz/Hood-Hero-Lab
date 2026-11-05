@@ -1,0 +1,10 @@
+[
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls",
+    "status": "passed",
+    "duration_ms": 130978,
+    "error": "",
+    "source_log": "finish-chromium-mobile.log"
+  }
+]

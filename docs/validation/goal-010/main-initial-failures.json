@@ -1,0 +1,68 @@
+[
+  {
+    "engine": "chromium-mobile",
+    "name": "crew.spec.ts >> independent offer: inspect, accept, attend, decline and expire while the NPC keeps acting",
+    "error": "```\nTest timeout of 180000ms exceeded.\n```\n\n```\nError: locator.click: Test timeout of 180000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Hear the offer', exact: true })\n\n```",
+    "artifact": "/workspace/lab-baseline/test-results/crew-independent-offer-ins-bea02--while-the-NPC-keeps-acting-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "board.spec.ts >> leaving the city mid-walk never locks input: the walk lands and play continues",
+    "error": "```\nTest timeout of 180000ms exceeded.\n```\n\n```\nError: locator.click: Test timeout of 180000ms exceeded.\nCall log:\n  - waiting for getByRole('region', { name: 'Places in The Nawf' }).getByRole('button', { name: /Nawf Bodega/ })\n\n```",
+    "artifact": "/workspace/lab-baseline/test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "danger.spec.ts >> board street conversation: choices, persistent grievance, menus cannot reroll, reload",
+    "error": "```\nError: locator.click: Test ended.\nCall log:\n  - waiting for getByRole('button', { name: 'Select The Nawf', exact: true })\n    - locator resolved to <button aria-pressed=\"false\" aria-label=\"Select The Nawf\" aria-describedby=\"chip-desc-nawf\">\u2026</button>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - performing click action\n\n```",
+    "artifact": "/workspace/lab-baseline/test-results/danger-board-street-conver-85282--menus-cannot-reroll-reload-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "corrections.spec.ts >> Actions separate Streets, Honest and Connects; completed reach-out returns to Streets",
+    "error": "```\nTest timeout of 90000ms exceeded.\n```\n\n```\nError: locator.screenshot: Test timeout of 90000ms exceeded.\nCall log:\n  - waiting for locator('.actions-hub')\n\n```",
+    "artifact": "/workspace/lab-baseline/test-results/corrections-Actions-separa-e3349-each-out-returns-to-Streets-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "crew.spec.ts >> Flacco cooperation, paid work, refusal, natural second recruitment and saved consequences",
+    "error": "```\nTest timeout of 90000ms exceeded.\n```\n\n```\nError: locator.click: Test timeout of 90000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })\n\n```",
+    "artifact": "/workspace/lab-baseline/test-results/crew-Flacco-cooperation-pa-d0667-ment-and-saved-consequences-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 390px",
+    "error": "```\nTest timeout of 30000ms exceeded.\n```\n\n```\nError: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n  - waiting for getByRole('navigation').getByRole('button', { name: 'Set', exact: true })\n    - locator resolved to <button class=\"\" aria-label=\"Set\">\u2026</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <p class=\"encounter-footer\">Closing makes no new promise. Unfinished conversa\u2026</p> from <dialog open=\"\" class=\"encounter-modal\" aria-label=\"Character encounter\">\u2026</dialog> subtree intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <p class=\"encounter-footer\">Closing makes no new promise. Unfinished conversa\u2026</p> from <dialog open=\"\" class=\"encounter-modal\" aria-label=\"Character encounter\">\u2026</dialog> subtree intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    27 \u00d7 waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <p class=\"encounter-footer\">Closing makes no new promise. Unfinished conversa\u2026</p> from <dialog open=\"\" class=\"encounter-modal\" aria-label=\"Character ",
+    "artifact": "/workspace/lab-baseline/test-results/crew-crew-dialogue-and-Set-fit-390px-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "danger.spec.ts >> a recognized war member can be injured directly; recovery advances city time and preserves consequences",
+    "error": "```\nError: locator.click: Test ended.\nCall log:\n  - waiting for getByRole('button', { name: 'Complete hospital recovery' })\n    - locator resolved to <button>Complete hospital recovery</button>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <section class=\"panel \">\u2026</section> from <div class=\"city-layout board-district\">\u2026</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n\n```",
+    "artifact": "/workspace/lab-baseline/test-results/danger-a-recognized-war-me-35be8--and-preserves-consequences-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "corrections.spec.ts >> active Chains lives in City; fulfillment leaves only completed history",
+    "error": "```\nTest timeout of 90000ms exceeded.\n```",
+    "artifact": "/workspace/lab-baseline/test-results/corrections-active-Chains--c22f3-aves-only-completed-history-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "corrections.spec.ts >> all three categories and inventory fit 390px",
+    "error": "```\nTest timeout of 90000ms exceeded.\n```\n\n```\nError: locator.click: Test timeout of 90000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Talk terms with Cuzzo' })\n\n```",
+    "artifact": "/workspace/lab-baseline/test-results/corrections-all-three-categories-and-inventory-fit-390px-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 430px",
+    "error": "```\nTest timeout of 30000ms exceeded.\n```\n\n```\nError: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })\n\n```",
+    "artifact": "/workspace/lab-baseline/test-results/crew-crew-dialogue-and-Set-fit-430px-chromium-mobile/error-context.md"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "city-menu.spec.ts >> City centers the five state-backed neighborhoods and keeps actions in Actions",
+    "error": "```\nError: expect(locator).toHaveAttribute(expected) failed\n\nLocator:  getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })\nExpected: \"true\"\nReceived: \"false\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveAttribute\" getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true }) with timeout 5000ms\n  - waiting for getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })\n    14 \u00d7 locator resolved to <button aria-pressed=\"false\" aria-label=\"Select Downtown\" aria-describedby=\"chip-desc-downtown\">\u2026</button>\n       - unexpected value \"false\"\n\n```\n\n```yaml\n- button \"Select Downtown\": Downtown\n```",
+    "artifact": "/workspace/lab-baseline/test-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-chromium-mobile/error-context.md"
+  }
+]

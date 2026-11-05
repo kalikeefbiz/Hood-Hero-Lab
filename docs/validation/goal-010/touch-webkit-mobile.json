@@ -1,0 +1,10 @@
+[
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session",
+    "status": "passed",
+    "duration_ms": 97674,
+    "error": "",
+    "source_log": "touch-webkit-mobile.log"
+  }
+]

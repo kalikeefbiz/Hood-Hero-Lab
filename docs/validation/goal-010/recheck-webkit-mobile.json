@@ -1,0 +1,98 @@
+[
+  {
+    "engine": "webkit-mobile",
+    "name": "corrections.spec.ts >> all three categories and inventory fit 390px",
+    "status": "timedOut",
+    "duration_ms": 92313,
+    "error": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 320px",
+    "status": "timedOut",
+    "duration_ms": 31195,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 375px",
+    "status": "timedOut",
+    "duration_ms": 31181,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "crew.spec.ts >> crew dialogue and Set fit 390px",
+    "status": "timedOut",
+    "duration_ms": 31386,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "danger.spec.ts >> a meaningful Wallet activity opens a contextual street conversation on the City board",
+    "status": "failed",
+    "duration_ms": 8718,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must not be null nor undefined\n\nReceived has value: \u001b[31mundefined\u001b[39m",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "illustrated.spec.ts >> GOAL 002C mobile visual review and usable narrow controls",
+    "status": "passed",
+    "duration_ms": 25701,
+    "error": "",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "mobile.spec.ts >> mobile city and new game remain readable at narrow widths",
+    "status": "failed",
+    "duration_ms": 15713,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.zone-details')\nExpected substring: \u001b[32m\"The Blips\"\u001b[39m\nReceived string:    \u001b[31m\"Old loyalty. New ambition.SouthsideBack Street is politically isolated. Younger members question Justice\u2019s turn toward legitimate business.Control: Back StreetNeighborhood balanceRecognized control since day 1: Back Street. Civilian climate 45/100 \u00b7 Lawful economy 45/100. Local trade faces ordinary competition.Back StreetPresence 75 \u00b7 Economy 62 \u00b7 Support 45 \u00b7 Pressure 0Influence this neighborhoodOne investment every 3 days. Organizational actions require an accessible, trusted representative.Build Community Support \u00b7 $25 \u00b7 1 APSupport Local Interests \u00b7 $40 \u00b7 1 APJoin an established organization through a trusted sponsor firstBack a Neighborhood Operation \u00b7 $100 \u00b7 1 APJoin an established organization through a trusted sponsor firstChallenge Rival Influence \u00b7 $80 \u00b7 1 APJoin an established organization through a trusted sponsor firstNegotiate Cooperation \u00b7 $30 \u00b7 1 APJoin an established organization through a trusted sponsor firstPropose Territorial Priority \u00b7 $60 \u00b7 1 APJoin an established organization through a trusted sponsor firstRecent faction decisionsBack StreetPolice presenceElevatedYour local standingUnknownMeet local people \u2192\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" locator('.zone-details') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.zone-details')\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to <div class=\"zone-details\">\u2026</div>\u001b[22m\n\u001b[2m       - unexpected value \"Old loyalty. New ambition.SouthsideBack Street is politically isolated. Younger members question Justice\u2019s turn toward legitimate business.Control: Back StreetNeighborhood balanceRecognized control since day 1: Back Street. Civilian climate 45/100 \u00b7 Lawful economy 45/100. Local trade faces ordinary competition.Back StreetPresence 75 \u00b7 Economy 62 \u00b7 Support 45 \u00b7 Pressure 0Influence this neighborhoodOne investment every 3 days. Organizational actions require an accessible, trusted representative.Build Community Support \u00b7 $25 \u00b7 1 APSupport Local Interests \u00b7 $40 \u00b7 1 APJoin an established organization through a trusted sponsor firstBack a Neighborhood Operation \u00b7 $100 \u00b7 1 APJoin an established organization through a trusted sponsor firstChallenge Rival Influence \u00b7 $80 \u00b7 1 APJoin an established organization through a trusted sponsor firstNegotiate Cooperation \u00b7 $30 \u00b7 1 APJoin an established organization through a trusted sponsor firstPropose Territorial Priority \u00b7 $60 \u00b7 1 APJoin an established organization through a trusted sponsor firstRecent faction decisionsBack StreetPolice presenceElevatedYour local standingUnknownMeet local people \u2192\"\u001b[22m\n",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "review.spec.ts >> review captures and WCAG checks cover every M1 screen and faction palette",
+    "status": "passed",
+    "duration_ms": 70521,
+    "error": "",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session",
+    "status": "failed",
+    "duration_ms": 52657,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nCall Log:\n- Timeout 20000ms exceeded while waiting on the predicate",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "skills-sessions.spec.ts >> a real session arrest opens custody, reloads safely, and releases without unresolved buyers",
+    "status": "passed",
+    "duration_ms": 24028,
+    "error": "",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls",
+    "status": "timedOut",
+    "duration_ms": 181656,
+    "error": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m",
+    "source_log": "recheck-webkit-mobile.log"
+  },
+  {
+    "engine": "webkit-mobile",
+    "name": "street.spec.ts >> seeded real-play arrest serves every day and releases into continued gameplay",
+    "status": "passed",
+    "duration_ms": 16414,
+    "error": "",
+    "source_log": "recheck-webkit-mobile.log"
+  }
+]

@@ -26,7 +26,7 @@ Playback targets roughly 29–46 seconds (7.2 seconds ±450 ms per visitor). Nor
 
 Per-buyer stress/exposure increments are scaled down from the old bulk action (2 stress; one-third old exposure weight). Local capacity is still six daily opportunities and AP still two/day. Passers change nothing. Witness beats increase real exposure/investigation. Contextual patrols can invoke existing custody; rivals use existing Danger history/recognition/war logic. The existing rare danger rules and initial nonfatal Quanny shooting remain distinct.
 
-Exiting retains settled results and forfeits AP. Movement and day end cancel future visitors. Injury, custody, death or an encounter interrupt rather than continuing sales. Switching screens or hiding the document pauses playback. Reload opens a paused session at its next cursor, with explicit Continue/Leave controls. No hidden-tab timer settles buyers. Skip resolves the same one cursor, through the same transition, without extra AP.
+Exiting retains settled results and forfeits AP. Movement and day end cancel future visitors. Injury, custody, death or an encounter interrupt rather than continuing sales. Switching screens or hiding the document pauses playback. Reload opens a paused session at its next cursor, with explicit Continue/Leave controls. Custody, hospital and game-ending controls open the inspector even when the session had closed it; the session HUD yields to those existing flows, including after reload. No hidden-tab timer settles buyers. Skip resolves the same one cursor, through the same transition, without extra AP.
 
 ## UI and Claude-owned adapter
 

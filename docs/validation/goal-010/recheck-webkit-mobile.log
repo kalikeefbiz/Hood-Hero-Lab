@@ -1,0 +1,294 @@
+[WebServer] (node:815) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:833) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   1 [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px (1.5m)
+(node:951) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   2 [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 320px (31.2s)
+(node:1055) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   3 [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 375px (31.2s)
+(node:1182) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   4 [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 390px (31.4s)
+(node:1284) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘   5 [webkit-mobile] › tests/danger.spec.ts:198:1 › a meaningful Wallet activity opens a contextual street conversation on the City board (8.7s)
+(node:1371) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓   6 [webkit-mobile] › tests/illustrated.spec.ts:189:1 › GOAL 002C mobile visual review and usable narrow controls (25.7s)
+  ✘   7 [webkit-mobile] › tests/mobile.spec.ts:126:1 › mobile city and new game remain readable at narrow widths (15.7s)
+(node:1544) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓   8 [webkit-mobile] › tests/review.spec.ts:9:1 › review captures and WCAG checks cover every M1 screen and faction palette (1.2m)
+  ✘   9 [webkit-mobile] › tests/skills-sessions.spec.ts:93:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session (52.7s)
+(node:2331) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  10 [webkit-mobile] › tests/skills-sessions.spec.ts:280:1 › a real session arrest opens custody, reloads safely, and releases without unresolved buyers (24.0s)
+  ✘  11 [webkit-mobile] › tests/street.spec.ts:157:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls (3.0m)
+(node:2578) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+CUSTODY {"engine":"webkit-mobile","arrestDay":2,"releaseDay":3,"cashBefore":154,"cashAfter":136,"debtAfter":102,"loco":"arrested","campaignEnd":null}
+  ✓  12 [webkit-mobile] › tests/street.spec.ts:304:1 › seeded real-play arrest serves every day and releases into continued gameplay (16.4s)
+
+
+  1) [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Honest', exact: true })
+
+
+      197 |     await nav(page, "Actions");
+      198 |     for (const group of ["Streets", "Honest", "Connects"]) {
+    > 199 |       await page.getByRole("button", { name: group, exact: true }).click();
+          |                                                                    ^
+      200 |       expect(
+      201 |         await page.evaluate(() => document.documentElement.scrollWidth),
+      202 |       ).toBeLessThanOrEqual(width);
+        at /workspace/lab-validation/tests/corrections.spec.ts:199:68
+
+    Error Context: ../scratch/goal010-pending-webkit-mobile/corrections-all-three-categories-and-inventory-fit-390px-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-pending-webkit-mobile/corrections-all-three-categories-and-inventory-fit-390px-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-pending-webkit-mobile/corrections-all-three-categories-and-inventory-fit-390px-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 320px ──────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })
+
+
+      34 |   await page
+      35 |     .getByRole("button", { name: `Interact with ${name}`, exact: true })
+    > 36 |     .click();
+         |      ^
+      37 | }
+      38 | async function card(page: Page, label: string) {
+      39 |   await page
+        at interact (/workspace/lab-validation/tests/crew.spec.ts:36:6)
+        at /workspace/lab-validation/tests/crew.spec.ts:203:5
+
+    Error Context: ../scratch/goal010-pending-webkit-mobile/crew-crew-dialogue-and-Set-fit-320px-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-pending-webkit-mobile/crew-crew-dialogue-and-Set-fit-320px-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-pending-webkit-mobile/crew-crew-dialogue-and-Set-fit-320px-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 375px ──────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })
+
+
+      34 |   await page
+      35 |     .getByRole("button", { name: `Interact with ${name}`, exact: true })
+    > 36 |     .click();
+         |      ^
+      37 | }
+      38 | async function card(page: Page, label: string) {
+      39 |   await page
+        at interact (/workspace/lab-validation/tests/crew.spec.ts:36:6)
+        at /workspace/lab-validation/tests/crew.spec.ts:203:5
+
+    Error Context: ../scratch/goal010-pending-webkit-mobile/crew-crew-dialogue-and-Set-fit-375px-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-pending-webkit-mobile/crew-crew-dialogue-and-Set-fit-375px-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-pending-webkit-mobile/crew-crew-dialogue-and-Set-fit-375px-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 390px ──────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Interact with Flacco', exact: true })
+
+
+      34 |   await page
+      35 |     .getByRole("button", { name: `Interact with ${name}`, exact: true })
+    > 36 |     .click();
+         |      ^
+      37 | }
+      38 | async function card(page: Page, label: string) {
+      39 |   await page
+        at interact (/workspace/lab-validation/tests/crew.spec.ts:36:6)
+        at /workspace/lab-validation/tests/crew.spec.ts:203:5
+
+    Error Context: ../scratch/goal010-pending-webkit-mobile/crew-crew-dialogue-and-Set-fit-390px-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-pending-webkit-mobile/crew-crew-dialogue-and-Set-fit-390px-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-pending-webkit-mobile/crew-crew-dialogue-and-Set-fit-390px-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [webkit-mobile] › tests/danger.spec.ts:198:1 › a meaningful Wallet activity opens a contextual street conversation on the City board
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Matcher error: received value must not be null nor undefined
+
+    Received has value: undefined
+
+      232 |   const after = await snapshot(page);
+      233 |   expect(after.ap).toBe(chosen!.ap - 1);
+    > 234 |   expect(after.danger.scenes[0].outcome).toContain("peacefully");
+          |                                          ^
+      235 |   expect(after.danger.conflicts).toHaveLength(0);
+      236 | });
+      237 |
+        at /workspace/lab-validation/tests/danger.spec.ts:234:42
+
+    Error Context: ../scratch/goal010-pending-webkit-mobile/danger-a-meaningful-Wallet-548bd-versation-on-the-City-board-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-pending-webkit-mobile/danger-a-meaningful-Wallet-548bd-versation-on-the-City-board-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-pending-webkit-mobile/danger-a-meaningful-Wallet-548bd-versation-on-the-City-board-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [webkit-mobile] › tests/mobile.spec.ts:126:1 › mobile city and new game remain readable at narrow widths
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.zone-details')
+    Expected substring: "The Blips"
+    Received string:    "Old loyalty. New ambition.SouthsideBack Street is politically isolated. Younger members question Justice’s turn toward legitimate business.Control: Back StreetNeighborhood balanceRecognized control since day 1: Back Street. Civilian climate 45/100 · Lawful economy 45/100. Local trade faces ordinary competition.Back StreetPresence 75 · Economy 62 · Support 45 · Pressure 0Influence this neighborhoodOne investment every 3 days. Organizational actions require an accessible, trusted representative.Build Community Support · $25 · 1 APSupport Local Interests · $40 · 1 APJoin an established organization through a trusted sponsor firstBack a Neighborhood Operation · $100 · 1 APJoin an established organization through a trusted sponsor firstChallenge Rival Influence · $80 · 1 APJoin an established organization through a trusted sponsor firstNegotiate Cooperation · $30 · 1 APJoin an established organization through a trusted sponsor firstPropose Territorial Priority · $60 · 1 APJoin an established organization through a trusted sponsor firstRecent faction decisionsBack StreetPolice presenceElevatedYour local standingUnknownMeet local people →"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('.zone-details') with timeout 5000ms
+      - waiting for locator('.zone-details')
+        14 × locator resolved to <div class="zone-details">…</div>
+           - unexpected value "Old loyalty. New ambition.SouthsideBack Street is politically isolated. Younger members question Justice’s turn toward legitimate business.Control: Back StreetNeighborhood balanceRecognized control since day 1: Back Street. Civilian climate 45/100 · Lawful economy 45/100. Local trade faces ordinary competition.Back StreetPresence 75 · Economy 62 · Support 45 · Pressure 0Influence this neighborhoodOne investment every 3 days. Organizational actions require an accessible, trusted representative.Build Community Support · $25 · 1 APSupport Local Interests · $40 · 1 APJoin an established organization through a trusted sponsor firstBack a Neighborhood Operation · $100 · 1 APJoin an established organization through a trusted sponsor firstChallenge Rival Influence · $80 · 1 APJoin an established organization through a trusted sponsor firstNegotiate Cooperation · $30 · 1 APJoin an established organization through a trusted sponsor firstPropose Territorial Priority · $60 · 1 APJoin an established organization through a trusted sponsor firstRecent faction decisionsBack StreetPolice presenceElevatedYour local standingUnknownMeet local people →"
+
+
+      137 |   await noOverflow(page);
+      138 |   await page.getByRole("button", { name: "Select The Nawf" }).click();
+    > 139 |   await expect(page.locator(".zone-details")).toContainText("The Blips");
+          |                                               ^
+      140 |   await expect(page.locator(".zone-details")).toContainText("Mudgang");
+      141 |   await page.screenshot({
+      142 |     path: `test-results/${test.info().project.name}-city.png`,
+        at /workspace/lab-validation/tests/mobile.spec.ts:139:47
+
+    Error Context: ../scratch/goal010-pending-webkit-mobile/mobile-mobile-city-and-new-68cad-n-readable-at-narrow-widths-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-pending-webkit-mobile/mobile-mobile-city-and-new-68cad-n-readable-at-narrow-widths-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-pending-webkit-mobile/mobile-mobile-city-and-new-68cad-n-readable-at-narrow-widths-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [webkit-mobile] › tests/skills-sessions.spec.ts:93:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 20000ms exceeded while waiting on the predicate
+
+       at helpers.ts:49
+
+      47 |       { timeout, intervals: [500, 800, 1200] },
+      48 |     )
+    > 49 |     .toBe(true);
+         |      ^
+      50 | }
+      51 |
+      52 | /** A discarded stale tap is intentional. Retap navigation after the guard settles,
+        at tapUntil (/workspace/lab-validation/tests/helpers.ts:49:6)
+        at /workspace/lab-validation/tests/skills-sessions.spec.ts:133:9
+
+    Error Context: ../scratch/goal010-pending-webkit-mobile/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-pending-webkit-mobile/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-pending-webkit-mobile/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [webkit-mobile] › tests/street.spec.ts:157:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Places in Southside' }).getByRole('button', { name: /The Lot/ })
+
+
+      222 |       .getByRole("region", { name: "Places in Southside" })
+      223 |       .getByRole("button", { name: /The Lot/ })
+    > 224 |       .click();
+          |        ^
+      225 |     const go = page.getByRole("button", { name: "Go here", exact: true });
+      226 |     if (await go.count())
+      227 |       await tapUntil(
+        at /workspace/lab-validation/tests/street.spec.ts:224:8
+
+    Error Context: ../scratch/goal010-pending-webkit-mobile/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../scratch/goal010-pending-webkit-mobile/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../scratch/goal010-pending-webkit-mobile/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8 failed
+    [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px
+    [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 320px ───────────────────
+    [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 375px ───────────────────
+    [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 390px ───────────────────
+    [webkit-mobile] › tests/danger.spec.ts:198:1 › a meaningful Wallet activity opens a contextual street conversation on the City board
+    [webkit-mobile] › tests/mobile.spec.ts:126:1 › mobile city and new game remain readable at narrow widths
+    [webkit-mobile] › tests/skills-sessions.spec.ts:93:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+    [webkit-mobile] › tests/street.spec.ts:157:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls
+  4 passed (9.9m)
