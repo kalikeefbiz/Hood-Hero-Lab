@@ -2,6 +2,8 @@ import { openJournal } from "./journal";
 import { test, expect, type Page } from "@playwright/test";
 import {
   dismissEncounter,
+  navigate,
+  category,
   connects,
   honest,
   storyline,
@@ -11,11 +13,9 @@ const key = "blackhouse.hoodhero-lab.v1.auto";
 const state = (page: Page) =>
   page.evaluate((k) => JSON.parse(localStorage.getItem(k)!).state, key);
 async function nav(page: Page, name: string) {
-  await page
-    .getByRole("navigation")
-    .getByRole("button", { name, exact: true })
-    .click();
+  await navigate(page, name);
 }
+
 async function start(page: Page, home = "Southside") {
   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
   await page.getByLabel("What do people call you?").fill("Test(6.1)");
@@ -196,7 +196,7 @@ for (const width of [320, 375, 390, 430])
     await start(page);
     await nav(page, "Actions");
     for (const group of ["Streets", "Honest", "Connects"]) {
-      await page.getByRole("button", { name: group, exact: true }).click();
+      await category(page, group);
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth),
       ).toBeLessThanOrEqual(width);

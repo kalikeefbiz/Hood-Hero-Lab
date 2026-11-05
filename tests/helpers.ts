@@ -66,7 +66,7 @@ export async function navigate(page: Page, name: string) {
     )
     .toBe("page");
 }
-async function category(page: Page, name: string) {
+export async function category(page: Page, name: string) {
   const button = page.getByRole("button", { name, exact: true });
   await expect
     .poll(
