@@ -4,7 +4,7 @@ import { acquire } from "../src/systems/StreetEconomy";
 import { presenceOf } from "../src/board/presence";
 import { serialize, SAVE_KEY, AUTO_KEY } from "../src/persistence/SaveSystem";
 import { startStreetSession } from "../src/systems/StreetSessions";
-import { dismissEncounter } from "./helpers";
+import { dismissEncounter, tapUntil } from "./helpers";
 
 const state = (page: Page) =>
   page.evaluate(
@@ -69,6 +69,23 @@ async function spot(page: Page) {
     .click();
 }
 
+async function continueSession(page: Page) {
+  await tapUntil(
+    page,
+    page.getByRole("button", { name: "Continue session" }),
+    async () => (await state(page)).activeSession.status !== "paused",
+  );
+}
+async function skipVisitor(page: Page) {
+  const cursor = (await state(page)).activeSession.cursor;
+  await tapUntil(
+    page,
+    page.getByRole("button", { name: "Skip visitor" }),
+    async () => (await state(page)).activeSession.cursor !== cursor,
+  );
+  expect((await state(page)).activeSession.cursor).toBe(cursor + 1);
+}
+
 test("City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session", async ({
   page,
 }, info) => {
@@ -78,27 +95,20 @@ test("City presence, approaching visitor, paid outcomes, mid-session reload, and
   const start = page.getByRole("button", { name: "Start trapping — 1 AP" });
   await expect(start).toBeDisabled();
   const go = page.getByRole("button", { name: "Go here", exact: true });
-  await go.click();
-  await expect
-    .poll(
-      async () => {
-        const current = await state(page);
-        if (
-          current.presence?.location !== "south.the-lot" &&
-          (await go.isEnabled())
-        ) {
-          await page.waitForTimeout(800);
-          await go.click();
-        }
-        return (await state(page)).presence?.location;
-      },
-      { timeout: 20000 },
-    )
-    .toBe("south.the-lot");
+  await tapUntil(
+    page,
+    go,
+    async () => (await state(page)).presence?.location === "south.the-lot",
+    45000,
+  );
   await dismissEncounter(page);
   await expect(start).toBeEnabled({ timeout: 15000 });
   const before = await state(page);
-  await start.click();
+  await tapUntil(
+    page,
+    start,
+    async () => (await state(page)).activeSession?.status === "active",
+  );
   const panel = page.getByRole("region", { name: "Trapping session" });
   await expect(panel).toBeVisible();
   await expect.poll(async () => (await state(page)).ap).toBe(before.ap - 1);
@@ -114,9 +124,13 @@ test("City presence, approaching visitor, paid outcomes, mid-session reload, and
   await expect(stage).toHaveAttribute("data-visitor-phase", "leaving", {
     timeout: 15000,
   });
-  await panel.getByRole("button", { name: "Skip visitor" }).click();
+  await skipVisitor(page);
   // Capture a real paused checkpoint; an active timer is allowed to settle while a screenshot runs.
-  await panel.getByRole("button", { name: "Pause", exact: true }).click();
+  await tapUntil(
+    page,
+    panel.getByRole("button", { name: "Pause", exact: true }),
+    async () => (await state(page)).activeSession.status === "paused",
+  );
   await expect
     .poll(async () => (await state(page)).activeSession.status)
     .toBe("paused");
@@ -128,11 +142,11 @@ test("City presence, approaching visitor, paid outcomes, mid-session reload, and
   ).toBeVisible();
   expect((await state(page)).activeSession.cursor).toBe(settled);
   expect((await state(page)).activeSession.beats).toEqual(queue);
-  await panel.getByRole("button", { name: "Continue session" }).click();
+  await continueSession(page);
   for (let i = 0; i < 6; i++) {
     const skip = panel.getByRole("button", { name: "Skip visitor" });
     if (!(await skip.count())) break;
-    await skip.click();
+    await skipVisitor(page);
   }
   const after = await state(page);
   expect(after.activeSession.status).toBe("ended");
@@ -155,7 +169,11 @@ test("City presence, approaching visitor, paid outcomes, mid-session reload, and
   ) {
     await page.getByRole("button", { name: "Show details" }).click();
     await expect(start).toBeEnabled();
-    await start.click();
+    await tapUntil(
+      page,
+      start,
+      async () => (await state(page)).activeSession?.status === "active",
+    );
     await expect.poll(async () => (await state(page)).ap).toBe(0);
     await panel.getByRole("button", { name: "Leave session" }).click();
   }
@@ -202,7 +220,7 @@ test("background, menu unmount, stale/double touches, reduced motion and End Day
   await page.emulateMedia({ reducedMotion: "reduce" });
   await load(page, true, true);
   const panel = page.getByRole("region", { name: "Trapping session" });
-  await panel.getByRole("button", { name: "Continue session" }).click();
+  await continueSession(page);
   const before = await state(page);
   await nav(page, "People");
   await expect
@@ -215,7 +233,7 @@ test("background, menu unmount, stale/double touches, reduced motion and End Day
   );
   expect((await state(page)).ap).toBe(before.ap);
   await nav(page, "City");
-  await panel.getByRole("button", { name: "Continue session" }).click();
+  await continueSession(page);
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", {
       configurable: true,
@@ -238,13 +256,17 @@ test("background, menu unmount, stale/double touches, reduced motion and End Day
     });
     document.dispatchEvent(new Event("visibilitychange"));
   });
-  await panel.getByRole("button", { name: "Continue session" }).click();
-  await panel.getByRole("button", { name: "Skip visitor" }).click();
+  await continueSession(page);
+  await skipVisitor(page);
   const expectedCursor = paused.activeSession.cursor + 1;
   await expect
     .poll(async () => (await state(page)).activeSession.cursor)
     .toBe(expectedCursor);
-  await page.getByRole("button", { name: "End day", exact: true }).click();
+  await tapUntil(
+    page,
+    page.getByRole("button", { name: "End day", exact: true }),
+    async () => (await state(page)).day > before.day,
+  );
   await expect
     .poll(async () => (await state(page)).activeSession.status)
     .toBe("ended");
@@ -258,8 +280,8 @@ test("a real session arrest opens custody, reloads safely, and releases without 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await load(page, true, true, 1); // Real low-probability arrest from the shared seeded buyer resolver.
   const panel = page.getByRole("region", { name: "Trapping session" });
-  await panel.getByRole("button", { name: "Continue session" }).click();
-  await panel.getByRole("button", { name: "Skip visitor" }).click();
+  await continueSession(page);
+  await skipVisitor(page);
   await expect(
     page.getByRole("heading", { name: "In custody", exact: true }),
   ).toBeVisible();
@@ -310,8 +332,8 @@ test("WebGL unavailable: physically present accessible session settles the same 
   await load(page, true, true);
   await expect(page.locator(".board-flat")).toBeVisible();
   const panel = page.getByRole("region", { name: "Trapping session" });
-  await panel.getByRole("button", { name: "Continue session" }).click();
-  await panel.getByRole("button", { name: "Skip visitor" }).click();
+  await continueSession(page);
+  await skipVisitor(page);
   const after = await state(page);
   expect(after.activeSession.cursor).toBe(1);
   expect(after.street.transactions).toHaveLength(1);

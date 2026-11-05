@@ -273,7 +273,8 @@ export function App() {
       }
   }, [s]);
   useEffect(() => {
-    if (s && (s.end || hospitalStay(s) || player(s).status === 'arrested')) setPanelOpen(true);
+    if (s && (s.end || hospitalStay(s) || player(s).status === "arrested"))
+      setPanelOpen(true);
   }, [s]);
   function start() {
     window.scrollTo(0, 0);
@@ -295,11 +296,24 @@ export function App() {
       const next = saved && enterGameplay(saved);
       if (next) {
         window.scrollTo(0, 0);
-        if (next.activeSession?.status === "active") next.activeSession.status = "paused";
-        setPanelOpen(!next.activeSession || next.activeSession.status === "ended");
+        if (next.activeSession?.status === "active")
+          next.activeSession.status = "paused";
+        setPanelOpen(
+          !next.activeSession || next.activeSession.status === "ended",
+        );
         setState(next);
         setSelected(player(next).home);
-        setBoard({ zone: next.activeSession?.status !== "ended" ? next.activeSession?.zone ?? player(next).home : player(next).home, block: null, place: next.activeSession?.status !== "ended" ? next.activeSession?.location ?? null : null });
+        setBoard({
+          zone:
+            next.activeSession?.status !== "ended"
+              ? (next.activeSession?.zone ?? player(next).home)
+              : player(next).home,
+          block: null,
+          place:
+            next.activeSession?.status !== "ended"
+              ? (next.activeSession?.location ?? null)
+              : null,
+        });
         setScreen("City");
         setHistoryEncounterId(null);
         setNotice(`Loaded day ${next.day}.`);
@@ -533,8 +547,20 @@ export function App() {
   /** The player walks to the place first, then the existing action runs. */
   async function actAt(a: Action, placeId: string) {
     if (busy || !s || s.end || hospitalStay(s) || streetConversation(s)) return;
-    if (s.activeSession && s.activeSession.status !== "ended" && placeId !== presenceOf(s).location)
-      setState(cur => cur?.activeSession ? endStreetSession(cur, cur.activeSession.id, "Left the spot. Unresolved visitors cancelled.") : cur);
+    if (
+      s.activeSession &&
+      s.activeSession.status !== "ended" &&
+      placeId !== presenceOf(s).location
+    )
+      setState((cur) =>
+        cur?.activeSession
+          ? endStreetSession(
+              cur,
+              cur.activeSession.id,
+              "Left the spot. Unresolved visitors cancelled.",
+            )
+          : cur,
+      );
     setBusy(true);
     try {
       await walkTo(placeId);
@@ -545,8 +571,20 @@ export function App() {
   }
   async function goHere(placeId: string) {
     if (busy || !s || s.end || hospitalStay(s) || streetConversation(s)) return;
-    if (s.activeSession && s.activeSession.status !== "ended" && placeId !== presenceOf(s).location)
-      setState(cur => cur?.activeSession ? endStreetSession(cur, cur.activeSession.id, "Left the spot. Unresolved visitors cancelled.") : cur);
+    if (
+      s.activeSession &&
+      s.activeSession.status !== "ended" &&
+      placeId !== presenceOf(s).location
+    )
+      setState((cur) =>
+        cur?.activeSession
+          ? endStreetSession(
+              cur,
+              cur.activeSession.id,
+              "Left the spot. Unresolved visitors cancelled.",
+            )
+          : cur,
+      );
     setBusy(true);
     try {
       await walkTo(placeId);
@@ -717,7 +755,20 @@ export function App() {
           insets={insets}
           onInteract={() => screen !== "City" && setScreen("City")}
           paused={screen !== "City"}
-          sessionVisitor={screen === "City" && s.activeSession?.status === "active" ? { id: `${s.activeSession.id}:${s.activeSession.cursor}`, location: s.activeSession.location, duration: s.activeSession.beats[s.activeSession.cursor]?.duration ?? 7200, kind: s.activeSession.beats[s.activeSession.cursor]?.kind ?? "pass" } : null}
+          sessionVisitor={
+            screen === "City" && s.activeSession?.status === "active"
+              ? {
+                  id: `${s.activeSession.id}:${s.activeSession.cursor}`,
+                  location: s.activeSession.location,
+                  duration:
+                    s.activeSession.beats[s.activeSession.cursor]?.duration ??
+                    7200,
+                  kind:
+                    s.activeSession.beats[s.activeSession.cursor]?.kind ??
+                    "pass",
+                }
+              : null
+          }
           people={people}
           personId={personId}
           onPerson={(id) => {
@@ -890,7 +941,11 @@ export function App() {
             />
           </Modal>
         )}
-        <StreetSessionPlayback s={s} change={setState} visible={screen === "City"} />
+        <StreetSessionPlayback
+          s={s}
+          change={setState}
+          visible={screen === "City"}
+        />
         {screen === "City" && !panelOpen && (
           <button
             className="inspector-tab"
@@ -936,7 +991,13 @@ export function App() {
                 placeId={board.place}
                 renderAction={(a) => boardTile(a, board.place!)}
                 renderStreet={() => (
-                  <StreetSessionStart s={s} location={board.place!} change={setState} busy={busy} onStart={() => setPanelOpen(false)} />
+                  <StreetSessionStart
+                    s={s}
+                    location={board.place!}
+                    change={setState}
+                    busy={busy}
+                    onStart={() => setPanelOpen(false)}
+                  />
                 )}
                 openPerson={(id) => setPersonId(id)}
                 showPolitics={showPolitics}
@@ -1301,7 +1362,9 @@ export function App() {
                           ["Wary", "Acquainted", "Trusting", "Close"],
                         )}
                       />
-                      {s.crew.members.includes(person.id) && <SkillsView character={person} />}
+                      {s.crew.members.includes(person.id) && (
+                        <SkillsView character={person} />
+                      )}
                     </>
                   )}
                   <button
@@ -1390,7 +1453,8 @@ export function App() {
                                 : c.availableDay > s.day
                                   ? "Committed"
                                   : "Available"}{" "}
-                              · Work {SKILLS.work.ranks[skillRank(c, "work") - 1]}
+                              · Work{" "}
+                              {SKILLS.work.ranks[skillRank(c, "work") - 1]}
                             </small>
                           </div>
                         </div>

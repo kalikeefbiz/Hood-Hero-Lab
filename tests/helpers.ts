@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Page, type Locator } from "@playwright/test";
 // Baseline UI tests intentionally put aside the opening conversation first.
 // Modal behavior itself is exercised in encounters.spec.ts.
 export async function dismissEncounter(page: Page) {
@@ -8,30 +8,72 @@ export async function dismissEncounter(page: Page) {
     await modal.getByRole("button", { name: "Close conversation" }).click();
 }
 
+/** Retap a user command only while its expected state has not been acknowledged.
+ * The input guard may deliberately reject a tap during software-rendered stalls.
+ * Callers must identify the same operation (including a specific visitor cursor).
+ */
+export async function tapUntil(
+  page: Page,
+  button: Locator,
+  acknowledged: () => Promise<boolean>,
+  timeout = 20000,
+) {
+  await expect
+    .poll(
+      async () => {
+        if (await acknowledged()) return true;
+        if ((await button.isVisible()) && (await button.isEnabled())) {
+          await page.waitForTimeout(400); // Let the guarded post-stall window finish.
+          await button.click();
+        }
+        return acknowledged();
+      },
+      { timeout, intervals: [500, 800, 1200] },
+    )
+    .toBe(true);
+}
+
 /** A discarded stale tap is intentional. Retap navigation after the guard settles,
  * then assert the destination before using its controls. Never bypass the input guard. */
 export async function navigate(page: Page, name: string) {
-  const button = page.getByRole('navigation').getByRole('button', {name, exact:true});
-  await expect.poll(async()=>{
-    if(await button.getAttribute('aria-current') !== 'page') await button.click();
-    return button.getAttribute('aria-current');
-  },{timeout:15000,intervals:[500,800,1200]}).toBe('page');
+  const button = page
+    .getByRole("navigation")
+    .getByRole("button", { name, exact: true });
+  await expect
+    .poll(
+      async () => {
+        if ((await button.getAttribute("aria-current")) !== "page")
+          await button.click();
+        return button.getAttribute("aria-current");
+      },
+      { timeout: 15000, intervals: [500, 800, 1200] },
+    )
+    .toBe("page");
 }
 async function category(page: Page, name: string) {
-  const button = page.getByRole('button', {name, exact:true});
-  await expect.poll(async()=>{
-    if(await button.getAttribute('aria-pressed') !== 'true') await button.click();
-    return button.getAttribute('aria-pressed');
-  },{timeout:15000,intervals:[500,800,1200]}).toBe('true');
+  const button = page.getByRole("button", { name, exact: true });
+  await expect
+    .poll(
+      async () => {
+        if ((await button.getAttribute("aria-pressed")) !== "true")
+          await button.click();
+        return button.getAttribute("aria-pressed");
+      },
+      { timeout: 15000, intervals: [500, 800, 1200] },
+    )
+    .toBe("true");
 }
 export async function honest(page: Page) {
-  await navigate(page, 'Actions');
-  await category(page, 'Honest');
+  await navigate(page, "Actions");
+  await category(page, "Honest");
 }
 export async function connects(page: Page, person?: string) {
-  await navigate(page, 'Actions');
-  await category(page, 'Connects');
-  if(person) await page.getByLabel('Connected contacts', {exact:true}).selectOption(person);
+  await navigate(page, "Actions");
+  await category(page, "Connects");
+  if (person)
+    await page
+      .getByLabel("Connected contacts", { exact: true })
+      .selectOption(person);
 }
 export async function storyline(page: Page) {
   await dismissEncounter(page);

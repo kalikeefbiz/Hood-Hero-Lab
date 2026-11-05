@@ -1,6 +1,6 @@
 import { oneBuyer } from "../src/tests/sessionFixtures";
 import { buyerError } from "../src/systems/StreetEconomy";
-import { connects, honest, navigate } from "./helpers";
+import { connects, honest, navigate, tapUntil } from "./helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { dismissEncounter } from "./helpers";
 import { newGame } from "../src/core/Simulation";
@@ -32,7 +32,9 @@ test.beforeEach(async ({ page }) => {
 async function state(page: Page) {
   return page.evaluate((k) => JSON.parse(localStorage.getItem(k)!).state, key);
 }
-async function nav(page: Page, name: string) { await navigate(page, name); }
+async function nav(page: Page, name: string) {
+  await navigate(page, name);
+}
 
 async function day(page: Page) {
   await dismissEncounter(page);
@@ -85,9 +87,16 @@ async function resume(page: Page, s: GameState) {
   await dismissEncounter(page);
 }
 function campaign(target: "custody" | "crew" | "default") {
-  let s = newGame("Test(6) seeded journey", "south", target === "custody" ? 1 : 98713);
+  let s = newGame(
+    "Test(6) seeded journey",
+    "south",
+    target === "custody" ? 1 : 98713,
+  );
   const act = (type: "crime" | "gig" | "contact", target?: string) => {
-    if (type === "crime") { s = oneBuyer(s); return; }
+    if (type === "crime") {
+      s = oneBuyer(s);
+      return;
+    }
     const r = performAction(s, { actor: "player", type, target });
     if (r.error) throw Error(r.error);
     s = r.state;
@@ -162,12 +171,18 @@ test("supplier to inventory to multiple real sales and repayment through normal 
   await page.getByRole("button", { name: "Talk terms with Cuzzo" }).click();
   const modal = page.getByRole("dialog", { name: "Character encounter" });
   await expect(modal).toContainText("$102");
-  await modal
-    .getByRole("button", { name: "Explain the terms and risk." })
-    .click();
+  await tapUntil(
+    page,
+    modal.getByRole("button", { name: "Explain the terms and risk." }),
+    async () => (await modal.textContent())!.includes("before supplier cost"),
+  );
   await expect(modal).toContainText("before supplier cost");
   await snap(page, "01-supplier-terms");
-  await modal.getByRole("button", { name: /Accept consignment/ }).click();
+  await tapUntil(
+    page,
+    modal.getByRole("button", { name: /Accept consignment/ }),
+    async () => (await state(page)).street.lots.length > 0,
+  );
   expect((await state(page)).street.lots[0].remaining).toBe(6);
   expect((await state(page)).characters.player.wallet.clean).toBe(125);
   await nav(page, "Wallet");
@@ -183,29 +198,57 @@ test("supplier to inventory to multiple real sales and repayment through normal 
     if (!s.street.lots[0].remaining) break;
     if (!s.ap) await day(page);
     await nav(page, "City");
-    const ack = page.getByRole("button", {name: "Acknowledge", exact:true});
-    while(await ack.count()) await ack.click();
-    const summary = page.getByRole("button",{name:"Dismiss session summary"});
-    if(await summary.count())await summary.click();
-    const district=page.getByRole("group",{name:"Board location"}).getByRole("button",{name:"Southside",exact:true});
-    if(await district.count())await district.click();
-    await page.getByRole("region",{name:"Places in Southside"}).getByRole("button",{name:/The Lot/}).click();
-    const go=page.getByRole("button",{name:"Go here",exact:true});
-    if(await go.count())await go.click();
+    const ack = page.getByRole("button", { name: "Acknowledge", exact: true });
+    while (await ack.count()) await ack.click();
+    const summary = page.getByRole("button", {
+      name: "Dismiss session summary",
+    });
+    if (await summary.count()) await summary.click();
+    const district = page
+      .getByRole("group", { name: "Board location" })
+      .getByRole("button", { name: "Southside", exact: true });
+    if (await district.count()) await district.click();
+    await page
+      .getByRole("region", { name: "Places in Southside" })
+      .getByRole("button", { name: /The Lot/ })
+      .click();
+    const go = page.getByRole("button", { name: "Go here", exact: true });
+    if (await go.count())
+      await tapUntil(
+        page,
+        go,
+        async () => (await state(page)).presence?.location === "south.the-lot",
+        45000,
+      );
     await dismissEncounter(page);
-    const sell=page.getByRole("button",{name:"Start trapping — 1 AP"});
-    if(await sell.isDisabled()){await day(page);continue;}
-    await sell.click();
-    const panel=page.getByRole("region",{name:"Trapping session"});
-    for(let beat=0;beat<6;beat++){
-      const skip=panel.getByRole("button",{name:"Skip visitor"});
-      if(!await skip.count())break;
-      await skip.click();
+    const sell = page.getByRole("button", { name: "Start trapping — 1 AP" });
+    if (await sell.isDisabled()) {
+      await day(page);
+      continue;
     }
-    s=await state(page);
-    for(const t of s.street.transactions){if(t.gross)successes++;else failures++;}
-    const ended=page.getByRole("button",{name:"Dismiss session summary"});
-    if(await ended.count())await ended.click();
+    await tapUntil(
+      page,
+      sell,
+      async () => (await state(page)).activeSession?.status === "active",
+    );
+    const panel = page.getByRole("region", { name: "Trapping session" });
+    for (let beat = 0; beat < 6; beat++) {
+      const skip = panel.getByRole("button", { name: "Skip visitor" });
+      if (!(await skip.count())) break;
+      const cursor = (await state(page)).activeSession.cursor;
+      await tapUntil(
+        page,
+        skip,
+        async () => (await state(page)).activeSession.cursor !== cursor,
+      );
+    }
+    s = await state(page);
+    for (const t of s.street.transactions) {
+      if (t.gross) successes++;
+      else failures++;
+    }
+    const ended = page.getByRole("button", { name: "Dismiss session summary" });
+    if (await ended.count()) await ended.click();
   }
   expect(successes).toBeGreaterThan(0);
   expect((await state(page)).street.transactions.length).toBeGreaterThan(1);
@@ -292,7 +335,9 @@ test("seeded real-play arrest serves every day and releases into continued gamep
   );
   await snap(page, "09-release");
   await nav(page, "Actions");
-  await expect(page.getByRole("region", {name:"Street operations"})).toContainText("Go to City");
+  await expect(
+    page.getByRole("region", { name: "Street operations" }),
+  ).toContainText("Go to City");
 });
 test("default reaction and accumulated heat are rendered from real simulated consequences", async ({
   page,
