@@ -87,7 +87,11 @@ async function skipVisitor(page: Page) {
     page.getByRole("button", { name: "Skip visitor" }),
     async () => (await state(page)).activeSession.cursor !== cursor,
   );
-  expect((await state(page)).activeSession.cursor).toBe(cursor + 1);
+  // The beat's own timer can land while a slow software-GL tap is in flight;
+  // a skip on a stale cursor is a no-op (unit-tested), so at most one extra.
+  const now = (await state(page)).activeSession.cursor;
+  expect(now).toBeGreaterThanOrEqual(cursor + 1);
+  expect(now).toBeLessThanOrEqual(cursor + 2);
 }
 
 test("City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session", async ({
