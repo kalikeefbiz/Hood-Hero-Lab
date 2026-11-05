@@ -218,11 +218,18 @@ test("supplier to inventory to multiple real sales and repayment through normal 
     const district = page
       .getByRole("group", { name: "Board location" })
       .getByRole("button", { name: "Southside", exact: true });
-    if (await district.count()) await district.click();
-    await page
-      .getByRole("region", { name: "Places in Southside" })
-      .getByRole("button", { name: /The Lot/ })
-      .click();
+    if (await district.count())
+      await tapUntil(page, district, async () =>
+        page.getByRole("region", { name: "Places in Southside" }).isVisible(),
+      );
+    await tapUntil(
+      page,
+      page
+        .getByRole("region", { name: "Places in Southside" })
+        .getByRole("button", { name: /The Lot/ }),
+      async () =>
+        page.getByRole("region", { name: "City trapping spot" }).isVisible(),
+    );
     const go = page.getByRole("button", { name: "Go here", exact: true });
     if (await go.count())
       await tapUntil(
