@@ -36,7 +36,11 @@ export async function tapUntil(
           await page.waitForTimeout(400); // Let the guarded post-stall window finish.
           if (!(await acknowledged())) {
             try {
-              await button.click({ timeout: 5000 });
+              // The iPhone projects dispatch a native touch gesture atomically.
+              // Separate emulated mouse down/up commands can age during software WebGL frames.
+              if (await page.evaluate(() => navigator.maxTouchPoints > 0))
+                await button.tap({ timeout: 5000 });
+              else await button.click({ timeout: 5000 });
             } catch (error) {
               if (!(error instanceof errors.TimeoutError)) throw error;
             }
