@@ -509,8 +509,17 @@ type PlaceRef = Pick<LocationDef, "zone" | "at"> & {
   railStation?: string;
   lot?: string;
 };
-const placeKey = (l: PlaceRef) =>
-  `${l.zone}:${l.at[0]}:${l.at[1]}:${l.railStation ?? ""}:${l.lot ?? ""}`;
+// Place definitions are long-lived objects, so most lookups hit the WeakMap and
+// skip building a string key; ad-hoc refs still share the string cache.
+const refKeys = new WeakMap<PlaceRef, string>();
+const placeKey = (l: PlaceRef) => {
+  let k = refKeys.get(l);
+  if (k === undefined) {
+    k = `${l.zone}:${l.at[0]}:${l.at[1]}:${l.railStation ?? ""}:${l.lot ?? ""}`;
+    refKeys.set(l, k);
+  }
+  return k;
+};
 export const locationPosition = (l: PlaceRef): [number, number] => {
   // Places never move; the game asks for them thousands of times a day.
   const key = placeKey(l);

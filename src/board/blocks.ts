@@ -90,11 +90,20 @@ export function deriveBlocks(s: GameState): Record<string, BlockView> {
         strength: top ? Math.max(0.25, Math.min(1, presence / 70)) : 0,
         contested,
         police: z.police,
-        locations: LOCATIONS.filter((l) => locationBlock(l)?.id === b.id).map(
-          (l) => l.id,
-        ),
+        locations: placesByBlock().get(b.id) ?? [],
       };
     }
   }
   return out;
+}
+let byBlock: Map<string, string[]> | null = null;
+/** Block id -> place ids. Places never move, so this is built once. */
+function placesByBlock() {
+  if (byBlock) return byBlock;
+  byBlock = new Map();
+  for (const l of LOCATIONS) {
+    const id = locationBlock(l)?.id;
+    if (id) byBlock.set(id, [...(byBlock.get(id) ?? []), l.id]);
+  }
+  return byBlock;
 }
