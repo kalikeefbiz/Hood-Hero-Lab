@@ -193,6 +193,7 @@ test("Actions gives directions only; Skills and inventory remain readable on iPh
 test("background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes", async ({
   page,
 }) => {
+  test.setTimeout(90000); // Includes two deliberate waits longer than a visitor beat.
   await page.emulateMedia({ reducedMotion: "reduce" });
   await load(page, true, true);
   const panel = page.getByRole("region", { name: "Trapping session" });

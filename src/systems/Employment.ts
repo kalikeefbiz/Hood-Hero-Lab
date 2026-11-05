@@ -244,7 +244,7 @@ export function workShift(s: GameState, actor: string) {
     s,
     e,
     "worked",
-    `${c.name} worked a scheduled shift and earned $${e.wage} in lawful pay. +1 work skill, +8 stress.`,
+    `${c.name} worked a scheduled shift and earned $${e.wage} in lawful pay. +2.00 Work XP, +8 stress.`,
   )!;
   awardSkill(s, actor, "work", 200, `shift:${e.id}:${s.day}`);
   if (

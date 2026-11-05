@@ -475,7 +475,7 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
   a.relationshipEffect = a.success
     ? "Cooperation strengthened trust and respect."
     : "Failure reduced respect; agreed compensation remains owed.";
-  a.outcome = `${c.name} · ${a.objective}: ${outcome}${a.experience ? ` +${a.experience} ${a.skill} experience.` : ""}`;
+  a.outcome = `${c.name} · ${a.objective}: ${outcome}`;
   c.agency.lastAssignmentDay = s.day;
   const e = logAssignment(s, a, a.outcome, a.success ? 5 : -2);
   if (a.success) {
