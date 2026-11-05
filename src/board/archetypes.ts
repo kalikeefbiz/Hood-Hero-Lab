@@ -970,45 +970,9 @@ export function buildLocation(
       return full;
     }
     case "station": {
-      const z = extras.trainZ;
-      box(k, {
-        x: cx,
-        z,
-        w: W * 0.6,
-        d: 4.2,
-        h: 2.2,
-        y: 5.2,
-        color: col(wall),
-        windows: true,
-      });
-      for (const s of [-1, 1])
-        box(k, {
-          x: cx + s * W * 0.25,
-          z: z + 2.6,
-          w: 1.2,
-          d: 1.2,
-          h: 5.2,
-          color: col("#4a4f55"),
-          windows: false,
-        });
-      front(k.glow, cx, z + 2.11, 5.5, W * 0.5, 0.6, col("#ffe0a0"));
-      if (l.sign)
-        front(
-          k.sign,
-          cx,
-          z + 2.13,
-          6.4,
-          4,
-          1,
-          col("#fff"),
-          atlas.sign(l.sign, l.palette[2], l.palette[3]),
-        );
-      return {
-        minX: cx - W * 0.35,
-        maxX: cx + W * 0.35,
-        minZ: z - 2.5,
-        maxZ: z + 3.4,
-      };
+      // The El station itself is drawn by the rail system over the street;
+      // the place's own block keeps its ordinary buildings.
+      return { minX: cx, maxX: cx, minZ: cz, maxZ: cz };
     }
     case "mural": {
       const w = W * 0.7;
@@ -1364,6 +1328,10 @@ export function fillBlock(
     );
   const blocked = (z: number, depth: number) =>
     !Number.isNaN(avoidZ) && Math.abs(z - avoidZ) < depth / 2 + 1.6;
+  // Block kinds first: they give each part of a district its own character.
+  if (b.kind === "industrial") return industrialBlock(k, zone, b, free);
+  if (b.kind === "projects") return projectsBlock(k, zone, b, free);
+  if (b.kind === "civic") return civicBlock(k, b, free);
   if (zone === "downtown") {
     for (const fx of [0.25, 0.75])
       for (const fz of [0.25, 0.75]) {
@@ -1415,8 +1383,26 @@ export function fillBlock(
     if (r() < style.trees) palm(k, b.minX + 0.8, b.maxZ - 0.8, 1.2);
     return;
   }
-  const lotDepth = zone === "nawf" ? 4.2 : zone === "south" ? 4 : 3.6;
-  const lotWidth = zone === "reservoir" ? 3.4 : zone === "rio" ? 3.3 : 3.2;
+  const lotDepth =
+    b.kind === "commercial"
+      ? 4.6
+      : zone === "nawf"
+        ? 4.2
+        : zone === "south"
+          ? 4
+          : 3.6;
+  const lotWidth =
+    b.kind === "rowhouse"
+      ? 2.3
+      : b.kind === "commercial"
+        ? 3.8
+        : b.kind === "suburban"
+          ? 4.2
+          : zone === "reservoir"
+            ? 3.4
+            : zone === "rio"
+              ? 3.3
+              : 3.2;
   const rows: { x: number; z: number; rot: number; w: number }[] = [];
   const along = (len: number) => Math.max(1, Math.floor(len / lotWidth));
   const nxLots = along(W),
@@ -1465,9 +1451,13 @@ export function fillBlock(
             tree(kk, xx, zz, 1.1, zone === "south"))(k, x, z);
   }
   for (const lot of rows) {
-    const w = lot.w - 0.25;
+    const w = lot.w - (b.kind === "rowhouse" ? 0.04 : 0.25);
     if (blocked(lot.z, lotDepth) || !free(lot.x, lot.z, w, lotDepth)) continue;
     const wall = col(pick(r, style.walls));
+    if (b.kind === "commercial") {
+      storefrontUnit(k, lot, w, lotDepth, wall);
+      continue;
+    }
     if (zone === "reservoir") {
       if (r() < 0.28) {
         box(k, {
@@ -1607,4 +1597,265 @@ export function waterfront(
     if (zone === "rio" || zone === "downtown") palm(k, x, z);
     else tree(k, x, z, 1.1, zone === "south");
   }
+}
+
+type Lot = { x: number; z: number; rot: number; w: number };
+type Free = (x: number, z: number, w: number, d: number) => boolean;
+
+/** A one- or two-storey shop with an awning and a lit sign band. */
+function storefrontUnit(k: Kit, lot: Lot, w: number, depth: number, wall: THREE.Color) {
+  const r = k.r;
+  const floors = r() < 0.6 ? 1 : 2;
+  const top = box(k, {
+    x: lot.x,
+    z: lot.z,
+    w,
+    d: depth,
+    h: FLOOR * floors + 0.5,
+    rot: lot.rot,
+    color: wall,
+    record: true,
+  });
+  const s = Math.sin(lot.rot),
+    c = Math.cos(lot.rot);
+  // Awning over the street face.
+  box(k, {
+    x: lot.x + s * (depth / 2 + 0.35),
+    z: lot.z + c * (depth / 2 + 0.35),
+    w: w * 0.86,
+    d: 0.7,
+    h: 0.12,
+    y: CURB + 1.35,
+    rot: lot.rot,
+    color: col(pick(r, ["#a8352e", "#2f6a4a", "#c8902e", "#2e4f8a", "#7a2e5a"])),
+    windows: false,
+  });
+  box(k, {
+    x: lot.x + s * (depth / 2 + 0.02),
+    z: lot.z + c * (depth / 2 + 0.02),
+    w: w * 0.8,
+    d: 0.06,
+    h: 0.35,
+    y: CURB + 1.6,
+    rot: lot.rot,
+    color: col(pick(r, ["#ffe0a0", "#a0e0ff", "#ffb0c8"])),
+    windows: false,
+  });
+  if (r() < 0.5)
+    box(k, {
+      x: lot.x,
+      z: lot.z,
+      w: 1,
+      d: 0.8,
+      h: 0.5,
+      y: top,
+      rot: lot.rot,
+      color: col("#8d9296"),
+      windows: false,
+    });
+}
+
+/** Warehouses, a yard, containers and a fence line. */
+function industrialBlock(k: Kit, zone: ZoneId, b: BlockDef, free: Free) {
+  const r = k.r;
+  const W = b.maxX - b.minX,
+    D = b.maxZ - b.minZ,
+    cx = (b.minX + b.maxX) / 2,
+    cz = (b.minZ + b.maxZ) / 2;
+  box(k, {
+    x: cx,
+    z: cz,
+    w: W - 0.6,
+    d: D - 0.6,
+    h: 0.04,
+    color: col("#3a3a38"),
+    windows: false,
+  });
+  const halls = W > 13 ? 2 : 1;
+  const hw = (W - 1.6) / halls - 0.8;
+  for (let i = 0; i < halls; i++) {
+    const x = b.minX + 0.8 + (hw + 0.8) * i + hw / 2,
+      d = D * (0.45 + r() * 0.15),
+      z = b.minZ + 0.7 + d / 2;
+    if (!free(x, z, hw, d)) continue;
+    const top = box(k, {
+      x,
+      z,
+      w: hw,
+      d,
+      h: FLOOR * (1.6 + r() * 0.8),
+      color: col(pick(r, ["#6d6a64", "#7a5a48", "#5e6670", "#8a7a62", "#585450"])),
+      windows: false,
+      record: true,
+    });
+    // Saw-tooth roof lights.
+    for (let t = 0; t < 3; t++)
+      box(k, {
+        x: x - hw / 2 + (hw / 3) * (t + 0.5),
+        z,
+        w: hw / 3 - 0.2,
+        d: d - 0.4,
+        h: 0.45,
+        y: top,
+        color: col("#4c4a46"),
+        windows: false,
+      });
+    if (r() < 0.35)
+      k.plain.geometry(
+        CYL,
+        placed(x + hw / 3, top + 1.6, z - d / 4, 0.25, 3.2, 0.25),
+        col("#5a4a3e"),
+      );
+  }
+  // Containers in the yard.
+  const yardZ = b.maxZ - D * 0.22;
+  for (let i = 0; i < 2 + Math.floor(r() * 4); i++) {
+    const x = b.minX + 1.4 + r() * (W - 2.8);
+    if (!free(x, yardZ, 1.4, 0.7)) continue;
+    box(k, {
+      x,
+      z: yardZ + (r() - 0.5) * 2,
+      w: 2.4,
+      d: 1,
+      h: 1 + Math.floor(r() * 2) * 1,
+      rot: r() < 0.5 ? 0 : Math.PI / 2,
+      color: col(pick(r, ["#a6452f", "#2f5f7f", "#c08b32", "#5c6f4a", "#7a3a5a"])),
+      windows: false,
+    });
+  }
+  if (zone !== "downtown") fence(k, b.minX + 0.4, b.maxZ - 0.4, b.maxX - 0.4, b.maxZ - 0.4, 1.1);
+}
+
+/** Project slabs on a worn courtyard. */
+function projectsBlock(k: Kit, zone: ZoneId, b: BlockDef, free: Free) {
+  const r = k.r,
+    style = DISTRICT_STYLE[zone];
+  const W = b.maxX - b.minX,
+    D = b.maxZ - b.minZ,
+    cx = (b.minX + b.maxX) / 2,
+    cz = (b.minZ + b.maxZ) / 2;
+  box(k, {
+    x: cx,
+    z: cz,
+    w: W - 0.8,
+    d: D - 0.8,
+    h: 0.05,
+    color: col("#4d5a3e"),
+    windows: false,
+  });
+  const along = W >= D;
+  const slabs = Math.max(W, D) > 13 ? 2 : 1;
+  for (let i = 0; i < slabs; i++) {
+    const f = slabs === 1 ? 0.5 : i === 0 ? 0.28 : 0.72;
+    const x = along ? b.minX + W * f : cx,
+      z = along ? cz : b.minZ + D * f;
+    const w = along ? W * 0.3 : W * 0.62,
+      d = along ? D * 0.62 : D * 0.3;
+    if (!free(x, z, w, d)) continue;
+    box(k, {
+      x,
+      z,
+      w,
+      d,
+      h: FLOOR * (8 + Math.floor(r() * 7)),
+      color: col(pick(r, style.walls)),
+      record: true,
+    });
+  }
+  for (let i = 0; i < 3; i++) {
+    const x = b.minX + 1 + r() * (W - 2),
+      z = b.minZ + 1 + r() * (D - 2);
+    if (free(x, z, 1.4, 1.4)) tree(k, x, z, 0.9, zone === "south");
+  }
+}
+
+/** Civic blocks: one stone building on a plaza with trees. */
+function civicBlock(k: Kit, b: BlockDef, free: Free) {
+  const r = k.r;
+  const W = b.maxX - b.minX,
+    D = b.maxZ - b.minZ,
+    cx = (b.minX + b.maxX) / 2,
+    cz = (b.minZ + b.maxZ) / 2;
+  box(k, {
+    x: cx,
+    z: cz,
+    w: W - 0.6,
+    d: D - 0.6,
+    h: 0.06,
+    color: col("#9a968c"),
+    windows: false,
+  });
+  const w = W * 0.62,
+    d = D * 0.5;
+  if (free(cx, cz - D * 0.08, w, d)) {
+    const top = box(k, {
+      x: cx,
+      z: cz - D * 0.08,
+      w,
+      d,
+      h: FLOOR * (3 + Math.floor(r() * 3)),
+      color: col(pick(r, ["#cfc6b2", "#bdb5a2", "#d8d0bc", "#a9a597"])),
+      record: true,
+    });
+    box(k, {
+      x: cx,
+      z: cz - D * 0.08,
+      w: w + 0.3,
+      d: d + 0.3,
+      h: 0.3,
+      y: top,
+      color: col("#8e897c"),
+      windows: false,
+    });
+  }
+  for (const fx of [-0.36, 0.36])
+    if (free(cx + W * fx, b.maxZ - 1.4, 1.2, 1.2))
+      tree(k, cx + W * fx, b.maxZ - 1.4, 1);
+}
+
+/** An unclaimed development lot: graded dirt, a fence and a lease sign. */
+export function developmentLot(k: Kit, b: BlockDef, atlas: SignAtlas) {
+  const W = b.maxX - b.minX,
+    D = b.maxZ - b.minZ,
+    cx = (b.minX + b.maxX) / 2,
+    cz = (b.minZ + b.maxZ) / 2;
+  box(k, {
+    x: cx,
+    z: cz,
+    w: W - 0.8,
+    d: D - 0.8,
+    h: 0.05,
+    color: col("#5d5243"),
+    windows: false,
+  });
+  const x0 = b.minX + 0.5,
+    x1 = b.maxX - 0.5,
+    z0 = b.minZ + 0.5,
+    z1 = b.maxZ - 0.5;
+  fence(k, x0, z0, x1, z0, 1);
+  fence(k, x0, z0, x0, z1, 1);
+  fence(k, x1, z0, x1, z1, 1);
+  fence(k, x0, z1, cx - 1.2, z1, 1);
+  fence(k, cx + 1.2, z1, x1, z1, 1);
+  box(k, {
+    x: cx + W * 0.25,
+    z: z1 - 0.2,
+    w: 0.12,
+    d: 0.12,
+    h: 1.9,
+    color: col("#3a3a3a"),
+    windows: false,
+  });
+  front(
+    k.sign,
+    cx + W * 0.25,
+    z1 - 0.12,
+    CURB + 1.5,
+    2.2,
+    0.7,
+    col("#fff"),
+    atlas.sign("FOR LEASE", "#e9e3d2", "#2b2b2b"),
+  );
+  for (let i = 0; i < 3; i++)
+    tree(k, b.minX + 1.4 + k.r() * (W - 2.8), b.minZ + 1.4 + k.r() * (D - 2.8), 0.6, true);
 }

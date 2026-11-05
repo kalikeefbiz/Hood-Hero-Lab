@@ -28,7 +28,6 @@ export const SET_PIECES = {
   storefrontChurch: "assets/models/storefront-church.glb",
   parkingGarage: "assets/models/parking-garage.glb",
   transitPlaza: "assets/models/transit-plaza.glb",
-  elUnderpass: "assets/models/el-underpass.glb",
 } as const;
 export type SetPieceId = keyof typeof SET_PIECES;
 
@@ -36,6 +35,28 @@ export type SetPieceId = keyof typeof SET_PIECES;
 const WHOLE_BLOCK = new Set<SetPieceId>(["transitPlaza", "parkingGarage"]);
 /** Pieces that may only appear once in the city. */
 const ONCE = new Set<SetPieceId>(["transitPlaza"]);
+/**
+ * Caps per district, so no neighborhood reads as the same gas station or
+ * court on repeat. Once a district's pieces run out, the remaining blocks
+ * keep their procedural buildings.
+ */
+const MAX_PER_DISTRICT: Partial<Record<SetPieceId, number>> = {
+  gasStation: 2,
+  fastFood: 2,
+  carWash: 2,
+  stripMall: 2,
+  parkingGarage: 2,
+  parkingLot: 2,
+  storefrontChurch: 2,
+  liquorCorner: 2,
+  basketballCourt: 3,
+  vacantLot: 3,
+  tacoLot: 3,
+  palmPark: 3,
+  pocketPark: 2,
+  walkup: 5,
+  shotgunHouse: 6,
+};
 /** Pieces painted per instance so a repeated house never looks cloned. */
 export const TINTED = new Set<SetPieceId>(["shotgunHouse", "walkup"]);
 
@@ -43,7 +64,6 @@ const POOLS: Record<ZoneId, Partial<Record<SetPieceId, number>>> = {
   downtown: {
     parkingGarage: 3,
     parkingLot: 2,
-    transitPlaza: 1,
     gasStation: 1,
     fastFood: 1,
     stripMall: 1,
@@ -129,37 +149,12 @@ function hashString(str: string) {
 }
 
 /**
- * The Nawf's El runs down the middle of a street, so the underpass replaces
- * one block-long stretch of it: the column of blocks farthest from the
- * station, centred on the track.
- */
-export function planUnderpass(
-  blocks: BlockDef[],
-  trainZ: number,
-  stationX: number,
-): SetPiecePlacement | null {
-  if (Number.isNaN(trainZ) || !blocks.length) return null;
-  const pick = [...blocks].sort(
-    (a, b) =>
-      Math.abs((b.minX + b.maxX) / 2 - stationX) -
-      Math.abs((a.minX + a.maxX) / 2 - stationX),
-  )[0];
-  return {
-    piece: "elUnderpass",
-    block: `${pick.id}:el`,
-    rect: { minX: pick.minX, maxX: pick.maxX, minZ: trainZ - 2.4, maxZ: trainZ + 2.4 },
-    yaw: 0,
-  };
-}
-
-/**
- * Choose set pieces for a district's empty blocks. `trainBlock` marks blocks
- * the El runs over: those get the underpass and nothing else.
+ * Choose set pieces for a district's empty blocks (their buildable area).
+ * Stixx Central's transit plaza is placed by the renderer, beside the hub.
  */
 export function planSetPieces(
   zone: ZoneId,
   blocks: BlockDef[],
-  trainBlock: (b: BlockDef) => boolean = () => false,
 ): SetPiecePlacement[] {
   const r = seeded(hashString(`set-pieces:${zone}`));
   const bag: SetPieceId[] = [];
@@ -176,12 +171,17 @@ export function planSetPieces(
   }
   let cursor = 0;
   const used = new Set<SetPieceId>();
+  const counts = new Map<SetPieceId, number>();
+  const room = (id: SetPieceId) =>
+    (counts.get(id) ?? 0) < (MAX_PER_DISTRICT[id] ?? Infinity);
   const next = (whole: boolean): SetPieceId | null => {
     for (let tries = 0; tries < bag.length; tries++) {
       const id = bag[cursor++ % bag.length];
       if (ONCE.has(id) && used.has(id)) continue;
+      if (!room(id)) continue;
       if (WHOLE_BLOCK.has(id) !== whole && WHOLE_BLOCK.has(id)) continue;
       used.add(id);
+      counts.set(id, (counts.get(id) ?? 0) + 1);
       return id;
     }
     return null;
@@ -196,21 +196,15 @@ export function planSetPieces(
       minZ: b.minZ + inset,
       maxZ: b.maxZ - inset,
     };
-    if (trainBlock(b)) {
-      if (zone === "nawf" && !used.has("elUnderpass") && r() < 0.9) {
-        used.add("elUnderpass");
-        out.push({ piece: "elUnderpass", block: b.id, rect: full, yaw: 0 });
-      }
-      continue;
-    }
     if (r() > DENSITY[zone]) continue;
     // Downtown sometimes gives a whole block to a garage or the transit plaza.
     if (zone === "downtown" && r() < 0.35) {
       const id = bag.find(
-        (p) => WHOLE_BLOCK.has(p) && !(ONCE.has(p) && used.has(p)),
+        (p) => WHOLE_BLOCK.has(p) && !(ONCE.has(p) && used.has(p)) && room(p),
       );
       if (id) {
         used.add(id);
+        counts.set(id, (counts.get(id) ?? 0) + 1);
         out.push({ piece: id, block: b.id, rect: full, yaw: 0 });
         continue;
       }

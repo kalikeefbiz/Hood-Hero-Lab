@@ -1,12 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  DISTRICTS,
   ZONE_ORDER,
   districtGrid,
   locationBlock,
 } from "../city3d/layout";
 import { LOCATIONS } from "../board/locations";
-import { SET_PIECES, planSetPieces, planUnderpass } from "../board/setPieces";
+import { SET_PIECES, planSetPieces } from "../board/setPieces";
 
 const empty = (zone: (typeof ZONE_ORDER)[number]) =>
   districtGrid(zone).blocks.filter(
@@ -55,15 +54,8 @@ describe("set pieces", () => {
     expect(has("rio", "palmPark")).toBe(true);
     expect(has("south", "liquorCorner")).toBe(true);
     expect(has("reservoir", "storefrontChurch")).toBe(true);
-    expect(has("downtown", "transitPlaza")).toBe(true);
+    // Stixx Central's plaza is placed beside the hub by the renderer.
+    expect(has("downtown", "transitPlaza")).toBe(false);
   });
 
-  it("put the Nawf underpass on the El, away from the station", () => {
-    const d = DISTRICTS.nawf;
-    const trainZ = d.minZ + (d.maxZ - d.minZ) * 0.33;
-    const u = planUnderpass(districtGrid("nawf").blocks, trainZ, 0)!;
-    expect(u.piece).toBe("elUnderpass");
-    expect((u.rect.minZ + u.rect.maxZ) / 2).toBeCloseTo(trainZ);
-    expect(Math.abs((u.rect.minX + u.rect.maxX) / 2)).toBeGreaterThan(5);
-  });
 });

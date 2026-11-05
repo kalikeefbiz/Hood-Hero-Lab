@@ -16,11 +16,21 @@ import {
   locationBlock,
   locationPosition,
   riverPath,
+  buildable,
+  RAIL_DECK,
+  RAIL_LINES,
+  RAIL_STATIONS,
+  distanceToRail,
+  walkRoute,
+  lotBlocks,
   type BlockDef,
+  type RailLine,
+  type RailStation,
 } from "../city3d/layout";
 import { LOCATIONS, type LocationDef } from "./locations";
 import {
   buildLocation,
+  developmentLot,
   DISTRICT_STYLE,
   fillBlock,
   waterfront,
@@ -64,7 +74,6 @@ import {
   SET_PIECES,
   TINTED,
   planSetPieces,
-  planUnderpass,
   type SetPiecePlacement,
 } from "./setPieces";
 
@@ -190,8 +199,8 @@ const TAGS: Record<
 
 /** Camera distance for each level of the board. */
 export const LEVEL_DISTANCE = {
-  city: 205,
-  district: 100,
+  city: 330,
+  district: 135,
   block: 52,
   place: 40,
 };
@@ -271,7 +280,7 @@ export function supportsWebGL() {
 export class BoardRenderer {
   readonly renderer: THREE.WebGLRenderer;
   readonly scene = new THREE.Scene();
-  readonly camera = new THREE.PerspectiveCamera(40, 1, 1, 900);
+  readonly camera = new THREE.PerspectiveCamera(40, 1, 1, 1400);
   onPick: (r: PickResult) => void = () => {};
   onInteract: () => void = () => {};
   onLevel: (distance: number) => void = () => {};
@@ -313,14 +322,9 @@ export class BoardRenderer {
   private placePickers: THREE.Mesh[] = [];
   private walls = new Map<string, WallSlot[]>();
   private roofs = new Map<string, V3[]>();
-  private streets: Record<ZoneId, { xs: number[]; zs: number[] }> = {
-    downtown: { xs: [], zs: [] },
-    nawf: { xs: [], zs: [] },
-    south: { xs: [], zs: [] },
-    reservoir: { xs: [], zs: [] },
-    rio: { xs: [], zs: [] },
-  };
-  private trainZ = 0;
+  private streets = Object.fromEntries(
+    ZONE_ORDER.map((z) => [z, districtGrid(z)]),
+  ) as Record<ZoneId, ReturnType<typeof districtGrid>>;
   private dynamic = new THREE.Group();
   // Player piece and people on the board.
   private token = new THREE.Group();
@@ -410,14 +414,15 @@ export class BoardRenderer {
     this.pmrem = new THREE.PMREMGenerator(this.renderer);
     this.makeMaterials();
     this.makeSky();
-    this.scene.fog = new THREE.Fog("#000", 190, 520);
+    // Haze only at the far edge of the city: atmosphere, not a cutoff.
+    this.scene.fog = new THREE.Fog("#000", 320, 900);
     this.sun.castShadow = true;
-    this.sun.shadow.mapSize.set(1024, 1024);
+    this.sun.shadow.mapSize.set(2048, 2048);
     const sc = this.sun.shadow.camera;
-    sc.left = sc.bottom = -125;
-    sc.right = sc.top = 125;
+    sc.left = sc.bottom = -205;
+    sc.right = sc.top = 205;
     sc.near = 10;
-    sc.far = 420;
+    sc.far = 700;
     this.sun.shadow.bias = -0.0008;
     this.sun.shadow.normalBias = 0.4;
     this.scene.add(this.sun, this.sun.target, this.hemi);
@@ -516,9 +521,9 @@ export class BoardRenderer {
         this.flyTo(
           x,
           z + 6,
-          (focus.zone === "downtown" ? 92 : LEVEL_DISTANCE.district) * portrait,
+          (focus.zone === "downtown" ? 125 : LEVEL_DISTANCE.district) * portrait,
         );
-      } else this.flyTo(0, 12, LEVEL_DISTANCE.city, 0);
+      } else this.flyTo(0, 0, LEVEL_DISTANCE.city, 0);
     }
     this.wake();
   }
@@ -548,7 +553,7 @@ export class BoardRenderer {
     this.sun.position
       .set(...t.sunDir)
       .normalize()
-      .multiplyScalar(220);
+      .multiplyScalar(340);
     this.hemi.color.set(t.hemiSky);
     this.hemi.groundColor.set(t.hemiGround);
     // Lambert shading without environment light needs extra fill.
@@ -648,11 +653,8 @@ export class BoardRenderer {
       this.placeToken(placeId);
       return Promise.resolve();
     }
-    const path: [number, number][] = [
-      [fx, fz],
-      [fx, tz],
-      [tx, tz],
-    ];
+    // Along the streets, never through buildings.
+    const path = walkRoute([fx, fz], [tx, tz]);
     let total = 0;
     for (let i = 1; i < path.length; i++)
       total += Math.hypot(
@@ -759,7 +761,7 @@ export class BoardRenderer {
   }
   overview() {
     this.setFocus({ zone: this.focus.zone, block: null, place: null }, false);
-    this.flyTo(0, 12, LEVEL_DISTANCE.city, 0);
+    this.flyTo(0, 0, LEVEL_DISTANCE.city, 0);
   }
   get debugState() {
     return {
@@ -860,7 +862,7 @@ export class BoardRenderer {
   }
   private makeSky() {
     this.sky = new THREE.Mesh(
-      new THREE.SphereGeometry(600, 24, 12),
+      new THREE.SphereGeometry(1100, 24, 12),
       new THREE.ShaderMaterial({
         side: THREE.BackSide,
         depthWrite: false,
@@ -906,13 +908,15 @@ export class BoardRenderer {
   }
   private build() {
     const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(900, 900).rotateX(-Math.PI / 2),
+      new THREE.PlaneGeometry(1600, 1600).rotateX(-Math.PI / 2),
       this.groundMat,
     );
     ground.receiveShadow = true;
     this.scene.add(ground);
     this.buildRiver();
+    this.reserveTransitHub();
     for (const zone of ZONE_ORDER) this.buildDistrict(zone);
+    this.buildRail();
     this.buildSetPieces();
     this.animated.push((_, dt) => this.characters.forEach((c) => c.update(dt)));
     this.buildFiller();
@@ -990,7 +994,7 @@ export class BoardRenderer {
         const f = (line.v - ai) / (bi - ai);
         const x = a[0] + (b[0] - a[0]) * f,
           z = a[1] + (b[1] - a[1]) * f;
-        if (Math.abs(x) > 120 || Math.abs(z) > 110) continue;
+        if (x < BOARD.minX || x > BOARD.maxX || z < BOARD.minZ || z > BOARD.maxZ) continue;
         const rot = line.axis === "x" ? Math.PI / 2 : 0;
         box(banks, {
           x,
@@ -1019,121 +1023,106 @@ export class BoardRenderer {
     this.addKit(banks);
   }
   private buildDistrict(zone: ZoneId) {
-    const d = DISTRICTS[zone],
-      style = DISTRICT_STYLE[zone],
-      grid = districtGrid(zone),
-      k = kit(hash(zone));
-    this.streets[zone] = { xs: grid.streetsX, zs: grid.streetsZ };
-    const trainZ =
-      zone === "nawf" ? d.minZ + (d.maxZ - d.minZ) * 0.33 : Number.NaN;
-    if (zone === "nawf") this.trainZ = trainZ;
-    const underTrain = (b: BlockDef) =>
-      zone === "nawf" &&
-      Math.abs((b.minZ + b.maxZ) / 2 - trainZ) < (b.maxZ - b.minZ) / 2 + 1;
+    const style = DISTRICT_STYLE[zone],
+      grid = districtGrid(zone);
+    this.streets[zone] = grid;
     // Set pieces dress the blocks no named place uses. The software-GL
     // fallback keeps the procedural filler: it cannot afford the triangles.
     const plan = this.lite
       ? []
       : planSetPieces(
           zone,
-          grid.blocks.filter(
-            (b) =>
-              !b.waterfront &&
-              !LOCATIONS.some((l) => locationBlock(l)?.id === b.id),
-          ),
-          underTrain,
+          grid.blocks
+            .filter(
+              (b) =>
+                !b.waterfront &&
+                !LOCATIONS.some((l) => locationBlock(l)?.id === b.id) &&
+                !this.setPieces.some((p) => p.block === b.id) &&
+                !lotBlocks.has(b.id),
+            )
+            .map((b) => buildable(b)),
         );
     this.setPieces.push(...plan);
-    if (zone === "nawf" && !this.lite) {
-      const station = LOCATIONS.find((l) => l.id === "nawf.el-station");
-      const sb = station ? locationBlock(station) : null;
-      const u = planUnderpass(
-        grid.blocks,
-        trainZ,
-        sb ? (sb.minX + sb.maxX) / 2 : 0,
-      );
-      if (u) this.setPieces.push(u);
-    }
-    for (const b of grid.blocks) {
-      k.block = b.id;
-      const cx = (b.minX + b.maxX) / 2,
-        cz = (b.minZ + b.maxZ) / 2;
-      const here = LOCATIONS.filter((l) => locationBlock(l)?.id === b.id);
-      if (b.waterfront && !here.length) {
-        waterfront(k, zone, b, (x, z, p) => this.nearRiver(x, z, p));
-        continue;
-      }
-      if (!b.waterfront)
-        box(k, {
-          x: cx,
-          z: cz,
-          w: b.maxX - b.minX,
-          d: b.maxZ - b.minZ,
-          h: CURB,
-          y: 0,
-          color: col(style.sidewalk),
-          windows: false,
-        });
-      let exclude: Rect | null = null;
-      const pieces = plan.filter((p) => p.block === b.id);
-      if (pieces.length)
-        exclude = pieces.reduce<Rect>(
-          (u, p) => ({
-            minX: Math.min(u.minX, p.rect.minX),
-            maxX: Math.max(u.maxX, p.rect.maxX),
-            minZ: Math.min(u.minZ, p.rect.minZ),
-            maxZ: Math.max(u.maxZ, p.rect.maxZ),
-          }),
-          { ...pieces[0].rect },
-        );
-      if (pieces.some((p) => p.piece === "elUnderpass")) continue;
-      for (const l of here) {
-        if (l.model) {
-          // Measure the procedural footprint on a scratch kit, then let the
-          // GLB occupy exactly that space so the rest of the block still fills.
-          exclude = buildLocation(kit(1), this.atlas, l, b, {
-            trainZ,
-            scene: () => {},
-          });
-          this.loadModel(l, exclude);
+    // One kit (and so one set of meshes) per section: the GPU skips sections
+    // outside the camera's view, and the city still draws whole on screen.
+    for (const section of grid.sections) {
+      const k = kit(hash(`${zone}.${section.id}`));
+      for (const b of grid.blocks.filter((b) => b.section === section.id)) {
+        k.block = b.id;
+        const cx = (b.minX + b.maxX) / 2,
+          cz = (b.minZ + b.maxZ) / 2;
+        const here = LOCATIONS.filter((l) => locationBlock(l)?.id === b.id);
+        if (b.waterfront && !here.length) {
+          waterfront(k, zone, b, (x, z, p) => this.nearRiver(x, z, p));
           continue;
         }
-        exclude = buildLocation(k, this.atlas, l, b, {
-          trainZ,
-          scene: (o) => this.scene.add(o),
-        });
+        if (!b.waterfront)
+          box(k, {
+            x: cx,
+            z: cz,
+            w: b.maxX - b.minX,
+            d: b.maxZ - b.minZ,
+            h: CURB,
+            y: 0,
+            color: col(style.sidewalk),
+            windows: false,
+          });
+        const use = buildable(b);
+        let exclude: Rect | null = null;
+        const pieces = this.setPieces.filter((p) => p.block === b.id);
+        if (pieces.length)
+          exclude = pieces.reduce<Rect>(
+            (u, p) => ({
+              minX: Math.min(u.minX, p.rect.minX),
+              maxX: Math.max(u.maxX, p.rect.maxX),
+              minZ: Math.min(u.minZ, p.rect.minZ),
+              maxZ: Math.max(u.maxZ, p.rect.maxZ),
+            }),
+            { ...pieces[0].rect },
+          );
+        for (const l of here) {
+          if (l.model) {
+            // Measure the procedural footprint on a scratch kit, then let the
+            // GLB occupy exactly that space so the rest of the block fills.
+            exclude = buildLocation(kit(1), this.atlas, l, use, {
+              trainZ: Number.NaN,
+              scene: () => {},
+            });
+            this.loadModel(l, exclude);
+            continue;
+          }
+          exclude = buildLocation(k, this.atlas, l, use, {
+            trainZ: Number.NaN,
+            scene: (o) => this.scene.add(o),
+          });
+        }
+        if (!here.length && lotBlocks.has(b.id)) {
+          developmentLot(k, use, this.atlas);
+          continue;
+        }
+        const fullyUsed =
+          exclude &&
+          exclude.maxX - exclude.minX >= use.maxX - use.minX - 0.7 &&
+          exclude.maxZ - exclude.minZ >= use.maxZ - use.minZ - 0.7;
+        if (!fullyUsed && !b.waterfront)
+          fillBlock(k, zone, use, exclude, Number.NaN);
       }
-      const fullyUsed =
-        exclude &&
-        exclude.maxX - exclude.minX >= b.maxX - b.minX - 0.7 &&
-        exclude.maxZ - exclude.minZ >= b.maxZ - b.minZ - 0.7;
-      if (!fullyUsed && !b.waterfront)
-        fillBlock(
-          k,
-          zone,
-          b,
-          exclude,
-          zone === "nawf" && Math.abs(cz - trainZ) < (b.maxZ - b.minZ) / 2 + 1
-            ? trainZ
-            : Number.NaN,
-        );
+      k.block = null;
+      for (const w of k.walls) {
+        if (!w.block) continue;
+        const list = this.walls.get(w.block) ?? [];
+        list.push(w);
+        this.walls.set(w.block, list);
+      }
+      for (const roof of k.roofs) {
+        const rb = blockAt(roof[0], roof[2]);
+        if (!rb) continue;
+        const list = this.roofs.get(rb.id) ?? [];
+        list.push(roof);
+        this.roofs.set(rb.id, list);
+      }
+      this.addKit(k);
     }
-    k.block = null;
-    if (zone === "nawf") this.buildElevatedTrain(k, d, trainZ);
-    for (const w of k.walls) {
-      if (!w.block) continue;
-      const list = this.walls.get(w.block) ?? [];
-      list.push(w);
-      this.walls.set(w.block, list);
-    }
-    for (const roof of k.roofs) {
-      const b = blockAt(roof[0], roof[2]);
-      if (!b) continue;
-      const list = this.roofs.get(b.id) ?? [];
-      list.push(roof);
-      this.roofs.set(b.id, list);
-    }
-    this.addKit(k);
   }
   /** One instanced mesh per set piece, however many lots use it. */
   private buildSetPieces() {
@@ -1156,14 +1145,9 @@ export class BoardRenderer {
         list.forEach((p, i) => {
           const w = p.rect.maxX - p.rect.minX,
             d = p.rect.maxZ - p.rect.minZ;
-          // The underpass is stretched to the block and to the El's deck
-          // height (5.7) so the train runs straight across it.
-          const scale =
-            id === "elUnderpass"
-              ? new THREE.Vector3(w / size.x, 5.75 / size.y, d / size.z)
-              : new THREE.Vector3().setScalar(
-                  Math.min(w / size.x, d / size.z) * 0.94,
-                );
+          const scale = new THREE.Vector3().setScalar(
+            Math.min(w / size.x, d / size.z) * 0.94,
+          );
           q.setFromAxisAngle(up, p.yaw);
           m.compose(
             new THREE.Vector3(
@@ -1182,7 +1166,6 @@ export class BoardRenderer {
         mesh.name = `set:${id}`;
         mesh.computeBoundingSphere();
         this.scene.add(mesh);
-        if (id === "elUnderpass") this.dropTrackGap("set:elUnderpass");
         this.renderer.shadowMap.needsUpdate = true;
         this.wake();
       });
@@ -1224,133 +1207,393 @@ export class BoardRenderer {
       mesh.castShadow = mesh.receiveShadow = !this.lite;
       mesh.name = name;
       this.scene.add(mesh);
-      this.dropTrackGap(name);
       this.renderer.shadowMap.needsUpdate = true;
       this.wake();
     });
   }
-  private buildElevatedTrain(
-    k: Kit,
-    d: { minX: number; maxX: number },
-    z: number,
-  ) {
-    const from = d.minX - 14,
-      to = d.maxX + 14,
-      deck = 5.2,
-      steel = col("#3b3f45");
-    // A GLB station or underpass brings its own deck: those stretches of
-    // track are built separately and removed once the model arrives (they
-    // stay if it fails).
-    const gaps: { key: string; from: number; to: number }[] = [];
-    const station = LOCATIONS.find(
-      (l) => l.archetype === "station" && l.zone === "nawf" && l.model,
-    );
-    if (station?.modelFit?.trackGap) {
-      const b = locationBlock(station);
-      const cx = b ? (b.minX + b.maxX) / 2 : 0;
-      const half = station.modelFit.trackGap / 2;
-      gaps.push({ key: `model:${station.id}`, from: cx - half, to: cx + half });
-    }
-    for (const p of this.setPieces)
-      if (p.piece === "elUnderpass")
-        gaps.push({ key: "set:elUnderpass", from: p.rect.minX, to: p.rect.maxX });
-    gaps.sort((a, b) => a.from - b.from);
-    const span = (kk: Kit, a: number, b: number) => {
-      box(kk, {
-        x: (a + b) / 2,
-        z,
-        w: b - a,
-        d: 3.2,
-        h: 0.5,
-        y: deck,
-        color: steel,
-        windows: false,
-      });
-      for (const side of [-1.5, 1.5])
-        box(kk, {
-          x: (a + b) / 2,
-          z: z + side,
-          w: b - a,
-          d: 0.15,
-          h: 0.45,
-          y: deck + 0.5,
-          color: col("#565b62"),
-          windows: false,
-        });
-    };
-    let at = from;
-    for (const g of gaps) {
-      span(k, at, g.from);
-      const gk = kit(6);
-      span(gk, g.from, g.to);
-      const deck = new THREE.Mesh(gk.plain.build(), this.plainMat);
-      deck.castShadow = deck.receiveShadow = !this.lite;
-      this.scene.add(deck);
-      this.trackGaps.set(g.key, deck);
-      at = g.to;
-    }
-    span(k, at, to);
-    for (let x = from + 2; x < to; x += 6) {
-      if (gaps.some((g) => x > g.from - 0.5 && x < g.to + 0.5)) continue;
-      for (const side of [-1.3, 1.3])
+  /**
+   * Stixx Central: the transit plaza takes the free block nearest the
+   * interchange, so the hub reads at street level too.
+   */
+  private reserveTransitHub() {
+    if (this.lite) return;
+    const hub = RAIL_STATIONS.find((s) => s.id === "central");
+    if (!hub) return;
+    const free = ALL_BLOCKS.filter(
+      (b) =>
+        b.zone === "downtown" &&
+        !b.waterfront &&
+        !LOCATIONS.some((l) => locationBlock(l)?.id === b.id),
+    ).sort(
+      (a, b) =>
+        Math.hypot((a.minX + a.maxX) / 2 - hub.point[0], (a.minZ + a.maxZ) / 2 - hub.point[1]) -
+        Math.hypot((b.minX + b.maxX) / 2 - hub.point[0], (b.minZ + b.maxZ) / 2 - hub.point[1]),
+    )[0];
+    if (!free) return;
+    const r = buildable(free);
+    const yaw =
+      (free.minZ + free.maxZ) / 2 > hub.point[1] ? Math.PI : 0;
+    this.setPieces.push({
+      piece: "transitPlaza",
+      block: free.id,
+      rect: { minX: r.minX + 0.3, maxX: r.maxX - 0.3, minZ: r.minZ + 0.3, maxZ: r.maxZ - 0.3 },
+      yaw,
+    });
+  }
+  /**
+   * The El: decks, rails and bents along each line in RAIL_LINES, stations
+   * from RAIL_STATIONS, and trains that run the track, stopping at stations.
+   * Supports stand on the sidewalk strip that blocks along the line give up
+   * (see `buildable`), never in a roadway or a building.
+   */
+  private buildRail() {
+    const k = kit(9001);
+    for (const line of RAIL_LINES) {
+      const steel = col(line.old ? "#5b4636" : "#3b3f45"),
+        trim = col(line.old ? "#6e5442" : "#565b62");
+      const pts = line.points;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const [ax, az] = pts[i],
+          [bx, bz] = pts[i + 1];
+        const len = Math.hypot(bx - ax, bz - az);
+        if (len < 0.01) continue;
+        const th = Math.atan2(bz - az, bx - ax),
+          rot = -th,
+          mx = (ax + bx) / 2,
+          mz = (az + bz) / 2,
+          nx = -Math.sin(th),
+          nz = Math.cos(th);
         box(k, {
-          x,
-          z: z + side,
-          w: 0.4,
-          d: 0.4,
-          h: deck,
-          y: 0,
+          x: mx,
+          z: mz,
+          w: len + 0.25,
+          d: 3.4,
+          h: 0.5,
+          y: RAIL_DECK,
+          rot,
           color: steel,
           windows: false,
         });
+        for (const side of [-1, 1]) {
+          // Girder fascia and the two running rails.
+          box(k, {
+            x: mx + nx * 1.7 * side,
+            z: mz + nz * 1.7 * side,
+            w: len + 0.25,
+            d: 0.14,
+            h: 0.9,
+            y: RAIL_DECK - 0.25,
+            rot,
+            color: trim,
+            windows: false,
+          });
+          box(k, {
+            x: mx + nx * 0.72 * side,
+            z: mz + nz * 0.72 * side,
+            w: len + 0.25,
+            d: 0.12,
+            h: 0.12,
+            y: RAIL_DECK + 0.5,
+            rot,
+            color: col("#8a8f94"),
+            windows: false,
+          });
+        }
+      }
+      this.railSupports(k, line, steel);
     }
-    const train = new THREE.Group(),
-      tk = kit(5);
-    for (let c = 0; c < 3; c++) {
-      box(tk, {
-        x: c * 4.3,
-        z: 0,
-        w: 4,
-        d: 1.9,
-        h: 1.5,
-        y: 0,
-        color: col("#9aa2a8"),
+    for (const st of RAIL_STATIONS) this.railStation(k, st);
+    this.addKit(k);
+    for (const line of RAIL_LINES) this.railTrain(line);
+  }
+  /** Bents every few metres: a column on each sidewalk and a crossbeam. */
+  private railSupports(k: Kit, line: RailLine, steel: THREE.Color) {
+    const pts = line.points;
+    const inBlock = (x: number, z: number) =>
+      ALL_BLOCKS.some(
+        (b) => x > b.minX && x < b.maxX && z > b.minZ && z < b.maxZ,
+      );
+    const inCity = (x: number, z: number) =>
+      ZONE_ORDER.some((id) => {
+        const d = DISTRICTS[id];
+        return x > d.minX && x < d.maxX && z > d.minZ && z < d.maxZ;
+      });
+    let carry = 3;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const [ax, az] = pts[i],
+        [bx, bz] = pts[i + 1];
+      const len = Math.hypot(bx - ax, bz - az);
+      if (len < 0.01) continue;
+      const th = Math.atan2(bz - az, bx - ax),
+        nx = -Math.sin(th),
+        nz = Math.cos(th);
+      let t = carry;
+      for (; t < len; t += 7) {
+        const x = ax + ((bx - ax) * t) / len,
+          z = az + ((bz - az) * t) / len;
+        const feet: [number, number][] = [];
+        for (const side of [-1, 1]) {
+          let foot: [number, number] | null = null;
+          for (let d = 1.9; d < 7.5; d += 0.25) {
+            const px = x + nx * d * side,
+              pz = z + nz * d * side;
+            if (inBlock(px, pz)) {
+              foot = [px + nx * 0.35 * side, pz + nz * 0.35 * side];
+              break;
+            }
+          }
+          // Open ground beyond the districts can take a column close in;
+          // inside the city a missing sidewalk means a cross street.
+          if (!foot && !inCity(x + nx * 2.3 * side, z + nz * 2.3 * side))
+            foot = [x + nx * 2.3 * side, z + nz * 2.3 * side];
+          if (foot && !this.nearRiver(foot[0], foot[1], 0.5)) feet.push(foot);
+        }
+        for (const [fx, fz] of feet)
+          box(k, {
+            x: fx,
+            z: fz,
+            w: 0.45,
+            d: 0.45,
+            h: RAIL_DECK,
+            y: 0,
+            color: steel,
+            windows: false,
+          });
+        if (feet.length) {
+          const ends = feet.length === 2 ? feet : [feet[0], [x, z] as [number, number]];
+          const [p, q] = ends;
+          const span = Math.hypot(q[0] - p[0], q[1] - p[1]);
+          box(k, {
+            x: (p[0] + q[0]) / 2,
+            z: (p[1] + q[1]) / 2,
+            w: span + 0.45,
+            d: 0.5,
+            h: 0.45,
+            y: RAIL_DECK - 0.45,
+            rot: -Math.atan2(q[1] - p[1], q[0] - p[0]),
+            color: steel,
+            windows: false,
+          });
+        }
+      }
+      carry = t - len;
+    }
+  }
+  /** Platforms, canopies, a name board and stairs to the sidewalk. */
+  private railStation(k: Kit, st: RailStation) {
+    const [x, z] = st.point,
+      th = st.heading,
+      rot = -th,
+      nx = -Math.sin(th),
+      nz = Math.cos(th);
+    const L = 11;
+    for (const side of [-1, 1]) {
+      const px = x + nx * 2.6 * side,
+        pz = z + nz * 2.6 * side;
+      box(k, {
+        x: px,
+        z: pz,
+        w: L,
+        d: 1.8,
+        h: 0.5,
+        y: RAIL_DECK + 0.05,
+        rot,
+        color: col("#7d7a72"),
         windows: false,
       });
-      tk.glow.quad(
-        [c * 4.3 - 1.8, 0.7, 0.96],
-        [c * 4.3 + 1.8, 0.7, 0.96],
-        [c * 4.3 + 1.8, 1.2, 0.96],
-        [c * 4.3 - 1.8, 1.2, 0.96],
-        col("#ffd8a0"),
+      // Canopy on posts.
+      for (const along of [-L / 2 + 0.6, 0, L / 2 - 0.6])
+        box(k, {
+          x: px + Math.cos(th) * along,
+          z: pz + Math.sin(th) * along,
+          w: 0.15,
+          d: 0.15,
+          h: 2.1,
+          y: RAIL_DECK + 0.55,
+          color: col("#2f5b3f"),
+          windows: false,
+        });
+      box(k, {
+        x: px,
+        z: pz,
+        w: L,
+        d: 2.2,
+        h: 0.18,
+        y: RAIL_DECK + 2.65,
+        rot,
+        color: col("#2f5b3f"),
+        windows: false,
+      });
+      onWall(
+        k.sign,
+        { x: px + nx * 1.12 * side, z: pz + nz * 1.12 * side, nx: nx * side, nz: nz * side },
+        0,
+        RAIL_DECK + 2.0,
+        4.2,
+        0.6,
+        col("#fff"),
+        this.atlas.sign(st.name.toUpperCase(), "#1d3a2a", "#f2efe6"),
       );
-      tk.glow.quad(
-        [c * 4.3 + 1.8, 0.7, -0.96],
-        [c * 4.3 - 1.8, 0.7, -0.96],
-        [c * 4.3 - 1.8, 1.2, -0.96],
-        [c * 4.3 + 1.8, 1.2, -0.96],
-        col("#ffd8a0"),
+      onWall(
+        k.glow,
+        { x: px + nx * 0.9 * side, z: pz + nz * 0.9 * side, nx: nx * side, nz: nz * side },
+        0,
+        RAIL_DECK + 2.45,
+        L - 1,
+        0.12,
+        col("#ffe0a0"),
       );
     }
-    train.add(
-      new THREE.Mesh(tk.plain.build(), this.plainMat),
-      new THREE.Mesh(tk.glow.build(), this.glowMat),
-    );
-    train.position.set(from, deck + 0.55, z);
-    this.scene.add(train);
-    let dir = 1;
+    // Stairs from the platform down to the station's sidewalk front.
+    const [fx, fz] = st.front;
+    const dx = fx - x,
+      dz = fz - z,
+      dist = Math.hypot(dx, dz);
+    if (dist > 2) {
+      const ux = dx / dist,
+        uz = dz / dist,
+        steps = 14;
+      for (let i = 0; i < steps; i++) {
+        const f = (i + 0.5) / steps;
+        const sx = x + ux * (3.4 + f * Math.max(0, dist - 3.6)),
+          sz = z + uz * (3.4 + f * Math.max(0, dist - 3.6));
+        box(k, {
+          x: sx + Math.cos(th) * (L / 2 - 1),
+          z: sz + Math.sin(th) * (L / 2 - 1),
+          w: 1.4,
+          d: Math.max(0.4, (dist - 3.6) / steps + 0.05),
+          h: 0.18,
+          y: RAIL_DECK * (1 - f),
+          rot: -Math.atan2(uz, ux) + Math.PI / 2,
+          color: col("#6b6e72"),
+          windows: false,
+        });
+      }
+    }
+  }
+  /** A three-car train shuttling the line, dwelling at each station. */
+  private railTrain(line: RailLine) {
+    const pts = line.points;
+    const cum = [0];
+    for (let i = 1; i < pts.length; i++)
+      cum.push(
+        cum[i - 1] +
+          Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]),
+      );
+    const total = cum[cum.length - 1];
+    const at = (s: number) => {
+      s = Math.max(0, Math.min(total, s));
+      let i = 1;
+      while (i < cum.length - 1 && cum[i] < s) i++;
+      const seg = cum[i] - cum[i - 1] || 1,
+        f = (s - cum[i - 1]) / seg;
+      const [ax, az] = pts[i - 1],
+        [bx, bz] = pts[i];
+      return {
+        x: ax + (bx - ax) * f,
+        z: az + (bz - az) * f,
+        heading: Math.atan2(bz - az, bx - ax),
+      };
+    };
+    const stops = RAIL_STATIONS.filter((s) => s.line === line.id)
+      .map((s) => {
+        let best = 0,
+          bestD = Infinity;
+        for (let t = 0; t <= total; t += 0.5) {
+          const p = at(t);
+          const d = Math.hypot(p.x - s.point[0], p.z - s.point[1]);
+          if (d < bestD) [best, bestD] = [t, d];
+        }
+        return best;
+      })
+      .sort((a, b) => a - b);
+    const CAR = 4,
+      GAP = 0.35,
+      CARS = 3,
+      LEN = CARS * CAR + (CARS - 1) * GAP;
+    const tk = kit(5);
+    box(tk, {
+      x: 0,
+      z: 0,
+      w: CAR,
+      d: 1.9,
+      h: 1.5,
+      y: 0,
+      color: col(line.old ? "#b9a27c" : "#9aa2a8"),
+      windows: false,
+    });
+    for (const side of [-1, 1])
+      tk.glow.quad(
+        [-CAR / 2 + 0.2, 0.7, 0.96 * side],
+        [CAR / 2 - 0.2, 0.7, 0.96 * side],
+        [CAR / 2 - 0.2, 1.2, 0.96 * side],
+        [-CAR / 2 + 0.2, 1.2, 0.96 * side],
+        col("#ffd8a0"),
+      );
+    const carBody = new THREE.InstancedMesh(tk.plain.build(), this.plainMat, CARS);
+    const carGlow = new THREE.InstancedMesh(tk.glow.build(), this.glowMat, CARS);
+    carBody.castShadow = !this.lite;
+    carBody.name = `train:${line.id}`;
+    this.scene.add(carBody, carGlow);
+    // Head position along the line; the cars trail behind it.
+    let s = LEN,
+      dir = 1,
+      dwell = 0;
+    const SPEED = 10;
+    const m = new THREE.Matrix4(),
+      q = new THREE.Quaternion(),
+      up = new THREE.Vector3(0, 1, 0),
+      one = new THREE.Vector3(1, 1, 1);
+    const place = () => {
+      for (let c = 0; c < CARS; c++) {
+        const mid = s - dir * (CAR / 2 + c * (CAR + GAP));
+        const p = at(mid);
+        q.setFromAxisAngle(up, -p.heading);
+        m.compose(new THREE.Vector3(p.x, RAIL_DECK + 0.62, p.z), q, one);
+        carBody.setMatrixAt(c, m);
+        carGlow.setMatrixAt(c, m);
+      }
+      carBody.instanceMatrix.needsUpdate = true;
+      carGlow.instanceMatrix.needsUpdate = true;
+    };
+    place();
     this.animated.push((_, dt) => {
-      train.position.x += dir * dt * 7;
-      if (train.position.x > to - 13) dir = -1;
-      if (train.position.x < from) dir = 1;
+      if (dwell > 0) {
+        dwell -= dt;
+        return;
+      }
+      const prev = s;
+      s += dir * SPEED * dt;
+      // Stop with the train centred on a platform it reaches.
+      for (const stop of stops) {
+        const centre = stop + (dir * LEN) / 2;
+        if ((prev - centre) * (s - centre) <= 0 && prev !== centre) {
+          s = centre;
+          dwell = 2.5;
+          break;
+        }
+      }
+      if (s >= total) {
+        s = total;
+        dir = -1;
+        dwell = 2;
+      } else if (s <= 0) {
+        s = 0;
+        dir = 1;
+        dwell = 2;
+      }
+      place();
     });
   }
   private buildFiller() {
-    const k = kit(4242),
-      step = 12,
+    // The rest of the city around the five districts, in quadrants so each
+    // can be skipped when it is behind the camera.
+    const quads = [kit(4242), kit(4243), kit(4244), kit(4245)];
+    const step = 12,
       wall = ["#3e3b3c", "#46423f", "#3a3d43", "#4a4540", "#353538"];
-    for (let x = -246; x <= 246; x += step)
-      for (let z = -246; z <= 246; z += step) {
+    for (let x = -396; x <= 396; x += step)
+      for (let z = -396; z <= 396; z += step) {
+        const k = quads[(x < 0 ? 0 : 1) + (z < 0 ? 0 : 2)];
         const cx = x + (k.r() - 0.5) * 2,
           cz = z + (k.r() - 0.5) * 2;
         const inside = ZONE_ORDER.some((id) => {
@@ -1365,10 +1608,11 @@ export class BoardRenderer {
         if (inside || this.nearRiver(cx, cz, 6)) continue;
         if (
           AVENUES_X.some((a) => Math.abs(cx - a) < 7) ||
-          AVENUES_Z.some((a) => Math.abs(cz - a) < 7)
+          AVENUES_Z.some((a) => Math.abs(cz - a) < 7) ||
+          distanceToRail(cx, cz) < 9
         )
           continue;
-        const far = Math.max(Math.abs(cx), Math.abs(cz)) > 130;
+        const far = Math.max(Math.abs(cx), Math.abs(cz)) > 210;
         const floors = far
           ? 3 + Math.floor(k.r() * 14)
           : 2 + Math.floor(Math.pow(k.r(), 2) * 8);
@@ -1391,20 +1635,27 @@ export class BoardRenderer {
           color: col(pick(k.r, wall)),
         });
       }
-    this.addKit(k);
+    for (const k of quads) this.addKit(k);
   }
   private buildStreetFurniture() {
     const lamps: [number, number][] = [];
     for (const zone of ZONE_ORDER) {
-      const d = DISTRICTS[zone];
-      for (let x = d.minX; x <= d.maxX; x += 8)
-        lamps.push([x, d.minZ - 0.4], [x, d.maxZ + 0.4]);
-      for (let z = d.minZ + 8; z < d.maxZ; z += 8)
-        lamps.push([d.minX - 0.4, z], [d.maxX + 0.4, z]);
-      for (const sx of this.streets[zone].xs)
-        for (let z = d.minZ + 6; z < d.maxZ; z += 10) lamps.push([sx + 1.3, z]);
+      const g = this.streets[zone];
+      // Around every section, then along its inner streets.
+      for (const sec of g.sections) {
+        for (let x = sec.minX + 2; x <= sec.maxX - 2; x += 8)
+          lamps.push([x, sec.minZ + 0.75], [x, sec.maxZ - 0.75]);
+        for (let z = sec.minZ + 8; z < sec.maxZ - 2; z += 8)
+          lamps.push([sec.minX + 0.75, z], [sec.maxX - 0.75, z]);
+      }
+      for (const ln of g.lines)
+        for (let t = ln.from + 6; t < ln.to - 2; t += 10)
+          lamps.push(ln.axis === "x" ? [ln.at + 1.3, t] : [t, ln.at + 1.3]);
     }
-    const usable = lamps.filter(([x, z]) => !this.nearRiver(x, z, 1));
+    // Lamps stay clear of the river and of the El's columns.
+    const usable = lamps.filter(
+      ([x, z]) => !this.nearRiver(x, z, 1) && distanceToRail(x, z) > 2.6,
+    );
     const poles = new THREE.InstancedMesh(
       new THREE.CylinderGeometry(0.07, 0.09, 3.2, 5).translate(0, 1.6, 0),
       this.plainMat,
@@ -1518,16 +1769,7 @@ export class BoardRenderer {
     return k.plain.build();
   }
   private vehicles = new Map<string, ModelPiece>();
-  /** Track decks under GLB structures; each is dropped once its model loads. */
-  private trackGaps = new Map<string, THREE.Mesh>();
   private setPieces: SetPiecePlacement[] = [];
-  private dropTrackGap(key: string) {
-    const deck = this.trackGaps.get(key);
-    if (!deck) return;
-    this.scene.remove(deck);
-    deck.geometry.dispose();
-    this.trackGaps.delete(key);
-  }
   /**
    * Swap a GLB vehicle into an instanced car layer once it loads. The layer
    * starts with the procedural box car, so the board never waits on a file.
@@ -1589,14 +1831,15 @@ export class BoardRenderer {
     movers.forEach((_, i) => cars.setColorAt(i, col(pick(r, colors))));
     this.scene.add(cars);
     // Rio Gabriel's lowriders cruise the inner streets, low and slow.
-    const rio = DISTRICTS.rio,
-      rs = this.streets.rio;
+    const corridor = this.streets.rio.sections.find(
+      (sec) => sec.id === "corridor-n",
+    )!;
     const cruise = loop(
       rectLoop(
-        rs.xs[0] ?? rio.minX + 4,
-        rs.zs[0] ?? rio.minZ + 4,
-        rs.xs[rs.xs.length - 1] ?? rio.maxX - 4,
-        rs.zs[rs.zs.length - 1] ?? rio.maxZ - 4,
+        corridor.minX + 0.3,
+        corridor.minZ + 0.3,
+        corridor.maxX - 0.3,
+        corridor.maxZ + 2.6,
       ),
     );
     const lows: Mover[] = Array.from({ length: 3 }, (_, i) => ({
@@ -1874,21 +2117,19 @@ export class BoardRenderer {
         d = DISTRICTS[id],
         s = this.streets[id];
       const n = Math.max(0, Math.round(z.police / 22));
-      const xs = s.xs.length ? s.xs : [(d.minX + d.maxX) / 2];
-      const zs = s.zs.length ? s.zs : [(d.minZ + d.maxZ) / 2];
-      const routes = [
+      // Patrols circle the sections, on the streets around them.
+      const routes = s.sections.map((sec) =>
         loop(
           rectLoop(
-            xs[0],
-            zs[0],
-            xs[xs.length - 1] + (xs.length === 1 ? 6 : 0),
-            zs[zs.length - 1] + (zs.length === 1 ? 6 : 0),
+            sec.minX + 0.3,
+            sec.minZ + 0.3,
+            sec.maxX - 0.3,
+            sec.maxZ - 0.3,
           ),
         ),
-        loop(rectLoop(d.minX - 1.9, d.minZ - 1.9, d.maxX + 1.9, d.maxZ + 1.9)),
-      ];
+      );
       for (let i = 0; i < n; i++) {
-        const route = routes[i % 2];
+        const route = routes[i % routes.length];
         units.push({ ...route, t: r() * route.total, speed: 5 + r() * 2 });
       }
     }
@@ -2171,7 +2412,12 @@ export class BoardRenderer {
       this.tokenRing.opacity = 0.6 + 0.3 * Math.sin(t * 4);
       const w = this.tokenWalk;
       if (!w) return;
-      w.t = Math.min(w.total, w.t + dt * Math.max(14, w.total / 1.4));
+      // Distance reads on screen without becoming downtime: a short hop takes
+      // under a second, crossing the whole city about two and a half.
+      w.t = Math.min(
+        w.total,
+        w.t + dt * (w.total / THREE.MathUtils.clamp(w.total / 90, 0.8, 2.6)),
+      );
       let d = w.t;
       for (let i = 1; i < w.path.length; i++) {
         const [ax, az] = w.path[i - 1],
@@ -2292,7 +2538,7 @@ export class BoardRenderer {
         this.distance = THREE.MathUtils.clamp(
           (g.pinch.distance * g.pinch.dist) / Math.max(dist, 1),
           22,
-          260,
+          420,
         );
         this.yaw = g.pinch.yaw - (angle - g.pinch.angle);
       } else if (e.buttons === 2 || e.shiftKey) {
@@ -2342,7 +2588,7 @@ export class BoardRenderer {
         this.distance = THREE.MathUtils.clamp(
           this.distance * Math.exp(e.deltaY * 0.0012),
           22,
-          260,
+          420,
         );
         this.wake();
       },

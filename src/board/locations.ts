@@ -99,6 +99,10 @@ export interface LocationDef {
   status: "live" | "planned";
   /** What a future integration would add — shown to players as a teaser. */
   planned?: string;
+  /** A place at an El station stands at that station (see RAIL_STATIONS). */
+  railStation?: string;
+  /** A new place on a development lot (see DEVELOPMENT_LOTS) stands there. */
+  lot?: string;
   /** Optional GLB that replaces the procedural building (public/ path). */
   model?: string;
   /**
@@ -148,7 +152,7 @@ export const LOCATIONS: LocationDef[] = [
     sign: "STIXX CITY POLICE",
     description:
       "The heaviest police presence in the city works out of this building.",
-    at: [0.72, 0.8],
+    at: [0.11, 0.77],
     palette: ["#5e6b78", "#2a4f9a", "#14213d", "#e8eefc"],
     links: { politics: true },
     status: "live",
@@ -163,7 +167,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "docks",
     sign: "PORT OF STIXX",
     description: "Containers, cranes and day labor along the river.",
-    at: [0.5, 0.1],
+    at: [0.93, 0.94],
     palette: ["#7d7a72", "#c4772e", "#2b3036", "#f0d29a"],
     links: { gig: true },
     status: "live",
@@ -181,7 +185,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "warehouse",
     sign: "STIXX COURIER",
     description: "A licensed delivery route exposed to commercial demand.",
-    at: [0.76, 0.4],
+    at: [0.62, 0.94],
     palette: ["#9c9a92", "#3d6b8a", "#1e2b38", "#f5f0e0"],
     links: { business: "courier" },
     status: "live",
@@ -196,7 +200,7 @@ export const LOCATIONS: LocationDef[] = [
     sign: "DESIGNER DROP",
     description:
       "Apparel and footwear on the commercial strip. They hire locals.",
-    at: [0.3, 0.86],
+    at: [0.62, 0.29],
     palette: ["#c9c2b4", "#1b1b1b", "#141414", "#e8c873"],
     floors: 6,
     links: { job: "retail-downtown", items: ["clothing", "music"] },
@@ -355,7 +359,7 @@ export const LOCATIONS: LocationDef[] = [
     kind: "residence",
     archetype: "rowhouses",
     description: "Family homes, boarded windows and stoops full of neighbors.",
-    at: [0.18, 0.4],
+    at: [0.6, 0.21],
     palette: ["#8c5442", "#3a2a24", "#f0e6d8", "#2a2a2a"],
     faction: "backstreet",
     links: { people: true, rest: true },
@@ -429,7 +433,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "court",
     description:
       "Hangout, rep and conflicts. Whoever runs the court runs the evening.",
-    at: [0.82, 0.82],
+    at: [0.32, 0.42],
     palette: ["#7a3a3a", "#c83d45", "#f0e6d8", "#2a2a2a"],
     faction: "backstreet",
     links: { people: true },
@@ -444,7 +448,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "hall",
     sign: "SOUTHSIDE COMMUNITY CENTER",
     description: "Jobs boards, training, events. Back Street recruits outside.",
-    at: [0.58, 0.5],
+    at: [0.19, 0.13],
     palette: ["#b9b2a2", "#3a3a3a", "#e8e2d4", "#2a2a2a"],
     links: {},
     status: "planned",
@@ -490,7 +494,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "storefront",
     sign: "RESERVOIR LAUNDRY",
     description: "A neighborhood laundry lease with real local demand.",
-    at: [0.66, 0.66],
+    at: [0.83, 0.05],
     palette: ["#a69683", "#3a9a8a", "#e8f5f2", "#1e5a52"],
     links: { business: "laundry" },
     status: "live",
@@ -504,7 +508,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "warehouse",
     sign: "WESTSIDE SUPPLY",
     description: "Deliveries sorted and moved. Applications open citywide.",
-    at: [0.88, 0.12],
+    at: [0.91, 0.92],
     palette: ["#8a8578", "#3678c6", "#1e2b38", "#e8eefc"],
     links: { job: "warehouse" },
     status: "live",
@@ -519,7 +523,7 @@ export const LOCATIONS: LocationDef[] = [
     sign: "LIL JAY'S MARKET",
     description:
       "Mr. Lewis’s corner store. Groceries, cold beer, lotto. Shelves to stock and customers who know your face.",
-    at: [0.82, 0.86],
+    at: [0.94, 0.17],
     palette: ["#9e8a7c", "#e3c23a", "#e3c23a", "#b0202a"],
     links: {
       people: true,
@@ -565,7 +569,7 @@ export const LOCATIONS: LocationDef[] = [
     kind: "residence",
     archetype: "house",
     description: "Weathered porches and deep neighborhood roots.",
-    at: [0.84, 0.46],
+    at: [0.14, 0.74],
     palette: ["#b9b2a2", "#3678c6", "#f0e6d8", "#2a2a2a"],
     links: { people: true, rest: true },
     status: "live",
@@ -580,7 +584,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "storefront",
     sign: "$ PAWN SHOP $",
     description: "Resale, no questions, bars on every window.",
-    at: [0.63, 0.88],
+    at: [0.71, 0.17],
     palette: ["#8d9a9a", "#e3c23a", "#1c1c1c", "#e3c23a"],
     links: {},
     status: "planned",
@@ -616,9 +620,8 @@ export const LOCATIONS: LocationDef[] = [
     palette: ["#6c5a48", "#3a3f45", "#1f6a3a", "#f5f5f5"],
     links: { street: true },
     status: "live",
-    model: "assets/models/el-station.glb",
-    // Deck top sits at ~60% of the model height: 9.5 lines it up with the El.
-    modelFit: { height: 9.5, offset: [0, -2.6], trackGap: 9.6 },
+    // The rail system draws the station itself.
+    railStation: "nawf-ave",
   }),
   L({
     id: "nawf.bodega",
@@ -644,7 +647,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "storefront",
     sign: "NAWF DELI & GROCERY",
     description: "Snacks, lotto, EBT, ATM. Mudgang holds this corner.",
-    at: [0.78, 0.62],
+    at: [0.7, 0.93],
     palette: ["#9b5a3e", "#cd7935", "#e8b84a", "#7a2a10"],
     faction: "muds",
     links: { items: ["necessities", "smokes", "booze"] },
@@ -659,7 +662,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "projects",
     description:
       "Housing, influence and recruitment. Both sets grew up in these halls.",
-    at: [0.5, 0.8],
+    at: [0.77, 0.66],
     palette: ["#8a4a36", "#3a3a3a", "#f0e6d8", "#2a2a2a"],
     links: { people: true, rest: true },
     status: "live",
@@ -687,7 +690,7 @@ export const LOCATIONS: LocationDef[] = [
     archetype: "storefront",
     sign: "NAWF BARBERSHOP",
     description: "Cuts, style, and the best network on the block.",
-    at: [0.66, 0.84],
+    at: [0.6, 0.93],
     palette: ["#6e3b2f", "#2a4f9a", "#1c1c1c", "#f2f2f2"],
     links: { people: true },
     status: "live",

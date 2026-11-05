@@ -56,8 +56,9 @@ describe("block influence (presentation of territory state)", () => {
   it("splits The Nawf between Blips in the west and Mudgang in the east", () => {
     const view = deriveBlocks(newGame("Morgan", "south"));
     const nawf = ALL_BLOCKS.filter((b) => b.zone === "nawf" && !b.waterfront);
-    const west = nawf.filter((b) => b.col === 0).map((b) => view[b.id].faction);
-    const east = nawf.filter((b) => b.col === 5).map((b) => view[b.id].faction);
+    const byX = [...nawf].sort((a, b) => a.minX - b.minX);
+    const west = byX.slice(0, 5).map((b) => view[b.id].faction);
+    const east = byX.slice(-5).map((b) => view[b.id].faction);
     expect(west.every((f) => f === "blips")).toBe(true);
     expect(east.every((f) => f === "muds")).toBe(true);
   });
