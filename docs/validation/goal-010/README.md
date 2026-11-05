@@ -49,12 +49,13 @@ See [implementation and iPhone playtest instructions](../../goals/GOAL_010_IMPLE
 
 ## Final selected browser results
 
-The latest completed result for each selected engine/case is **45 passed, 0 unresolved**. Only failed or unfinished cases were retried; completed passing checks, the unit suite, the production build and the main baseline were retained.
+The latest completed result for each selected engine/case is **47 passed, 0 unresolved**. Only failed or unfinished gameplay cases were retried. Completed gameplay checks and the full unit run were retained; the later upstream save change received its own integration checks and fresh build.
 
 | Final selection | Chromium iPhone 13 | WebKit iPhone 13 | Total |
 | --- | ---: | ---: | ---: |
 | Skill/session, street journey and frozen-input checks | 14 passed | 14 passed | 28 passed |
 | Original cases that passed on main and needed branch verification | 9 passed | 8 passed | 17 passed |
+| Latest-main save-key integration | 1 passed | 1 passed | 2 passed |
 
 [Latest result per case with source-log references](final-browser-results.json). The focused command selected `tests/skills-sessions.spec.ts tests/input-guard.spec.ts tests/street.spec.ts --workers=1 --reporter=list,json`; subsequent commands selected only failed cases by exact title, one engine at a time. The original-case checks were selected by the titles in the independent main result manifests. [Initial focused batch](release-target.log), [Chromium regression verification](recheck-chromium-mobile.log), [completed Chromium supplier journey](finish-chromium-mobile.log), [WebKit regression and supplier verification](finish-webkit-mobile.log), [last layout check](last-webkit-mobile.log), [completed native-touch City flow](touch-webkit-mobile.log).
 
@@ -64,6 +65,10 @@ Internal corrections retained every gameplay assertion: acknowledged navigation/
 
 [Every diagnostic failure compared](failure-comparison.csv): **29 earlier failed cases now pass on the feature branch; the other 57 cases independently failed on untouched main**. No original diagnostic failure is left without final passing verification or exact engine/case baseline evidence. This does not claim a new full-suite run is green; the complete diagnostic run remains the 82/86 record above.
 
-The application source and build scripts are unchanged from the successful unit/build code commit `87ddd704b42662403c1e0938e68905966a9e5859`; subsequent changes harden browser-test acknowledgements and add evidence/documentation. No repeat of completed unit/build work was needed. Latest Lab main remains `ac5c75435f885d5be2092ab477c7959c7257320f` and is integrated.
+During PR finalization, Lab main advanced to `cabfdac71528dadcb37903082ceb1f4a599f6093` (PR #4). It adds a separate `/next/` preview build and optional `VITE_SAVE_SUFFIX`. That main update was merged without conflicts, preserving Claude's workflow and suffix logic alongside GOAL 010's schema 9 serialization. All skill/session/gameplay code remains unchanged from the successful 302-test code commit `87ddd704b42662403c1e0938e68905966a9e5859`.
+
+The full 302-test/17-file unit result above is retained. One **new post-merge integration test passed** against the merged source, saving and loading complete v9 campaigns in both manual/auto slots and proving the preview cannot read or overwrite existing main saves: [integration log](preview-save-isolation-unit.log). This gives 303 distinct passing unit/integration checks across the completed full run plus the new check, without repeating unchanged simulation work. The **fresh merged production build passed**, and **two additional browser checks passed** on the merged build (Chromium and WebKit) for default Lab namespace isolation: [browser log](upstream-save-browser.log), [cases](upstream-save-browser.json). The final selected browser manifest therefore contains 47 passing cases.
+
+The independent full-suite baseline was recorded against untouched main `ac5c754` while it was current. Main's subsequent `cabfdac` delta changes only the preview deployment workflow and optional suffix; with the default empty suffix used in all diagnostic runs, the original Lab keys and game behavior are unchanged. The new integration checks explicitly verify that compatibility; the historical baseline logs are retained with their actual tested SHA rather than relabeled as a new run. Nothing was deployed or merged into main by Codex.
 
 [Captured iPhone frames](../../screenshots/goal-010) include real City visitors, session totals, inventory and reloaded custody in both engines. Physical iPhone hardware remains the owner's follow-up playtest. Future authored combat certification, higher robbery missions, drills and equipment reward routes remain explicit unavailable-content hooks as required by this foundation goal; no new missions/vendors/catalog were invented. Nothing has been merged or deployed by Codex.

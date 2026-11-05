@@ -4,11 +4,6 @@
 
 vite v7.3.7 building client environment for production...
 transforming...
-node_modules/zod/v4/core/util.js (400:0): A comment
-
-"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
-
-in "node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
 node_modules/zod/v4/core/regexes.js (74:0): A comment
 
 "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
@@ -16,6 +11,11 @@ node_modules/zod/v4/core/regexes.js (74:0): A comment
  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
 
 in "node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+node_modules/zod/v4/core/util.js (400:0): A comment
+
+"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+
+in "node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
 ✓ 250 modules transformed.
 rendering chunks...
 [plugin vite:reporter]
@@ -52,13 +52,13 @@ dist/assets/barlow-condensed-latin-700-italic-DjyOzRJ7.woff2        23.80 kB
 dist/assets/patina-tcrKVhE-.png                                    107.69 kB
 dist/assets/index-BYEfTQGz.css                                      94.73 kB │ gzip:  19.22 kB
 dist/assets/meshopt_decoder.module-BbCP70j-.js                      22.41 kB │ gzip:   6.01 kB
-dist/assets/GLTFLoader-BrzdT-lk.js                                  46.03 kB │ gzip:  13.67 kB
-dist/assets/KTX2Loader-QEq9fU5a.js                                  58.13 kB │ gzip:  23.55 kB
-dist/assets/index-Bx3T49p1.js                                      635.75 kB │ gzip: 201.32 kB
-dist/assets/BoardStage-_eDiB5jt.js                                 639.41 kB │ gzip: 171.09 kB
+dist/assets/GLTFLoader-BJ9h-Fyk.js                                  46.03 kB │ gzip:  13.68 kB
+dist/assets/KTX2Loader-DLB_B0yS.js                                  58.13 kB │ gzip:  23.55 kB
+dist/assets/index-Ciyqw9UJ.js                                      635.78 kB │ gzip: 201.35 kB
+dist/assets/BoardStage-BLFMkD9s.js                                 639.41 kB │ gzip: 171.09 kB
 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.12s
+✓ built in 3.15s
