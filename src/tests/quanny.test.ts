@@ -405,6 +405,7 @@ describe("directional consignment, collection and persistent relationships", () 
     s = collection(s);
     expect(cash(player(s))).toBe(before + amount);
     expect(s.street.agreements[0].status).toBe("fulfilled");
+    expect(skillsOf(s.characters.quanny).milestones.supplierPaid).toBe(1);
     expect(s.ledger.at(-1)?.amount).toBe(amount);
     expect(s.street.agreements[0].collections![0].notoriety).toBe(35);
     expect(
@@ -421,6 +422,7 @@ describe("directional consignment, collection and persistent relationships", () 
     const before = cash(player(s));
     s = collection(s);
     expect(cash(player(s))).toBe(before);
+    expect(skillsOf(s.characters.quanny).milestones.supplierPaid).toBeUndefined();
     expect(s.quanny.business).toBe("blocked");
     expect(s.street.agreements[0].status).toBe("disputed");
     expect(saleLot(s)).toBeUndefined();

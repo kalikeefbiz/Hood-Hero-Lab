@@ -1,3 +1,4 @@
+import { skillsOf } from "./Skills";
 /** Directional consignment uses the same merchandise, agreement, commitment and ledger model. */
 import { type GameState, player, cash } from "../core/GameState";
 import { record } from "../core/EventLog";
@@ -158,6 +159,9 @@ export function collectConsignment(s: GameState, debtor: string) {
     if (!lot.remaining) lot.status = "settled";
     c.status = "fulfilled";
     change(n, p.id, { trust: 4, respect: 3 });
+    const progress = skillsOf(n);
+    progress.milestones.supplierPaid = 1;
+    if ((p.relationships[n.id]?.trust ?? 0) >= 30) progress.milestones.supplierCredible = 1;
   } else {
     s.characters[debtor].wallet.illicit += a.reserve ?? 0;
     a.reserve = 0;
