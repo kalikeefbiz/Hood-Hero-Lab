@@ -575,7 +575,7 @@ export class BoardRenderer {
       this.scene.environment = this.envTarget.texture;
       this.scene.environmentIntensity = time === "night" ? 0.5 : 0.85;
     }
-    this.renderer.shadowMap.needsUpdate = true;
+    this.shadowDirty = true;
     this.wake();
   }
   /** Where a place's front door is: the piece and people stand here. */
@@ -603,6 +603,14 @@ export class BoardRenderer {
     w.done();
   }
   private paused = false;
+  /**
+   * Shadows are baked, not drawn every frame. Anything that changes the
+   * city (a model arriving, the time of day) marks them dirty; they are
+   * re-baked at most every SHADOW_EVERY_MS, so forty models loading cost a
+   * few bakes, not forty.
+   */
+  private shadowDirty = true;
+  private lastShadowBake = -Infinity;
   /**
    * Eco mode: the device can't keep the board at an interactive frame rate,
    * so it drops to 1x resolution and stops drawing between interactions (the
@@ -695,7 +703,7 @@ export class BoardRenderer {
         c.root.name = `character:${f.id}`;
         this.figures.add(c.root);
         this.characters.set(f.id, c);
-        this.renderer.shadowMap.needsUpdate = true;
+        this.shadowDirty = true;
         this.wake();
       });
     if (!crowd.length) return;
@@ -939,7 +947,7 @@ export class BoardRenderer {
       this.placePickers.push(picker);
       this.scene.add(picker);
     }
-    this.renderer.shadowMap.needsUpdate = true;
+    this.shadowDirty = true;
   }
   private buildRiver() {
     const g = new Geo(),
@@ -1170,7 +1178,7 @@ export class BoardRenderer {
         mesh.name = `set:${id}`;
         mesh.computeBoundingSphere();
         this.scene.add(mesh);
-        this.renderer.shadowMap.needsUpdate = true;
+        this.shadowDirty = true;
         this.wake();
       });
   }
@@ -1211,7 +1219,7 @@ export class BoardRenderer {
       mesh.castShadow = mesh.receiveShadow = !this.lite;
       mesh.name = name;
       this.scene.add(mesh);
-      this.renderer.shadowMap.needsUpdate = true;
+      this.shadowDirty = true;
       this.wake();
     });
   }
@@ -2685,6 +2693,11 @@ export class BoardRenderer {
       this.distance = THREE.MathUtils.lerp(f.from.d, f.to.d, e);
       this.yaw = THREE.MathUtils.lerp(f.from.yaw, f.to.yaw, e);
       if (f.t >= 1) this.flight = null;
+    }
+    if (this.shadowDirty && now - this.lastShadowBake > 600) {
+      this.shadowDirty = false;
+      this.lastShadowBake = now;
+      this.renderer.shadowMap.needsUpdate = true;
     }
     for (const a of this.animated) a(this.clock, dt);
     for (const a of this.dynamicAnimated) a(this.clock, dt);
