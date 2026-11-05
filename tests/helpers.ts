@@ -55,16 +55,12 @@ export async function navigate(page: Page, name: string) {
   const button = page
     .getByRole("navigation")
     .getByRole("button", { name, exact: true });
-  await expect
-    .poll(
-      async () => {
-        if ((await button.getAttribute("aria-current")) !== "page")
-          await button.click();
-        return button.getAttribute("aria-current");
-      },
-      { timeout: 15000, intervals: [500, 800, 1200] },
-    )
-    .toBe("page");
+  await tapUntil(
+    page,
+    button,
+    async () => (await button.getAttribute("aria-current")) === "page",
+    30000,
+  );
 }
 export async function category(page: Page, name: string) {
   const button = page.getByRole("button", { name, exact: true });
