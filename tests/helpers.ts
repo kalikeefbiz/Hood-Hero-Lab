@@ -1,4 +1,4 @@
-import { expect, type Page, type Locator } from "@playwright/test";
+import { expect, errors, type Page, type Locator } from "@playwright/test";
 // Baseline UI tests intentionally put aside the opening conversation first.
 // Modal behavior itself is exercised in encounters.spec.ts.
 export async function dismissEncounter(page: Page) {
@@ -22,9 +22,21 @@ export async function tapUntil(
     .poll(
       async () => {
         if (await acknowledged()) return true;
-        if ((await button.isVisible()) && (await button.isEnabled())) {
+        const enabled = await button
+          .isEnabled({ timeout: 500 })
+          .catch((error) => {
+            if (error instanceof errors.TimeoutError) return false;
+            throw error;
+          });
+        if ((await button.isVisible()) && enabled) {
           await page.waitForTimeout(400); // Let the guarded post-stall window finish.
-          if (!(await acknowledged())) await button.click();
+          if (!(await acknowledged())) {
+            try {
+              await button.click({ timeout: 1500 });
+            } catch (error) {
+              if (!(error instanceof errors.TimeoutError)) throw error;
+            }
+          }
         }
         return acknowledged();
       },
