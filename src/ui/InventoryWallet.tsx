@@ -1,3 +1,4 @@
+import { MERCHANDISE } from "../content/street";
 import { equip, equipError, equipmentOf, EQUIPMENT } from "../systems/Equipment";
 import { quannyCollectionInstruction } from "../systems/QuannyState";
 import { player, type GameState } from "../core/GameState";
@@ -22,6 +23,7 @@ export function InventoryWallet({
     );
   const detail = (l: (typeof lots)[number]) => (
     <div className="lot-details">
+      <p>{MERCHANDISE.nightgoods.description}</p>
       <p>
         Supplier:{" "}
         {s.characters[l.supplier].alias ?? s.characters[l.supplier].name} ·{" "}

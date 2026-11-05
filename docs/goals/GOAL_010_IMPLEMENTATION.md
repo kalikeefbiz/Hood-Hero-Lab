@@ -34,7 +34,7 @@ Actions > Streets is stock/debt/risk information and route instructions only. Ci
 
 Claude-owned files requiring explicit compatibility review:
 
-- `src/board/BoardRenderer.ts`: adds a transient visitor layer to the existing render loop; no camera/layout/art changes.
+- `src/board/BoardRenderer.ts`: adds a transient visitor layer to the existing render loop and calls the existing camera flight to frame sidewalk actors at session start; no camera architecture, layout or art changes.
 - `src/board/SessionVisitors.ts`: procedural figures from the existing `buildFigure`; approach/pause/depart, disposal, reduced-motion stationary presentation. No game state or RNG writes.
 - `src/board/ui/BoardStage.tsx`: one optional descriptor prop/effect into the renderer.
 - `src/board/presence.ts`: cancelling unresolved session visitors on a real move, preserving all arrival hooks.

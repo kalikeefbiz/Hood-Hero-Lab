@@ -1,3 +1,4 @@
+import { interruptSession } from "../systems/SessionLifecycle";
 import { quannyConversation } from "../systems/QuannyState";
 import { expose, hospitalStay, streetConversation } from "../systems/Danger";
 import { syncEncounters } from "../systems/EncounterLifecycle";
@@ -139,7 +140,7 @@ export function moveTo(s: GameState, location: string): GameState {
       ].slice(-12),
     },
   };
-  if (next.activeSession && next.activeSession.status !== "ended") { next.activeSession.status = "ended"; next.activeSession.reason = "Left the spot. Unresolved visitors cancelled."; }
+  interruptSession(next, "Left the spot. Unresolved visitors cancelled.");
   expose(next, location, "arrival");
   syncEncounters(next);
   const risk = assessRisk(next, location);

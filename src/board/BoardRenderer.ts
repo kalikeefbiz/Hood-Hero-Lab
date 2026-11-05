@@ -334,8 +334,17 @@ export class BoardRenderer {
   } | null = null;
   private figures = new THREE.Group();
   private sessionVisitors = new SessionVisitors();
+  private sessionLocation: string | null = null;
   setSessionVisitor(visitor: SessionVisitor | null) {
+    if (visitor && visitor.location !== this.sessionLocation) {
+      // Reuse the existing camera flight to frame the physical sidewalk actors.
+      // The place anchor can be deep inside a building; it hides small figures.
+      this.placeToken(visitor.location);
+      const [x, z] = BoardRenderer.frontOf(visitor.location);
+      this.flyTo(x + 1.4, z, 18, 0);
+    }
     this.sessionVisitors.set(visitor, this.token.position, this.reducedMotion);
+    this.sessionLocation = visitor?.location ?? null;
     this.wake();
   }
   private tokenBody = new THREE.Group();

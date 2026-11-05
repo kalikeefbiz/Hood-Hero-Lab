@@ -1,3 +1,4 @@
+import { interruptSession } from "./SessionLifecycle";
 import { clamp, type GameState } from "../core/GameState";
 import { record } from "../core/EventLog";
 import { STREET_BALANCE as B } from "../content/street";
@@ -10,7 +11,7 @@ export function arrest(s: GameState, id: string, cause: string, severity = 1) {
     B.minSentence + Math.min(2, prior) + Math.max(0, severity - 1),
   );
   c.status = "arrested";
-  if (id === s.playerId && s.activeSession && s.activeSession.status !== "ended") { s.activeSession.status = "ended"; s.activeSession.reason = "Arrested. Unresolved visitors cancelled."; }
+  if (id === s.playerId) interruptSession(s, "Arrested. Unresolved visitors cancelled.");
   const e = record(
     s,
     "risk",

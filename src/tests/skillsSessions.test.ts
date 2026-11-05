@@ -1,3 +1,5 @@
+import { requestActivity } from "../systems/CrewAgency";
+import { grantEquipment } from "../systems/Equipment";
 import { repay, supplierError } from "../systems/StreetEconomy";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { newGame } from "../core/Simulation";
@@ -249,6 +251,19 @@ describe("equipment validation and combat eligibility", () => {
       expect(equip(c, null)).toBeNull();
       expect(equipmentBonus(c).attack).toBe(0);
     });
+  it("grants gear only from a real authored outcome, without skill XP or duplicate ownership", () => {
+    const s = ready(),
+      c = player(s);
+    expect(grantEquipment(s, c.id, "law-19", "invented")).toBe(false);
+    const e = record(s, "system", "Controlled future authored reward fixture", [
+      c.id,
+    ]);
+    expect(grantEquipment(s, c.id, "law-19", e.id)).toBe(true);
+    expect(grantEquipment(s, c.id, "law-19", e.id)).toBe(false);
+    expect(skillsOf(c).xp.combat).toBe(0);
+    expect(equip(c, "law-19")).toBeTruthy();
+    expect(deserialize(serialize(s))).toEqual(s);
+  });
   it("one equipped slot prevents stacking owned items", () => {
     const s = ready(),
       c = player(s),
@@ -419,6 +434,24 @@ describe("physical and transactional City sessions", () => {
     const e = record(s, "risk", "Injury", ["player"]);
     hospitalize(s, "assault", e.id);
     expect(step(s).activeSession!.status).toBe("ended");
+  });
+  it("settles participating crew once when a paid session is interrupted after a buyer", () => {
+    let s = ready();
+    const member = s.characters.flacco;
+    member.traits.risk = 80;
+    member.traits.lawful = 10;
+    member.stress = 0;
+    member.relationships.player.trust = 100;
+    requestActivity(s, member.id, "partner-crime");
+    expect(s.assignments.at(-1)?.status).toBe("active");
+    s = startStreetSession(s, "south.the-lot").state;
+    s = step(force(s, "buyer", 1));
+    expect(s.activeSession!.totals.sold).toBeGreaterThan(0);
+    s = advanceDay(s);
+    expect(s.assignments.at(-1)?.status).toBe("resolved");
+    expect(s.assignments.at(-1)?.success).toBe(true);
+    expect(skillsOf(player(s)).xp.leadership).toBe(100);
+    expect(deserialize(serialize(s))).toEqual(s);
   });
   it("permits a second paid session at this spot and a later cross-zone session, with no third AP", () => {
     let s = ready();

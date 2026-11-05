@@ -52,3 +52,23 @@ export function equipmentBonus(c: Character) {
   const id = equipmentOf(c).equipped;
   return id && !equipError(c, id) ? EQUIPMENT[id] : { attack: 0, defense: 0 };
 }
+
+/** Integration hook for an authored story/contact outcome; never a store purchase. */
+export function grantEquipment(
+  s: import("../core/GameState").GameState,
+  actor: string,
+  id: EquipmentId,
+  sourceEventId: string,
+) {
+  const c = s.characters[actor];
+  if (
+    !c ||
+    !EQUIPMENT[id] ||
+    !s.events.some((e) => e.id === sourceEventId && e.actors.includes(actor))
+  )
+    return false;
+  const inventory = equipmentOf(c);
+  if (inventory.owned.includes(id)) return false;
+  inventory.owned.push(id);
+  return true;
+}

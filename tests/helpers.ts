@@ -8,23 +8,23 @@ export async function dismissEncounter(page: Page) {
     await modal.getByRole("button", { name: "Close conversation" }).click();
 }
 
+/** A discarded stale tap is intentional. Retap navigation after the guard settles,
+ * then assert the destination before using its controls. Never bypass the input guard. */
+export async function navigate(page: Page, name: string) {
+  const button = page.getByRole('navigation').getByRole('button', {name, exact:true});
+  await expect.poll(async()=>{
+    if(await button.getAttribute('aria-current') !== 'page') await button.click();
+    return button.getAttribute('aria-current');
+  },{timeout:15000,intervals:[500,800,1200]}).toBe('page');
+}
 export async function honest(page: Page) {
-  await page
-    .getByRole("navigation")
-    .getByRole("button", { name: "Actions", exact: true })
-    .click();
-  await page.getByRole("button", { name: "Honest", exact: true }).click();
+  await navigate(page, 'Actions');
+  await page.getByRole('button', {name:'Honest', exact:true}).click();
 }
 export async function connects(page: Page, person?: string) {
-  await page
-    .getByRole("navigation")
-    .getByRole("button", { name: "Actions", exact: true })
-    .click();
-  await page.getByRole("button", { name: "Connects", exact: true }).click();
-  if (person)
-    await page
-      .getByLabel("Connected contacts", { exact: true })
-      .selectOption(person);
+  await navigate(page, 'Actions');
+  await page.getByRole('button', {name:'Connects', exact:true}).click();
+  if(person) await page.getByLabel('Connected contacts', {exact:true}).selectOption(person);
 }
 export async function storyline(page: Page) {
   await dismissEncounter(page);

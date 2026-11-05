@@ -1,3 +1,4 @@
+import { interruptSession } from "./SessionLifecycle";
 import { awardSkill, awardCombat, awardRobbery, proficiency, skillsOf, skillRank } from "./Skills";
 import { equipmentBonus } from "./Equipment";
 /** Gameplay only. No camera, renderer, wall clock, or UI randomness. */
@@ -238,7 +239,7 @@ export function hospitalize(
   eventId: string,
 ) {
   if (s.end || hospitalStay(s)) return;
-  if (s.activeSession && s.activeSession.status !== "ended") { s.activeSession.status = "ended"; s.activeSession.reason = "Hospitalized. Unresolved visitors cancelled."; }
+  interruptSession(s, "Hospitalized. Unresolved visitors cancelled.");
   const p = player(s),
     days = kind === "shooting" ? 5 : 2,
     bill = kind === "shooting" ? 480 : 180;

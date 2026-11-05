@@ -1,3 +1,4 @@
+import { interruptSession } from "../systems/SessionLifecycle";
 import { awardSkill } from "../systems/Skills";
 import { advanceQuanny } from "../systems/Quanny";
 import {
@@ -30,7 +31,7 @@ import { settleWorkplaceScenes } from "../systems/Workplace";
 export function advanceDay(state: GameState): GameState {
   if (state.end) return state;
   const s = structuredClone(state);
-  if (s.activeSession && s.activeSession.status !== "ended") { s.activeSession.status = "ended"; s.activeSession.reason = "Day ended. Unresolved visitors cancelled."; }
+  interruptSession(s, "Day ended. Unresolved visitors cancelled.");
   settleWorkplaceScenes(s);
   settleAttendance(s);
   s.day++;

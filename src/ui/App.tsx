@@ -1,3 +1,4 @@
+import { endStreetSession } from "../systems/StreetSessions";
 import { StreetSessionStart, StreetSessionPlayback } from "./StreetSession";
 import { SKILLS, skillRank } from "../systems/Skills";
 import { SkillsView } from "./SkillsView";
@@ -529,6 +530,8 @@ export function App() {
   /** The player walks to the place first, then the existing action runs. */
   async function actAt(a: Action, placeId: string) {
     if (busy || !s || s.end || hospitalStay(s) || streetConversation(s)) return;
+    if (s.activeSession && s.activeSession.status !== "ended" && placeId !== presenceOf(s).location)
+      setState(cur => cur?.activeSession ? endStreetSession(cur, cur.activeSession.id, "Left the spot. Unresolved visitors cancelled.") : cur);
     setBusy(true);
     try {
       await walkTo(placeId);
@@ -539,6 +542,8 @@ export function App() {
   }
   async function goHere(placeId: string) {
     if (busy || !s || s.end || hospitalStay(s) || streetConversation(s)) return;
+    if (s.activeSession && s.activeSession.status !== "ended" && placeId !== presenceOf(s).location)
+      setState(cur => cur?.activeSession ? endStreetSession(cur, cur.activeSession.id, "Left the spot. Unresolved visitors cancelled.") : cur);
     setBusy(true);
     try {
       await walkTo(placeId);

@@ -1,3 +1,4 @@
+import { finishSessionPartner, interruptSession } from "./SessionLifecycle";
 import { z } from "zod";
 import { player, type GameState } from "../core/GameState";
 import { random } from "../core/Random";
@@ -9,7 +10,7 @@ import { quannyConversation } from "./QuannyState";
 import { buyerError, saleLot, resolveStreetBuyer } from "./StreetEconomy";
 import { addExposure } from "./CriminalExposure";
 import { syncEncounters, currentEncounter } from "./EncounterLifecycle";
-import { skillsOf, awardSkill } from "./Skills";
+import { skillsOf } from "./Skills";
 import { transactionArrestChance } from "./CriminalExposure";
 import { arrest } from "./Incarceration";
 
@@ -98,7 +99,7 @@ export function startStreetSession(state: GameState, location: string) {
   if (error) return { state, error };
   const s = structuredClone(state),
     l = locationById(location)!;
-  const count = SESSION_BALANCE.minBeats + Math.floor(random(s) * 3);
+  const count = SESSION_BALANCE.minBeats + Math.floor(random(s) * (SESSION_BALANCE.maxBeats - SESSION_BALANCE.minBeats + 1));
   const beats: StreetSession["beats"] = [];
   for (let i = 0; i < count; i++) {
     const roll = random(s),
@@ -166,8 +167,7 @@ export function advanceStreetSession(
     session = s.activeSession!;
   const stop = interruption(s);
   if (stop) {
-    session.status = "ended";
-    session.reason = stop;
+    interruptSession(s, stop);
     return s;
   }
   if (saleLot(s)?.id !== session.lotId) {
@@ -243,31 +243,6 @@ export function endStreetSession(
   finishSessionPartner(s);
   return s;
 }
-function finishSessionPartner(s: GameState) {
-  const session = s.activeSession!;
-  if (!session.partner) return;
-  const a = s.assignments.find(
-    (a) =>
-      a.member === session.partner &&
-      a.status === "active" &&
-      a.activity === "partner-crime",
-  );
-  if (!a) return;
-  a.status = "resolved";
-  a.success = session.totals.sold > 0;
-  a.outcome = `Shared street transaction · City session: ${session.totals.sold} sold; actual shares paid per buyer.`;
-  const e = record(s, "crew", a.outcome, a.participants);
-  a.eventIds.push(e.id);
-  const promise = s.commitments.find((c) => c.id === a.commitmentId);
-  if (promise) {
-    promise.status = a.success ? "fulfilled" : "released";
-    promise.evidence.push(e.id);
-  }
-  if (a.success) {
-    awardSkill(s, s.playerId, "leadership", 100, a.id);
-    awardSkill(s, a.member, "leadership", 50, a.id);
-  }
-}
 export function pauseStreetSession(
   state: GameState,
   id: string,
@@ -278,8 +253,7 @@ export function pauseStreetSession(
     a = s.activeSession!;
   a.status = paused ? "paused" : "active";
   if (!paused && interruption(s)) {
-    a.status = "ended";
-    a.reason = interruption(s)!;
+    interruptSession(s, interruption(s)!);
   }
   return s;
 }
