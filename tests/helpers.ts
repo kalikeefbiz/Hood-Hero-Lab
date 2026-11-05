@@ -24,7 +24,7 @@ export async function tapUntil(
         if (await acknowledged()) return true;
         if ((await button.isVisible()) && (await button.isEnabled())) {
           await page.waitForTimeout(400); // Let the guarded post-stall window finish.
-          await button.click();
+          if (!(await acknowledged())) await button.click();
         }
         return acknowledged();
       },
