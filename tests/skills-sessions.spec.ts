@@ -93,7 +93,7 @@ async function skipVisitor(page: Page) {
 test("City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session", async ({
   page,
 }, info) => {
-  test.setTimeout(120000);
+  test.setTimeout(180000); // Two physical sessions, visitor captures and a real reload.
   await load(page);
   await spot(page);
   const start = page.getByRole("button", { name: "Start trapping — 1 AP" });
@@ -166,12 +166,20 @@ test("City presence, approaching visitor, paid outcomes, mid-session reload, and
     after.activeSession.totals.xp,
   );
   await page.screenshot({ path: info.outputPath("session-summary.png") });
-  await panel.getByRole("button", { name: "Dismiss session summary" }).click();
+  await tapUntil(
+    page,
+    panel.getByRole("button", { name: "Dismiss session summary" }),
+    async () => !(await state(page)).activeSession,
+  );
   if (
     after.street.lots[0].remaining > 0 &&
     after.street.markets.south.used < 6
   ) {
-    await page.getByRole("button", { name: "Show details" }).click();
+    await tapUntil(
+      page,
+      page.getByRole("button", { name: "Show details" }),
+      async () => start.isVisible(),
+    );
     await expect(start).toBeEnabled();
     await tapUntil(
       page,
@@ -179,7 +187,11 @@ test("City presence, approaching visitor, paid outcomes, mid-session reload, and
       async () => (await state(page)).activeSession?.status === "active",
     );
     await expect.poll(async () => (await state(page)).ap).toBe(0);
-    await panel.getByRole("button", { name: "Leave session" }).click();
+    await tapUntil(
+      page,
+      panel.getByRole("button", { name: "Leave session" }),
+      async () => (await state(page)).activeSession.status === "ended",
+    );
   }
 });
 
