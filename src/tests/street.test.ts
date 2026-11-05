@@ -1,3 +1,5 @@
+import { oneBuyer } from "./sessionFixtures";
+import { buyerError } from "../systems/StreetEconomy";
 import { streetConversation } from "../systems/Danger";
 import { describe, it, expect } from "vitest";
 import { newGame } from "../core/Simulation";
@@ -34,6 +36,7 @@ function act(
         .id,
       "listen",
     ).state;
+  if (type === "crime") return oneBuyer(s);
   const r = performAction(s, { actor: s.playerId, type, target });
   expect(r.error).toBeNull();
   return r.state;
@@ -64,7 +67,7 @@ describe("complete inventory economy", () => {
         s = serveSentence(s);
         continue;
       }
-      if (transactionError(s)) {
+      if (buyerError(s, s.playerId, s.street.lots[0]?.zone ?? "south")) {
         s = advanceDay(s);
         continue;
       }
@@ -172,7 +175,7 @@ describe("complete inventory economy", () => {
   it("blocks old money shortcut, fabricated partners, duplicate goods and counterfeit saves", () => {
     let s = newGame("No exploit", "south");
     expect(validateAction(s, { actor: "player", type: "crime" })).toContain(
-      "No merchandise",
+      "City street spot",
     );
     s = accept(s);
     const snapshot = serialize(s);
@@ -184,7 +187,7 @@ describe("complete inventory economy", () => {
     raw.state.street.lots[0].remaining = 100;
     expect(() => deserialize(JSON.stringify(raw))).toThrow(/street economy/);
     while (saleLot(s) && s.day < 12) {
-      if (!s.ap || transactionError(s)) {
+      if (!s.ap || buyerError(s, s.playerId, s.street.lots[0]?.zone ?? "south")) {
         s = advanceDay(s);
         continue;
       }
@@ -276,6 +279,8 @@ describe("exposure, custody and city continuity", () => {
     const megaPolice = s.characters.mega.police;
     const before = cash(s.characters.flacco);
     requestActivity(s, "flacco", "partner-crime");
+    expect(s.assignments.at(-1)?.status).toBe("active");
+    s = oneBuyer(s);
     expect(s.assignments.at(-1)?.status).toBe("resolved");
     expect(s.street.transactions.at(-1)?.partner).toBe("flacco");
     expect(cash(s.characters.flacco)).toBe(

@@ -2,6 +2,9 @@ import { openJournal } from "./journal";
 import { test, expect, type Page } from "@playwright/test";
 import {
   dismissEncounter,
+  navigate,
+  category,
+  tapUntil,
   connects,
   honest,
   storyline,
@@ -11,11 +14,9 @@ const key = "blackhouse.hoodhero-lab.v1.auto";
 const state = (page: Page) =>
   page.evaluate((k) => JSON.parse(localStorage.getItem(k)!).state, key);
 async function nav(page: Page, name: string) {
-  await page
-    .getByRole("navigation")
-    .getByRole("button", { name, exact: true })
-    .click();
+  await navigate(page, name);
 }
+
 async function start(page: Page, home = "Southside") {
   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
   await page.getByLabel("What do people call you?").fill("Test(6.1)");
@@ -48,8 +49,8 @@ test.beforeEach(async ({ page }) => {
     );
     const b = await r.json();
     expect(b.commit).toBe(process.env.PLAYWRIGHT_EXPECTED_COMMIT);
-    expect(b.milestone).toBe("GOAL 007");
-    expect(b.saveSchema).toBe(8);
+    expect(b.milestone).toBe("GOAL 010");
+    expect(b.saveSchema).toBe(9);
   }
 });
 test("Actions separate Streets, Honest and Connects; completed reach-out returns to Streets", async ({
@@ -196,18 +197,27 @@ for (const width of [320, 375, 390, 430])
     await start(page);
     await nav(page, "Actions");
     for (const group of ["Streets", "Honest", "Connects"]) {
-      await page.getByRole("button", { name: group, exact: true }).click();
+      await category(page, group);
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth),
       ).toBeLessThanOrEqual(width);
     }
-    await page.getByRole("button", { name: "Talk terms with Cuzzo" }).click();
-    await page
-      .getByRole("dialog", { name: "Character encounter" })
-      .getByRole("button", { name: /Accept consignment/ })
-      .click();
+    const modal = page.getByRole("dialog", { name: "Character encounter" });
+    await tapUntil(
+      page,
+      page.getByRole("button", { name: "Talk terms with Cuzzo" }),
+      async () => modal.isVisible(),
+    );
+    await tapUntil(
+      page,
+      modal.getByRole("button", { name: /Accept consignment/ }),
+      async () => (await state(page)).street.lots.length > 0,
+    );
     await nav(page, "Wallet");
-    await page.locator(".inventory-slot summary").click();
+    const summary = page.locator(".inventory-slot summary");
+    await tapUntil(page, summary, async () =>
+      summary.evaluate((el) => (el.parentElement as HTMLDetailsElement).open),
+    );
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBeLessThanOrEqual(width);

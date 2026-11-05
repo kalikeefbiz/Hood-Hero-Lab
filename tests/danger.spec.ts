@@ -1,3 +1,4 @@
+import { navigate, tapUntil } from "./helpers";
 import { performAction } from "../src/core/ActionEngine";
 import { expect, test, type Page } from "@playwright/test";
 import { newGame } from "../src/core/Simulation";
@@ -219,16 +220,15 @@ test("a meaningful Wallet activity opens a contextual street conversation on the
   }
   expect(chosen).toBeDefined();
   await seed(page, chosen!);
-  await page
-    .getByRole("navigation", { name: "Main navigation" })
-    .getByRole("button", { name: "Wallet", exact: true })
-    .click();
+  await navigate(page, "Wallet");
   await page.locator('[data-action="buy"]').first().getByRole("button").click();
   const modal = page.getByRole("dialog", { name: "Character encounter" });
   await expect(modal).toContainText("Mudgang contact");
-  await modal
-    .getByRole("button", { name: "Hear them out", exact: false })
-    .click();
+  await tapUntil(
+    page,
+    modal.getByRole("button", { name: "Hear them out", exact: false }),
+    async () => !!(await snapshot(page)).danger.scenes[0]?.outcome,
+  );
   const after = await snapshot(page);
   expect(after.ap).toBe(chosen!.ap - 1);
   expect(after.danger.scenes[0].outcome).toContain("peacefully");

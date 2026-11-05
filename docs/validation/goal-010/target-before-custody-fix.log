@@ -1,0 +1,303 @@
+
+> syndicate@0.1.0 test:e2e
+> playwright test tests/skills-sessions.spec.ts tests/input-guard.spec.ts tests/street.spec.ts tests/board.spec.ts --workers=1 --reporter=list,json
+
+[WebServer] (node:23636) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 32 tests using 1 worker
+
+(node:23653) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓   1 [chromium-mobile] › tests/board.spec.ts:40:1 › the player lives on the board: walks to places, acts there, and their location is saved (37.4s)
+  ✓   2 [chromium-mobile] › tests/board.spec.ts:130:1 › lab saves never touch production keys and The Reservoir is spelled right (6.2s)
+  ✓   3 [chromium-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues (22.1s)
+  ✓   4 [chromium-mobile] › tests/input-guard.spec.ts:12:1 › taps queued while the page is frozen never fire; the next tap does (8.8s)
+  ✓   5 [chromium-mobile] › tests/skills-sessions.spec.ts:67:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session (38.3s)
+  ✓   6 [chromium-mobile] › tests/skills-sessions.spec.ts:159:1 › Actions gives directions only; Skills and inventory remain readable on iPhone (5.1s)
+  ✓   7 [chromium-mobile] › tests/skills-sessions.spec.ts:193:1 › background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes (26.4s)
+  ✓   8 [chromium-mobile] › tests/skills-sessions.spec.ts:249:1 › WebGL unavailable: physically present accessible session settles the same persisted buyer (656ms)
+JOURNEY {"engine":"chromium-mobile","day":3,"cash":{"clean":0,"illicit":247},"lot":{"id":"lot-3","category":"nightgoods","owner":"player","supplier":"mega","zone":"south","received":6,"remaining":0,"lost":0,"cost":102,"expectedGross":282,"collected":278,"owed":0,"paid":102,"losses":18,"crewPaid":0,"dueDay":7,"acquiredDay":1,"arrangement":"consignment","status":"settled","agreementId":"agreement-6"},"transactions":[{"id":"transaction-52","sessionId":"session-49","sessionCursor":0,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":47,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-51"},{"id":"transaction-55","sessionId":"session-49","sessionCursor":2,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":47,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-54"},{"id":"transaction-58","sessionId":"session-49","sessionCursor":3,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":47,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-57"},{"id":"transaction-61","sessionId":"session-49","sessionCursor":4,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":0,"lost":0,"gross":0,"loss":18,"crewPaid":0,"crewLoss":0,"outcome":"money-loss","eventId":"event-60"},{"id":"transaction-68","sessionId":"session-64","sessionCursor":1,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":46,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-67"},{"id":"transaction-71","sessionId":"session-64","sessionCursor":2,"day":2,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":46,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-70"},{"id":"transaction-122","sessionId":"session-119","sessionCursor":1,"day":3,"lotId":"lot-3","market":"south","actor":"player","sold":1,"lost":0,"gross":45,"loss":0,"crewPaid":0,"crewLoss":0,"outcome":"sale","eventId":"event-121"}],"agreement":{"id":"agreement-6","lotId":"lot-3","supplier":"mega","debtor":"player","original":102,"repaid":102,"balance":0,"dueDay":7,"status":"fulfilled","commitmentId":"commitment-5","history":["event-4","event-51","event-54","event-57","event-60","event-67","event-70","event-121","event-126"]}}
+  ✓   9 [chromium-mobile] › tests/street.spec.ts:143:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls (1.4m)
+  ✘  10 [chromium-mobile] › tests/street.spec.ts:246:1 › seeded real-play arrest serves every day and releases into continued gameplay (6.6s)
+(node:23918) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  11 [chromium-mobile] › tests/street.spec.ts:297:1 › default reaction and accumulated heat are rendered from real simulated consequences (8.8s)
+  ✓  12 [chromium-mobile] › tests/street.spec.ts:317:1 › crew-assisted street work uses an earned willing partner and actual inventory (4.4s)
+  ✓  13 [chromium-mobile] › tests/street.spec.ts:334:3 › street inventory and supplier modal fit 320px (6.5s)
+  ✓  14 [chromium-mobile] › tests/street.spec.ts:334:3 › street inventory and supplier modal fit 375px (6.8s)
+  ✓  15 [chromium-mobile] › tests/street.spec.ts:334:3 › street inventory and supplier modal fit 390px (7.7s)
+  ✓  16 [chromium-mobile] › tests/street.spec.ts:334:3 › street inventory and supplier modal fit 430px (6.9s)
+(node:24105) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  17 [webkit-mobile] › tests/board.spec.ts:40:1 › the player lives on the board: walks to places, acts there, and their location is saved (4.0m)
+(node:24268) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  18 [webkit-mobile] › tests/board.spec.ts:130:1 › lab saves never touch production keys and The Reservoir is spelled right (7.7s)
+  ✘  19 [webkit-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues (3.1m)
+(node:24453) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  20 [webkit-mobile] › tests/input-guard.spec.ts:12:1 › taps queued while the page is frozen never fire; the next tap does (14.1s)
+  ✘  21 [webkit-mobile] › tests/skills-sessions.spec.ts:67:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session (32.7s)
+(node:24610) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  22 [webkit-mobile] › tests/skills-sessions.spec.ts:159:1 › Actions gives directions only; Skills and inventory remain readable on iPhone (9.3s)
+  ✘  23 [webkit-mobile] › tests/skills-sessions.spec.ts:193:1 › background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes (32.9s)
+(node:24759) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  24 [webkit-mobile] › tests/skills-sessions.spec.ts:249:1 › WebGL unavailable: physically present accessible session settles the same persisted buyer (1.2s)
+  ✘  25 [webkit-mobile] › tests/street.spec.ts:143:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls (15.0s)
+(node:24901) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  26 [webkit-mobile] › tests/street.spec.ts:246:1 › seeded real-play arrest serves every day and releases into continued gameplay (8.5s)
+(node:24988) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  27 [webkit-mobile] › tests/street.spec.ts:297:1 › default reaction and accumulated heat are rendered from real simulated consequences (13.6s)
+  ✓  28 [webkit-mobile] › tests/street.spec.ts:317:1 › crew-assisted street work uses an earned willing partner and actual inventory (9.0s)
+  ✓  29 [webkit-mobile] › tests/street.spec.ts:334:3 › street inventory and supplier modal fit 320px (9.3s)
+  ✓  30 [webkit-mobile] › tests/street.spec.ts:334:3 › street inventory and supplier modal fit 375px (10.7s)
+  ✓  31 [webkit-mobile] › tests/street.spec.ts:334:3 › street inventory and supplier modal fit 390px (12.3s)
+  ✓  32 [webkit-mobile] › tests/street.spec.ts:334:3 › street inventory and supplier modal fit 430px (10.9s)
+
+
+  1) [chromium-mobile] › tests/street.spec.ts:246:1 › seeded real-play arrest serves every day and releases into continued gameplay
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'In custody', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'In custody', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'In custody', exact: true })
+
+
+      251 |   await expect(
+      252 |     page.getByRole("heading", { name: "In custody", exact: true }),
+    > 253 |   ).toBeVisible();
+          |     ^
+      254 |   await snap(page, "08-arrest-and-incarceration");
+      255 |   const before = await state(page);
+      256 |   await page.getByRole("button", { name: "Serve remaining sentence" }).click();
+        at /workspace/lab-validation/tests/street.spec.ts:253:5
+
+    Error Context: test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit-mobile] › tests/board.spec.ts:40:1 › the player lives on the board: walks to places, acts there, and their location is saved
+
+    Test timeout of 240000ms exceeded.
+
+    Error: locator.click: Test timeout of 240000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Places in The Nawf' }).getByRole('button', { name: /Nawf Bodega/ })
+
+
+      80 |   await places(page, "The Nawf")
+      81 |     .getByRole("button", { name: /Nawf Bodega/ })
+    > 82 |     .click();
+         |      ^
+      83 |   const bodega = page.getByRole("region", { name: "Nawf Bodega" });
+      84 |   await expect(bodega.getByLabel(/Risk here/)).toContainText(
+      85 |     /Tense|Watchful|Hostile/,
+        at /workspace/lab-validation/tests/board.spec.ts:82:6
+
+    attachment #1: 01-home-district (image/png) ────────────────────────────────────────────────────
+    test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/attachments/01-home-district-38ab0ddc87f0e3c474fb0c2e23b2b8320ab12e76.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: 02-food-mart (image/png) ────────────────────────────────────────────────────────
+    test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/attachments/02-food-mart-322c7c08d7ac8f3631e7c6f4c3427c11d8b12f80.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [webkit-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Test timeout of 180000ms exceeded.
+    Call log:
+      - waiting for getByRole('region', { name: 'Places in The Nawf' }).getByRole('button', { name: /Nawf Bodega/ })
+
+
+      155 |   await places(page, "The Nawf")
+      156 |     .getByRole("button", { name: /Nawf Bodega/ })
+    > 157 |     .click();
+          |      ^
+      158 |   await page
+      159 |     .getByRole("region", { name: "Nawf Bodega" })
+      160 |     .getByRole("button", { name: "Go here" })
+        at /workspace/lab-validation/tests/board.spec.ts:157:6
+
+    Error Context: test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [webkit-mobile] › tests/skills-sessions.spec.ts:67:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "south.the-lot"
+    Received: undefined
+
+    Call Log:
+    - Timeout 20000ms exceeded while waiting on the predicate
+
+      90 |       { timeout: 20000 },
+      91 |     )
+    > 92 |     .toBe("south.the-lot");
+         |      ^
+      93 |   await dismissEncounter(page);
+      94 |   await expect(start).toBeEnabled({ timeout: 15000 });
+      95 |   const before = await state(page);
+        at /workspace/lab-validation/tests/skills-sessions.spec.ts:92:6
+
+    Error Context: test-results/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [webkit-mobile] › tests/skills-sessions.spec.ts:193:1 › background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      239 |   await expect
+      240 |     .poll(async () => (await state(page)).activeSession.cursor)
+    > 241 |     .toBe(expectedCursor);
+          |      ^
+      242 |   await page.getByRole("button", { name: "End day", exact: true }).click();
+      243 |   await expect
+      244 |     .poll(async () => (await state(page)).activeSession.status)
+        at /workspace/lab-validation/tests/skills-sessions.spec.ts:241:6
+
+    Error Context: test-results/skills-sessions-background-3b3d0-y-cannot-duplicate-outcomes-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/skills-sessions-background-3b3d0-y-cannot-duplicate-outcomes-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/skills-sessions-background-3b3d0-y-cannot-duplicate-outcomes-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [webkit-mobile] › tests/street.spec.ts:143:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('dialog', { name: 'Character encounter' })
+    Expected substring: "before supplier cost"
+    Received string:    "A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, I'll put my name behind one small lot. Don't make me chase you. 6 Pink Magic: $90 cash now, or $102 on consignment by the end of day 7. Expected gross here is $282 if it all sells. Buyers aren't promised. Police and local organizations are watching.”Accept cash purchase · $90 · 1 AP6 units · ownership transfers; no supplier debtAccept consignment · $102 due day 7 · 1 AP6 units · personal repayment obligation, including lossesExplain the terms and risk.Conversation · No APDecline. No arrangement.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Character encounter' })
+        12 × locator resolved to <dialog open="" class="encounter-modal" aria-label="Character encounter">…</dialog>
+           - unexpected value "A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, I'll put my name behind one small lot. Don't make me chase you. 6 Pink Magic: $90 cash now, or $102 on consignment by the end of day 7. Expected gross here is $282 if it all sells. Buyers aren't promised. Police and local organizations are watching.”Accept cash purchase · $90 · 1 AP6 units · ownership transfers; no supplier debtAccept consignment · $102 due day 7 · 1 AP6 units · personal repayment obligation, including lossesExplain the terms and risk.Conversation · No APDecline. No arrangement.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City."
+
+
+      166 |     .getByRole("button", { name: "Explain the terms and risk." })
+      167 |     .click();
+    > 168 |   await expect(modal).toContainText("before supplier cost");
+          |                       ^
+      169 |   await snap(page, "01-supplier-terms");
+      170 |   await modal.getByRole("button", { name: /Accept consignment/ }).click();
+      171 |   expect((await state(page)).street.lots[0].remaining).toBe(6);
+        at /workspace/lab-validation/tests/street.spec.ts:168:23
+
+    Error Context: test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [webkit-mobile] › tests/street.spec.ts:246:1 › seeded real-play arrest serves every day and releases into continued gameplay
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'In custody', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'In custody', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'In custody', exact: true })
+
+
+      251 |   await expect(
+      252 |     page.getByRole("heading", { name: "In custody", exact: true }),
+    > 253 |   ).toBeVisible();
+          |     ^
+      254 |   await snap(page, "08-arrest-and-incarceration");
+      255 |   const before = await state(page);
+      256 |   await page.getByRole("button", { name: "Serve remaining sentence" }).click();
+        at /workspace/lab-validation/tests/street.spec.ts:253:5
+
+    Error Context: test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7 failed
+    [chromium-mobile] › tests/street.spec.ts:246:1 › seeded real-play arrest serves every day and releases into continued gameplay
+    [webkit-mobile] › tests/board.spec.ts:40:1 › the player lives on the board: walks to places, acts there, and their location is saved
+    [webkit-mobile] › tests/board.spec.ts:143:1 › leaving the city mid-walk never locks input: the walk lands and play continues
+    [webkit-mobile] › tests/skills-sessions.spec.ts:67:1 › City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session
+    [webkit-mobile] › tests/skills-sessions.spec.ts:193:1 › background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes
+    [webkit-mobile] › tests/street.spec.ts:143:1 › supplier to inventory to multiple real sales and repayment through normal mobile controls
+    [webkit-mobile] › tests/street.spec.ts:246:1 › seeded real-play arrest serves every day and releases into continued gameplay
+  25 passed (15.1m)

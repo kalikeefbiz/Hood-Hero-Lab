@@ -1,0 +1,20 @@
+
+> syndicate@0.1.0 test:e2e
+> playwright test --project=webkit-mobile --grep (?:all\ three\ categories\ and\ inventory\ fit\ 390px$|crew\ dialogue\ and\ Set\ fit\ 320px$|crew\ dialogue\ and\ Set\ fit\ 375px$|crew\ dialogue\ and\ Set\ fit\ 390px$|a\ meaningful\ Wallet\ activity\ opens\ a\ contextual\ street\ conversation\ on\ the\ City\ board$|GOAL\ 002C\ mobile\ visual\ review\ and\ usable\ narrow\ controls$|mobile\ city\ and\ new\ game\ remain\ readable\ at\ narrow\ widths$|review\ captures\ and\ WCAG\ checks\ cover\ every\ M1\ screen\ and\ faction\ palette$) --workers=1 --reporter=list,json
+
+[WebServer] (node:34826) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:34843) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  1 [webkit-mobile] › tests/corrections.spec.ts:191:3 › all three categories and inventory fit 390px (1.5m)
+(node:34941) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  2 [webkit-mobile] › tests/crew.spec.ts:200:3 › crew dialogue and Set fit 320px (31.2s)
+(node:35034) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.

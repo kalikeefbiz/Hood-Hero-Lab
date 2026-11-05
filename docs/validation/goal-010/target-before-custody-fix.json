@@ -1,0 +1,1596 @@
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/lab-validation/node_modules/.bin/playwright",
+      "test",
+      "tests/skills-sessions.spec.ts",
+      "tests/input-guard.spec.ts",
+      "tests/street.spec.ts",
+      "tests/board.spec.ts",
+      "--workers=1",
+      "--reporter=list,json"
+    ],
+    "configFile": "/workspace/lab-validation/playwright.config.ts",
+    "rootDir": "/workspace/lab-validation/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/workspace/lab-validation/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-mobile",
+        "name": "chromium-mobile",
+        "testDir": "/workspace/lab-validation/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/workspace/lab-validation/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit-mobile",
+        "name": "webkit-mobile",
+        "testDir": "/workspace/lab-validation/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/workspace/lab-validation/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "chromium-mobile",
+        "testDir": "/workspace/lab-validation/tests",
+        "snapshotDir": "/workspace/lab-validation/tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4181/",
+          "trace": "retain-on-failure",
+          "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1",
+          "viewport": {
+            "width": 390,
+            "height": 664
+          },
+          "screen": {
+            "width": 390,
+            "height": 844
+          },
+          "deviceScaleFactor": 3,
+          "isMobile": true,
+          "hasTouch": true,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium-mobile"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/workspace/lab-validation/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "webkit-mobile",
+        "testDir": "/workspace/lab-validation/tests",
+        "snapshotDir": "/workspace/lab-validation/tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4181/",
+          "trace": "retain-on-failure",
+          "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1",
+          "viewport": {
+            "width": 390,
+            "height": 664
+          },
+          "screen": {
+            "width": 390,
+            "height": 844
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": true,
+          "hasTouch": true,
+          "defaultBrowserType": "webkit"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "webkit-mobile"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "env": {
+        "VITE_BASE_PATH": "/"
+      },
+      "command": "npm run preview -- --port 4181",
+      "url": "http://127.0.0.1:4181/",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "board.spec.ts",
+      "file": "board.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "the player lives on the board: walks to places, acts there, and their location is saved",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 37390,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [
+                    {
+                      "text": "Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.\n"
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:52:28.204Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "01-home-district",
+                      "contentType": "image/png",
+                      "path": "/workspace/lab-validation/test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-chromium-mobile/attachments/01-home-district-576be47621bfad295d9f658cd08a5ca4b91f55ee.png"
+                    },
+                    {
+                      "name": "02-food-mart",
+                      "contentType": "image/png",
+                      "path": "/workspace/lab-validation/test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-chromium-mobile/attachments/02-food-mart-63c5ee7bf8f475600fb74f25f17c457ed6c48992.png"
+                    },
+                    {
+                      "name": "03-in-the-nawf",
+                      "contentType": "image/png",
+                      "path": "/workspace/lab-validation/test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-chromium-mobile/attachments/03-in-the-nawf-a1c31ab454277ea681b95a1036c4183e57e627e1.png"
+                    },
+                    {
+                      "name": "04-new-look",
+                      "contentType": "image/png",
+                      "path": "/workspace/lab-validation/test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-chromium-mobile/attachments/04-new-look-bac453302bf48243039451d6e8dc6218160d68f0.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8e2a3123a0c4552ab20a-1b09755eb0758dc62216",
+          "file": "board.spec.ts",
+          "line": 40,
+          "column": 1
+        },
+        {
+          "title": "lab saves never touch production keys and The Reservoir is spelled right",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6164,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:53:05.678Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8e2a3123a0c4552ab20a-6b4411a541dffb75048c",
+          "file": "board.spec.ts",
+          "line": 130,
+          "column": 1
+        },
+        {
+          "title": "leaving the city mid-walk never locks input: the walk lands and play continues",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 22137,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:53:11.853Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8e2a3123a0c4552ab20a-b7f0014ad0e875c17d99",
+          "file": "board.spec.ts",
+          "line": 143,
+          "column": 1
+        },
+        {
+          "title": "the player lives on the board: walks to places, acts there, and their location is saved",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 240995,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 240000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 240000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 240000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/workspace/lab-validation/tests/board.spec.ts",
+                        "column": 6,
+                        "line": 82
+                      },
+                      "message": "Error: locator.click: Test timeout of 240000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Places in The Nawf' }).getByRole('button', { name: /Nawf Bodega/ })\u001b[22m\n\n\n  80 |   await places(page, \"The Nawf\")\n  81 |     .getByRole(\"button\", { name: /Nawf Bodega/ })\n> 82 |     .click();\n     |      ^\n  83 |   const bodega = page.getByRole(\"region\", { name: \"Nawf Bodega\" });\n  84 |   await expect(bodega.getByLabel(/Risk here/)).toContainText(\n  85 |     /Tense|Watchful|Hostile/,\n    at /workspace/lab-validation/tests/board.spec.ts:82:6"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [
+                    {
+                      "text": "Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.\n"
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:57:07.874Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "01-home-district",
+                      "contentType": "image/png",
+                      "path": "/workspace/lab-validation/test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/attachments/01-home-district-38ab0ddc87f0e3c474fb0c2e23b2b8320ab12e76.png"
+                    },
+                    {
+                      "name": "02-food-mart",
+                      "contentType": "image/png",
+                      "path": "/workspace/lab-validation/test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/attachments/02-food-mart-322c7c08d7ac8f3631e7c6f4c3427c11d8b12f80.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/workspace/lab-validation/test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/workspace/lab-validation/test-results/board-the-player-lives-on--ba4fd-and-their-location-is-saved-webkit-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "8e2a3123a0c4552ab20a-4c1966557c3223d4639f",
+          "file": "board.spec.ts",
+          "line": 40,
+          "column": 1
+        },
+        {
+          "title": "lab saves never touch production keys and The Reservoir is spelled right",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7720,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [
+                    {
+                      "text": "Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.\n"
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:01:10.343Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8e2a3123a0c4552ab20a-1b7ab038df3e7ef09534",
+          "file": "board.spec.ts",
+          "line": 130,
+          "column": 1
+        },
+        {
+          "title": "leaving the city mid-walk never locks input: the walk lands and play continues",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 184111,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/workspace/lab-validation/tests/board.spec.ts",
+                        "column": 6,
+                        "line": 157
+                      },
+                      "message": "Error: locator.click: Test timeout of 180000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Places in The Nawf' }).getByRole('button', { name: /Nawf Bodega/ })\u001b[22m\n\n\n  155 |   await places(page, \"The Nawf\")\n  156 |     .getByRole(\"button\", { name: /Nawf Bodega/ })\n> 157 |     .click();\n      |      ^\n  158 |   await page\n  159 |     .getByRole(\"region\", { name: \"Nawf Bodega\" })\n  160 |     .getByRole(\"button\", { name: \"Go here\" })\n    at /workspace/lab-validation/tests/board.spec.ts:157:6"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:01:18.169Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/workspace/lab-validation/test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-webkit-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/workspace/lab-validation/test-results/board-leaving-the-city-mid-bf4be-lk-lands-and-play-continues-webkit-mobile/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "8e2a3123a0c4552ab20a-00e9e0b091f3f0680d11",
+          "file": "board.spec.ts",
+          "line": 143,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "input-guard.spec.ts",
+      "file": "input-guard.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "taps queued while the page is frozen never fire; the next tap does",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8846,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:53:34.039Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68c7fe82ecdbaffeee48-5249c3734b06909292e1",
+          "file": "input-guard.spec.ts",
+          "line": 12,
+          "column": 1
+        },
+        {
+          "title": "taps queued while the page is frozen never fire; the next tap does",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14095,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [
+                    {
+                      "text": "Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.\n"
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:04:26.085Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68c7fe82ecdbaffeee48-37628b0dab24d5c6af78",
+          "file": "input-guard.spec.ts",
+          "line": 12,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "skills-sessions.spec.ts",
+      "file": "skills-sessions.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 38251,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:53:42.914Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d72b9a43f59b31c39ce1-8ae043e34a2b67ba22e2",
+          "file": "skills-sessions.spec.ts",
+          "line": 67,
+          "column": 1
+        },
+        {
+          "title": "Actions gives directions only; Skills and inventory remain readable on iPhone",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5078,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:54:21.183Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d72b9a43f59b31c39ce1-962e8721a07167a6deea",
+          "file": "skills-sessions.spec.ts",
+          "line": 159,
+          "column": 1
+        },
+        {
+          "title": "background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 26358,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:54:26.272Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d72b9a43f59b31c39ce1-6e23394a9030f82bce8f",
+          "file": "skills-sessions.spec.ts",
+          "line": 193,
+          "column": 1
+        },
+        {
+          "title": "WebGL unavailable: physically present accessible session settles the same persisted buyer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 656,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:54:52.648Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d72b9a43f59b31c39ce1-4ac8bd5009b361606983",
+          "file": "skills-sessions.spec.ts",
+          "line": 249,
+          "column": 1
+        },
+        {
+          "title": "City presence, approaching visitor, paid outcomes, mid-session reload, and repeat session",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 32680,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"south.the-lot\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n\nCall Log:\n- Timeout 20000ms exceeded while waiting on the predicate",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"south.the-lot\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n\nCall Log:\n- Timeout 20000ms exceeded while waiting on the predicate\n    at /workspace/lab-validation/tests/skills-sessions.spec.ts:92:6",
+                    "location": {
+                      "file": "/workspace/lab-validation/tests/skills-sessions.spec.ts",
+                      "column": 6,
+                      "line": 92
+                    },
+                    "snippet": "  90 |       { timeout: 20000 },\n  91 |     )\n> 92 |     .toBe(\"south.the-lot\");\n     |      ^\n  93 |   await dismissEncounter(page);\n  94 |   await expect(start).toBeEnabled({ timeout: 15000 });\n  95 |   const before = await state(page);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/workspace/lab-validation/tests/skills-sessions.spec.ts",
+                        "column": 6,
+                        "line": 92
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"south.the-lot\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n\nCall Log:\n- Timeout 20000ms exceeded while waiting on the predicate\n\n  90 |       { timeout: 20000 },\n  91 |     )\n> 92 |     .toBe(\"south.the-lot\");\n     |      ^\n  93 |   await dismissEncounter(page);\n  94 |   await expect(start).toBeEnabled({ timeout: 15000 });\n  95 |   const before = await state(page);\n    at /workspace/lab-validation/tests/skills-sessions.spec.ts:92:6"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:04:40.286Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/workspace/lab-validation/test-results/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/workspace/lab-validation/test-results/skills-sessions-City-prese-1dfee-n-reload-and-repeat-session-webkit-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/workspace/lab-validation/tests/skills-sessions.spec.ts",
+                    "column": 6,
+                    "line": 92
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d72b9a43f59b31c39ce1-71e5ef07ba30f1413ad6",
+          "file": "skills-sessions.spec.ts",
+          "line": 67,
+          "column": 1
+        },
+        {
+          "title": "Actions gives directions only; Skills and inventory remain readable on iPhone",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9343,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [
+                    {
+                      "text": "Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.\n"
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:05:14.346Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d72b9a43f59b31c39ce1-2b34360f76884378edc1",
+          "file": "skills-sessions.spec.ts",
+          "line": 159,
+          "column": 1
+        },
+        {
+          "title": "background, menu unmount, stale/double touches, reduced motion and End Day cannot duplicate outcomes",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 32920,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate\n    at /workspace/lab-validation/tests/skills-sessions.spec.ts:241:6",
+                    "location": {
+                      "file": "/workspace/lab-validation/tests/skills-sessions.spec.ts",
+                      "column": 6,
+                      "line": 241
+                    },
+                    "snippet": "  239 |   await expect\n  240 |     .poll(async () => (await state(page)).activeSession.cursor)\n> 241 |     .toBe(expectedCursor);\n      |      ^\n  242 |   await page.getByRole(\"button\", { name: \"End day\", exact: true }).click();\n  243 |   await expect\n  244 |     .poll(async () => (await state(page)).activeSession.status)"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/workspace/lab-validation/tests/skills-sessions.spec.ts",
+                        "column": 6,
+                        "line": 241
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate\n\n  239 |   await expect\n  240 |     .poll(async () => (await state(page)).activeSession.cursor)\n> 241 |     .toBe(expectedCursor);\n      |      ^\n  242 |   await page.getByRole(\"button\", { name: \"End day\", exact: true }).click();\n  243 |   await expect\n  244 |     .poll(async () => (await state(page)).activeSession.status)\n    at /workspace/lab-validation/tests/skills-sessions.spec.ts:241:6"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:05:23.784Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/workspace/lab-validation/test-results/skills-sessions-background-3b3d0-y-cannot-duplicate-outcomes-webkit-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/workspace/lab-validation/test-results/skills-sessions-background-3b3d0-y-cannot-duplicate-outcomes-webkit-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/workspace/lab-validation/tests/skills-sessions.spec.ts",
+                    "column": 6,
+                    "line": 241
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d72b9a43f59b31c39ce1-478f3e2c2f588cbf354b",
+          "file": "skills-sessions.spec.ts",
+          "line": 193,
+          "column": 1
+        },
+        {
+          "title": "WebGL unavailable: physically present accessible session settles the same persisted buyer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1183,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [
+                    {
+                      "text": "Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.\n"
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:05:58.327Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d72b9a43f59b31c39ce1-bb3643bf131d4a6e7bb5",
+          "file": "skills-sessions.spec.ts",
+          "line": 249,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "street.spec.ts",
+      "file": "street.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "supplier to inventory to multiple real sales and repayment through normal mobile controls",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 84968,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "JOURNEY {\"engine\":\"chromium-mobile\",\"day\":3,\"cash\":{\"clean\":0,\"illicit\":247},\"lot\":{\"id\":\"lot-3\",\"category\":\"nightgoods\",\"owner\":\"player\",\"supplier\":\"mega\",\"zone\":\"south\",\"received\":6,\"remaining\":0,\"lost\":0,\"cost\":102,\"expectedGross\":282,\"collected\":278,\"owed\":0,\"paid\":102,\"losses\":18,\"crewPaid\":0,\"dueDay\":7,\"acquiredDay\":1,\"arrangement\":\"consignment\",\"status\":\"settled\",\"agreementId\":\"agreement-6\"},\"transactions\":[{\"id\":\"transaction-52\",\"sessionId\":\"session-49\",\"sessionCursor\":0,\"day\":2,\"lotId\":\"lot-3\",\"market\":\"south\",\"actor\":\"player\",\"sold\":1,\"lost\":0,\"gross\":47,\"loss\":0,\"crewPaid\":0,\"crewLoss\":0,\"outcome\":\"sale\",\"eventId\":\"event-51\"},{\"id\":\"transaction-55\",\"sessionId\":\"session-49\",\"sessionCursor\":2,\"day\":2,\"lotId\":\"lot-3\",\"market\":\"south\",\"actor\":\"player\",\"sold\":1,\"lost\":0,\"gross\":47,\"loss\":0,\"crewPaid\":0,\"crewLoss\":0,\"outcome\":\"sale\",\"eventId\":\"event-54\"},{\"id\":\"transaction-58\",\"sessionId\":\"session-49\",\"sessionCursor\":3,\"day\":2,\"lotId\":\"lot-3\",\"market\":\"south\",\"actor\":\"player\",\"sold\":1,\"lost\":0,\"gross\":47,\"loss\":0,\"crewPaid\":0,\"crewLoss\":0,\"outcome\":\"sale\",\"eventId\":\"event-57\"},{\"id\":\"transaction-61\",\"sessionId\":\"session-49\",\"sessionCursor\":4,\"day\":2,\"lotId\":\"lot-3\",\"market\":\"south\",\"actor\":\"player\",\"sold\":0,\"lost\":0,\"gross\":0,\"loss\":18,\"crewPaid\":0,\"crewLoss\":0,\"outcome\":\"money-loss\",\"eventId\":\"event-60\"},{\"id\":\"transaction-68\",\"sessionId\":\"session-64\",\"sessionCursor\":1,\"day\":2,\"lotId\":\"lot-3\",\"market\":\"south\",\"actor\":\"player\",\"sold\":1,\"lost\":0,\"gross\":46,\"loss\":0,\"crewPaid\":0,\"crewLoss\":0,\"outcome\":\"sale\",\"eventId\":\"event-67\"},{\"id\":\"transaction-71\",\"sessionId\":\"session-64\",\"sessionCursor\":2,\"day\":2,\"lotId\":\"lot-3\",\"market\":\"south\",\"actor\":\"player\",\"sold\":1,\"lost\":0,\"gross\":46,\"loss\":0,\"crewPaid\":0,\"crewLoss\":0,\"outcome\":\"sale\",\"eventId\":\"event-70\"},{\"id\":\"transaction-122\",\"sessionId\":\"session-119\",\"sessionCursor\":1,\"day\":3,\"lotId\":\"lot-3\",\"market\":\"south\",\"actor\":\"player\",\"sold\":1,\"lost\":0,\"gross\":45,\"loss\":0,\"crewPaid\":0,\"crewLoss\":0,\"outcome\":\"sale\",\"eventId\":\"event-121\"}],\"agreement\":{\"id\":\"agreement-6\",\"lotId\":\"lot-3\",\"supplier\":\"mega\",\"debtor\":\"player\",\"original\":102,\"repaid\":102,\"balance\":0,\"dueDay\":7,\"status\":\"fulfilled\",\"commitmentId\":\"commitment-5\",\"history\":[\"event-4\",\"event-51\",\"event-54\",\"event-57\",\"event-60\",\"event-67\",\"event-70\",\"event-121\",\"event-126\"]}}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:54:53.329Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-c7fb276cdd8b279f2859",
+          "file": "street.spec.ts",
+          "line": 143,
+          "column": 1
+        },
+        {
+          "title": "seeded real-play arrest serves every day and releases into continued gameplay",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6642,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'In custody', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: 'In custody', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'In custody', exact: true })\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'In custody', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: 'In custody', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'In custody', exact: true })\u001b[22m\n\n    at /workspace/lab-validation/tests/street.spec.ts:253:5",
+                    "location": {
+                      "file": "/workspace/lab-validation/tests/street.spec.ts",
+                      "column": 5,
+                      "line": 253
+                    },
+                    "snippet": "  251 |   await expect(\n  252 |     page.getByRole(\"heading\", { name: \"In custody\", exact: true }),\n> 253 |   ).toBeVisible();\n      |     ^\n  254 |   await snap(page, \"08-arrest-and-incarceration\");\n  255 |   const before = await state(page);\n  256 |   await page.getByRole(\"button\", { name: \"Serve remaining sentence\" }).click();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/workspace/lab-validation/tests/street.spec.ts",
+                        "column": 5,
+                        "line": 253
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'In custody', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: 'In custody', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'In custody', exact: true })\u001b[22m\n\n\n  251 |   await expect(\n  252 |     page.getByRole(\"heading\", { name: \"In custody\", exact: true }),\n> 253 |   ).toBeVisible();\n      |     ^\n  254 |   await snap(page, \"08-arrest-and-incarceration\");\n  255 |   const before = await state(page);\n  256 |   await page.getByRole(\"button\", { name: \"Serve remaining sentence\" }).click();\n    at /workspace/lab-validation/tests/street.spec.ts:253:5"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:56:18.313Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/workspace/lab-validation/test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-chromium-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/workspace/lab-validation/test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-chromium-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/workspace/lab-validation/tests/street.spec.ts",
+                    "column": 5,
+                    "line": 253
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-eb685ec6be4a0fc88eee",
+          "file": "street.spec.ts",
+          "line": 246,
+          "column": 1
+        },
+        {
+          "title": "default reaction and accumulated heat are rendered from real simulated consequences",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8841,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [
+                    {
+                      "text": "Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.\n"
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:56:26.213Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-711eafa972279c984256",
+          "file": "street.spec.ts",
+          "line": 297,
+          "column": 1
+        },
+        {
+          "title": "crew-assisted street work uses an earned willing partner and actual inventory",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4378,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:56:35.133Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-827d684ae1348bd774b3",
+          "file": "street.spec.ts",
+          "line": 317,
+          "column": 1
+        },
+        {
+          "title": "street inventory and supplier modal fit 320px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6453,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:56:39.521Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-5330cbc18d3728bb03f7",
+          "file": "street.spec.ts",
+          "line": 334,
+          "column": 3
+        },
+        {
+          "title": "street inventory and supplier modal fit 375px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6790,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:56:45.988Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-de51d3cec9e983acae3e",
+          "file": "street.spec.ts",
+          "line": 334,
+          "column": 3
+        },
+        {
+          "title": "street inventory and supplier modal fit 390px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7678,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:56:52.789Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-ec990796415520bde3dd",
+          "file": "street.spec.ts",
+          "line": 334,
+          "column": 3
+        },
+        {
+          "title": "street inventory and supplier modal fit 430px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium-mobile",
+              "projectName": "chromium-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6887,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T06:57:00.481Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-b9fcaf38428e37bf9cd5",
+          "file": "street.spec.ts",
+          "line": 334,
+          "column": 3
+        },
+        {
+          "title": "supplier to inventory to multiple real sales and repayment through normal mobile controls",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 14967,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Character encounter' })\nExpected substring: \u001b[32m\"before supplier cost\"\u001b[39m\nReceived string:    \u001b[31m\"A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, I'll put my name behind one small lot. Don't make me chase you. 6 Pink Magic: $90 cash now, or $102 on consignment by the end of day 7. Expected gross here is $282 if it all sells. Buyers aren't promised. Police and local organizations are watching.”Accept cash purchase · $90 · 1 AP6 units · ownership transfers; no supplier debtAccept consignment · $102 due day 7 · 1 AP6 units · personal repayment obligation, including lossesExplain the terms and risk.Conversation · No APDecline. No arrangement.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter' })\u001b[22m\n\u001b[2m    12 × locator resolved to <dialog open=\"\" class=\"encounter-modal\" aria-label=\"Character encounter\">…</dialog>\u001b[22m\n\u001b[2m       - unexpected value \"A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, I'll put my name behind one small lot. Don't make me chase you. 6 Pink Magic: $90 cash now, or $102 on consignment by the end of day 7. Expected gross here is $282 if it all sells. Buyers aren't promised. Police and local organizations are watching.”Accept cash purchase · $90 · 1 AP6 units · ownership transfers; no supplier debtAccept consignment · $102 due day 7 · 1 AP6 units · personal repayment obligation, including lossesExplain the terms and risk.Conversation · No APDecline. No arrangement.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Character encounter' })\nExpected substring: \u001b[32m\"before supplier cost\"\u001b[39m\nReceived string:    \u001b[31m\"A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, I'll put my name behind one small lot. Don't make me chase you. 6 Pink Magic: $90 cash now, or $102 on consignment by the end of day 7. Expected gross here is $282 if it all sells. Buyers aren't promised. Police and local organizations are watching.”Accept cash purchase · $90 · 1 AP6 units · ownership transfers; no supplier debtAccept consignment · $102 due day 7 · 1 AP6 units · personal repayment obligation, including lossesExplain the terms and risk.Conversation · No APDecline. No arrangement.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter' })\u001b[22m\n\u001b[2m    12 × locator resolved to <dialog open=\"\" class=\"encounter-modal\" aria-label=\"Character encounter\">…</dialog>\u001b[22m\n\u001b[2m       - unexpected value \"A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, I'll put my name behind one small lot. Don't make me chase you. 6 Pink Magic: $90 cash now, or $102 on consignment by the end of day 7. Expected gross here is $282 if it all sells. Buyers aren't promised. Police and local organizations are watching.”Accept cash purchase · $90 · 1 AP6 units · ownership transfers; no supplier debtAccept consignment · $102 due day 7 · 1 AP6 units · personal repayment obligation, including lossesExplain the terms and risk.Conversation · No APDecline. No arrangement.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[22m\n\n    at /workspace/lab-validation/tests/street.spec.ts:168:23",
+                    "location": {
+                      "file": "/workspace/lab-validation/tests/street.spec.ts",
+                      "column": 23,
+                      "line": 168
+                    },
+                    "snippet": "  166 |     .getByRole(\"button\", { name: \"Explain the terms and risk.\" })\n  167 |     .click();\n> 168 |   await expect(modal).toContainText(\"before supplier cost\");\n      |                       ^\n  169 |   await snap(page, \"01-supplier-terms\");\n  170 |   await modal.getByRole(\"button\", { name: /Accept consignment/ }).click();\n  171 |   expect((await state(page)).street.lots[0].remaining).toBe(6);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/workspace/lab-validation/tests/street.spec.ts",
+                        "column": 23,
+                        "line": 168
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Character encounter' })\nExpected substring: \u001b[32m\"before supplier cost\"\u001b[39m\nReceived string:    \u001b[31m\"A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, I'll put my name behind one small lot. Don't make me chase you. 6 Pink Magic: $90 cash now, or $102 on consignment by the end of day 7. Expected gross here is $282 if it all sells. Buyers aren't promised. Police and local organizations are watching.”Accept cash purchase · $90 · 1 AP6 units · ownership transfers; no supplier debtAccept consignment · $102 due day 7 · 1 AP6 units · personal repayment obligation, including lossesExplain the terms and risk.Conversation · No APDecline. No arrangement.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('dialog', { name: 'Character encounter' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter' })\u001b[22m\n\u001b[2m    12 × locator resolved to <dialog open=\"\" class=\"encounter-modal\" aria-label=\"Character encounter\">…</dialog>\u001b[22m\n\u001b[2m       - unexpected value \"A CONVERSATION IN THE CITYClose ×Back StreetMega / Cuzzo“Cuzzo, I'll put my name behind one small lot. Don't make me chase you. 6 Pink Magic: $90 cash now, or $102 on consignment by the end of day 7. Expected gross here is $282 if it all sells. Buyers aren't promised. Police and local organizations are watching.”Accept cash purchase · $90 · 1 AP6 units · ownership transfers; no supplier debtAccept consignment · $102 due day 7 · 1 AP6 units · personal repayment obligation, including lossesExplain the terms and risk.Conversation · No APDecline. No arrangement.Conversation · No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[22m\n\n\n  166 |     .getByRole(\"button\", { name: \"Explain the terms and risk.\" })\n  167 |     .click();\n> 168 |   await expect(modal).toContainText(\"before supplier cost\");\n      |                       ^\n  169 |   await snap(page, \"01-supplier-terms\");\n  170 |   await modal.getByRole(\"button\", { name: /Accept consignment/ }).click();\n  171 |   expect((await state(page)).street.lots[0].remaining).toBe(6);\n    at /workspace/lab-validation/tests/street.spec.ts:168:23"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:05:59.625Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/workspace/lab-validation/test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/workspace/lab-validation/test-results/street-supplier-to-invento-f1fef-ough-normal-mobile-controls-webkit-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/workspace/lab-validation/tests/street.spec.ts",
+                    "column": 23,
+                    "line": 168
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-eadac5b17b547a1b79ba",
+          "file": "street.spec.ts",
+          "line": 143,
+          "column": 1
+        },
+        {
+          "title": "seeded real-play arrest serves every day and releases into continued gameplay",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 8514,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'In custody', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: 'In custody', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'In custody', exact: true })\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'In custody', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: 'In custody', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'In custody', exact: true })\u001b[22m\n\n    at /workspace/lab-validation/tests/street.spec.ts:253:5",
+                    "location": {
+                      "file": "/workspace/lab-validation/tests/street.spec.ts",
+                      "column": 5,
+                      "line": 253
+                    },
+                    "snippet": "  251 |   await expect(\n  252 |     page.getByRole(\"heading\", { name: \"In custody\", exact: true }),\n> 253 |   ).toBeVisible();\n      |     ^\n  254 |   await snap(page, \"08-arrest-and-incarceration\");\n  255 |   const before = await state(page);\n  256 |   await page.getByRole(\"button\", { name: \"Serve remaining sentence\" }).click();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/workspace/lab-validation/tests/street.spec.ts",
+                        "column": 5,
+                        "line": 253
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'In custody', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: 'In custody', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'In custody', exact: true })\u001b[22m\n\n\n  251 |   await expect(\n  252 |     page.getByRole(\"heading\", { name: \"In custody\", exact: true }),\n> 253 |   ).toBeVisible();\n      |     ^\n  254 |   await snap(page, \"08-arrest-and-incarceration\");\n  255 |   const before = await state(page);\n  256 |   await page.getByRole(\"button\", { name: \"Serve remaining sentence\" }).click();\n    at /workspace/lab-validation/tests/street.spec.ts:253:5"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [
+                    {
+                      "text": "Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.\n"
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:06:15.886Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/workspace/lab-validation/test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-webkit-mobile/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/workspace/lab-validation/test-results/street-seeded-real-play-ar-27862-ses-into-continued-gameplay-webkit-mobile/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/workspace/lab-validation/tests/street.spec.ts",
+                    "column": 5,
+                    "line": 253
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-f6dac0f8eea8f6fb80fb",
+          "file": "street.spec.ts",
+          "line": 246,
+          "column": 1
+        },
+        {
+          "title": "default reaction and accumulated heat are rendered from real simulated consequences",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13584,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [
+                    {
+                      "text": "Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.\n"
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:06:25.689Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-5a5b08f0a6a8986ac77c",
+          "file": "street.spec.ts",
+          "line": 297,
+          "column": 1
+        },
+        {
+          "title": "crew-assisted street work uses an earned willing partner and actual inventory",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8975,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:06:39.376Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-6ec19e5254071c26c1e1",
+          "file": "street.spec.ts",
+          "line": 317,
+          "column": 1
+        },
+        {
+          "title": "street inventory and supplier modal fit 320px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9255,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:06:48.366Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-a94197cb1ab958b33826",
+          "file": "street.spec.ts",
+          "line": 334,
+          "column": 3
+        },
+        {
+          "title": "street inventory and supplier modal fit 375px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10704,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:06:57.639Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-5e264abad156d1f3e80f",
+          "file": "street.spec.ts",
+          "line": 334,
+          "column": 3
+        },
+        {
+          "title": "street inventory and supplier modal fit 390px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12282,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:07:08.354Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-8cb43e1522800d3aa1cd",
+          "file": "street.spec.ts",
+          "line": 334,
+          "column": 3
+        },
+        {
+          "title": "street inventory and supplier modal fit 430px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit-mobile",
+              "projectName": "webkit-mobile",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10879,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-05T07:07:20.649Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "793f901dfe63fbe0e071-60ee6d8aa3ef77fe4423",
+          "file": "street.spec.ts",
+          "line": 334,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-05T06:52:26.589Z",
+    "duration": 905153.1089999999,
+    "expected": 25,
+    "skipped": 0,
+    "unexpected": 7,
+    "flaky": 0
+  }
+}

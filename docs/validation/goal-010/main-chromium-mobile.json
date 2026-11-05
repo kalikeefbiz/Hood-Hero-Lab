@@ -1,0 +1,156 @@
+[
+  {
+    "engine": "chromium-mobile",
+    "name": "corrections.spec.ts >> known suspects and leaders need real introductions; access and inventory survive reload",
+    "status": "passed",
+    "duration_ms": 29557,
+    "error": ""
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "employment.spec.ts >> hire, scheduled wages, save and a thirty-day employment playthrough",
+    "status": "timedOut",
+    "duration_ms": 186319,
+    "error": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "employment.spec.ts >> absence warning can be cancelled; repeated absences fire and gigs survive cooldown",
+    "status": "timedOut",
+    "duration_ms": 33244,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "encounters.spec.ts >> true City modal, sequential questions, promise closure, queued fulfillment, history and Resume",
+    "status": "failed",
+    "duration_ms": 16591,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Character encounter', exact: true })\nExpected substring: \u001b[32m\"This wasn\u2019t authorized\"\u001b[39m\nReceived string:    \u001b[31m\"A CONVERSATION IN THE CITYClose \u00d7Back StreetMega / Cuzzo\u201cCuzzo, three young Angels took my diamond chain while I was out with my girl. I\u2019m alright. They want $150 to give it back. Can you help me get it home?\u201dI\u2019ll help you get it back. I give you my word.Conversation \u00b7 No APTell me what happened. Who was involved?Conversation \u00b7 No API can\u2019t get involved in this.Conversation \u00b7 No APLet me think. I\u2019m not promising yet.Conversation \u00b7 No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to <dialog open=\"\" class=\"encounter-modal\" aria-label=\"Character encounter\">\u2026</dialog>\u001b[22m\n\u001b[2m       - unexpected value \"A CONVERSATION IN THE CITYClose \u00d7Back StreetMega / Cuzzo\u201cCuzzo, three young Angels took my diamond chain while I was out with my girl. I\u2019m alright. They want $150 to give it back. Can you help me get it home?\u201dI\u2019ll help you get it back. I give you my word.Conversation \u00b7 No APTell me what happened. Who was involved?Conversation \u00b7 No API can\u2019t get involved in this.Conversation \u00b7 No APLet me think. I\u2019m not promising yet.Conversation \u00b7 No APClosing makes no new promise. Unfinished conversations can be resumed from City.\"\u001b[22m\n"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "encounters.spec.ts >> refusing, postponing, Escape and backdrop leave no accidental obligation or daily reopening",
+    "status": "failed",
+    "duration_ms": 21061,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.day-transition')\nExpected substring: \u001b[32m\"DAY 02\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" locator('.day-transition') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.day-transition')\u001b[22m\n"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "encounters.spec.ts >> 40 days after fulfilled: one storyline reaction while independent offers continue",
+    "status": "failed",
+    "duration_ms": 141156,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('dialog', { name: 'Character encounter', exact: true })\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31m1\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })\u001b[22m\n\u001b[2m    11 \u00d7 locator resolved to 1 element\u001b[22m\n\u001b[2m       - unexpected value \"1\"\u001b[22m\n"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "encounters.spec.ts >> 40 days after broken: one storyline reaction while independent offers continue",
+    "status": "failed",
+    "duration_ms": 64115,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Character encounter', exact: true })\nExpected substring: \u001b[32m\"I\u2019m not forgetting it\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('dialog', { name: 'Character encounter', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter', exact: true })\u001b[22m\n"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "encounters.spec.ts >> activity preserves chronology, true faction IDs, severity, private knowledge and routine detail",
+    "status": "passed",
+    "duration_ms": 3193,
+    "error": ""
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "encounters.spec.ts >> all homes and affiliation themes retain the City-only modal and normal navigation",
+    "status": "timedOut",
+    "duration_ms": 32178,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "mobile.spec.ts >> phone gameplay: contact, lawful income, days, save and load",
+    "status": "passed",
+    "duration_ms": 27772,
+    "error": ""
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "mobile.spec.ts >> buyback resolves the incident and the ordinary loop remains playable",
+    "status": "timedOut",
+    "duration_ms": 34471,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "overhaul.spec.ts >> all approved scenes load; every home starts independent and map selection cannot change affiliation",
+    "status": "failed",
+    "duration_ms": 27980,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.zone-details h3')\nExpected: \u001b[32m\"The Reservoir\"\u001b[39m\nReceived: \u001b[31m\"Southside\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" locator('.zone-details h3') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.zone-details h3')\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to <h3>Southside</h3>\u001b[22m\n\u001b[2m       - unexpected value \"Southside\"\u001b[22m\n"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "overhaul.spec.ts >> valid sponsored blips membership keeps the shell neutral and survives checkpoint reload",
+    "status": "passed",
+    "duration_ms": 17699,
+    "error": ""
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "overhaul.spec.ts >> all destinations fit 320/375/390/430 and desktop, including long names and every dock target",
+    "status": "timedOut",
+    "duration_ms": 31799,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "overhaul.spec.ts >> directional trust, witnessed events, activity filters and day grouping preserve visibility",
+    "status": "passed",
+    "duration_ms": 8894,
+    "error": ""
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "overhaul.spec.ts >> negotiated demand comes from state; ended and damaged saves remain inspectable and safe",
+    "status": "passed",
+    "duration_ms": 23543,
+    "error": ""
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "quanny.spec.ts >> intentional board visit introduces Quanny once, fronts physical stock and persists on reload",
+    "status": "passed",
+    "duration_ms": 30927,
+    "error": ""
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "quanny.spec.ts >> board collection at notoriety 34 records the correct permanent outcome",
+    "status": "passed",
+    "duration_ms": 25383,
+    "error": ""
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "quanny.spec.ts >> Angels first-contact shooting uses hospital presentation and persists its nonfatal outcome",
+    "status": "failed",
+    "duration_ms": 12397,
+    "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')\nExpected pattern: \u001b[32m/quanny-disappointed[.]webp$/\u001b[39m\nReceived string:  \u001b[31m\"/assets/characters/quanny/quanny-neutral.webp\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Character encounter' }).locator('.character-portrait img')\u001b[22m\n\u001b[2m    7 \u00d7 locator resolved to <img width=\"370\" height=\"581\" loading=\"lazy\" decoding=\"async\" alt=\"Quanny, neutral\" src=\"/assets/characters/quanny/quanny-neutral.webp\"/>\u001b[22m\n\u001b[2m      - unexpected value \"/assets/characters/quanny/quanny-neutral.webp\"\u001b[22m\n"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "strategy.spec.ts >> actual local investment, contested map, autonomous decisions and persisted continuation",
+    "status": "timedOut",
+    "duration_ms": 33063,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "strategy.spec.ts >> earned affiliation authority restriction and advancement use existing sponsorship",
+    "status": "timedOut",
+    "duration_ms": 32217,
+    "error": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+  },
+  {
+    "engine": "chromium-mobile",
+    "name": "visual-correction.spec.ts >> GOAL 002B mandatory visual review: new run, independent and Blips at 390",
+    "status": "passed",
+    "duration_ms": 19988,
+    "error": ""
+  }
+]

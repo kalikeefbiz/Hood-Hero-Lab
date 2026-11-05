@@ -1,3 +1,4 @@
+import { skillsOf } from "./Skills";
 /** Directional consignment uses the same merchandise, agreement, commitment and ledger model. */
 import { type GameState, player, cash } from "../core/GameState";
 import { record } from "../core/EventLog";
@@ -76,7 +77,7 @@ export function frontMerchandise(
   const e = record(
     s,
     "money",
-    `Quanny: “I can make some happen but I need a front.” You transferred ${quantity} night goods. Quanny owes you $${amount}, collectible day ${dueDay}. No money paid up front. ${quannyCollectionInstruction(s, dueDay)}`,
+    `Quanny: “I can make some happen but I need a front.” You transferred ${quantity} Pink Magic. Quanny owes you $${amount}, collectible day ${dueDay}. No money paid up front. ${quannyCollectionInstruction(s, dueDay)}`,
     ["quanny", s.playerId],
     undefined,
     { title: "Merchandise fronted", importance: "major", commitmentId },
@@ -158,6 +159,9 @@ export function collectConsignment(s: GameState, debtor: string) {
     if (!lot.remaining) lot.status = "settled";
     c.status = "fulfilled";
     change(n, p.id, { trust: 4, respect: 3 });
+    const progress = skillsOf(n);
+    progress.milestones.supplierPaid = 1;
+    if ((p.relationships[n.id]?.trust ?? 0) >= 30) progress.milestones.supplierCredible = 1;
   } else {
     s.characters[debtor].wallet.illicit += a.reserve ?? 0;
     a.reserve = 0;

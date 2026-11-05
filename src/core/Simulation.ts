@@ -1,3 +1,5 @@
+import { skillsOf } from "../systems/Skills";
+import { equipmentOf } from "../systems/Equipment";
 import { beginQuanny } from "../systems/Quanny";
 import { presenceOf } from "../board/presence";
 import { newQuannyState } from "../systems/QuannyState";
@@ -31,7 +33,7 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
     },
   );
   const s: GameState = {
-    version: 8,
+    version: 9,
     quanny: newQuannyState(),
     danger: newDangerState(seed),
     strategic: newStrategy({ zones: ZONES, factions: FACTIONS }),
@@ -72,6 +74,7 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
     end: null,
   };
   for (const z of Object.values(s.zones)) syncTerritory(s, z.id);
+  for (const c of Object.values(s.characters)) { skillsOf(c); equipmentOf(c); }
   initializeRelationships(s);
   openingIncident(s);
   syncEncounters(s);

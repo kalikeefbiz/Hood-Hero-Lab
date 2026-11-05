@@ -1,3 +1,4 @@
+import { proficiency } from "./Skills";
 import { type GameState } from "../core/GameState";
 import { availability } from "./CrewAgency";
 // Cooperation follows actual ties and loyalties, never a neighborhood penalty.
@@ -28,6 +29,6 @@ export function recoverySupport(
             s.factions[c.affiliation].enemies.includes(other.affiliation)
           )),
     );
-    return bonus + (c.skills.recovery / 1000) * (conflict ? 0.5 : 1);
+    return bonus + (proficiency(c, "combat") / 1000) * (conflict ? 0.5 : 1);
   }, 0);
 }

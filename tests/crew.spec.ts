@@ -1,4 +1,4 @@
-import { honest, connects, storyline, storyAction } from "./helpers";
+import { honest, connects, storyline, storyAction, navigate } from "./helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { dismissEncounter } from "./helpers";
 const key = "blackhouse.hoodhero-lab.v1.auto";
@@ -6,13 +6,10 @@ async function state(page: Page) {
   return page.evaluate((k) => JSON.parse(localStorage.getItem(k)!).state, key);
 }
 async function nav(page: Page, name: string) {
-  await page
-    .getByRole("navigation")
-    .getByRole("button", { name, exact: true })
-    .click();
-  if (name === "Actions")
-    await page.getByRole("button", { name: "Honest", exact: true }).click();
+  await navigate(page, name);
+  if (name === "Actions") await honest(page);
 }
+
 async function start(page: Page) {
   await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
   await page.getByLabel("What do people call you?").fill("Test(5)");

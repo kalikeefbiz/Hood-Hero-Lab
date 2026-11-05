@@ -41,8 +41,8 @@ async function verifyBuild(page: Page) {
     const r = await page.request.get(`${base}build-info.json?v=${Date.now()}`);
     const b = await r.json();
     expect(b.commit).toBe(process.env.PLAYWRIGHT_EXPECTED_COMMIT);
-    expect(b.milestone).toBe("GOAL 007");
-    expect(b.saveSchema).toBe(8);
+    expect(b.milestone).toBe("GOAL 010");
+    expect(b.saveSchema).toBe(9);
   }
 }
 test.beforeEach(async ({ page }) => verifyBuild(page));

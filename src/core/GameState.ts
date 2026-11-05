@@ -31,6 +31,8 @@ export interface Character {
   availableDay: number;
   lastActionDay: number;
   traits: { loyalty: number; ambition: number; risk: number; lawful: number };
+  skillProgress?: import("../systems/Skills").SkillProgress;
+  equipment?: import("../systems/Equipment").Equipment;
   skills: { social: number; work: number; recovery: number };
   agency: {
     lastAssignmentDay: number;
@@ -217,7 +219,8 @@ export interface GameState {
   quanny: import("../systems/QuannyState").QuannyState;
   danger: import("../systems/DangerState").DangerState;
   presence?: import("../board/presence").Presence;
-  version: 8;
+  version: 8 | 9;
+  activeSession?: import("../systems/StreetSessions").StreetSession;
   strategic: import("../systems/StrategicTypes").StrategicState;
   street: import("../systems/StreetTypes").StreetState;
   assignments: CrewAssignment[];

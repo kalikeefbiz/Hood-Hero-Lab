@@ -1,0 +1,10 @@
+[
+  {
+    "engine": "chromium-mobile",
+    "name": "street.spec.ts >> supplier to inventory to multiple real sales and repayment through normal mobile controls",
+    "status": "failed",
+    "duration_ms": 93459,
+    "error": "Error: Test timeout of 90000ms exceeded",
+    "source_log": "retry-chromium-mobile.log"
+  }
+]

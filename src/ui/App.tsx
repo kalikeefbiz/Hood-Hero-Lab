@@ -1,3 +1,7 @@
+import { endStreetSession } from "../systems/StreetSessions";
+import { StreetSessionStart, StreetSessionPlayback } from "./StreetSession";
+import { SKILLS, skillRank } from "../systems/Skills";
+import { SkillsView } from "./SkillsView";
 import { KnownCharacterLocation } from "./KnownCharacterLocation";
 import { hospitalStay, streetConversation } from "../systems/Danger";
 import {
@@ -94,7 +98,6 @@ const LOCATIONS_BY_INCIDENT: Record<string, string> = Object.fromEntries(
     l.id,
   ]),
 );
-import { StreetWork } from "./StreetWork";
 import { useMemo, useRef } from "react";
 import { NewRun } from "./NewRun";
 import { GameHUD } from "./GameHUD";
@@ -269,6 +272,10 @@ export function App() {
         setNotice((e as Error).message);
       }
   }, [s]);
+  useEffect(() => {
+    if (s && (s.end || hospitalStay(s) || player(s).status === "arrested"))
+      setPanelOpen(true);
+  }, [s]);
   function start() {
     window.scrollTo(0, 0);
     setActionFeedback(null);
@@ -289,9 +296,24 @@ export function App() {
       const next = saved && enterGameplay(saved);
       if (next) {
         window.scrollTo(0, 0);
+        if (next.activeSession?.status === "active")
+          next.activeSession.status = "paused";
+        setPanelOpen(
+          !next.activeSession || next.activeSession.status === "ended",
+        );
         setState(next);
         setSelected(player(next).home);
-        setBoard({ zone: player(next).home, block: null, place: null });
+        setBoard({
+          zone:
+            next.activeSession?.status !== "ended"
+              ? (next.activeSession?.zone ?? player(next).home)
+              : player(next).home,
+          block: null,
+          place:
+            next.activeSession?.status !== "ended"
+              ? (next.activeSession?.location ?? null)
+              : null,
+        });
         setScreen("City");
         setHistoryEncounterId(null);
         setNotice(`Loaded day ${next.day}.`);
@@ -525,6 +547,20 @@ export function App() {
   /** The player walks to the place first, then the existing action runs. */
   async function actAt(a: Action, placeId: string) {
     if (busy || !s || s.end || hospitalStay(s) || streetConversation(s)) return;
+    if (
+      s.activeSession &&
+      s.activeSession.status !== "ended" &&
+      placeId !== presenceOf(s).location
+    )
+      setState((cur) =>
+        cur?.activeSession
+          ? endStreetSession(
+              cur,
+              cur.activeSession.id,
+              "Left the spot. Unresolved visitors cancelled.",
+            )
+          : cur,
+      );
     setBusy(true);
     try {
       await walkTo(placeId);
@@ -535,6 +571,20 @@ export function App() {
   }
   async function goHere(placeId: string) {
     if (busy || !s || s.end || hospitalStay(s) || streetConversation(s)) return;
+    if (
+      s.activeSession &&
+      s.activeSession.status !== "ended" &&
+      placeId !== presenceOf(s).location
+    )
+      setState((cur) =>
+        cur?.activeSession
+          ? endStreetSession(
+              cur,
+              cur.activeSession.id,
+              "Left the spot. Unresolved visitors cancelled.",
+            )
+          : cur,
+      );
     setBusy(true);
     try {
       await walkTo(placeId);
@@ -705,6 +755,20 @@ export function App() {
           insets={insets}
           onInteract={() => screen !== "City" && setScreen("City")}
           paused={screen !== "City"}
+          sessionVisitor={
+            screen === "City" && s.activeSession?.status === "active"
+              ? {
+                  id: `${s.activeSession.id}:${s.activeSession.cursor}`,
+                  location: s.activeSession.location,
+                  duration:
+                    s.activeSession.beats[s.activeSession.cursor]?.duration ??
+                    7200,
+                  kind:
+                    s.activeSession.beats[s.activeSession.cursor]?.kind ??
+                    "pass",
+                }
+              : null
+          }
           people={people}
           personId={personId}
           onPerson={(id) => {
@@ -783,7 +847,7 @@ export function App() {
               {toast}
             </div>
           )}
-          {screen === "City" && !presented && (
+          {screen === "City" && !presented && !s.activeSession && (
             <div className="board-story-strip">
               {activeStory && (
                 <button
@@ -841,7 +905,7 @@ export function App() {
             moved. Two AP restored.
           </div>
         )}
-        {screen === "City" && !presented && (
+        {screen === "City" && !presented && !s.activeSession && (
           <div className="board-news">
             <NarrativeNotifications
               s={s}
@@ -877,6 +941,11 @@ export function App() {
             />
           </Modal>
         )}
+        <StreetSessionPlayback
+          s={s}
+          change={setState}
+          visible={screen === "City"}
+        />
         {screen === "City" && !panelOpen && (
           <button
             className="inspector-tab"
@@ -922,18 +991,12 @@ export function App() {
                 placeId={board.place}
                 renderAction={(a) => boardTile(a, board.place!)}
                 renderStreet={() => (
-                  <StreetWork
+                  <StreetSessionStart
                     s={s}
-                    sell={(market) =>
-                      actAt(
-                        { type: "crime", actor: p.id, market },
-                        board.place!,
-                      )
-                    }
-                    connects={() => {
-                      setGroup("Connects");
-                      setScreen("Actions");
-                    }}
+                    location={board.place!}
+                    change={setState}
+                    busy={busy}
+                    onStart={() => setPanelOpen(false)}
                   />
                 )}
                 openPerson={(id) => setPersonId(id)}
@@ -1221,6 +1284,7 @@ export function App() {
                 </>
               </>
             )}
+            {screen === "People" && <SkillsView character={p} />}
             {screen === "People" && (
               <div className="people-layout">
                 <div className="people-list">
@@ -1298,11 +1362,9 @@ export function App() {
                           ["Wary", "Acquainted", "Trusting", "Close"],
                         )}
                       />
-                      <p className="muted">
-                        Work {person.skills.work} · Social{" "}
-                        {person.skills.social} · Recovery{" "}
-                        {person.skills.recovery}
-                      </p>
+                      {s.crew.members.includes(person.id) && (
+                        <SkillsView character={person} />
+                      )}
                     </>
                   )}
                   <button
@@ -1391,7 +1453,8 @@ export function App() {
                                 : c.availableDay > s.day
                                   ? "Committed"
                                   : "Available"}{" "}
-                              · Work {c.skills.work}
+                              · Work{" "}
+                              {SKILLS.work.ranks[skillRank(c, "work") - 1]}
                             </small>
                           </div>
                         </div>
@@ -1590,6 +1653,7 @@ export function App() {
                 </Panel>
                 <InventoryWallet
                   s={s}
+                  change={setState}
                   open={(id) => {
                     setState(openSupplier(s, id));
                     setScreen("City");

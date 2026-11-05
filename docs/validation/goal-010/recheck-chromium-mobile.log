@@ -1,0 +1,23 @@
+
+> syndicate@0.1.0 test:e2e
+> playwright test --project=chromium-mobile --grep (?:known\ suspects\ and\ leaders\ need\ real\ introductions;\ access\ and\ inventory\ survive\ reload$|activity\ preserves\ chronology,\ true\ faction\ IDs,\ severity,\ private\ knowledge\ and\ routine\ detail$|phone\ gameplay:\ contact,\ lawful\ income,\ days,\ save\ and\ load$|valid\ sponsored\ blips\ membership\ keeps\ the\ shell\ neutral\ and\ survives\ checkpoint\ reload$|directional\ trust,\ witnessed\ events,\ activity\ filters\ and\ day\ grouping\ preserve\ visibility$|negotiated\ demand\ comes\ from\ state;\ ended\ and\ damaged\ saves\ remain\ inspectable\ and\ safe$|intentional\ board\ visit\ introduces\ Quanny\ once,\ fronts\ physical\ stock\ and\ persists\ on\ reload$|board\ collection\ at\ notoriety\ 34\ records\ the\ correct\ permanent\ outcome$|GOAL\ 002B\ mandatory\ visual\ review:\ new\ run,\ independent\ and\ Blips\ at\ 390$) --workers=1 --reporter=list,json
+
+[WebServer] (node:34536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 1 worker
+
+(node:34554) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  1 [chromium-mobile] › tests/corrections.spec.ts:105:1 › known suspects and leaders need real introductions; access and inventory survive reload (20.5s)
+  ✓  2 [chromium-mobile] › tests/encounters.spec.ts:314:1 › activity preserves chronology, true faction IDs, severity, private knowledge and routine detail (1.6s)
+  ✓  3 [chromium-mobile] › tests/mobile.spec.ts:42:1 › phone gameplay: contact, lawful income, days, save and load (18.9s)
+  ✓  4 [chromium-mobile] › tests/overhaul.spec.ts:111:3 › valid sponsored blips membership keeps the shell neutral and survives checkpoint reload (7.3s)
+  ✓  5 [chromium-mobile] › tests/overhaul.spec.ts:237:1 › directional trust, witnessed events, activity filters and day grouping preserve visibility (6.2s)
+  ✓  6 [chromium-mobile] › tests/overhaul.spec.ts:284:1 › negotiated demand comes from state; ended and damaged saves remain inspectable and safe (13.9s)
+  ✓  7 [chromium-mobile] › tests/quanny.spec.ts:93:1 › intentional board visit introduces Quanny once, fronts physical stock and persists on reload (17.6s)
+  ✓  8 [chromium-mobile] › tests/quanny.spec.ts:160:3 › board collection at notoriety 34 records the correct permanent outcome (15.7s)
+  ✓  9 [chromium-mobile] › tests/visual-correction.spec.ts:9:1 › GOAL 002B mandatory visual review: new run, independent and Blips at 390 (17.0s)
+
+  9 passed (2.0m)
