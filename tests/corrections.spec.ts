@@ -4,6 +4,7 @@ import {
   dismissEncounter,
   navigate,
   category,
+  tapUntil,
   connects,
   honest,
   storyline,
@@ -201,13 +202,22 @@ for (const width of [320, 375, 390, 430])
         await page.evaluate(() => document.documentElement.scrollWidth),
       ).toBeLessThanOrEqual(width);
     }
-    await page.getByRole("button", { name: "Talk terms with Cuzzo" }).click();
-    await page
-      .getByRole("dialog", { name: "Character encounter" })
-      .getByRole("button", { name: /Accept consignment/ })
-      .click();
+    const modal = page.getByRole("dialog", { name: "Character encounter" });
+    await tapUntil(
+      page,
+      page.getByRole("button", { name: "Talk terms with Cuzzo" }),
+      async () => modal.isVisible(),
+    );
+    await tapUntil(
+      page,
+      modal.getByRole("button", { name: /Accept consignment/ }),
+      async () => (await state(page)).street.lots.length > 0,
+    );
     await nav(page, "Wallet");
-    await page.locator(".inventory-slot summary").click();
+    const summary = page.locator(".inventory-slot summary");
+    await tapUntil(page, summary, async () =>
+      summary.evaluate((el) => (el.parentElement as HTMLDetailsElement).open),
+    );
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBeLessThanOrEqual(width);
