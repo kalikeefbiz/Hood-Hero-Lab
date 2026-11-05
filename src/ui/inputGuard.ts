@@ -13,13 +13,16 @@ const BEAT_MS = 100;
 /** A heartbeat gap longer than this counts as a stall. */
 export const STALL_MS = 700;
 /**
- * After a stall, input is held this long. Browsers may run the first
- * heartbeat before or after the queued taps; either way they are covered.
+ * After a stall, input is held until the page has drawn a frame (the moment
+ * the player can see it respond), and never longer than this. Browsers may
+ * run the first heartbeat before or after the queued taps; either way they
+ * are covered, and a fresh tap on the visibly working page goes through.
  */
 export const SETTLE_MS = 350;
 
 let lastBeat = 0;
 let recoveredAt = -Infinity;
+let settling = false;
 let dropped = 0;
 let clock = () => performance.now();
 /** Tests only: replace the clock. */
@@ -29,14 +32,25 @@ export function setGuardClock(c: () => number) {
 
 function beat() {
   const now = clock();
-  if (lastBeat > 0 && now - lastBeat > STALL_MS) recoveredAt = now;
+  if (lastBeat > 0 && now - lastBeat > STALL_MS) {
+    recoveredAt = now;
+    settling = true;
+    afterNextFrame(() => (settling = false));
+  }
   lastBeat = now;
+}
+/** Two animation frames (queued input is dispatched before them), or SETTLE_MS. */
+function afterNextFrame(fn: () => void) {
+  const raf = globalThis.requestAnimationFrame;
+  if (typeof raf === "function") raf(() => raf(fn));
+  else globalThis.setTimeout(fn, SETTLE_MS);
 }
 
 /** True if input handled right now was queued during a stall. */
 export function queuedDuringStall(now = clock()) {
   return (
-    (lastBeat > 0 && now - lastBeat > STALL_MS) || now - recoveredAt < SETTLE_MS
+    (lastBeat > 0 && now - lastBeat > STALL_MS) ||
+    (settling && now - recoveredAt < SETTLE_MS)
   );
 }
 
@@ -58,6 +72,7 @@ type GuardTarget = EventTarget & { hidden?: boolean };
 export function installInputGuard(target: GuardTarget = document) {
   lastBeat = clock();
   recoveredAt = -Infinity;
+  settling = false;
   const timer = globalThis.setInterval(beat, BEAT_MS);
   // Background tabs throttle timers; coming back is not a stall.
   const onVisible = () => {

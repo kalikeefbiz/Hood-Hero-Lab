@@ -72,6 +72,7 @@ import {
 } from "./models";
 import {
   SET_PIECES,
+  MAX_HEIGHT,
   TINTED,
   planSetPieces,
   type SetPiecePlacement,
@@ -1146,7 +1147,10 @@ export class BoardRenderer {
           const w = p.rect.maxX - p.rect.minX,
             d = p.rect.maxZ - p.rect.minZ;
           const scale = new THREE.Vector3().setScalar(
-            Math.min(w / size.x, d / size.z) * 0.94,
+            Math.min(
+              Math.min(w / size.x, d / size.z) * 0.94,
+              (MAX_HEIGHT[id] ?? Infinity) / (size.y || 1),
+            ),
           );
           q.setFromAxisAngle(up, p.yaw);
           m.compose(

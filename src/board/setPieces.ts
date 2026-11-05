@@ -28,6 +28,10 @@ export const SET_PIECES = {
   storefrontChurch: "assets/models/storefront-church.glb",
   parkingGarage: "assets/models/parking-garage.glb",
   transitPlaza: "assets/models/transit-plaza.glb",
+  // Southside housing developments (studio art).
+  southTower: "assets/models/south-tower.glb",
+  southCourtyard: "assets/models/south-courtyard.glb",
+  southGarden: "assets/models/south-garden.glb",
 } as const;
 export type SetPieceId = keyof typeof SET_PIECES;
 
@@ -56,6 +60,10 @@ const MAX_PER_DISTRICT: Partial<Record<SetPieceId, number>> = {
   pocketPark: 2,
   walkup: 5,
   shotgunHouse: 6,
+};
+/** Tallest a piece may stand (world units), when its block would make it taller. */
+export const MAX_HEIGHT: Partial<Record<SetPieceId, number>> = {
+  southTower: 18,
 };
 /** Pieces painted per instance so a repeated house never looks cloned. */
 export const TINTED = new Set<SetPieceId>(["shotgunHouse", "walkup"]);
@@ -187,6 +195,34 @@ export function planSetPieces(
     return null;
   };
   const out: SetPiecePlacement[] = [];
+  // Southside's housing developments take its project blocks whole, and
+  // every other block of the dense south-west: they replace the generic slabs.
+  if (zone === "south") {
+    const housing: SetPieceId[] = ["southTower", "southCourtyard", "southGarden"];
+    let h = 0;
+    const rest: BlockDef[] = [];
+    blocks.forEach((b, i) => {
+      const take =
+        b.kind === "projects" || (b.section === "sw" && i % 2 === 0);
+      if (!take) return rest.push(b);
+      const piece =
+        b.kind === "projects"
+          ? housing[h++ % housing.length]
+          : housing[1 + (h++ % 2)];
+      out.push({
+        piece,
+        block: b.id,
+        rect: {
+          minX: b.minX + 0.3,
+          maxX: b.maxX - 0.3,
+          minZ: b.minZ + 0.3,
+          maxZ: b.maxZ - 0.3,
+        },
+        yaw: 0,
+      });
+    });
+    blocks = rest;
+  }
   for (const b of blocks) {
     const cz = (b.minZ + b.maxZ) / 2;
     const inset = 0.3;
