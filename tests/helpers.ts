@@ -36,7 +36,7 @@ export async function tapUntil(
           await page.waitForTimeout(400); // Let the guarded post-stall window finish.
           if (!(await acknowledged())) {
             try {
-              await button.click({ timeout: 1500 });
+              await button.click({ timeout: 5000 });
             } catch (error) {
               if (!(error instanceof errors.TimeoutError)) throw error;
             }
