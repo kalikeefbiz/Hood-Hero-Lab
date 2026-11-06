@@ -1,17 +1,10 @@
 import { PREPARATION } from "../systems/Robbery";
 import { MERCHANDISE } from "../content/street";
-import {
-  equip,
-  equipError,
-  equipmentOf,
-  EQUIPMENT,
-} from "../systems/Equipment";
 import { quannyCollectionInstruction } from "../systems/QuannyState";
 import { player, type GameState } from "../core/GameState";
 import { lotProfit } from "../systems/StreetEconomy";
-import { ITEMS } from "../content/economy";
 import { money } from "./ActionCard";
-import { Icon } from "./Icon";
+import { CarriedPanel } from "./inventory/InventoryPanels";
 export function InventoryWallet({
   s,
   open,
@@ -58,10 +51,7 @@ export function InventoryWallet({
       <section className="panel inventory-panel" aria-label="Inventory">
         <p className="eyebrow">ON HAND</p>
         <h3>Inventory</h3>
-        <p>
-          {held.reduce((n, l) => n + l.remaining, 0)} Pink Magic in{" "}
-          {held.length} held lots.
-        </p>
+        <CarriedPanel s={s} change={change} />
         <h4>Preparation supplies</h4>
         {Object.entries(PREPARATION).map(([id, d]) => (
           <p key={id}>
@@ -79,13 +69,13 @@ export function InventoryWallet({
             </p>
           ))}
         <p>Store and bank scores: future content, unavailable.</p>
-        <div className="inventory-grid">
+        <details className="lot-records">
+          <summary>
+            Pink Magic lots · {held.length} open (on you, in safes or fronted)
+          </summary>
           {held.map((l) => (
             <details className="inventory-slot" data-lot={l.id} key={l.id}>
               <summary>
-                <span className="item-placeholder" aria-hidden="true">
-                  ▧
-                </span>
                 <strong>Pink Magic</strong>
                 <b>×{l.remaining}</b>
                 <small>View lot details</small>
@@ -93,57 +83,15 @@ export function InventoryWallet({
               {detail(l)}
             </details>
           ))}
-          {!held.length && (
-            <p className="empty-slot">No merchandise on hand.</p>
-          )}
-        </div>
+          {!held.length && <p className="empty-slot">No open lots.</p>}
+        </details>
         <h4>Equipment</h4>
         <p>
-          Only equipped, rank-eligible tools grant bonuses. Story/contact
-          rewards may grant equipment; stores do not sell it.
+          Only an equipped, rank-eligible weapon grants bonuses. Tap it in your
+          slots to equip. Story and contact rewards grant equipment; stores
+          don't sell it.
         </p>
-        {equipmentOf(p).owned.length === 0 && <p>No equipment owned.</p>}
-        {equipmentOf(p).owned.map((id) => {
-          const def = EQUIPMENT[id],
-            equipped = p.equipment?.equipped === id,
-            reason = equipError(p, id);
-          return (
-            <div key={id}>
-              <strong>
-                {def.name} · {def.type}
-              </strong>
-              <p>
-                Attack +{def.attack} · Defense +{def.defense} · Combat rank{" "}
-                {def.rank}
-                {equipped ? " · Equipped" : ""}
-              </p>
-              <button
-                disabled={!equipped && !!reason}
-                onClick={() => {
-                  const next = structuredClone(s);
-                  equip(player(next), equipped ? null : id);
-                  change(next);
-                }}
-              >
-                {equipped ? "Unequip" : "Equip"} {def.name}
-              </button>
-              {reason && <p>{reason}</p>}
-            </div>
-          );
-        })}
-        {p.possessions.length > 0 && (
-          <>
-            <h4>Personal possessions</h4>
-            <div className="possession-grid">
-              {p.possessions.map((id) => (
-                <span className="possession-slot" key={id}>
-                  <Icon name="People" />
-                  {ITEMS[id as keyof typeof ITEMS]?.name ?? id}
-                </span>
-              ))}
-            </div>
-          </>
-        )}
+
       </section>
       <section
         className="panel obligations-panel"

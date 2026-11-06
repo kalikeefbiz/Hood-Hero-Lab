@@ -12,7 +12,7 @@ import { tapUntil, navigate } from "./helpers";
 const state = (page: Page): Promise<GameState> =>
   page.evaluate((k) => JSON.parse(localStorage.getItem(k)!).state, AUTO_KEY);
 async function resume(page: Page, s: GameState) {
-  await page.goto("/?inventory-review=1");
+  await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
   await page.evaluate(
     ({ key, raw }) => {
       localStorage.clear();
@@ -82,22 +82,25 @@ test("City residence and member cards enforce slot/load rules and real equipment
   receivePhysical(s, member, gain("smokes", 12));
   await resume(page, s);
   await place(page, residence.id);
-  const controls = page.getByRole("region", {
-    name: "Inventory integration controls",
-  });
+  // Buy the home from its own card in the city.
+  const forSale = page.getByRole("region", { name: "Residence" });
   await tapUntil(
     page,
-    controls.getByRole("button", { name: "Buy residence" }),
+    forSale.getByRole("button", { name: /^Buy for \$/ }),
     async () => !!(await state(page)).residences?.[residence.id],
   );
+  const home = page.getByRole("region", { name: "Your residence" });
+  await home.getByRole("group", { name: "On you" }).getByRole("button", { name: /Pocket music player ×1/ }).click();
+  await expect(home.getByText(/→ \d+\/40 load/)).toBeVisible(); // safe load preview
   await tapUntil(
     page,
-    controls.getByRole("button", { name: "Deposit music ×1" }),
+    home.getByRole("button", { name: "Put in safe 1" }),
     async () =>
       !!(await state(page)).residences![residence.id].safe.slots.some(
         (x) => x.itemId === "music",
       ),
   );
+  // Hand a Law-19 to a Set member in person, then have them carry it.
   const person = boardPeople(await state(page)).find((n) => n.id === member)!;
   await place(page, person.placeId);
   await tapUntil(
@@ -107,9 +110,11 @@ test("City residence and member cards enforce slot/load rules and real equipment
       .getByRole("button", { name: new RegExp(person.name) }),
     () => page.locator(".person-card").isVisible(),
   );
+  const gear = page.locator(".member-inventory");
+  await gear.getByRole("group", { name: "You" }).getByRole("button", { name: /^Law-19 ×1/ }).click();
   await tapUntil(
     page,
-    controls.getByRole("button", { name: "Give law-19 ×1" }),
+    gear.getByRole("button", { name: /^Give .* 1$/ }),
     async () =>
       inventoryOf(await state(page), member).slots.some(
         (x) => x.itemId === "law-19",
@@ -117,12 +122,13 @@ test("City residence and member cards enforce slot/load rules and real equipment
   );
   await tapUntil(
     page,
-    controls.getByRole("button", { name: "Equip member Law-19" }),
+    gear.getByRole("button", { name: "Have them carry Law-19" }),
     async () =>
       (await state(page)).characters[member].equipment?.equipped === "law-19",
   );
-  await expect(controls.getByText("Attack 2 · Defense 1")).toBeVisible();
-  await expect(controls.getByText(/15\/15 load/)).toBeVisible();
+  await expect(gear.getByText(/Attack \+2 · Defense \+1/)).toBeVisible();
+  await expect(gear.getByText(/15\/15 load/)).toBeVisible();
+  await page.screenshot({ path: test.info().outputPath("member-gear.png") });
   // A saved, valid full safe is independent of the full-load member.
   const full = await state(page);
   receivePhysical(full, full.playerId, gain("arp"));
@@ -145,16 +151,17 @@ test("City residence and member cards enforce slot/load rules and real equipment
     () => page.locator(".person-card").isVisible(),
   );
   const before = serialize(await state(page));
-  await expect(
-    controls.getByRole("button", { name: "Give arp ×1" }),
-  ).toBeDisabled();
-  await expect(controls.getByText("Need 6 more load capacity.")).toBeVisible();
+  const gear2 = page.locator(".member-inventory");
+  await gear2.getByRole("group", { name: "You" }).getByRole("button", { name: /^ARP ×1/ }).click();
+  await expect(gear2.getByRole("button", { name: /^Give .* 1$/ })).toBeDisabled();
+  await expect(gear2.getByText("Need 6 more load capacity.")).toBeVisible();
   expect(serialize(await state(page))).toBe(before);
   await place(page, residence.id);
-  await expect(
-    controls.getByRole("button", { name: "Deposit arp ×1" }),
-  ).toBeDisabled();
-  await expect(controls.getByText("Need 6 more load capacity.")).toBeVisible();
+  const home2 = page.getByRole("region", { name: "Your residence" });
+  await home2.getByRole("group", { name: "On you" }).getByRole("button", { name: /^ARP ×1/ }).click();
+  await expect(home2.getByRole("button", { name: "Put in safe 1" })).toBeDisabled();
+  await expect(home2.getByText("Need 6 more load capacity.")).toBeVisible();
+  await page.screenshot({ path: test.info().outputPath("safe-full.png") });
   expect(
     inventoryOf(await state(page)).slots.some((x) => x.itemId === "arp"),
   ).toBe(true);

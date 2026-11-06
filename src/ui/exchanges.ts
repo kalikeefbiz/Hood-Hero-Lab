@@ -38,6 +38,12 @@ const art = (file: string) =>
 /** Inventory art by merchandise category. Missing art means no icon, never a stand-in. */
 export const ITEM_ICONS: Record<string, string> = {
   nightgoods: art("pink-magic"),
+  "law-19": art("law-19"),
+  "law-19-switch": art("law-19-switch"),
+  arp: art("arp"),
+  gloves: art("gloves"),
+  duffle: art("duffle"),
+  mask: art("mask"),
 };
 export const CASH_ICON = art("cash");
 
@@ -185,12 +191,34 @@ export function newExchanges(
       ["split", "merge"].includes(h.action)
     )
       continue;
+    const other = h.from === s.playerId ? h.to : h.from;
+    const where = s.residences?.[other]
+      ? "your safe"
+      : other.startsWith("overflow:")
+        ? "legacy holding"
+        : other === "lost"
+          ? ""
+          : nameOf(s, other);
+    const label =
+      h.action === "deposited"
+        ? "Put in your safe"
+        : h.action === "withdrawn"
+          ? "Taken from your safe"
+          : h.action === "consigned"
+            ? `Fronted to ${where}`
+            : h.action === "taken back"
+              ? `Taken back from ${where}`
+              : h.action === "legacy items retrieved"
+                ? "Collected from legacy holding"
+                : h.action === "discarded"
+                  ? "Got rid of"
+                  : h.action.charAt(0).toUpperCase() + h.action.slice(1);
     const goods = {
       kind: "item" as const,
       name: ITEM_DEFINITIONS[h.itemId].name,
       quantity: h.quantity,
-      icon: "",
-      label: h.action,
+      icon: ITEM_ICONS[h.itemId] ?? "",
+      label,
     };
     exchanges.push({
       id: h.id,
