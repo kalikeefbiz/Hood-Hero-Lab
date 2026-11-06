@@ -1,0 +1,26 @@
+
+> syndicate@0.1.0 test:e2e
+> playwright test tests/inventory.spec.ts tests/street-life.spec.ts
+
+
+Running 8 tests using 1 worker
+
+(node:8398) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  1 [chromium-mobile] › tests/inventory.spec.ts:69:1 › City residence and member cards enforce slot/load rules and real equipment bonuses (1.1m)
+  ✓  2 [chromium-mobile] › tests/street-life.spec.ts:200:1 › fresh promise → physical application → queued Day 3 six → real Lot session with reload (5.1m)
+  ✓  3 [chromium-mobile] › tests/street-life.spec.ts:400:1 › decline cash starter and one-AP City trapping (1.2m)
+  ✓  4 [chromium-mobile] › tests/street-life.spec.ts:429:1 › earned contact → City preparation shops → real robbery puzzle → persisted outcome on 360px (1.5m)
+(node:8785) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✓  5 [webkit-mobile] › tests/inventory.spec.ts:69:1 › City residence and member cards enforce slot/load rules and real equipment bonuses (1.3m)
+  ✓  6 [webkit-mobile] › tests/street-life.spec.ts:200:1 › fresh promise → physical application → queued Day 3 six → real Lot session with reload (6.8m)
+  ✓  7 [webkit-mobile] › tests/street-life.spec.ts:400:1 › decline cash starter and one-AP City trapping (1.8m)
+  ✓  8 [webkit-mobile] › tests/street-life.spec.ts:429:1 › earned contact → City preparation shops → real robbery puzzle → persisted outcome on 360px (2.6m)
+
+  Slow test file: [webkit-mobile] › tests/street-life.spec.ts (11.2m)
+  Slow test file: [chromium-mobile] › tests/street-life.spec.ts (7.8m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  8 passed (21.4m)

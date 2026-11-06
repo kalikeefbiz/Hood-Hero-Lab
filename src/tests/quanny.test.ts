@@ -1,3 +1,5 @@
+import { takeItem } from "../systems/InventoryExchanges";
+import { inventoryOf } from "../systems/Inventory";
 import { skillsOf } from "../systems/Skills";
 import { describe, expect, it } from "vitest";
 import { newGame, enterGameplay } from "./legacyGame";
@@ -422,7 +424,9 @@ describe("directional consignment, collection and persistent relationships", () 
     const before = cash(player(s));
     s = collection(s);
     expect(cash(player(s))).toBe(before);
-    expect(skillsOf(s.characters.quanny).milestones.supplierPaid).toBeUndefined();
+    expect(
+      skillsOf(s.characters.quanny).milestones.supplierPaid,
+    ).toBeUndefined();
     expect(s.quanny.business).toBe("blocked");
     expect(s.street.agreements[0].status).toBe("disputed");
     expect(saleLot(s)).toBeUndefined();
@@ -515,6 +519,7 @@ describe("directional consignment, collection and persistent relationships", () 
     bad.quanny.history.push("fabricated");
     expect(() => deserialize(serialize(bad))).toThrow();
     const old = JSON.parse(serialize(newGame("Old", "south")));
+    old.version = old.state.version = 8;
     delete old.state.quanny;
     delete old.state.characters.quanny;
     delete old.state.characters["mr-lewis"];
@@ -609,4 +614,58 @@ it("pending Quanny collection cannot be used from custody or while he is committ
     expect(respondEncounter(s, id, "collect").error).toBeTruthy();
     expect(serialize(s)).toBe(before);
   }
+});
+
+it("returns a pre-Set Quanny consignment at its agreed price and releases its actual cash reserve", () => {
+  let s = agreement();
+  s.crew.capacity = 2;
+  s.crew.members.push("quanny");
+  for (const e of s.encounters) e.status = "acknowledged";
+  const where = boardPeople(s).find((n) => n.id === "quanny")!.placeId;
+  s.presence = {
+    ...presenceOf(s),
+    location: where,
+    zone: LOCATIONS.find((l) => l.id === where)!.zone,
+  };
+  const a = receivable(s, "quanny")!,
+    original = a.balance,
+    cashBefore = cash(s.characters.quanny);
+  let next = takeItem(s, "quanny", inventoryOf(s, "quanny").slots[0].id, 3);
+  if (typeof next === "string") throw new Error(next);
+  s = next;
+  expect(receivable(s, "quanny")!.reserve).toBe(original / 2);
+  expect(cash(s.characters.quanny)).toBe(cashBefore + original / 2);
+  expect(deserialize(serialize(s))).toEqual(s);
+  next = takeItem(s, "quanny", inventoryOf(s, "quanny").slots[0].id, 3);
+  if (typeof next === "string") throw new Error(next);
+  s = next;
+  const returned = s.street.agreements.find((x) => x.id === a.id)!;
+  expect(returned.balance).toBe(0);
+  expect(returned.reserve).toBe(0);
+  expect(returned.status).toBe("fulfilled");
+  expect(cash(s.characters.quanny)).toBe(cashBefore + original);
+  expect(deserialize(serialize(s))).toEqual(s);
+});
+
+it("preserves a historical refusal when unsold stock is later physically recovered through the Set", () => {
+  let s = collection(agreement());
+  s.crew.capacity = 2;
+  s.crew.members.push("quanny");
+  for (const e of s.encounters) e.status = "acknowledged";
+  const where = boardPeople(s).find((n) => n.id === "quanny")!.placeId;
+  s.presence = {
+    ...presenceOf(s),
+    location: where,
+    zone: LOCATIONS.find((l) => l.id === where)!.zone,
+  };
+  const a = s.street.agreements.find((a) => a.supplier === s.playerId)!;
+  const prior = structuredClone(a.collections);
+  const result = takeItem(s, "quanny", inventoryOf(s, "quanny").slots[0].id, 6);
+  if (typeof result === "string") throw new Error(result);
+  s = result;
+  expect(s.street.agreements.find((x) => x.id === a.id)!.collections).toEqual(
+    prior,
+  );
+  expect(s.street.agreements.find((x) => x.id === a.id)!.balance).toBe(0);
+  expect(deserialize(serialize(s))).toEqual(s);
 });

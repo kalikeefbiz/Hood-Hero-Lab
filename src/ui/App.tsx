@@ -1,3 +1,4 @@
+import { InventoryTestControls } from "./InventoryTestControls";
 import { ITEMS } from "../content/economy";
 import { TutorialObjective, RobberyPlayback } from "./StreetLife";
 import { endStreetSession } from "../systems/StreetSessions";
@@ -1028,6 +1029,7 @@ export function App() {
               ✕
             </button>
             {alerts}
+            {new URLSearchParams(window.location.search).get('inventory-review') === '1' && (personId || board.place) && <InventoryTestControls s={s} place={personId ? undefined : board.place ?? undefined} member={personId ?? undefined} change={setState} />}
             {lookOpen ? (
               <AppearancePanel
                 appearance={presenceOf(s).appearance}

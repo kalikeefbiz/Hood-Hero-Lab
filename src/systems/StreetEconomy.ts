@@ -1,3 +1,11 @@
+import {
+  gain,
+  gainError,
+  receivePhysical,
+  carriedLotQuantity,
+  consumeLot,
+} from "./Inventory";
+import { equipmentBonus } from "./Equipment";
 import { workIntroError, pabloError, personalBeef } from "./StreetAccess";
 import { boardPeople } from "../board/people";
 import { presenceOf } from "../board/presence";
@@ -165,11 +173,16 @@ export function supplierError(
   if (intro) return intro;
   if (pabloError(s, supplier)) return pabloError(s, supplier);
   if (s.streetLife && !s.streetLife.legacy) {
+    const life = s.streetLife;
+    const starterIds = [life.giftLot, life.starterLot].filter(Boolean);
+    const replacementNeeded =
+      starterIds.length > 0 &&
+      !s.street.lots.some((l) => starterIds.includes(l.id) && l.remaining > 0);
+    const firstPaidPack =
+      life.initialDecision !== "promise" && !life.giftLot && !life.starterLot;
     if (
-      s.streetLife.lesson === "waiting" &&
-      (supplier !== "mega" ||
-        s.streetLife.initialDecision === "promise" ||
-        s.streetLife.starterLot)
+      life.lesson === "waiting" &&
+      (supplier !== "mega" || (!firstPaidPack && !replacementNeeded))
     )
       return "Complete Mega’s Lot lesson with your starter stock before seeking other supply.";
     if (
@@ -272,7 +285,16 @@ export function supplierError(
     return "Supplier's organization has no stock budget today.";
   if (arrangement === "cash" && cash(p) < MERCHANDISE.nightgoods.wholesale)
     return "Requires $90 up front.";
-  return null;
+  return gainError(
+    s,
+    s.playerId,
+    gain(
+      "nightgoods",
+      MERCHANDISE.nightgoods.quantity,
+      "supplier",
+      "pending-lot",
+    ),
+  );
 }
 export function acquire(
   s: GameState,
@@ -316,6 +338,7 @@ export function acquire(
     status: "held",
   };
   s.street.lots.push(lot);
+  receivePhysical(s, p.id, gain("nightgoods", lot.received, lot.id, lot.id));
   if (
     s.streetLife &&
     !s.streetLife.legacy &&
@@ -400,7 +423,7 @@ export function saleLot(s: GameState, actor = s.playerId) {
     .filter(
       (l) =>
         l.owner === actor &&
-        l.remaining > 0 &&
+        carriedLotQuantity(s, actor, l.id) > 0 &&
         (!selected || l.id === selected),
     )
     .sort((a, b) => a.dueDay - b.dueDay || a.id.localeCompare(b.id))[0];
@@ -463,7 +486,8 @@ export function transactionChance(
   return clamp(
     B.baseSuccess +
       (m.demand - 50) / 500 +
-      support -
+      support +
+      (equipmentBonus(c).defense + (n ? equipmentBonus(n).defense : 0)) / 500 -
       exposureScore(s, actor, zone) / 220 -
       c.stress / 650 -
       c.rivalThreat / 1000 -
@@ -513,7 +537,7 @@ function resolveTransaction(
     m.used = 0;
   }
   const capacity = Math.min(
-    l.remaining,
+    carriedLotQuantity(s, actor, l.id),
     buyer
       ? Math.min(1 + Math.floor((skillRank(c, "trapper") - 1) / 2), l.remaining)
       : 2 + (m.demand >= 60 ? 1 : 0),
@@ -529,7 +553,7 @@ function resolveTransaction(
   } else {
     const failure = random(s);
     if (failure < 0.35) {
-      lost = Math.min(l.remaining, buyer ? 1 : 2);
+      lost = Math.min(carriedLotQuantity(s, actor, l.id), buyer ? 1 : 2);
       outcome = "goods-loss";
     } else if (failure < 0.65) {
       loss = Math.min(18, cash(c));
@@ -538,6 +562,7 @@ function resolveTransaction(
   }
   const gross = sold * (unitPrice(s, zone) + (skillRank(c, "trapper") - 1) * 2),
     share = partner ? Math.floor(gross * B.crewShare) : 0;
+  consumeLot(s, actor, l.id, sold + lost);
   l.remaining -= sold + lost;
   l.lost += lost;
   l.collected += gross;

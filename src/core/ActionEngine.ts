@@ -1,3 +1,4 @@
+import { gain, gainError, receivePhysical } from "../systems/Inventory";
 import { completeWorkIntro } from "../systems/StreetLife";
 import { awardSkill, proficiency, skillsOf } from "../systems/Skills";
 import { equipmentBonus } from "../systems/Equipment";
@@ -426,6 +427,10 @@ export function validateAction(s: GameState, a: Action): string | null {
     c.possessions.includes(a.item)
   )
     return "Already owned";
+  if (a.type === "buy" && a.item) {
+    const capacity = gainError(s, c.id, gain(a.item));
+    if (capacity) return capacity;
+  }
   if (a.type === "crime" && a.actor === s.playerId)
     return "Visit a City street spot and start a trapping session.";
   if (
@@ -684,7 +689,7 @@ export function resolveAction(s: GameState, a: Action) {
       const item = ITEMS[a.item!];
       expense(s, c, item.price, item.name);
       c.stress = clamp(c.stress - item.relief);
-      c.possessions.push(a.item!);
+      receivePhysical(s, c.id, gain(a.item!));
       text = `${c.name} bought ${item.name.toLowerCase()} for $${item.price}.`;
       category = "money";
       break;

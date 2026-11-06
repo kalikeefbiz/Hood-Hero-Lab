@@ -1,3 +1,4 @@
+import { gain, gainError, receivePhysical } from "./Inventory";
 import { awardSkill } from "./Skills";
 import { player, cash, type GameState, type Incident } from "../core/GameState";
 import { record } from "../core/EventLog";
@@ -83,7 +84,8 @@ export function giveFlaccoStock(s: GameState) {
     t.giftLot ||
     t.starterLot ||
     s.day < 3 ||
-    !safeStory(s)
+    !safeStory(s) ||
+    gainError(s, s.playerId, gain("nightgoods", 6, "gift", "pending-lot"))
   )
     return;
   const id = `lot-${s.nextId++}`;
@@ -108,6 +110,7 @@ export function giveFlaccoStock(s: GameState) {
     arrangement: "cash",
     status: "held",
   });
+  receivePhysical(s, s.playerId, gain("nightgoods", 6, id, id));
   t.giftLot = id;
   record(
     s,

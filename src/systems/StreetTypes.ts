@@ -21,6 +21,7 @@ export interface MerchandiseLot {
   status: "held" | "distributed" | "lost" | "settled";
   transferred?: number;
   sourceLotId?: string;
+  returned?: number;
   agreementId?: string;
 }
 export interface SupplierAgreement {
@@ -33,6 +34,8 @@ export interface SupplierAgreement {
   balance: number;
   dueDay: number;
   status: "pending" | "overdue" | "fulfilled" | "disputed";
+  setConsignment?: boolean;
+  returned?: number;
   reserve?: number;
   createdDay?: number;
   quantity?: number;

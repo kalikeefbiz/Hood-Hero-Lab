@@ -1,3 +1,4 @@
+import { carriedLotQuantity } from "./Inventory";
 import { lessonError, workIntroError } from "./StreetAccess";
 import { progress } from "./Progression";
 import { finalizeEnding } from "./EndConditions";
@@ -90,7 +91,7 @@ export function validateStartStreetSession(s: GameState, location: string) {
       !s.street.lots.some(
         (l) =>
           [s.streetLife?.giftLot, s.streetLife?.starterLot].includes(l.id) &&
-          l.remaining > 0,
+          carriedLotQuantity(s, s.playerId, l.id) > 0,
       ))
   )
     return lessonError(s);
@@ -119,7 +120,7 @@ export function startStreetSession(
   if (
     lotId &&
     !state.street.lots.some(
-      (l) => l.id === lotId && l.owner === state.playerId && l.remaining > 0,
+      (l) => l.id === lotId && l.owner === state.playerId && carriedLotQuantity(state, state.playerId, l.id) > 0,
     )
   )
     return { state, error: "Selected stock is unavailable." };
@@ -223,7 +224,7 @@ export function advanceStreetSession(
   if (
     !s.street.lots.some(
       (l) =>
-        l.id === session.lotId && l.owner === s.playerId && l.remaining > 0,
+        l.id === session.lotId && l.owner === s.playerId && carriedLotQuantity(s, s.playerId, l.id) > 0,
     )
   ) {
     session.status = "ended";

@@ -1,3 +1,4 @@
+import { gain, gainError } from "../systems/Inventory";
 import type { EncounterDefinition } from "../core/Encounter";
 import { player } from "../core/GameState";
 import {
@@ -20,6 +21,7 @@ export const FLACCO_GIFT: EncounterDefinition = {
     s.streetLife.initialDecision === "promise" &&
     !s.streetLife.giftLot &&
     s.day >= 3 &&
+    !gainError(s, s.playerId, gain("nightgoods", 6, "gift", "pending-lot")) &&
     canQueueLife(s)
       ? [{ key: "once" }]
       : [],
@@ -36,7 +38,7 @@ export const FLACCO_GIFT: EncounterDefinition = {
       effect: { type: "life", choice: "gift" },
       requirement: (s) =>
         safeStory(s)
-          ? null
+          ? gainError(s, s.playerId, gain("nightgoods", 6, "gift", "pending-lot"))
           : "Flacco will wait until you are safely back in the City.",
     },
   ],
