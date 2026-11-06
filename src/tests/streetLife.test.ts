@@ -1,3 +1,5 @@
+import { discardItem } from "../systems/InventoryExchanges";
+import { inventoryOf } from "../systems/Inventory";
 import { describe, it, expect } from "vitest";
 import { newGame } from "../core/Simulation";
 import { player, cash, type GameState } from "../core/GameState";
@@ -299,6 +301,15 @@ describe("multi-lot transactions and compatibility", () => {
     connect(s, "player", "contact-angels");
     s.characters["contact-angels"].relationships.player.trust = 50;
     person(s, "contact-angels");
+    expect(supplierError(s, "contact-angels", "consignment")).toContain("load");
+    const reduced = discardItem(
+      s,
+      inventoryOf(s).slots[0].id,
+      4,
+      presenceOf(s).location,
+    );
+    expect(typeof reduced).not.toBe("string");
+    Object.assign(s, reduced);
     expect(supplierError(s, "contact-angels", "consignment")).toBeNull();
     acquire(s, "contact-angels", "consignment");
     expect(s.street.agreements.at(-1)?.supplier).toBe("contact-angels");
@@ -663,4 +674,45 @@ it("full payment after recruiting dispute support is not a clean buster outcome"
   s = paid.state;
   expect(s.incidents["the-chains"].cleanFullPrice).toBe(false);
   expect(trioOutcome(s)).toBe("nonfactor");
+});
+
+describe("GOAL 012 tutorial stock recovery", () => {
+  it("allows a real paid replacement after discarding all starter stock, without repeating the gift", () => {
+    let s = newGame("Recovery", "south");
+    s = choose(s, "promise");
+    at(s, "south.food-mart");
+    s = performAction(s, {
+      actor: s.playerId,
+      type: "apply",
+      jobId: "retail-south",
+    }).state;
+    s.day = 3;
+    s.ap = 2;
+    clear(s);
+    giveFlaccoStock(s);
+    clear(s);
+    const gift = s.streetLife!.giftLot!;
+    const discarded = discardItem(
+      s,
+      inventoryOf(s).slots[0].id,
+      6,
+      presenceOf(s).location,
+    );
+    expect(typeof discarded).not.toBe("string");
+    s = discarded as GameState;
+    person(s, "mega");
+    expect(supplierError(s, "mega", "cash")).toBeNull();
+    const before = cash(player(s));
+    acquire(s, "mega", "cash");
+    expect(cash(player(s))).toBe(before - 90);
+    expect(s.streetLife!.starterLot).not.toBe(gift);
+    giveFlaccoStock(s);
+    expect(s.street.lots.filter((l) => l.supplier === "flacco")).toHaveLength(
+      1,
+    );
+    clear(s);
+    at(s, "south.the-lot");
+    expect(validateStartStreetSession(s, "south.the-lot")).toBeNull();
+    expect(deserialize(serialize(s))).toEqual(s);
+  });
 });

@@ -1,3 +1,6 @@
+import { inventorySchema, inventoryStateSchema } from "../systems/InventoryTypes";
+import { residenceSchema } from "../systems/Residences";
+import { migrateInventory, validateInventory } from "./InventoryMigration";
 import { streetLifeSchema, newStreetLife } from "../systems/StreetLifeState";
 import {
   robberyStateSchema,
@@ -73,6 +76,7 @@ const character = z.object({
   traits: z.object({ loyalty: n, ambition: n, risk: n, lawful: n }),
   skillProgress: skillProgressSchema.optional(),
   equipment: equipmentSchema.optional(),
+  inventory: inventorySchema.optional(),
   skills: z.object({ social: n, work: n, recovery: n }),
   agency: z.object({
     lastAssignmentDay: integer,
@@ -130,10 +134,12 @@ const presenceSchema = z.object({
   }),
 });
 const schema = z.object({
+  inventory: inventoryStateSchema.optional(),
+  residences: record(residenceSchema).optional(),
   presence: presenceSchema.optional(),
   quanny: quannySchema.default(newQuannyState),
   danger: dangerSchema.default(() => newDangerState()),
-  version: z.union([z.literal(8), z.literal(9), z.literal(10)]),
+  version: z.union([z.literal(8), z.literal(9), z.literal(10), z.literal(11)]),
   activeSession: streetSessionSchema.optional(),
   streetLife: streetLifeSchema.optional(),
   robberies: robberyStateSchema.optional(),
@@ -441,13 +447,13 @@ export function deserialize(raw: string): GameState {
   const envelope = z
     .object({
       format: z.literal("syndicate"),
-      version: z.union([z.literal(8), z.literal(9), z.literal(10)]),
+      version: z.union([z.literal(8), z.literal(9), z.literal(10), z.literal(11)]),
       state: schema,
     })
     .safeParse(parsed);
   if (!envelope.success)
     throw new Error(
-      "Incompatible or damaged save. Expected Hood Hero save version 8, 9 or 10. Start a new test run from the new game menu.",
+      "Incompatible or damaged save. Expected Hood Hero save version 8, 9, 10 or 11. Start a new test run from the new game menu.",
     );
   const s: GameState = envelope.data.state;
   if (s.version === 8) {
@@ -464,10 +470,10 @@ export function deserialize(raw: string): GameState {
     for (const l of s.ledger)
       l.reason = l.reason.replace(/night goods/gi, "Pink Magic");
   }
-  if (s.version === 10 && !s.streetLife)
+  if (s.version >= 10 && !s.streetLife)
     throw new Error("Missing onboarding state.");
   s.streetLife ??= newStreetLife(true);
-  s.version = 10;
+  const needsInventoryMigration = s.version < 11;
   s.characters["contact-angels"] ??= residents().find(
     (c) => c.id === "contact-angels",
   )!;
@@ -537,6 +543,8 @@ export function deserialize(raw: string): GameState {
     )
       throw new Error("Invalid skill award records.");
   }
+  if (needsInventoryMigration) migrateInventory(s);
+  validateInventory(s);
   validateSessionReferences(s);
   validateConsignments(s);
   const exists = (id: string) => !!s.characters[id];
@@ -599,13 +607,14 @@ export function deserialize(raw: string): GameState {
             (source) =>
               source.id === l.sourceLotId &&
               source.owner === l.supplier &&
-              (source.transferred ?? 0) >= l.received,
+              (source.transferred ?? 0) >= l.received - (l.returned ?? 0),
           )) ||
         (l.transferred ?? 0) !==
           st.lots
             .filter((child) => child.sourceLotId === l.id)
-            .reduce((n, child) => n + child.received, 0) ||
+            .reduce((n, child) => n + child.received - (child.returned ?? 0), 0) ||
         l.remaining +
+          (l.returned ?? 0) +
           l.lost +
           (l.transferred ?? 0) +
           st.transactions

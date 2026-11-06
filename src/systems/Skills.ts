@@ -265,7 +265,8 @@ export function bankEligible(c: Character) {
   return (
     skillRank(c, "combat") === 4 &&
     c.equipment?.equipped === "arp" &&
-    c.equipment.owned.includes("arp")
+    c.equipment.owned.includes("arp") &&
+    (!c.inventory || c.inventory.slots.some(x => x.kind === "equipment" && x.itemId === "arp"))
   );
 }
 export function drillEligible(s: GameState) {

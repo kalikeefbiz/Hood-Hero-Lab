@@ -1,3 +1,4 @@
+import { gain, gainError } from "./Inventory";
 import { lessonError } from "./StreetAccess";
 import {
   player,
@@ -131,11 +132,11 @@ export function businessError(s: GameState) {
   )
     return "Unresolved personal hostility blocks business.";
   if (receivable(s, q.id)) return "Collect the existing agreement first.";
-  if (consignmentTerms(s) && cash(q) < consignmentTerms(s, true)!.amount)
+  if (!s.crew.members.includes(q.id) && consignmentTerms(s) && cash(q) < consignmentTerms(s, true)!.amount)
     return "Quanny has his operating money tied up. Try again after he earns more.";
   if (!consignmentTerms(s))
     return "Requires real Pink Magic in your available inventory.";
-  return null;
+  return gainError(s, q.id, gain("nightgoods", consignmentTerms(s)!.quantity, "consignment", "pending-lot"));
 }
 export function repairError(s: GameState) {
   if (s.quanny.business !== "blocked")

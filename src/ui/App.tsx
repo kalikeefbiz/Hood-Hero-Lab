@@ -1,3 +1,4 @@
+import { MemberInventory, ResidencePanel, SelfCarryCard, MemberGear } from "./inventory/InventoryPanels";
 import { ITEMS } from "../content/economy";
 import { TutorialObjective, RobberyPlayback } from "./StreetLife";
 import { endStreetSession } from "../systems/StreetSessions";
@@ -1035,6 +1036,7 @@ export function App() {
                 onClose={() => setLookOpen(false)}
               />
             ) : personId ? (
+              <>
               <PersonInspector
                 s={s}
                 personId={personId}
@@ -1054,7 +1056,10 @@ export function App() {
                 }}
                 goTo={(placeId) => goHere(placeId)}
               />
+              <MemberInventory s={s} id={personId} change={setState} />
+              </>
             ) : board.place && boardView ? (
+              <>
               <PlaceSheet
                 s={s}
                 view={boardView}
@@ -1080,6 +1085,8 @@ export function App() {
                 goHere={() => goHere(board.place!)}
                 busy={busy}
               />
+              <ResidencePanel s={s} placeId={board.place} change={setState} />
+              </>
             ) : board.block && boardView ? (
               <BlockSheet
                 s={s}
@@ -1166,6 +1173,7 @@ export function App() {
                 />
               </>
             ) : (
+              <>
               <PresenceCard
                 s={s}
                 onFind={() =>
@@ -1178,6 +1186,8 @@ export function App() {
                 onLook={() => setLookOpen(true)}
                 onPlug={showPerson}
               />
+              <SelfCarryCard s={s} change={setState} />
+              </>
             )}
           </div>
         )}
@@ -1534,6 +1544,7 @@ export function App() {
                           description={`${Math.round(c.relationships[p.id]?.trust ?? 0)} / 100`}
                         />
                         <p className="muted">{knownCapabilities(c)}</p>
+                        <MemberGear s={s} id={id} />
                         <p>
                           {availability(s, c) ?? "Available to discuss plans"}
                         </p>

@@ -1,3 +1,4 @@
+import { newInventoryState } from "../systems/Inventory";
 import { newStreetLife } from "../systems/StreetLifeState";
 import { skillsOf } from "../systems/Skills";
 import { equipmentOf } from "../systems/Equipment";
@@ -34,7 +35,9 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
     },
   );
   const s: GameState = {
-    version: 10,
+    version: 11,
+    inventory: newInventoryState(),
+    residences: {},
     streetLife: newStreetLife(),
     quanny: newQuannyState(),
     danger: newDangerState(seed),
@@ -76,7 +79,7 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
     end: null,
   };
   for (const z of Object.values(s.zones)) syncTerritory(s, z.id);
-  for (const c of Object.values(s.characters)) { skillsOf(c); equipmentOf(c); }
+  for (const c of Object.values(s.characters)) { skillsOf(c); equipmentOf(c); c.inventory = {slots: []}; }
   initializeRelationships(s);
   openingIncident(s);
   syncEncounters(s);

@@ -49,7 +49,7 @@ function decide(s: GameState, c: Character): Action | null {
       proficiency(c, "work") / 10,
   );
   add({ actor: c.id, type: "rest" }, c.stress > 45 ? 90 : 5);
-  if (c.traits.risk > 60)
+  if (c.traits.risk > 60 || (s.crew.members.includes(c.id) && s.street.agreements.some(a => a.debtor === c.id && a.setConsignment && a.balance > 0)))
     add(
       { actor: c.id, type: "crime" },
       (c.goals.includes("status") ? 35 : 10) +

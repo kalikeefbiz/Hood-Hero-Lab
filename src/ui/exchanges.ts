@@ -1,3 +1,4 @@
+import { ITEM_DEFINITIONS } from "../content/inventory";
 import type { GameState } from "../core/GameState";
 import { MERCHANDISE } from "../content/street";
 import type { StreetTransaction } from "../systems/StreetTypes";
@@ -37,6 +38,12 @@ const art = (file: string) =>
 /** Inventory art by merchandise category. Missing art means no icon, never a stand-in. */
 export const ITEM_ICONS: Record<string, string> = {
   nightgoods: art("pink-magic"),
+  "law-19": art("law-19"),
+  "law-19-switch": art("law-19-switch"),
+  arp: art("arp"),
+  gloves: art("gloves"),
+  duffle: art("duffle"),
+  mask: art("mask"),
 };
 export const CASH_ICON = art("cash");
 
@@ -111,6 +118,8 @@ export interface ExchangeBaseline {
   txCount: number;
   lots: string[];
   lifeIds: string[];
+  inventoryIds: string[];
+  propertyIds: string[];
   repaid: Record<string, number>;
 }
 export function baseline(s: GameState): ExchangeBaseline {
@@ -119,6 +128,8 @@ export function baseline(s: GameState): ExchangeBaseline {
     txCount: s.street.transactions.length,
     lots: s.street.lots.map((l) => l.id),
     lifeIds: s.streetLife?.exchanges.map((e) => e.id) ?? [],
+    inventoryIds: s.inventory?.history.map((e) => e.id) ?? [],
+    propertyIds: Object.keys(s.residences ?? {}),
     repaid: Object.fromEntries(
       s.street.agreements
         .filter((a) => a.debtor === s.playerId)
@@ -173,6 +184,54 @@ export function newExchanges(
                 : undefined)),
       });
     }
+  for (const h of s.inventory?.history ?? []) {
+    if (
+      (h.from !== s.playerId && h.to !== s.playerId) ||
+      seen.inventoryIds.includes(h.id) ||
+      ["split", "merge"].includes(h.action)
+    )
+      continue;
+    const other = h.from === s.playerId ? h.to : h.from;
+    const where = s.residences?.[other]
+      ? "your safe"
+      : other.startsWith("overflow:")
+        ? "legacy holding"
+        : other === "lost"
+          ? ""
+          : nameOf(s, other);
+    const label =
+      h.action === "deposited"
+        ? "Put in your safe"
+        : h.action === "withdrawn"
+          ? "Taken from your safe"
+          : h.action === "consigned"
+            ? `Fronted to ${where}`
+            : h.action === "taken back"
+              ? `Taken back from ${where}`
+              : h.action === "legacy items retrieved"
+                ? "Collected from legacy holding"
+                : h.action === "discarded"
+                  ? "Got rid of"
+                  : h.action.charAt(0).toUpperCase() + h.action.slice(1);
+    const goods = {
+      kind: "item" as const,
+      name: ITEM_DEFINITIONS[h.itemId].name,
+      quantity: h.quantity,
+      icon: ITEM_ICONS[h.itemId] ?? "",
+      label,
+    };
+    exchanges.push({
+      id: h.id,
+      give: h.from === s.playerId ? goods : undefined,
+      get: h.to === s.playerId ? goods : undefined,
+    });
+  }
+  for (const r of Object.values(s.residences ?? {}))
+    if (!seen.propertyIds.includes(r.id))
+      exchanges.push({
+        id: r.eventId,
+        give: money(r.price, "Residence purchased", "any"),
+      });
   // A pack from a plug: the merchandise in, and the cash out if paid up front.
   for (const l of s.street.lots.slice(seen.lots.length)) {
     if (l.owner !== s.playerId || l.acquiredDay !== s.day || l.sourceLotId)

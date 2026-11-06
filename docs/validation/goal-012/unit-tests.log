@@ -1,0 +1,79 @@
+
+> syndicate@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.7 <lab>
+
+stdout | src/tests/skillsSessions.test.ts > focused progression balance and presentation adapter > 30-day focused City simulation avoids instant mastery
+FOCUSED 30 days: 20.40 XP, rank 1, 63 buyers, ended=null
+
+stdout | src/tests/skillsSessions.test.ts > focused progression balance and presentation adapter > 60-day focused City simulation avoids instant mastery
+FOCUSED 60 days: 20.40 XP, rank 1, 63 buyers, ended=null
+
+stdout | src/tests/skillsSessions.test.ts > focused progression balance and presentation adapter > 180-day focused City simulation avoids instant mastery
+FOCUSED 180 days: 22.40 XP, rank 1, 70 buyers, ended=null
+
+stdout | src/tests/skillsSessions.test.ts > focused progression balance and presentation adapter > 365-day focused City simulation avoids instant mastery
+FOCUSED 365 days: 25.10 XP, rank 1, 76 buyers, ended=null
+
+ ✓ src/tests/skillsSessions.test.ts (39 tests) 34067ms
+   ✓ physical and transactional City sessions > includes rare local personal-conflict risk for a neutral player without making every visitor hostile  452ms
+   ✓ focused progression balance and presentation adapter > 30-day focused City simulation avoids instant mastery  560ms
+   ✓ focused progression balance and presentation adapter > 60-day focused City simulation avoids instant mastery  1110ms
+   ✓ focused progression balance and presentation adapter > 180-day focused City simulation avoids instant mastery  6252ms
+   ✓ focused progression balance and presentation adapter > 365-day focused City simulation avoids instant mastery  25098ms
+ ✓ src/tests/employment.test.ts (20 tests) 19220ms
+   ✓ employment commitments and survival > 30+ day strategies and deterministic replay seed 1  5110ms
+   ✓ employment commitments and survival > 30+ day strategies and deterministic replay seed 7  4673ms
+   ✓ employment commitments and survival > 30+ day strategies and deterministic replay seed 21  4343ms
+   ✓ employment commitments and survival > 30+ day strategies and deterministic replay seed 2026  4431ms
+ ✓ src/tests/crew.test.ts (22 tests) 10434ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 1: independent lives, occasional offers, real appointments, save/load and bounded growth  2200ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 7: independent lives, occasional offers, real appointments, save/load and bounded growth  1601ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 21: independent lives, occasional offers, real appointments, save/load and bounded growth  1873ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 83: independent lives, occasional offers, real appointments, save/load and bounded growth  1509ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 2026: independent lives, occasional offers, real appointments, save/load and bounded growth  1387ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 5099: independent lives, occasional offers, real appointments, save/load and bounded growth  1264ms
+ ✓ src/tests/corrections.test.ts (11 tests) 5155ms
+   ✓ 006.1 routine, accumulated and significant exposure > low-scrutiny arrest is possible, but never fixed by action count  4961ms
+ ✓ src/tests/quanny.test.ts (41 tests) 2987ms
+   ✓ Quanny first intentional contact > all three seeded introductory shooting categories are nonfatal for both real and false Angels  1047ms
+   ✓ Quanny first intentional contact > minor injuries recover with time and hospital recovery keeps the simulation running  1057ms
+   ✓ directional consignment, collection and persistent relationships > early lucky conflict cannot kill Quanny; capable opponents can eventually defeat him  301ms
+ ✓ src/tests/simulation.test.ts (44 tests) 4065ms
+   ✓ The Chains and automated playthroughs > ignores the incident while continuing repeatable legitimate work  309ms
+   ✓ The Chains and automated playthroughs > has no fixed turn limit and no arbitrary defeat timer  3033ms
+stdout | src/tests/inventory.test.ts > long-running capacity tradeoffs > simulates 30/60/180 days with two independent property safes and bounded stock
+INVENTORY 30 days: 19 packs accepted, 11 capacity refusals, 24 units voluntarily discarded; safes 36/36
+INVENTORY 60 days: 23 packs accepted, 37 capacity refusals, 48 units voluntarily discarded; safes 36/36
+INVENTORY 180 days: 40 packs accepted, 140 capacity refusals, 150 units voluntarily discarded; safes 36/36
+
+ ✓ src/tests/inventory.test.ts (20 tests) 969ms
+   ✓ long-running capacity tradeoffs > simulates 30/60/180 days with two independent property safes and bounded stock  674ms
+ ✓ src/tests/streetLife.test.ts (32 tests) 950ms
+   ✓ real City robbery sessions > deterministic real success and failure award correct progression, no automatic kill  563ms
+ ✓ src/tests/encounters.test.ts (20 tests) 1638ms
+   ✓ correction: conversations conclude independently of storylines > does not reopen a fulfilled story over 40 further days, including reload  627ms
+   ✓ correction: conversations conclude independently of storylines > does not reopen a broken story over 40 further days, including reload  693ms
+ ✓ src/tests/actionOdds.test.ts (3 tests) 1523ms
+   ✓ odds presented to the player > negotiate predicts the actual seeded outcome without changing the world or RNG  379ms
+   ✓ odds presented to the player > recover predicts the actual seeded outcome without changing the world or RNG  357ms
+   ✓ odds presented to the player > crime predicts the actual seeded outcome without changing the world or RNG  786ms
+ ✓ src/tests/danger.test.ts (23 tests) 1449ms
+   ✓ contextual street life > ordinary civilians can cross contested neighborhoods without automatic violence  1149ms
+ ✓ src/tests/street.test.ts (15 tests) 672ms
+ ✓ src/tests/strategy.test.ts (36 tests) 469ms
+ ✓ src/tests/previewSaves.test.ts (1 test) 190ms
+ ✓ src/tests/exchanges.test.ts (9 tests) 153ms
+ ✓ src/tests/quannyPortraits.test.ts (11 tests) 149ms
+ ✓ src/tests/presence.test.ts (3 tests) 79ms
+ ✓ src/tests/board.test.ts (8 tests) 55ms
+ ✓ src/tests/setPieces.test.ts (5 tests) 28ms
+ ✓ src/tests/inputGuard.test.ts (4 tests) 8ms
+ ✓ src/tests/actionArt.test.ts (2 tests) 5ms
+
+ Test Files  21 passed (21)
+      Tests  369 passed (369)
+   Start at  19:51:17
+   Duration  91.98s (transform 827ms, setup 0ms, collect 3.95s, tests 84.26s, environment 3ms, prepare 1.10s)

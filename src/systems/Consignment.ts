@@ -1,3 +1,15 @@
+import {
+  giveItem,
+  giveItemError,
+  collectSetConsignment,
+} from "./InventoryExchanges";
+import {
+  gainError,
+  gain,
+  receivePhysical,
+  consumeLot,
+  carriedLotQuantity,
+} from "./Inventory";
 import { atPerson } from "./StreetLife";
 import { lessonError } from "./StreetAccess";
 import { skillsOf } from "./Skills";
@@ -21,41 +33,77 @@ export function consignmentTerms(s: GameState, negotiated = false) {
   const lot = saleLot(s);
   if (!lot) return null;
   // Wholesale is the floor; the distributor retains a margin on current market value.
-  const unit = Math.max(
-    MERCHANDISE.nightgoods.wholesale / MERCHANDISE.nightgoods.quantity,
-    Math.floor(unitPrice(s, "reservoir") * (negotiated ? 0.85 : 0.75)),
+  const unit = s.crew.members.includes("quanny")
+    ? MERCHANDISE.nightgoods.wholesale / MERCHANDISE.nightgoods.quantity
+    : Math.max(
+        MERCHANDISE.nightgoods.wholesale / MERCHANDISE.nightgoods.quantity,
+        Math.floor(unitPrice(s, "reservoir") * (negotiated ? 0.85 : 0.75)),
+      );
+  const carried = carriedLotQuantity(s, s.playerId, lot.id);
+  const quantity = s.crew.members.includes("quanny")
+    ? (s.characters[s.playerId].inventory?.slots.find(
+        (x) => x.kind === "merchandise" && x.lotId === lot.id,
+      )?.quantity ?? 0)
+    : carried;
+  return { lot, quantity, amount: Math.round(quantity * unit) };
+}
+export function frontMerchandiseError(
+  s: GameState,
+  debtor: string,
+  negotiated = false,
+): string | null {
+  const terms = consignmentTerms(s, negotiated);
+  if (!terms) return "No Pink Magic on person.";
+  if (s.crew.members.includes(debtor)) {
+    const x = s.characters[s.playerId].inventory?.slots.find(
+      (x) => x.kind === "merchandise" && x.lotId === terms.lot.id,
+    );
+    return x
+      ? giveItemError(s, debtor, x.id, x.quantity)
+      : "No Pink Magic on person.";
+  }
+  if (lessonError(s)) return lessonError(s);
+  if (
+    (s.activeSession && s.activeSession.status !== "ended") ||
+    (s.activeRobbery && s.activeRobbery.status !== "ended")
+  )
+    return "Finish your current session first.";
+  if (!s.characters[debtor]) return "Unknown contact.";
+  if (s.streetLife && !s.streetLife.legacy && !atPerson(s, debtor))
+    return "Meet this contact in the City first.";
+  if (receivable(s, debtor)) return "Collect the existing agreement first.";
+  if (cash(s.characters[debtor]) < terms.amount)
+    return "Contact operating cash is unavailable.";
+  return gainError(
+    s,
+    debtor,
+    gain("nightgoods", terms.quantity, "consignment", "pending-lot"),
   );
-  return {
-    lot,
-    quantity: lot.remaining,
-    amount: Math.round(lot.remaining * unit),
-  };
 }
 export function frontMerchandise(
   s: GameState,
   debtor: string,
   negotiated = false,
 ) {
-  if (lessonError(s)) return;
-  if (
-    (s.activeSession && s.activeSession.status !== "ended") ||
-    (s.activeRobbery && s.activeRobbery.status !== "ended")
-  )
+  if (frontMerchandiseError(s, debtor, negotiated)) return;
+  if (s.crew.members.includes(debtor)) {
+    const terms = consignmentTerms(s, negotiated)!;
+    const slot = s.characters[s.playerId].inventory?.slots.find(
+      (x) => x.kind === "merchandise" && x.lotId === terms.lot.id,
+    );
+    if (!slot) return;
+    const result = giveItem(s, debtor, slot.id, slot.quantity);
+    if (typeof result !== "string") Object.assign(s, result);
     return;
-  if (s.streetLife && !s.streetLife.legacy && !atPerson(s, debtor)) return;
-  const terms = consignmentTerms(s, negotiated);
-  if (
-    !terms ||
-    receivable(s, debtor) ||
-    cash(s.characters[debtor]) < terms.amount
-  )
-    return;
+  }
+  const terms = consignmentTerms(s, negotiated)!;
   expense(s, s.characters[debtor], terms.amount, "Consignment payment reserve");
   const { lot: source, quantity, amount } = terms;
   const lotId = `lot-${s.nextId++}`,
     id = `agreement-${s.nextId++}`,
     commitmentId = `commitment-${s.nextId++}`,
     dueDay = s.day + STREET_BALANCE.deadline;
+  consumeLot(s, s.playerId, source.id, quantity);
   source.remaining -= quantity;
   source.transferred = (source.transferred ?? 0) + quantity;
   source.status = "distributed";
@@ -83,6 +131,7 @@ export function frontMerchandise(
     status: "held",
     agreementId: id,
   });
+  receivePhysical(s, debtor, gain("nightgoods", quantity, source.id, lotId));
   const e = record(
     s,
     "money",
@@ -128,6 +177,15 @@ export function collectConsignment(s: GameState, debtor: string) {
   const a = receivable(s, debtor);
   if (!a || s.day < a.dueDay || s.characters[debtor]?.status !== "active")
     return null;
+  if (a.setConsignment) {
+    const result = collectSetConsignment(s, a.id);
+    if (typeof result === "string") return null;
+    Object.assign(s, result);
+    return {
+      paid: true,
+      eventId: s.street.agreements.find((x) => x.id === a.id)!.history.at(-1)!,
+    };
+  }
   const p = player(s),
     paid = p.notoriety >= 35;
   const e = record(
@@ -194,6 +252,11 @@ export function validateConsignments(s: GameState) {
     const source = s.street.lots.find((l) => l.id === lot?.sourceLotId);
     const collections = a.collections ?? [];
     const result = collections[0];
+    const returnedInFull =
+      a.status === "fulfilled" &&
+      a.original === 0 &&
+      a.repaid === 0 &&
+      lot?.returned === a.quantity;
     if (
       !lot ||
       !source ||
@@ -204,13 +267,14 @@ export function validateConsignments(s: GameState) {
       !a.quantity ||
       collections.length > 1 ||
       (a.status === "pending" && collections.length !== 0) ||
-      (a.status !== "pending" && !result) ||
+      (a.status !== "pending" && !result && !returnedInFull) ||
       (result &&
         (result.day < a.dueDay ||
           !a.history.includes(result.eventId) ||
           (result.result === "paid") !== result.notoriety >= 35 ||
-          (result.result === "paid") !== (a.status === "fulfilled") ||
-          (result.result === "refused") !== (a.status === "disputed")))
+          (!returnedInFull &&
+            ((result.result === "paid") !== (a.status === "fulfilled") ||
+              (result.result === "refused") !== (a.status === "disputed")))))
     )
       throw new Error(
         "Save contains invalid consignment transfer or collection history.",
@@ -219,7 +283,9 @@ export function validateConsignments(s: GameState) {
   for (const lot of s.street.lots.filter((l) => l.sourceLotId))
     if (
       !s.street.agreements.some(
-        (a) => a.lotId === lot.id && a.createdDay !== undefined,
+        (a) =>
+          a.lotId === lot.id &&
+          (a.createdDay !== undefined || a.setConsignment),
       )
     )
       throw new Error(

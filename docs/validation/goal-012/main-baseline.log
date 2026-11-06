@@ -1,0 +1,90 @@
+
+> syndicate@0.1.0 test:e2e
+> playwright test tests/city-menu.spec.ts --grep City centers the five state-backed --output=/tmp/goal012-main-browser-results
+
+[WebServer] (node:10478) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:10496) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  1 [chromium-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions (28.4s)
+(node:10582) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Skipping host requirements validation logic because `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS` env variable is set.
+  ✘  2 [webkit-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions (18.4s)
+
+
+  1) [chromium-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-action="apply"]').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('[data-action="apply"]').first() with timeout 5000ms
+      - waiting for locator('[data-action="apply"]').first()
+
+
+      125 |   ).toBeVisible();
+      126 |   await nav(page, "Actions");
+    > 127 |   await expect(page.locator('[data-action="apply"]').first()).toBeVisible();
+          |                                                               ^
+      128 |   await expect(page.locator('[data-action="gig"]')).toHaveCount(1);
+      129 |   await page
+      130 |     .getByRole("button", { name: "Connects", exact: true })
+        at <main-baseline>/tests/city-menu.spec.ts:127:63
+
+    Error Context: ../../tmp/goal012-main-browser-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../tmp/goal012-main-browser-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../tmp/goal012-main-browser-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+    Expected: "true"
+    Received: "false"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true }) with timeout 5000ms
+      - waiting for getByRole('group', { name: 'Five neighborhoods of Stixx City' }).getByRole('button', { name: 'Select Downtown', exact: true })
+        14 × locator resolved to <button aria-pressed="false" aria-label="Select Downtown" aria-describedby="chip-desc-downtown">…</button>
+           - unexpected value "false"
+
+
+      62 |     });
+      63 |     await button.click();
+    > 64 |     await expect(button).toHaveAttribute("aria-pressed", "true");
+         |                          ^
+      65 |     await expect(page.locator(".zone-details h3")).toHaveText(zone.name);
+      66 |     await expect(
+      67 |       page.getByRole("meter", { name: "Police presence", exact: true }),
+        at <main-baseline>/tests/city-menu.spec.ts:64:26
+
+    Error Context: ../../tmp/goal012-main-browser-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-webkit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../tmp/goal012-main-browser-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-webkit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../tmp/goal012-main-browser-results/city-menu-City-centers-the-a1bdb-nd-keeps-actions-in-Actions-webkit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions
+    [webkit-mobile] › tests/city-menu.spec.ts:31:1 › City centers the five state-backed neighborhoods and keeps actions in Actions

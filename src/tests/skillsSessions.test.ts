@@ -1,3 +1,4 @@
+import { gain, receivePhysical, inventoryOf } from "../systems/Inventory";
 import { initiateConflict, violence } from "../systems/Danger";
 import { finalizeEnding } from "../systems/EndConditions";
 import { requestActivity } from "../systems/CrewAgency";
@@ -144,7 +145,7 @@ describe("eight canonical persistent skill tracks", () => {
     expect(missingMilestones(c, "combat", 2).join(" ")).toContain(
       "optional authored",
     );
-    equipmentOf(c).owned.push("arp");
+    receivePhysical(s, c.id, gain("arp"));
     expect(equip(c, "arp")).toBeTruthy();
     expect(p.milestones.certified).toBeUndefined();
   });
@@ -245,7 +246,7 @@ describe("equipment validation and combat eligibility", () => {
         p = skillsOf(c),
         key = id as keyof typeof EQUIPMENT;
       expect(equip(c, key)).toBeTruthy();
-      equipmentOf(c).owned.push(key);
+      receivePhysical(s, c.id, gain(key));
       expect(equip(c, key)).toBeTruthy();
       expect(equipmentBonus(c)).toMatchObject({ attack: 0, defense: 0 });
       p.milestones.certified = 1;
@@ -282,7 +283,7 @@ describe("equipment validation and combat eligibility", () => {
     const s = ready(),
       c = player(s),
       p = skillsOf(c);
-    equipmentOf(c).owned = ["law-19", "law-19-switch", "arp"];
+    for (const id of ["law-19", "law-19-switch", "arp"] as const) receivePhysical(s, c.id, gain(id));
     p.milestones = { certified: 1, violentSuccess: 12 };
     p.xp.combat = 6000;
     equip(c, "law-19");
@@ -302,9 +303,12 @@ describe("physical and transactional City sessions", () => {
     s.ap = 0;
     expect(validateStartStreetSession(s, "south.the-lot")).toContain("AP");
     s.ap = 1;
+    const physical = inventoryOf(s).slots;
+    player(s).inventory = {slots: []};
     s.street.lots[0].remaining = 0;
     expect(validateStartStreetSession(s, "south.the-lot")).toContain("on hand");
     s.street.lots[0].remaining = 6;
+    player(s).inventory = {slots: physical};
     s.street.markets.south.usedDay = s.day;
     s.street.markets.south.used = 6;
     expect(validateStartStreetSession(s, "south.the-lot")).toContain("demand");
@@ -328,6 +332,8 @@ describe("physical and transactional City sessions", () => {
     transact(s);
     expect(serialize(s)).toBe(before);
     s.street.lots[0].owner = "quanny";
+    s.characters.quanny.inventory = player(s).inventory;
+    player(s).inventory = {slots: []};
     const xp = skillsOf(s.characters.quanny).xp.trapper;
     transact(s, "quanny", "reservoir");
     expect(s.street.transactions).toHaveLength(1);
@@ -566,7 +572,7 @@ describe("physical and transactional City sessions", () => {
       delete c.equipment;
     }
     const loaded = deserialize(JSON.stringify(old));
-    expect(loaded.version).toBe(10);
+    expect(loaded.version).toBe(11);
     for (const key of ["wallet", "possessions", "relationships"] as const)
       expect(player(loaded)[key]).toEqual(player(s)[key]);
     expect(loaded.presence).toEqual(s.presence);
