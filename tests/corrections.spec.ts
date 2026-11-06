@@ -202,7 +202,17 @@ test("active Chains lives in City; fulfillment leaves only completed history", a
   await start(page);
   await storyline(page);
   const modal = page.getByRole("dialog", { name: "Character encounter" });
-  await modal.getByRole("button", { name: /I’ll help you/ }).click();
+  await tapUntil(
+    page,
+    modal.getByRole("button", { name: /I’ll help you/ }),
+    async () =>
+      (await state(page)).commitments.some(
+        (c: any) =>
+          c.kind === "recover-property" &&
+          c.actor === "player" &&
+          c.status === "pending",
+      ),
+  );
   await honest(page);
   await clickAction(page, "gig");
   await storyAction(page, "buyback");

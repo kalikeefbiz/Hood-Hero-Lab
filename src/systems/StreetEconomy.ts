@@ -209,12 +209,19 @@ export function supplierError(
         trust < -10
   )
     return "Repair this supplier relationship; actual enemies cannot arrange supply.";
+  const cashIntro =
+    s.streetLife &&
+    !s.streetLife.legacy &&
+    s.streetLife.lesson === "waiting" &&
+    s.streetLife.initialDecision !== "promise";
   if (
     mega &&
-    s.streetLife?.initialDecision === "decline" &&
-    arrangement !== "cash"
+    arrangement === "consignment" &&
+    (s.streetLife?.initialDecision === "decline" || cashIntro)
   )
-    return "Mega remembers the refusal. Family can still buy, but CASH terms only.";
+    return s.streetLife?.initialDecision === "decline"
+      ? "Mega remembers the refusal. Family can still buy, but CASH terms only."
+      : "No commitment was made. Your first six from Mega are on CASH terms only.";
   if (!mega) {
     if (trust < B.trust)
       return "Supplier requires at least 20 trust. Spend time together first.";

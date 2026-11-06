@@ -29,11 +29,18 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
       ? `You owe me $${debts.reduce((v, a) => v + a.balance, 0)} across ${debts.length} agreement(s): ${debts.map((a) => `${a.id}, $${a.balance}, day ${a.dueDay}${a.status === "overdue" ? " (late)" : ""}`).join("; ")}. Each clock stays separate. `
       : "";
     const cashOnly =
-      n.id === "mega" && s.streetLife?.initialDecision === "decline";
+      n.id === "mega" &&
+      (s.streetLife?.initialDecision === "decline" ||
+        (s.streetLife &&
+          !s.streetLife.legacy &&
+          s.streetLife.lesson === "waiting" &&
+          s.streetLife.initialDecision !== "promise"));
     const tone =
       n.id === "mega"
         ? cashOnly
-          ? "You said you couldn’t help with the chain. I’m disappointed, but you’re family. I’ll supply you on CASH terms only, no fronts."
+          ? s.streetLife?.initialDecision === "decline"
+            ? "You said you couldn’t help with the chain. I’m disappointed, but you’re family. I’ll supply you on CASH terms only, no fronts."
+            : "You never committed, but you’re still family. The first six for this lesson are CASH only, no fronts."
           : "Cuzzo, you’re family. I’ll supply you unless we become actual enemies. Every pack keeps its own terms."
         : n.id === "pablo"
           ? "You give your word, you keep it. I remember who does."

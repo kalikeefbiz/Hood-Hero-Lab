@@ -624,9 +624,12 @@ export function resolveAction(s: GameState, a: Action) {
       i!.paidDemand = i!.demand;
       i!.cleanFullPrice =
         i!.demand === (i!.originalDemand ?? 150) &&
+        !i!.helpRequested &&
         !i!.leadershipAware &&
         !i!.interventions.some((x) =>
-          ["failed-recovery", "settlement", "negotiate"].includes(x.type),
+          ["failed-recovery", "settlement", "negotiate", "favor"].includes(
+            x.type,
+          ),
         ) &&
         !i!.negotiated;
       const paid = expense(s, c, i!.demand, "Property buyback")!;

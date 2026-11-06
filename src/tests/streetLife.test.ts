@@ -19,7 +19,8 @@ import {
   currentEncounter,
   syncEncounters,
   openStoryline,
-  openEncounter, dismissEncounter,
+  openEncounter,
+  dismissEncounter,
 } from "../systems/EncounterLifecycle";
 import { respondEncounter } from "../systems/Encounters";
 import {
@@ -579,10 +580,87 @@ it("Day 3 Flacco waits behind another conversation and can be deferred without a
   expect(() => deserialize(JSON.stringify(broken))).toThrow();
 });
 
-it('closing the first collective confrontation never avoids or resets the three personal conflicts',()=>{
- let s=trained();resolveIncident(s,s.incidents['the-chains'],'recovered','player');clear(s);person(s,'dizzy');syncEncounters(s);
- expect(s.streetLife!.aftermath).toBe('hostile');expect(s.danger.conflicts.filter(c=>c.participants.includes('player'))).toHaveLength(3);
- const event=s.streetLife!.aftermathEvent;const e=s.encounters.find(e=>e.definitionId==='trio-aftermath')!;
- s=openEncounter(s,e.id);s=dismissEncounter(s,e.id);syncEncounters(s);
- expect(s.streetLife!.aftermathEvent).toBe(event);expect(s.danger.conflicts.filter(c=>c.participants.includes('player'))).toHaveLength(3);
+it("closing the first collective confrontation never avoids or resets the three personal conflicts", () => {
+  let s = trained();
+  resolveIncident(s, s.incidents["the-chains"], "recovered", "player");
+  clear(s);
+  person(s, "dizzy");
+  syncEncounters(s);
+  expect(s.streetLife!.aftermath).toBe("hostile");
+  expect(
+    s.danger.conflicts.filter((c) => c.participants.includes("player")),
+  ).toHaveLength(3);
+  const event = s.streetLife!.aftermathEvent;
+  const e = s.encounters.find((e) => e.definitionId === "trio-aftermath")!;
+  s = openEncounter(s, e.id);
+  s = dismissEncounter(s, e.id);
+  syncEncounters(s);
+  expect(s.streetLife!.aftermathEvent).toBe(event);
+  expect(
+    s.danger.conflicts.filter((c) => c.participants.includes("player")),
+  ).toHaveLength(3);
+});
+
+it.each(["buyback", "sold"] as const)(
+  "a %s resolution without a formal promise cannot strand the work tutorial",
+  (outcome) => {
+    let s = newGame("No word", "south");
+    resolveIncident(
+      s,
+      s.incidents["the-chains"],
+      outcome,
+      outcome === "buyback" ? "player" : "dizzy",
+    );
+    expect(s.streetLife!.decision).toBe("delay");
+    expect(s.streetLife!.initialDecision).toBeUndefined();
+    clear(s);
+    at(s, "nawf.street-market");
+    s = performAction(s, { actor: "player", type: "gig" }).state;
+    expect(s.streetLife!.workEvent).toBeTruthy();
+    s.day = 3;
+    giveFlaccoStock(s);
+    expect(s.street.lots).toHaveLength(0);
+  },
+);
+
+it("the no-commitment starter is CASH only as well as the explicit refusal starter", () => {
+  let s = newGame("No commitment", "south");
+  s = choose(s, "delay");
+  at(s, "south.food-mart");
+  s = performAction(s, {
+    actor: "player",
+    type: "apply",
+    jobId: "retail-south",
+  }).state;
+  person(s, "mega");
+  expect(supplierError(s, "mega", "consignment")).toMatch(/CASH/);
+  expect(supplierError(s, "mega", "cash")).toBeNull();
+  acquire(s, "mega", "cash");
+  expect(s.street.lots[0]).toMatchObject({ received: 6, cost: 90, owed: 0 });
+  expect(cash(player(s))).toBe(35);
+  expect(s.street.agreements).toHaveLength(0);
+});
+
+it("full payment after recruiting dispute support is not a clean buster outcome", () => {
+  let s = trained();
+  s.ap = 2;
+  player(s).wallet.clean = 200;
+  s.incidents["the-chains"].informed = true;
+  const support = performAction(s, {
+    actor: "player",
+    type: "favor",
+    target: "mega",
+    incidentId: "the-chains",
+  });
+  expect(support.error).toBeNull();
+  s = support.state;
+  const paid = performAction(s, {
+    actor: "player",
+    type: "buyback",
+    incidentId: "the-chains",
+  });
+  expect(paid.error).toBeNull();
+  s = paid.state;
+  expect(s.incidents["the-chains"].cleanFullPrice).toBe(false);
+  expect(trioOutcome(s)).toBe("nonfactor");
 });
