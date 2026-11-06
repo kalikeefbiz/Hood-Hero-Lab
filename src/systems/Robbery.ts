@@ -1,3 +1,11 @@
+import {
+  gain,
+  gainError,
+  receivePhysical,
+  inventoryOf,
+  removePhysical,
+  syncCarried,
+} from "./Inventory";
 import { remember, change } from "./Relationships";
 import { z } from "zod";
 import { player, cash, clamp, type GameState } from "../core/GameState";
@@ -13,7 +21,12 @@ import { currentEncounter } from "./EncounterLifecycle";
 import { TRIO, lessonError, personalBeef } from "./StreetAccess";
 import { atPerson } from "./StreetLife";
 import { skillsOf, skillRank, awardCombat, awardRobbery } from "./Skills";
-import { equipmentOf, grantEquipment } from "./Equipment";
+import {
+  equipmentOf,
+  grantEquipment,
+  equipError,
+  equipmentBonus,
+} from "./Equipment";
 const uint = z.number().int().nonnegative();
 const prepId = z.enum(["gloves", "mask", "duffle", "pattern-token"]);
 const kind = z.enum(["strong-arm", "home", "store", "bank"]);
@@ -260,7 +273,7 @@ export function purchasePrepError(
   if (cash(player(s)) < d.price) return `Requires $${d.price}.`;
   if ((s.robberies?.items[item] ?? 0) >= 2)
     return "You already hold two; this shop limits personal stock.";
-  return null;
+  return gainError(s, s.playerId, gain(item));
 }
 export function purchasePrep(state: GameState, item: PrepId, location: string) {
   if (purchasePrepError(state, item, location)) return state;
@@ -270,6 +283,7 @@ export function purchasePrep(state: GameState, item: PrepId, location: string) {
   s.ap--;
   expense(s, player(s), d.price, `City supplies · ${d.name}`);
   r.items[item]++;
+  receivePhysical(s, s.playerId, gain(item));
   const e = record(
     s,
     "money",
@@ -316,9 +330,15 @@ export function robberyStartError(s: GameState, jobId: string) {
     skillRank(player(s), "robbery") < d.robbery
   )
     return `Requires Combat rank ${d.combat} and Robbery rank ${d.robbery}.`;
-  if (d.weapon && equipmentOf(player(s)).equipped !== d.weapon)
+  if (
+    d.weapon &&
+    (equipmentOf(player(s)).equipped !== d.weapon ||
+      equipError(player(s), d.weapon))
+  )
     return `Requires equipped ${d.weapon}. Seek equipment through a trusted contact after certification.`;
-  const missing = d.prep.filter((id) => !s.robberies?.items[id as PrepId]);
+  const missing = d.prep.filter(
+    (id) => !inventoryOf(s).slots.some((x) => x.itemId === id),
+  );
   if (missing.length)
     return `Prepare in the City: ${missing.map((id) => PREPARATION[id as PrepId].name).join(", ")}.`;
   return null;
@@ -332,6 +352,9 @@ export function startRobbery(state: GameState, jobId: string) {
   j.status = "active";
   for (const item of ROBBERY_TYPES[j.kind].prep) {
     s.robberies!.items[item as PrepId]--;
+    const slot = inventoryOf(s).slots.find((x) => x.itemId === item)!;
+    removePhysical(inventoryOf(s), slot.id, 1);
+    syncCarried(player(s));
     s.streetLife?.exchanges.push({
       id: `prep-use-${s.nextId++}`,
       item: PREPARATION[item as PrepId].name,
@@ -433,7 +456,10 @@ export function robberyInput(
   s.rng = rng;
   const d = ROBBERY_TYPES[j.kind],
     chance = clamp(
-      0.44 + a.score * 0.11 + (answer === "leave" ? 0.08 : -0.08),
+      0.44 +
+        a.score * 0.11 +
+        equipmentBonus(player(s)).attack / 100 +
+        (answer === "leave" ? 0.08 : -0.08),
       0.12,
       0.88,
     );
@@ -558,7 +584,7 @@ export function equipmentContactError(s: GameState, id: string) {
   if (equipmentOf(player(s)).owned.includes("law-19"))
     return "You already own a Law-19.";
   if (cash(player(s)) < 75 || s.ap < 1) return "Requires $75 and 1 AP.";
-  return null;
+  return gainError(s, s.playerId, gain("law-19"));
 }
 export function obtainContactEquipment(state: GameState, id: string) {
   if (equipmentContactError(state, id)) return state;
@@ -601,7 +627,26 @@ export function validateRobberyReferences(s: GameState) {
     (Object.keys(PREPARATION) as PrepId[]).some(
       (item) =>
         r.items[item] !==
-        r.purchases.filter((p) => p.item === item).length -
+        r.purchases.filter((p) => p.item === item).length +
+          (s.inventory?.history
+            .filter(
+              (h) =>
+                h.itemId === item &&
+                h.to === s.playerId &&
+                h.from !== s.playerId &&
+                !h.from.startsWith("overflow:") &&
+                !!s.characters[h.from],
+            )
+            .reduce((n, h) => n + h.quantity, 0) ?? 0) -
+          (s.inventory?.history
+            .filter(
+              (h) =>
+                h.itemId === item &&
+                h.from === s.playerId &&
+                (h.to === "lost" || !!s.characters[h.to]) &&
+                h.to !== s.playerId,
+            )
+            .reduce((n, h) => n + h.quantity, 0) ?? 0) -
           r.jobs.filter(
             (j) =>
               ["active", "success", "partial", "failed"].includes(j.status) &&

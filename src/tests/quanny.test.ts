@@ -515,6 +515,7 @@ describe("directional consignment, collection and persistent relationships", () 
     bad.quanny.history.push("fabricated");
     expect(() => deserialize(serialize(bad))).toThrow();
     const old = JSON.parse(serialize(newGame("Old", "south")));
+    old.version = old.state.version = 8;
     delete old.state.quanny;
     delete old.state.characters.quanny;
     delete old.state.characters["mr-lewis"];

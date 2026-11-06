@@ -32,6 +32,7 @@ export interface Character {
   lastActionDay: number;
   traits: { loyalty: number; ambition: number; risk: number; lawful: number };
   skillProgress?: import("../systems/Skills").SkillProgress;
+  inventory?: import("../systems/Inventory").Inventory;
   equipment?: import("../systems/Equipment").Equipment;
   skills: { social: number; work: number; recovery: number };
   agency: {
@@ -223,7 +224,9 @@ export interface GameState {
   quanny: import("../systems/QuannyState").QuannyState;
   danger: import("../systems/DangerState").DangerState;
   presence?: import("../board/presence").Presence;
-  version: 8 | 9 | 10;
+  version: 8 | 9 | 10 | 11;
+  inventory?: import("../systems/Inventory").InventoryState;
+  residences?: Record<string, import("../systems/Residences").Residence>;
   streetLife?: import("../systems/StreetLifeState").StreetLifeState;
   activeRobbery?: import("../systems/Robbery").RobberySession;
   robberies?: import("../systems/Robbery").RobberyState;

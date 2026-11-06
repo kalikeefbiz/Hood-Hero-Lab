@@ -1,3 +1,4 @@
+import { gain, gainError, receivePhysical } from "./Inventory";
 import { z } from "zod";
 import type { Character } from "../core/GameState";
 import { skillRank } from "./Skills";
@@ -37,7 +38,12 @@ export const equipmentOf = (c: Character) =>
   (c.equipment ??= { owned: [], equipped: null });
 export function equipError(c: Character, id: EquipmentId | null) {
   if (id === null) return null;
-  if (!EQUIPMENT[id] || !equipmentOf(c).owned.includes(id))
+  if (
+    !EQUIPMENT[id] ||
+    !(c.inventory
+      ? c.inventory.slots.some((x) => x.kind === "equipment" && x.itemId === id)
+      : equipmentOf(c).owned.includes(id))
+  )
     return "Item is not owned.";
   if (skillRank(c, "combat") < EQUIPMENT[id].rank)
     return `Requires Combat rank ${EQUIPMENT[id].rank}.`;
@@ -53,6 +59,29 @@ export function equipmentBonus(c: Character) {
   return id && !equipError(c, id) ? EQUIPMENT[id] : { attack: 0, defense: 0 };
 }
 
+/** Retryable story-reward preflight; a rejected grant does not consume its source event. */
+export function grantEquipmentError(
+  s: import("../core/GameState").GameState,
+  actor: string,
+  id: EquipmentId,
+  sourceEventId: string,
+) {
+  if (
+    !s.characters[actor] ||
+    !EQUIPMENT[id] ||
+    !s.events.some((e) => e.id === sourceEventId && e.actors.includes(actor))
+  )
+    return "A real authored equipment reward is required.";
+  if (
+    s.inventory?.operations.includes(
+      `equipment:${actor}:${id}:${sourceEventId}`,
+    )
+  )
+    return "Equipment reward already claimed.";
+  if (equipmentOf(s.characters[actor]).owned.includes(id))
+    return "Equipment already carried.";
+  return gainError(s, actor, gain(id, 1, sourceEventId));
+}
 /** Integration hook for an authored story/contact outcome; never a store purchase. */
 export function grantEquipment(
   s: import("../core/GameState").GameState,
@@ -60,15 +89,12 @@ export function grantEquipment(
   id: EquipmentId,
   sourceEventId: string,
 ) {
-  const c = s.characters[actor];
-  if (
-    !c ||
-    !EQUIPMENT[id] ||
-    !s.events.some((e) => e.id === sourceEventId && e.actors.includes(actor))
-  )
-    return false;
-  const inventory = equipmentOf(c);
-  if (inventory.owned.includes(id)) return false;
-  inventory.owned.push(id);
+  if (grantEquipmentError(s, actor, id, sourceEventId)) return false;
+  receivePhysical(s, actor, gain(id, 1, sourceEventId));
+  (s.inventory ??= {
+    overflow: {},
+    history: [],
+    operations: [],
+  }).operations.push(`equipment:${actor}:${id}:${sourceEventId}`);
   return true;
 }
