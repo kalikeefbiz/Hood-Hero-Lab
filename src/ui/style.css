@@ -1801,8 +1801,9 @@ html {
   border: 2px solid;
   flex: none;
 }
-.exchange-side.give img { border-color: #d65ae0; }
-.exchange-side.get img { border-color: #4fc27a; }
+.exchange-side.item img { border-color: #d65ae0; }
+.exchange-side.cash img { border-color: #4fc27a; }
+.exchange-side.cash.give img { border-color: #e0a85a; }
 .exchange-side div { display: grid; line-height: 1.1; min-width: 0; }
 .exchange-side strong {
   font: 700 18px/1 "Barlow Condensed", "Arial Narrow", sans-serif;
@@ -1816,8 +1817,11 @@ html {
   text-transform: uppercase;
   color: var(--muted);
 }
-.exchange-side.get strong { color: #8be0a8; font-size: 22px; }
-.exchange-side.get small:first-of-type { color: #6fcf91; }
+.exchange-side.cash strong { font-size: 22px; }
+.exchange-side.cash.get strong { color: #8be0a8; }
+.exchange-side.cash.get small:first-of-type { color: #6fcf91; }
+.exchange-side.cash.give strong { color: #f0c08a; }
+.exchange-side.cash.give small:first-of-type { color: #e0a85a; }
 .exchange-side .exchange-note { text-transform: none; letter-spacing: 0; }
 .exchange-arrows {
   display: grid;

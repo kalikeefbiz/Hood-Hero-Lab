@@ -1,5 +1,4 @@
 import { KnownCharacterLocation } from "./KnownCharacterLocation";
-import { MERCHANDISE } from "../content/street";
 import type { GameState } from "../core/GameState";
 import { player } from "../core/GameState";
 import {
@@ -14,9 +13,10 @@ import {
   contactError,
   introductionCandidates,
 } from "../systems/Relationships";
-import { suppliers, supplierError } from "../systems/StreetEconomy";
+import { suppliers } from "../systems/StreetEconomy";
 import { currentEmployment, absenceWarning } from "../systems/Employment";
 import { ActionCard } from "./ActionCard";
+import { PlugEntry } from "./PlugEntry";
 import { EmploymentSummary } from "./EmploymentSummary";
 import { StreetWork } from "./StreetWork";
 export type ActionCategory = "Streets" | "Honest" | "Connects";
@@ -72,14 +72,6 @@ export function ActionsHub({
   const lock = contactError(s, p.id, c.id),
     rel = c.relationships[p.id];
   const supplier = suppliers(s).some((n) => n.id === c.id);
-  const cashError = supplierError(s, c.id, "cash"),
-    consError = supplierError(s, c.id, "consignment");
-  const reasons = [
-    ...new Set([cashError, consError].filter((x): x is string => !!x)),
-  ];
-  const debt = s.street.agreements.find(
-    (a) => a.supplier === c.id && a.debtor === p.id && a.balance > 0,
-  );
   const social: ActionType[] = [
     "contact",
     "inquire",
@@ -194,31 +186,7 @@ export function ActionsHub({
             ) : (
               <>
                 {supplier && (
-                  <div className="supplier-entry" aria-label="Supplier offer">
-                    <strong>
-                      {debt
-                        ? `Outstanding: $${debt.balance} · due day ${debt.dueDay}`
-                        : "Pink Magic · limited lot"}
-                    </strong>
-                    {!debt && (
-                      <p>
-                        {MERCHANDISE.nightgoods.quantity} units · $
-                        {MERCHANDISE.nightgoods.wholesale} cash / $
-                        {MERCHANDISE.nightgoods.consignment} consignment · 1 AP
-                      </p>
-                    )}
-                    <button onClick={() => openSupplier(c.id)}>
-                      {debt
-                        ? `Talk repayment with ${c.alias ?? c.name}`
-                        : `Talk terms with ${c.alias ?? c.name}`}
-                    </button>
-                    {!debt &&
-                      reasons.map((r) => (
-                        <p className="disabled-reason" key={r}>
-                          {r}
-                        </p>
-                      ))}
-                  </div>
+                  <PlugEntry s={s} id={c.id} open={openSupplier} />
                 )}
                 <div className="connect-actions">
                   {s.ap === 0 && (
