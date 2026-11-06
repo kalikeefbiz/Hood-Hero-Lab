@@ -1,3 +1,4 @@
+import { pabloError } from "./StreetAccess";
 import {
   clamp,
   type Character,
@@ -82,7 +83,7 @@ export function initializeRelationships(s: GameState) {
         c.id !== s.playerId ||
         ["mega", "flacco"].includes(id) ||
         id.startsWith("resident-") ||
-        id.startsWith("contact-"),
+        (id.startsWith("contact-") && id !== "contact-angels"),
     );
   }
   // Cordial awareness of Mega's established name is not friendship or player protection.
@@ -139,6 +140,7 @@ export function contactError(
   actor: string,
   target: string,
 ): string | null {
+  if (actor === s.playerId && pabloError(s, target)) return pabloError(s,target);
   const c = s.characters[actor],
     n = s.characters[target];
   if (!n || !c?.known.includes(target))
@@ -169,6 +171,7 @@ export function introductionCandidates(
       f.leaders.includes(id),
     );
     return (
+      (actor !== s.playerId || (!pabloError(s,id) && id!=="contact-angels")) &&
       id !== actor &&
       x?.status === "active" &&
       !c.connections.includes(id) &&

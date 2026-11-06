@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import manifest from "../../docs/design/QUANNY_PORTRAITS.json";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import { player, type GameState } from "../core/GameState";
 import { moveTo } from "../board/presence";
 import { connect } from "../systems/Relationships";

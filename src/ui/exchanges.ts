@@ -10,22 +10,44 @@ import type { StreetTransaction } from "../systems/StreetTypes";
  * merchandise or cash, and either can be missing.
  */
 export type ExchangeSide =
-  | { kind: "item"; name: string; quantity: number; icon: string; label: string; note?: string }
-  | { kind: "cash"; amount: number; provenance: "illicit" | "clean" | "any"; icon: string; label: string; note?: string };
+  | {
+      kind: "item";
+      name: string;
+      quantity: number;
+      icon: string;
+      label: string;
+      note?: string;
+    }
+  | {
+      kind: "cash";
+      amount: number;
+      provenance: "illicit" | "clean" | "any";
+      icon: string;
+      label: string;
+      note?: string;
+    };
 export interface Exchange {
   id: string;
   give?: ExchangeSide;
   get?: ExchangeSide;
 }
 
-const art = (file: string) => `${import.meta.env.BASE_URL}assets/items/${file}.webp`;
+const art = (file: string) =>
+  `${import.meta.env.BASE_URL}assets/items/${file}.webp`;
 /** Inventory art by merchandise category. Missing art means no icon, never a stand-in. */
-export const ITEM_ICONS: Record<string, string> = { nightgoods: art("pink-magic") };
+export const ITEM_ICONS: Record<string, string> = {
+  nightgoods: art("pink-magic"),
+};
 export const CASH_ICON = art("cash");
 
 const itemName = (category: string) =>
   (MERCHANDISE as Record<string, { name: string }>)[category]?.name ?? category;
-const item = (category: string, quantity: number, label: string, note?: string): ExchangeSide => ({
+const item = (
+  category: string,
+  quantity: number,
+  label: string,
+  note?: string,
+): ExchangeSide => ({
   kind: "item",
   name: itemName(category),
   quantity,
@@ -38,12 +60,22 @@ const money = (
   label: string,
   provenance: "illicit" | "clean" | "any" = "illicit",
   note?: string,
-): ExchangeSide => ({ kind: "cash", amount, provenance, icon: CASH_ICON, label, note });
+): ExchangeSide => ({
+  kind: "cash",
+  amount,
+  provenance,
+  icon: CASH_ICON,
+  label,
+  note,
+});
 const nameOf = (s: GameState, id: string) =>
   s.characters[id]?.alias ?? s.characters[id]?.name ?? "them";
 
 /** The player's side of one street transaction, or null when they got nothing. */
-export function streetExchange(s: GameState, t: StreetTransaction): Exchange | null {
+export function streetExchange(
+  s: GameState,
+  t: StreetTransaction,
+): Exchange | null {
   if (!t.sold || !t.gross) return null; // failures keep their own feedback
   const lot = s.street.lots.find((l) => l.id === t.lotId);
   const category = lot?.category ?? "nightgoods";
@@ -55,13 +87,20 @@ export function streetExchange(s: GameState, t: StreetTransaction): Exchange | n
         t.gross,
         "Illicit cash received",
         "illicit",
-        t.partner && t.crewPaid ? `$${t.crewPaid} to ${nameOf(s, t.partner)}` : undefined,
+        t.partner && t.crewPaid
+          ? `$${t.crewPaid} to ${nameOf(s, t.partner)}`
+          : undefined,
       ),
     };
   if (t.partner === s.playerId && t.crewPaid)
     return {
       id: t.id,
-      get: money(t.crewPaid, "Illicit cash received", "illicit", `Share from ${nameOf(s, t.actor)}`),
+      get: money(
+        t.crewPaid,
+        "Illicit cash received",
+        "illicit",
+        `Share from ${nameOf(s, t.actor)}`,
+      ),
     };
   return null;
 }
@@ -71,6 +110,7 @@ export interface ExchangeBaseline {
   firstTx: string | null;
   txCount: number;
   lots: string[];
+  lifeIds: string[];
   repaid: Record<string, number>;
 }
 export function baseline(s: GameState): ExchangeBaseline {
@@ -78,6 +118,7 @@ export function baseline(s: GameState): ExchangeBaseline {
     firstTx: s.street.transactions[0]?.id ?? null,
     txCount: s.street.transactions.length,
     lots: s.street.lots.map((l) => l.id),
+    lifeIds: s.streetLife?.exchanges.map((e) => e.id) ?? [],
     repaid: Object.fromEntries(
       s.street.agreements
         .filter((a) => a.debtor === s.playerId)
@@ -104,9 +145,38 @@ export function newExchanges(
     Object.entries(seen.repaid).every(([id, n]) => (next.repaid[id] ?? n) >= n);
   if (!continues) return { exchanges: [], seen: next };
   const exchanges: Exchange[] = [];
+  for (const e of s.streetLife?.exchanges ?? [])
+    if (!seen.lifeIds.includes(e.id)) {
+      const goods = e.item
+        ? {
+            kind: "item" as const,
+            name: e.item,
+            quantity: e.quantity,
+            icon: "",
+            label: e.direction === "give" ? "Used" : "Received",
+          }
+        : undefined;
+      exchanges.push({
+        id: e.id,
+        give:
+          e.direction === "give"
+            ? goods
+            : e.paid
+              ? money(e.paid, "Paid", "any")
+              : undefined,
+        get:
+          e.direction === "give"
+            ? undefined
+            : (goods ??
+              (e.received
+                ? money(e.received, "Received", e.provenance ?? "any")
+                : undefined)),
+      });
+    }
   // A pack from a plug: the merchandise in, and the cash out if paid up front.
   for (const l of s.street.lots.slice(seen.lots.length)) {
-    if (l.owner !== s.playerId || l.acquiredDay !== s.day || l.sourceLotId) continue;
+    if (l.owner !== s.playerId || l.acquiredDay !== s.day || l.sourceLotId)
+      continue;
     const from = nameOf(s, l.supplier);
     exchanges.push({
       id: l.id,

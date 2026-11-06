@@ -1,7 +1,7 @@
 import { oneBuyer } from "./sessionFixtures";
 import { acquire } from "../systems/StreetEconomy";
 import { describe, expect, it } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import { advanceDay } from "../core/TimeSystem";
 import { cash, player, type GameState } from "../core/GameState";
 import { performAction, actionSuccessChance } from "../core/ActionEngine";

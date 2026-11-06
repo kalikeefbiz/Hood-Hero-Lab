@@ -1,3 +1,4 @@
+import { lessonError } from "./StreetAccess";
 import {
   player,
   cash,
@@ -109,6 +110,7 @@ export function quannyError(s: GameState) {
   return null;
 }
 export function businessError(s: GameState) {
+  if(lessonError(s)) return lessonError(s);
   const q = s.characters.quanny,
     p = player(s),
     r = q.relationships[p.id];

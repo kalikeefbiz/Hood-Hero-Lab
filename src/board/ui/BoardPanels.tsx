@@ -1,3 +1,5 @@
+import { pabloError } from "../../systems/StreetAccess";
+import { LifePerson, LifePlace } from "../../ui/StreetLife";
 import { KnownCharacterLocation } from "../../ui/KnownCharacterLocation";
 import { PlugEntry, isPlug, plugDebt, plugStatus } from "../../ui/PlugEntry";
 import { boardPeople } from "../people";
@@ -343,6 +345,7 @@ export function PlaceSheet({
           </button>
         )}
       </div>
+      <LifePlace s={s} location={l.id} change={setState} />
       <RiskBadge risk={assessRisk(s, l.id)} />
       <p>{l.description}</p>
       {facts.map((f) => (
@@ -538,6 +541,7 @@ export function RiskBadge({
 export function PersonInspector({
   s,
   personId,
+  onChange,
   renderAction,
   openProfile,
   openPlug,
@@ -545,6 +549,7 @@ export function PersonInspector({
 }: {
   s: GameState;
   personId: string;
+  onChange: (s:GameState)=>void;
   renderAction: (a: import("../../core/ActionEngine").Action) => ReactNode;
   openProfile: (id: string) => void;
   /** Open the plug conversation (terms or repayment). */
@@ -558,11 +563,10 @@ export function PersonInspector({
   const known = p.known.includes(c.id);
   const rel = c.relationships[p.id];
   const moves = availableActions(s)
-    .filter((a) => a.target === c.id)
+    .filter((a) => a.target === c.id && !pabloError(s,c.id))
     .sort(
       (a, b) => Number(!!validateAction(s, a)) - Number(!!validateAction(s, b)),
-    )
-    .slice(0, 6);
+    );
   return (
     <section
       className="panel board-card person-card"
@@ -591,6 +595,7 @@ export function PersonInspector({
           : "You haven't been introduced. Ask around, or get someone you know to vouch for you."}
       </p>
       {known && <KnownCharacterLocation s={s} id={c.id} />}
+      {known && <LifePerson s={s} id={c.id} change={onChange} />}
       {known && rel && c.id !== "quanny" && (
         <p className="board-facts">
           Trust {Math.round(rel.trust)} · Respect {Math.round(rel.respect)}

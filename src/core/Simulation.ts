@@ -1,3 +1,4 @@
+import { newStreetLife } from "../systems/StreetLifeState";
 import { skillsOf } from "../systems/Skills";
 import { equipmentOf } from "../systems/Equipment";
 import { beginQuanny } from "../systems/Quanny";
@@ -33,7 +34,8 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
     },
   );
   const s: GameState = {
-    version: 9,
+    version: 10,
+    streetLife: newStreetLife(),
     quanny: newQuannyState(),
     danger: newDangerState(seed),
     strategic: newStrategy({ zones: ZONES, factions: FACTIONS }),

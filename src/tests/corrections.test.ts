@@ -1,6 +1,6 @@
 import { oneBuyer } from "./sessionFixtures";
 import { describe, it, expect } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import { performAction, validateAction } from "../core/ActionEngine";
 import { advanceDay } from "../core/TimeSystem";
 import { player, type GameState, type ZoneId } from "../core/GameState";
@@ -40,7 +40,7 @@ describe("006.1 believable access and limited story access", () => {
         expect(accessStatus(s, "player", id)).toBe("Known of");
         expect(
           validateAction(s, { type: "contact", actor: "player", target: id }),
-        ).toContain("not connected");
+        ).toContain(id === "pablo" ? "Big Dog" : "not connected");
         expect(openSupplier(s, id)).toBe(s);
       }
       s = action(s, "contact", "mega");
@@ -63,6 +63,9 @@ describe("006.1 believable access and limited story access", () => {
     expect(
       s.characters.dizzy.relationships.player.trust,
     ).toBeGreaterThanOrEqual(35);
+    expect(validateAction(s,{type:'introduce',target:'dizzy',actor:'player'})).not.toBeNull();
+    expect(player(s).connections).not.toContain('pablo');
+    player(s).affiliation='angels';
     s = action(s, "introduce", "dizzy");
     expect(player(s).connections).toContain("pablo");
     expect(deserialize(serialize(s))).toEqual(s);

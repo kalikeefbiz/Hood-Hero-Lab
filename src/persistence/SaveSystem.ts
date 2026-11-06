@@ -1,6 +1,16 @@
+import { streetLifeSchema, newStreetLife } from "../systems/StreetLifeState";
+import {
+  robberyStateSchema,
+  robberySessionSchema,
+  validateRobberyReferences,
+} from "../systems/Robbery";
+import { residents } from "../content/characters";
 import { skillProgressSchema, skillsOf } from "../systems/Skills";
 import { equipmentSchema, equipmentOf } from "../systems/Equipment";
-import { streetSessionSchema, validateSessionReferences } from "../systems/StreetSessions";
+import {
+  streetSessionSchema,
+  validateSessionReferences,
+} from "../systems/StreetSessions";
 import {
   change,
   relationship as relationshipOf,
@@ -123,8 +133,11 @@ const schema = z.object({
   presence: presenceSchema.optional(),
   quanny: quannySchema.default(newQuannyState),
   danger: dangerSchema.default(() => newDangerState()),
-  version: z.union([z.literal(8), z.literal(9)]),
+  version: z.union([z.literal(8), z.literal(9), z.literal(10)]),
   activeSession: streetSessionSchema.optional(),
+  streetLife: streetLifeSchema.optional(),
+  robberies: robberyStateSchema.optional(),
+  activeRobbery: robberySessionSchema.optional(),
   street: streetSchema,
   strategic: strategicSchema,
   day: integer.min(1),
@@ -186,6 +199,10 @@ const schema = z.object({
       organization: faction,
       property: id,
       startedDay: integer,
+      originalDemand: nonnegative.optional(),
+      reducedDemand: nonnegative.optional(),
+      paidDemand: nonnegative.optional(),
+      cleanFullPrice: z.boolean().optional(),
       demand: nonnegative,
       minimumDemand: nonnegative,
       escalation: n,
@@ -424,13 +441,13 @@ export function deserialize(raw: string): GameState {
   const envelope = z
     .object({
       format: z.literal("syndicate"),
-      version: z.union([z.literal(8), z.literal(9)]),
+      version: z.union([z.literal(8), z.literal(9), z.literal(10)]),
       state: schema,
     })
     .safeParse(parsed);
   if (!envelope.success)
     throw new Error(
-      "Incompatible or damaged save. Expected Hood Hero save version 8 or 9. Start a new test run from the new game menu.",
+      "Incompatible or damaged save. Expected Hood Hero save version 8, 9 or 10. Start a new test run from the new game menu.",
     );
   const s: GameState = envelope.data.state;
   if (s.version === 8) {
@@ -438,11 +455,42 @@ export function deserialize(raw: string): GameState {
       e.text = e.text.replace(/night goods/gi, "Pink Magic");
       if (e.title) e.title = e.title.replace(/night goods/gi, "Pink Magic");
     }
-    for (const c of Object.values(s.characters)) for (const m of c.memories) m.meaning = m.meaning.replace(/night goods/gi, "Pink Magic");
-    for (const a of s.assignments) if (a.outcome) a.outcome = a.outcome.replace(/night goods/gi, "Pink Magic");
-    for (const l of s.ledger) l.reason = l.reason.replace(/night goods/gi, "Pink Magic");
+    for (const c of Object.values(s.characters))
+      for (const m of c.memories)
+        m.meaning = m.meaning.replace(/night goods/gi, "Pink Magic");
+    for (const a of s.assignments)
+      if (a.outcome)
+        a.outcome = a.outcome.replace(/night goods/gi, "Pink Magic");
+    for (const l of s.ledger)
+      l.reason = l.reason.replace(/night goods/gi, "Pink Magic");
   }
-  s.version = 9;
+  if (s.version === 10 && !s.streetLife)
+    throw new Error("Missing onboarding state.");
+  s.streetLife ??= newStreetLife(true);
+  s.version = 10;
+  s.characters["contact-angels"] ??= residents().find(
+    (c) => c.id === "contact-angels",
+  )!;
+  validateRobberyReferences(s);
+  const life = s.streetLife;
+  if (
+    [life.giftLot, life.starterLot].some(
+      (id) =>
+        id &&
+        !s.street.lots.some(
+          (l) => l.id === id && l.owner === s.playerId && l.received === 6,
+        ),
+    ) ||
+    (life.workEvent && !s.events.some((e) => e.id === life.workEvent)) ||
+    life.tribute.some(
+      (t) =>
+        t.throughDay !== t.day + 2 ||
+        t.day > s.day ||
+        !s.events.some((e) => e.id === t.eventId),
+    ) ||
+    (life.aftermathEvent && !s.events.some((e) => e.id === life.aftermathEvent))
+  )
+    throw new Error("Invalid street-life records.");
   const addQuanny = !s.characters.quanny;
   // Additive v8 migration: older Lab saves retain every existing character and record.
   for (const c of canonicalCharacters().filter((c) =>
@@ -481,8 +529,13 @@ export function deserialize(raw: string): GameState {
   validateDangerReferences(s);
   validateQuanny(s);
   for (const c of Object.values(s.characters)) {
-    const p = skillsOf(c); equipmentOf(c);
-    if (new Set(p.awards.map(a => a.id)).size !== p.awards.length || p.awards.some(a => a.day > s.day)) throw new Error("Invalid skill award records.");
+    const p = skillsOf(c);
+    equipmentOf(c);
+    if (
+      new Set(p.awards.map((a) => a.id)).size !== p.awards.length ||
+      p.awards.some((a) => a.day > s.day)
+    )
+      throw new Error("Invalid skill award records.");
   }
   validateSessionReferences(s);
   validateConsignments(s);

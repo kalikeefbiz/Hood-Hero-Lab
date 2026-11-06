@@ -351,7 +351,7 @@ export function sceneDialogue(s: GameState, scene: StreetScene) {
     case "war":
       return `I've heard who you're running with. You know our sets are at war. Why are you here?`;
     case "debt":
-      return `That balance you owe me is still outstanding. I need to know you're taking our arrangement seriously.`;
+      return `You still owe me on ${s.street.agreements.filter(a=>a.debtor===s.playerId && a.supplier===scene.npc && a.balance>0).map(a=>`${a.id}: $${a.balance}, due day ${a.dueDay}`).join('; ')}. Each agreement is separate. Come talk payments; every dollar counts.`;
     case "corner":
       return `I saw you working this neighborhood. People live here too. Are you going to keep things quiet around here?`;
     case "family":
@@ -611,7 +611,7 @@ export function expose(
         ? "history"
         : debt
           ? "debt"
-          : sale
+          : sale && !["mega", "flacco"].includes(npc.id)
             ? "corner"
             : family
               ? "family"

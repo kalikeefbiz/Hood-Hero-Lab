@@ -1,3 +1,4 @@
+import { TutorialObjective, RobberyPlayback } from "./StreetLife";
 import { endStreetSession } from "../systems/StreetSessions";
 import { StreetSessionStart, StreetSessionPlayback } from "./StreetSession";
 import { ExchangeFeed } from "./ExchangeFeed";
@@ -207,6 +208,10 @@ export function App() {
   // The details sidebar can be tucked away to see the whole board.
   const [panelOpen, setPanelOpen] = useState(true);
   const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    if (s?.activeRobbery && s.activeRobbery.status !== "ended")
+      setPanelOpen(false);
+  }, [s?.activeRobbery?.id]);
   const [popups, setPopups] = useState<Popup[]>([]);
   const hudRef = useRef<HTMLDivElement | null>(null);
   const [hasSave, setHasSave] = useState(false);
@@ -300,6 +305,8 @@ export function App() {
       const next = saved && enterGameplay(saved);
       if (next) {
         window.scrollTo(0, 0);
+        if (next.activeRobbery?.status === "active")
+          next.activeRobbery.status = "paused";
         if (next.activeSession?.status === "active")
           next.activeSession.status = "paused";
         setPanelOpen(
@@ -309,14 +316,18 @@ export function App() {
         setSelected(player(next).home);
         setBoard({
           zone:
-            next.activeSession?.status !== "ended"
-              ? (next.activeSession?.zone ?? player(next).home)
-              : player(next).home,
+            next.activeRobbery && next.activeRobbery.status !== "ended"
+              ? locationById(next.activeRobbery.location)!.zone
+              : next.activeSession?.status !== "ended"
+                ? (next.activeSession?.zone ?? player(next).home)
+                : player(next).home,
           block: null,
           place:
-            next.activeSession?.status !== "ended"
-              ? (next.activeSession?.location ?? null)
-              : null,
+            next.activeRobbery && next.activeRobbery.status !== "ended"
+              ? next.activeRobbery.location
+              : next.activeSession?.status !== "ended"
+                ? (next.activeSession?.location ?? null)
+                : null,
         });
         setScreen("City");
         setHistoryEncounterId(null);
@@ -406,40 +417,46 @@ export function App() {
         result.state.events.slice(s.events.length).at(-1);
       const dangerResponse = sourceEncounter.definitionId === "living-danger";
       const quannyResponse = sourceEncounter.definitionId === "quanny";
-      const reply = quannyResponse
-        ? (result.state.events
-            .slice(s.events.length)
-            .filter((e) => e.observedBy.includes(s.playerId))
-            .at(-1)?.text ?? "Your conversation with Quanny continues.")
-        : dangerResponse
-          ? (result.state.danger.scenes.find(
-              (x) => x.id === sourceEncounter.dangerSceneId,
-            )?.outcome ?? "The conversation ended.")
-          : actionResponse
-            ? (actionResult?.text ?? "Action completed.")
-            : streetResponse
-              ? (result.state.events.slice(s.events.length).at(-1)?.text ??
-                (response === "terms"
-                  ? "Supplier terms clarified; no goods or debt accepted."
-                  : "Supplier conversation concluded."))
-              : crewResponse
+      const lifeResponse = ["flacco-six", "trio-aftermath"].includes(
+        sourceEncounter.definitionId,
+      );
+      const reply = lifeResponse
+        ? (result.state.events.slice(s.events.length).at(-1)?.text ??
+          "Your encounter is recorded.")
+        : quannyResponse
+          ? (result.state.events
+              .slice(s.events.length)
+              .filter((e) => e.observedBy.includes(s.playerId))
+              .at(-1)?.text ?? "Your conversation with Quanny continues.")
+          : dangerResponse
+            ? (result.state.danger.scenes.find(
+                (x) => x.id === sourceEncounter.dangerSceneId,
+              )?.outcome ?? "The conversation ended.")
+            : actionResponse
+              ? (actionResult?.text ?? "Action completed.")
+              : streetResponse
                 ? (result.state.events.slice(s.events.length).at(-1)?.text ??
-                  (response === "details"
-                    ? "They shared more about their plans."
-                    : "Conversation concluded."))
-                : response === "promise"
-                  ? "Cuzzo: ‘I’m counting on you.’ Your promise is recorded. Return through City → Storylines."
-                  : response === "decline"
-                    ? "Cuzzo: ‘Alright. I heard you. I’ll figure out what I can do.’ No promise was made."
-                    : response === "delay"
-                      ? "You asked for time to think. The situation continues; resume the conversation from City."
-                      : response === "acknowledge"
-                        ? "Outcome acknowledged. The city moves on; the history remains."
-                        : s.encounters.find((e) => e.id === id)
-                              ?.definitionId === "workplace"
-                          ? (result.state.events.at(-1)?.text ??
-                            "Workplace choice recorded.")
-                          : "Cuzzo explains what happened.";
+                  (response === "terms"
+                    ? "Supplier terms clarified; no goods or debt accepted."
+                    : "Supplier conversation concluded."))
+                : crewResponse
+                  ? (result.state.events.slice(s.events.length).at(-1)?.text ??
+                    (response === "details"
+                      ? "They shared more about their plans."
+                      : "Conversation concluded."))
+                  : response === "promise"
+                    ? "Cuzzo: ‘I’m counting on you.’ Your promise is recorded. Return through City → Storylines."
+                    : response === "decline"
+                      ? "Cuzzo: ‘Alright. I heard you. I’ll figure out what I can do.’ No promise was made."
+                      : response === "delay"
+                        ? "You asked for time to think. The situation continues; resume the conversation from City."
+                        : response === "acknowledge"
+                          ? "Outcome acknowledged. The city moves on; the history remains."
+                          : s.encounters.find((e) => e.id === id)
+                                ?.definitionId === "workplace"
+                            ? (result.state.events.at(-1)?.text ??
+                              "Workplace choice recorded.")
+                            : "Cuzzo explains what happened.";
       const finished = result.state.encounters.find((e) => e.id === id);
       const dealtInCity =
         finished?.definitionId === "street-supplier" && plugInCity.current;
@@ -790,7 +807,14 @@ export function App() {
                     s.activeSession.beats[s.activeSession.cursor]?.kind ??
                     "pass",
                 }
-              : null
+              : screen === "City" && s.activeRobbery?.status === "active"
+                ? {
+                    id: `${s.activeRobbery.id}:${s.activeRobbery.cursor}`,
+                    location: s.activeRobbery.location,
+                    duration: 12000,
+                    kind: s.activeRobbery.cursor === 0 ? "buyer" : "witness",
+                  }
+                : null
           }
           people={people}
           personId={personId}
@@ -857,51 +881,62 @@ export function App() {
               {toast}
             </div>
           )}
-          {screen === "City" && !presented && !s.activeSession && (
-            <div className="board-story-strip">
-              {activeStory && (
-                <button
-                  className="story-alert"
-                  aria-label={`Open ${activeStory.title} storyline`}
-                  onClick={() => setState(openStoryline(s, activeStory.id))}
-                >
-                  <span aria-hidden="true">!</span>
-                  <strong>{activeStory.title}</strong>
-                  <span className="story-status">
-                    Demand {money(activeStory.demand)} ·{" "}
-                    {activeStory.leadershipAware
-                      ? "Leadership is considering its response"
-                      : "Awaiting your help"}
-                  </span>
-                </button>
-              )}
-              {request && (
-                <button
-                  className="secondary"
-                  onClick={() => showConversation(request.id)}
-                >
-                  Continue conversation with Cuzzo
-                </button>
-              )}
-              {s.encounters
-                .filter(
-                  (e) =>
-                    ["workplace", "crew-offer"].includes(e.definitionId) &&
-                    e.status === "pending",
-                )
-                .map((e) => (
+          {screen === "City" &&
+            !presented &&
+            !s.activeSession &&
+            !s.activeRobbery && (
+              <div className="board-story-strip">
+                {activeStory && (
+                  <button
+                    className="story-alert"
+                    aria-label={`Open ${activeStory.title} storyline`}
+                    onClick={() => setState(openStoryline(s, activeStory.id))}
+                  >
+                    <span aria-hidden="true">!</span>
+                    <strong>{activeStory.title}</strong>
+                    <span className="story-status">
+                      Demand {money(activeStory.demand)} ·{" "}
+                      {activeStory.leadershipAware
+                        ? "Leadership is considering its response"
+                        : "Awaiting your help"}
+                    </span>
+                  </button>
+                )}
+                {request && (
                   <button
                     className="secondary"
-                    key={e.id}
-                    onClick={() => showConversation(e.id)}
+                    onClick={() => showConversation(request.id)}
                   >
-                    {e.definitionId === "crew-offer"
-                      ? `Hear from ${s.characters[e.participants[0]].name}`
-                      : "Resume workplace conversation"}
+                    Continue conversation with Cuzzo
                   </button>
-                ))}
-            </div>
-          )}
+                )}
+                {s.encounters
+                  .filter(
+                    (e) =>
+                      [
+                        "workplace",
+                        "crew-offer",
+                        "flacco-six",
+                        "trio-aftermath",
+                      ].includes(e.definitionId) && e.status === "pending",
+                  )
+                  .map((e) => (
+                    <button
+                      className="secondary"
+                      key={e.id}
+                      onClick={() => showConversation(e.id)}
+                    >
+                      {e.definitionId === "crew-offer"
+                        ? `Hear from ${s.characters[e.participants[0]].name}`
+                        : e.definitionId === "flacco-six"
+                          ? "Hear from Flacco about Cuzzo"
+                          : e.definitionId === "trio-aftermath"
+                            ? "Hear the Chains crew"
+                            : "Resume workplace conversation"}
+                    </button>
+                  ))}
+              </div>
+            )}
         </div>
         {actionFeedback && (
           <div className="action-feedback" role="status" aria-live="polite">
@@ -915,19 +950,22 @@ export function App() {
             moved. Two AP restored.
           </div>
         )}
-        {screen === "City" && !presented && !s.activeSession && (
-          <div className="board-news">
-            <NarrativeNotifications
-              s={s}
-              acknowledge={(id) => {
-                const next = acknowledgeEvent(s, id);
-                syncEncounters(next);
-                setState(next);
-              }}
-              view={viewReaction}
-            />
-          </div>
-        )}
+        {screen === "City" &&
+          !presented &&
+          !s.activeSession &&
+          !s.activeRobbery && (
+            <div className="board-news">
+              <NarrativeNotifications
+                s={s}
+                acknowledge={(id) => {
+                  const next = acknowledgeEvent(s, id);
+                  syncEncounters(next);
+                  setState(next);
+                }}
+                view={viewReaction}
+              />
+            </div>
+          )}
         {presented && (
           <Modal
             key={presented.id + (historical ? ":history" : "")}
@@ -951,6 +989,7 @@ export function App() {
             />
           </Modal>
         )}
+        <RobberyPlayback s={s} change={setState} visible={screen === "City"} />
         <StreetSessionPlayback
           s={s}
           change={setState}
@@ -968,6 +1007,16 @@ export function App() {
         )}
         {screen === "City" && panelOpen && (
           <div className="board-inspector" ref={sheetRef}>
+            <TutorialObjective
+              s={s}
+              go={(id) => {
+                focusBoard({
+                  zone: locationById(id)!.zone,
+                  block: null,
+                  place: id,
+                });
+              }}
+            />
             <button
               className="inspector-close"
               onClick={() => setPanelOpen(false)}
@@ -986,6 +1035,7 @@ export function App() {
               <PersonInspector
                 s={s}
                 personId={personId}
+                onChange={setState}
                 renderAction={(a) =>
                   boardTile(
                     a,

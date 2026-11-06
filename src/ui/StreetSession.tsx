@@ -1,5 +1,5 @@
 import { hospitalStay } from "../systems/Danger";
-import { useEffect, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { player, type GameState } from "../core/GameState";
 import { locationById } from "../board/locations";
 import { assessRisk } from "../board/presence";
@@ -24,6 +24,7 @@ export function StreetSessionStart({
   busy: boolean;
   onStart: () => void;
 }) {
+  const [selected, setSelected] = useState("");
   const reason = validateStartStreetSession(s, location),
     l = locationById(location)!;
   return (
@@ -39,12 +40,38 @@ export function StreetSessionStart({
         {Math.round(s.street.markets[l.zone].pressure)} ·{" "}
         {assessRisk(s, location).level}
       </p>
+      <label>
+        Stock lot
+        <select
+          aria-label="Stock lot"
+          value={selected}
+          onChange={(e) => setSelected(e.target.value)}
+        >
+          <option value="">Earliest deadline (automatic)</option>
+          {s.street.lots
+            .filter((l) => l.owner === s.playerId && l.remaining > 0)
+            .map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.id} · {s.characters[l.supplier].name} · {l.remaining} held ·
+                ${l.owed} owed · day {l.dueDay}
+              </option>
+            ))}
+        </select>
+      </label>
+      <p>
+        {s.street.lots
+          .filter((l) => l.owner === s.playerId)
+          .reduce((n, l) => n + l.remaining, 0)}{" "}
+        total units across your lots.
+      </p>
       <p>4–6 visitors · about 30–45 seconds · no guaranteed sales.</p>
       <button
         disabled={busy || !!reason}
         onClick={() => {
           change((cur) =>
-            cur ? startStreetSession(cur, location).state : cur,
+            cur
+              ? startStreetSession(cur, location, selected || undefined).state
+              : cur,
           );
           onStart();
         }}
