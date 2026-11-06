@@ -609,16 +609,38 @@ export function PersonInspector({
       )}
       {moves.length > 0 && (
         <div
-          className="board-actions inspector-tiles quick-moves"
+          className="move-groups"
           role="group"
           aria-label={`Moves with ${c.alias ?? c.name}`}
         >
-          {moves.map((a) => renderAction(a))}
+          {MOVE_GROUPS.map(([label, types]) => {
+            const row = moves.filter((a) =>
+              label === "Talk"
+                ? types.includes(a.type) ||
+                  !MOVE_GROUPS.some(([, t]) => t.includes(a.type))
+                : types.includes(a.type),
+            );
+            return row.length ? (
+              <div key={label} className="move-group">
+                <p className="eyebrow">{label}</p>
+                <div className="board-actions inspector-tiles quick-moves">
+                  {row.map((a) => renderAction(a))}
+                </div>
+              </div>
+            ) : null;
+          })}
         </div>
       )}
     </section>
   );
 }
+
+/** Person-card moves, grouped so a dozen stay readable. Unlisted types go under Talk. */
+const MOVE_GROUPS: [string, string[]][] = [
+  ["Talk", ["contact", "inquire", "introduce", "socialize", "favor"]],
+  ["Business", ["offer", "transfer", "settlement", "standing", "affiliate", "quanny"]],
+  ["Crew", ["recruit", "remove", "assign"]],
+];
 
 /** A plug on the board: where to find them, and the deal itself. */
 function PlugBlock({
