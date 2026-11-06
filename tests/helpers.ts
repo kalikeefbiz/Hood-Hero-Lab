@@ -85,17 +85,50 @@ export async function category(page: Page, name: string) {
     )
     .toBe("true");
 }
-export async function honest(page: Page) {
+/** Actions happen in the city. The Actions tab says where; "Find on map" goes there. */
+export async function cityPlace(
+  page: Page,
+  group: "Streets" | "Honest",
+  row: string | RegExp,
+) {
   await navigate(page, "Actions");
-  await category(page, "Honest");
+  await category(page, group);
+  await page
+    .locator(".find-row")
+    .filter({ hasText: row })
+    .first()
+    .getByRole("button", { name: /Find on map/ })
+    .click();
+  await expect(
+    page.getByRole("navigation").getByRole("button", { name: "City", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
 }
+const HONEST_ROWS = {
+  gig: ["Honest", "Day gig"],
+  apply: ["Honest", "Apply in person"],
+  acceptJob: ["Honest", "Offer waiting"],
+  work: ["Honest", "Clock in"],
+  timeOff: ["Honest", "Clock in"],
+  resign: ["Honest", "Clock in"],
+  rest: ["Streets", "Quiet afternoon"],
+} as const;
+/** Open the place in the city where an honest action happens (default: a gig spot). */
+export async function honest(page: Page, kind: keyof typeof HONEST_ROWS = "gig") {
+  const [group, row] = HONEST_ROWS[kind];
+  await cityPlace(page, group, row);
+  await expect(page.locator(`[data-action="${kind}"]`).first()).toBeVisible({ timeout: 15000 });
+}
+/** Open a contact's card on the city map (or just the Connects info, with no person). */
 export async function connects(page: Page, person?: string) {
   await navigate(page, "Actions");
   await category(page, "Connects");
-  if (person)
-    await page
-      .getByLabel("Connected contacts", { exact: true })
-      .selectOption(person);
+  if (!person) return;
+  await page.getByLabel("Connected contacts", { exact: true }).selectOption(person);
+  await page
+    .getByRole("region", { name: "Selected contact" })
+    .getByRole("button", { name: /on map/ })
+    .click();
+  await expect(page.locator(".person-card")).toBeVisible({ timeout: 15000 });
 }
 export async function storyline(page: Page) {
   await dismissEncounter(page);
