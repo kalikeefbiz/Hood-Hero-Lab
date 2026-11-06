@@ -174,7 +174,14 @@ function transfer(
       // Returned stock goes back to its original lot. Sold units and their liability remain.
       const a = n.street.agreements.find((a) => a.lotId === source.id)!,
         parent = n.street.lots.find((l) => l.id === source.sourceLotId)!;
-      const reduction = Math.min(a.balance, quantity * consignmentUnit);
+      const agreedUnit =
+        source.cost / (source.received - (source.returned ?? 0));
+      const reduction = Math.min(a.balance, Math.round(quantity * agreedUnit));
+      // A pre-Set Quanny agreement may still reserve his operating cash.
+      if (a.reserve) {
+        a.reserve -= reduction;
+        n.characters[member].wallet.illicit += reduction;
+      }
       source.remaining -= quantity;
       source.returned = (source.returned ?? 0) + quantity;
       agreementToLog = a.id;
@@ -183,6 +190,8 @@ function transfer(
       a.balance -= reduction;
       source.cost -= reduction;
       source.owed -= reduction;
+      if (!source.remaining)
+        source.status = source.owed ? "distributed" : "settled";
       parent.remaining += quantity;
       parent.status = "held";
       parent.transferred! -= quantity;

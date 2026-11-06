@@ -252,6 +252,11 @@ export function validateConsignments(s: GameState) {
     const source = s.street.lots.find((l) => l.id === lot?.sourceLotId);
     const collections = a.collections ?? [];
     const result = collections[0];
+    const returnedInFull =
+      a.status === "fulfilled" &&
+      a.original === 0 &&
+      a.repaid === 0 &&
+      lot?.returned === a.quantity;
     if (
       !lot ||
       !source ||
@@ -262,13 +267,14 @@ export function validateConsignments(s: GameState) {
       !a.quantity ||
       collections.length > 1 ||
       (a.status === "pending" && collections.length !== 0) ||
-      (a.status !== "pending" && !result) ||
+      (a.status !== "pending" && !result && !returnedInFull) ||
       (result &&
         (result.day < a.dueDay ||
           !a.history.includes(result.eventId) ||
           (result.result === "paid") !== result.notoriety >= 35 ||
-          (result.result === "paid") !== (a.status === "fulfilled") ||
-          (result.result === "refused") !== (a.status === "disputed")))
+          (!returnedInFull &&
+            ((result.result === "paid") !== (a.status === "fulfilled") ||
+              (result.result === "refused") !== (a.status === "disputed")))))
     )
       throw new Error(
         "Save contains invalid consignment transfer or collection history.",

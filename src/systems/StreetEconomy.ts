@@ -1,4 +1,10 @@
-import { gain, gainError, receivePhysical, carriedLotQuantity, consumeLot } from "./Inventory";
+import {
+  gain,
+  gainError,
+  receivePhysical,
+  carriedLotQuantity,
+  consumeLot,
+} from "./Inventory";
 import { equipmentBonus } from "./Equipment";
 import { workIntroError, pabloError, personalBeef } from "./StreetAccess";
 import { boardPeople } from "../board/people";
@@ -169,8 +175,11 @@ export function supplierError(
   if (s.streetLife && !s.streetLife.legacy) {
     const life = s.streetLife;
     const starterIds = [life.giftLot, life.starterLot].filter(Boolean);
-    const replacementNeeded = starterIds.length > 0 && !s.street.lots.some(l => starterIds.includes(l.id) && l.remaining > 0);
-    const firstPaidPack = life.initialDecision !== "promise" && !life.giftLot && !life.starterLot;
+    const replacementNeeded =
+      starterIds.length > 0 &&
+      !s.street.lots.some((l) => starterIds.includes(l.id) && l.remaining > 0);
+    const firstPaidPack =
+      life.initialDecision !== "promise" && !life.giftLot && !life.starterLot;
     if (
       life.lesson === "waiting" &&
       (supplier !== "mega" || (!firstPaidPack && !replacementNeeded))
@@ -276,7 +285,16 @@ export function supplierError(
     return "Supplier's organization has no stock budget today.";
   if (arrangement === "cash" && cash(p) < MERCHANDISE.nightgoods.wholesale)
     return "Requires $90 up front.";
-  return gainError(s, s.playerId, gain("nightgoods", MERCHANDISE.nightgoods.quantity, "supplier", "pending-lot"));
+  return gainError(
+    s,
+    s.playerId,
+    gain(
+      "nightgoods",
+      MERCHANDISE.nightgoods.quantity,
+      "supplier",
+      "pending-lot",
+    ),
+  );
 }
 export function acquire(
   s: GameState,
