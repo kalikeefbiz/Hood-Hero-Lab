@@ -18,6 +18,20 @@ async function click(
 ) {
   await tapUntil(page, button, done, 45000);
 }
+async function enterPattern(page: Page, pattern: number[]) {
+  const colors = ["Amber", "Blue", "Violet"];
+  for (let i = 0; i < pattern.length; i++) {
+    const expected = `Your sequence: ${pattern
+      .slice(0, i + 1)
+      .map((n) => colors[n])
+      .join(" → ")}`;
+    await click(
+      page,
+      page.getByRole("button", { name: colors[pattern[i]], exact: true }),
+      async () => page.getByText(expected, { exact: true }).isVisible(),
+    );
+  }
+}
 async function close(page: Page) {
   for (let i = 0; i < 8; i++) {
     const d = page.getByRole("dialog", {
@@ -366,13 +380,7 @@ test("fresh promise → physical application → queued Day 3 six → real Lot s
     async () => (await state(page)).activeRobbery!.cursor === 1,
   );
   const pattern = (await state(page)).activeRobbery!.pattern;
-  for (const color of pattern)
-    await page
-      .getByRole("button", {
-        name: ["Amber", "Blue", "Violet"][color],
-        exact: true,
-      })
-      .click();
+  await enterPattern(page, pattern);
   await click(
     page,
     page.getByRole("button", { name: "Commit sequence once" }),
@@ -474,14 +482,7 @@ test("earned contact → City preparation shops → real robbery puzzle → pers
     async () => (await state(page)).activeRobbery?.status === "active",
   );
   const a = (await state(page)).activeRobbery!;
-  const colors = ["Amber", "Blue", "Violet"];
-  for (let i = 0; i < 3; i++) {
-    const b = page.getByRole("button", {
-      name: colors[a.pattern[i]],
-      exact: true,
-    });
-    await b.click();
-  }
+  await enterPattern(page, a.pattern);
   await click(
     page,
     page.getByRole("button", { name: "Commit sequence once" }),

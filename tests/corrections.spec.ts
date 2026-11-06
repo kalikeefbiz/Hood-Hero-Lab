@@ -150,9 +150,8 @@ test("known suspects and leaders need real introductions; access and inventory s
   await connects(page, "dizzy");
   await clickAction(page, "contact");
   await connects(page, "dizzy");
-  await expect(
-    page.locator('[data-action="introduce"]').getByRole("button"),
-  ).toBeDisabled();
+  // The Actions view hides an introduction when every remaining candidate is gated.
+  await expect(page.locator('[data-action="introduce"]')).toHaveCount(0);
   expect((await state(page)).characters.player.connections).not.toContain(
     "pablo",
   );
