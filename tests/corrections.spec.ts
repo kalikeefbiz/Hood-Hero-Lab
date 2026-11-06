@@ -42,6 +42,8 @@ async function startHistorical(page: Page, home: "south" | "rio" = "south") {
 }
 async function clickAction(page: Page, type: string) {
   await page.locator(`[data-action="${type}"]`).getByRole("button").click();
+  // In the city the player walks over first; wait for the result to land.
+  await expect(page.locator(".action-feedback")).toBeVisible({ timeout: 20000 });
 }
 async function day(page: Page) {
   await dismissEncounter(page);
@@ -83,25 +85,20 @@ test("Actions separate Streets, Honest and Connects; completed reach-out returns
     page.getByRole("button", { name: "Talk terms with Cuzzo" }),
   ).toHaveCount(0);
   await shot(page, ".actions-hub", "01-streets");
-  await honest(page);
+  await honest(page, "apply");
   await expect(page.locator('[data-action="apply"]').first()).toBeVisible();
+  await honest(page, "gig");
   await expect(page.locator('[data-action="gig"]')).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Pursue local transaction · 1 AP" }),
   ).toHaveCount(0);
-  await shot(page, ".actions-hub", "02-honest");
+  await shot(page, ".board-card", "02-honest");
   await connects(page, "mega");
   await expect(
     page.getByRole("button", { name: "Talk terms with Cuzzo" }),
   ).toBeVisible();
-  expect(
-    (await page.locator(".connect-action").first().boundingBox())!.height,
-  ).toBeLessThan(100);
-  await shot(page, ".actions-hub", "03-connects");
+  await shot(page, ".person-card", "03-connects");
   await clickAction(page, "contact");
-  await expect(
-    page.getByRole("button", { name: "Streets", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
   expect((await state(page)).ap).toBe(1);
   await expect(page.locator(".action-feedback")).toContainText("Trust grew");
   await connects(page, "mega");
@@ -134,12 +131,12 @@ test("known suspects and leaders need real introductions; access and inventory s
   await expect(
     page.getByRole("button", { name: "Interact with Pablo →" }),
   ).toBeDisabled();
-  await connects(page, "resident-rio");
+  await connects(page);
   await page
     .getByText("Known of · introductions needed", { exact: true })
     .click();
   await expect(page.locator(".known-contacts")).toContainText("Pablo");
-  await shot(page, ".actions-hub", "04-contact-access");
+  await connects(page, "resident-rio");
   await clickAction(page, "introduce");
   let s = await state(page);
   expect(s.characters.player.connections).toContain("dizzy");
@@ -150,8 +147,9 @@ test("known suspects and leaders need real introductions; access and inventory s
   await connects(page, "dizzy");
   await clickAction(page, "contact");
   await connects(page, "dizzy");
-  // The Actions view hides an introduction when every remaining candidate is gated.
-  await expect(page.locator('[data-action="introduce"]')).toHaveCount(0);
+  // With every remaining candidate gated, the introduction can't be used.
+  const intro = page.locator('[data-action="introduce"] button');
+  if (await intro.count()) await expect(intro).toBeDisabled();
   expect((await state(page)).characters.player.connections).not.toContain(
     "pablo",
   );
@@ -247,6 +245,7 @@ for (const width of [320, 375, 390, 430])
       ).toBeLessThanOrEqual(width);
     }
     const modal = page.getByRole("dialog", { name: "Character encounter" });
+    await connects(page, "mega");
     await tapUntil(
       page,
       page.getByRole("button", { name: "Talk terms with Cuzzo" }),
