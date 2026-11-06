@@ -3,7 +3,8 @@ import { oneBuyer } from "./sessionFixtures";
 import { newGame } from "../core/Simulation";
 import { acquire } from "../systems/StreetEconomy";
 import type { GameState } from "../core/GameState";
-import { newExchanges, streetExchange, ITEM_ICONS, CASH_ICON } from "../ui/exchanges";
+import { baseline, newExchanges, streetExchange, ITEM_ICONS, CASH_ICON } from "../ui/exchanges";
+import { repay } from "../systems/StreetEconomy";
 import { existsSync } from "fs";
 
 /** Run single-buyer sales until one with the wanted outcome turns up. */
@@ -11,7 +12,7 @@ function saleWith(outcome: string[]) {
   for (let seed = 1; seed < 400; seed++) {
     const s = newGame("Feed", "south", seed * 7919);
     acquire(s, "mega", "consignment");
-    const before = { firstId: s.street.transactions[0]?.id ?? null, count: s.street.transactions.length };
+    const before = baseline(s);
     const wallet = s.characters[s.playerId].wallet.illicit;
     const after = oneBuyer(s);
     const t = after.street.transactions.at(-1)!;
@@ -28,7 +29,7 @@ describe("exchange feed", () => {
     expect(exchanges).toHaveLength(1);
     const e = exchanges[0];
     expect(e.give).toMatchObject({ name: "Pink Magic", quantity: t.sold });
-    expect(e.get).toMatchObject({ amount: t.gross, kind: "illicit" });
+    expect(e.get).toMatchObject({ amount: t.gross, kind: "cash", provenance: "illicit", label: "Illicit cash received" });
     // The amount shown is the amount the economy put in the player's wallet.
     expect(mine(after).wallet.illicit - wallet).toBe(t.gross);
     expect(after.ledger.at(-1)).toMatchObject({ amount: t.gross, provenance: "illicit" });
@@ -38,8 +39,8 @@ describe("exchange feed", () => {
     // larger street work, recorded the same way.
     const { after, t } = saleWith(["sale"]);
     const e = streetExchange(after, { ...t, outcome: "partial", sold: 2, gross: 104 })!;
-    expect(e.give!.quantity).toBe(2);
-    expect(e.get!.amount).toBe(104);
+    expect(e.give).toMatchObject({ kind: "item", quantity: 2 });
+    expect(e.get).toMatchObject({ kind: "cash", amount: 104 });
   });
   it("failed sales show no money", () => {
     const { before, after } = saleWith(["none", "money-loss", "goods-loss"]);
@@ -69,5 +70,46 @@ describe("exchange feed", () => {
   it("uses the approved art and it is in the build", () => {
     for (const url of [ITEM_ICONS.nightgoods, CASH_ICON])
       expect(existsSync(`public/${url.replace(/^.*?assets\//, "assets/")}`)).toBe(true);
+  });
+  it("a pack from a plug shows what came in, and the cash out when paid up front", () => {
+    const checked: string[] = [];
+    for (const arrangement of ["cash", "consignment"] as const) {
+      for (let seed = 1; seed < 200; seed++) {
+        const s = newGame("Feed", "south", seed * 31);
+        const before = baseline(s);
+        const wallet = s.characters[s.playerId].wallet;
+        const cashBefore = wallet.clean + wallet.illicit;
+        acquire(s, "mega", arrangement);
+        const lot = s.street.lots.at(-1);
+        if (!lot || lot.arrangement !== arrangement) continue;
+        const [e] = newExchanges(s, before).exchanges;
+        expect(e.get).toMatchObject({ kind: "item", name: "Pink Magic", quantity: lot.received });
+        expect((e.get as { label: string }).label).toMatch(/Received from/);
+        const w = s.characters[s.playerId].wallet;
+        if (arrangement === "cash") {
+          expect(e.give).toMatchObject({ kind: "cash", amount: lot.cost });
+          expect(cashBefore - (w.clean + w.illicit)).toBe(lot.cost);
+        } else {
+          expect(e.give).toBeUndefined();
+          expect((e.get as { note: string }).note).toContain(`$${lot.owed} owed`);
+        }
+        checked.push(arrangement);
+        break;
+      }
+    }
+    expect(checked).toEqual(["cash", "consignment"]);
+  });
+  it("paying a plug back shows the cash handed over", () => {
+    const s = newGame("Feed", "south", 99);
+    acquire(s, "mega", "consignment");
+    const a = s.street.agreements.find((a) => a.debtor === s.playerId)!;
+    s.characters[s.playerId].wallet.illicit += 200;
+    const before = baseline(s);
+    repay(s, a.id, 40);
+    const [e] = newExchanges(s, before).exchanges;
+    expect(e.give).toMatchObject({ kind: "cash", amount: 40 });
+    expect((e.give as { label: string }).label).toMatch(/Paid to/);
+    expect((e.give as { note: string }).note).toBe(`$${a.balance} still owed`);
+    expect(e.get).toBeUndefined();
   });
 });

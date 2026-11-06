@@ -83,6 +83,7 @@ import {
   PersonInspector,
   PlaceSheet,
   PresenceCard,
+  PlugList,
 } from "../board/ui/BoardPanels";
 import { deriveBoardView } from "../board/viewModel";
 import { BoardHUD } from "../board/ui/BoardHUD";
@@ -200,6 +201,8 @@ export function App() {
   const [insets, setInsets] = useState({ top: 0, bottom: 0 });
   const sheetRef = useRef<HTMLDivElement | null>(null);
   const [personId, setPersonId] = useState<string | null>(null);
+  /** A plug deal opened from the board returns to the board, not to Actions. */
+  const plugInCity = useRef(false);
   const [lookOpen, setLookOpen] = useState(false);
   // The details sidebar can be tucked away to see the whole board.
   const [panelOpen, setPanelOpen] = useState(true);
@@ -438,8 +441,12 @@ export function App() {
                             "Workplace choice recorded.")
                           : "Cuzzo explains what happened.";
       const finished = result.state.encounters.find((e) => e.id === id);
+      const dealtInCity =
+        finished?.definitionId === "street-supplier" && plugInCity.current;
+      if (finished?.status === "acknowledged") plugInCity.current = false;
       if (
         finished?.status === "acknowledged" &&
+        !dealtInCity &&
         ["street-supplier", "crew-conversation"].includes(finished.definitionId)
       ) {
         setScreen("Actions");
@@ -569,6 +576,21 @@ export function App() {
       setBusy(false);
     }
     act(a, placeId);
+  }
+  /** Frame someone on the board and open their card. */
+  function showPerson(id: string) {
+    const at = people.find((x) => x.id === id);
+    const l = at ? locationById(at.placeId) : null;
+    if (l)
+      setBoard({
+        zone: l.zone,
+        block: locationBlock(l)?.id ?? null,
+        place: null,
+      });
+    setPersonId(id);
+    setLookOpen(false);
+    setPanelOpen(true);
+    setScreen("City");
   }
   async function goHere(placeId: string) {
     if (busy || !s || s.end || hospitalStay(s) || streetConversation(s)) return;
@@ -772,20 +794,7 @@ export function App() {
           }
           people={people}
           personId={personId}
-          onPerson={(id) => {
-            const at = people.find((x) => x.id === id);
-            const l = at ? locationById(at.placeId) : null;
-            if (l)
-              setBoard({
-                zone: l.zone,
-                block: locationBlock(l)?.id ?? null,
-                place: null,
-              });
-            setPersonId(id);
-            setLookOpen(false);
-            setPanelOpen(true);
-            setScreen("City");
-          }}
+          onPerson={showPerson}
           playerAt={presenceOf(s).location}
           appearance={presenceOf(s).appearance}
           accent={THEMES[p.affiliation ?? "independent"].secondary}
@@ -985,6 +994,12 @@ export function App() {
                   )
                 }
                 openProfile={openPeople}
+                openPlug={(id) => {
+                  plugInCity.current = true;
+                  setState(openSupplier(s, id));
+                  setPanelOpen(false);
+                }}
+                goTo={(placeId) => goHere(placeId)}
               />
             ) : board.place && boardView ? (
               <PlaceSheet
@@ -1045,6 +1060,7 @@ export function App() {
                         zone={selected}
                         onChange={setState}
                       />
+                      <PlugList s={s} zone={selected} onPlug={showPerson} />
                       <div className="tags">
                         {s.zones[selected].organizations.length ? (
                           s.zones[selected].organizations.map((f) => (
@@ -1107,6 +1123,7 @@ export function App() {
                   })
                 }
                 onLook={() => setLookOpen(true)}
+                onPlug={showPerson}
               />
             )}
           </div>
@@ -1415,6 +1432,7 @@ export function App() {
                 setFocus={setFocus}
                 act={act}
                 openSupplier={(id) => {
+                  plugInCity.current = false;
                   setState(openSupplier(s, id));
                   setScreen("City");
                 }}
@@ -1657,6 +1675,7 @@ export function App() {
                   s={s}
                   change={setState}
                   open={(id) => {
+                    plugInCity.current = false;
                     setState(openSupplier(s, id));
                     setScreen("City");
                   }}
