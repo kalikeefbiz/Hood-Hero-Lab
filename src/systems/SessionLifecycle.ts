@@ -3,6 +3,7 @@ import { record } from "../core/EventLog";
 import { awardSkill } from "./Skills";
 export function finishSessionPartner(s: GameState) {
   const session = s.activeSession!;
+  if (s.streetLife?.lesson === 'started') s.streetLife.lesson = 'complete';
   if (!session.partner) return;
   const a = s.assignments.find(
     (a) =>
@@ -28,6 +29,11 @@ export function finishSessionPartner(s: GameState) {
 }
 /** Stop future beats while settling only outcomes already committed. Mutates an owned snapshot. */
 export function interruptSession(s: GameState, reason: string) {
+  if (s.activeRobbery && s.activeRobbery.status !== 'ended') {
+    s.activeRobbery.status = 'ended'; s.activeRobbery.text = reason;
+    const job=s.robberies?.jobs.find(j=>j.id===s.activeRobbery!.jobId);
+    if (job && job.status==='active') job.status='failed';
+  }
   const a = s.activeSession;
   if (!a || a.status === "ended") return;
   a.status = "ended";

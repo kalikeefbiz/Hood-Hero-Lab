@@ -16,9 +16,17 @@ export const plugDebt = (s: GameState, id: string) =>
 /** A plug the player knows, as a short status line. */
 export function plugStatus(s: GameState, id: string) {
   const debt = plugDebt(s, id);
-  if (debt) return `You owe $${debt.balance} · due day ${debt.dueDay}`;
+  if (debt) {
+    const debts = s.street.agreements.filter(
+      (a) => a.supplier === id && a.debtor === s.playerId && a.balance > 0,
+    );
+    return `You owe $${debts.reduce((n, a) => n + a.balance, 0)}${debts.length > 1 ? ` across ${debts.length} packs` : ""} · due day ${Math.min(...debts.map((a) => a.dueDay))}`;
+  }
   if (!player(s).connections.includes(id)) return "Not connected yet";
-  const reasons = [supplierError(s, id, "cash"), supplierError(s, id, "consignment")];
+  const reasons = [
+    supplierError(s, id, "cash"),
+    supplierError(s, id, "consignment"),
+  ];
   return reasons.some((r) => !r) ? "Pack available" : (reasons[0] ?? "");
 }
 
@@ -40,19 +48,24 @@ export function PlugEntry({
     name = c.alias ?? c.name;
   if (!isPlug(s, id)) return null;
   const debt = plugDebt(s, id);
+  const debts = s.street.agreements.filter(
+    (a) => a.supplier === id && a.debtor === s.playerId && a.balance > 0,
+  );
+  const balance = debts.reduce((n, a) => n + a.balance, 0);
   const connected = player(s).connections.includes(id);
   const reasons = [
     ...new Set(
-      [supplierError(s, id, "cash"), supplierError(s, id, "consignment")].filter(
-        (x): x is string => !!x,
-      ),
+      [
+        supplierError(s, id, "cash"),
+        supplierError(s, id, "consignment"),
+      ].filter((x): x is string => !!x),
     ),
   ];
   return (
     <div className="supplier-entry" aria-label="Supplier offer">
       <strong>
         {debt
-          ? `Outstanding: $${debt.balance} · due day ${debt.dueDay}`
+          ? `Outstanding: $${balance}${debts.length > 1 ? ` across ${debts.length} packs` : ""} · due day ${Math.min(...debts.map((a) => a.dueDay))}`
           : "Pink Magic · limited lot"}
       </strong>
       {!debt && (

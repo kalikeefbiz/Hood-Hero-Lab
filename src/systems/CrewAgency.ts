@@ -1,3 +1,4 @@
+import { lessonError } from "./StreetAccess";
 import { awardSkill, proficiency, skillRank } from "./Skills";
 import { applyInfluence } from "./Territory";
 import { saleLot, transactionChance } from "./StreetEconomy";
@@ -205,7 +206,7 @@ export function requestError(
     return "You already discussed this request today. Give them some space.";
   if (activity === "work" && cash(player(s)) < compensation)
     return `Requires $${compensation} compensation held until completion`;
-  if (activity === "partner-crime") return saleLot(s) ? null : "No Pink Magic on hand.";
+  if (activity === "partner-crime") return lessonError(s) ?? (saleLot(s) ? null : "No Pink Magic on hand.");
   if (activity === "partner-gig")
     return validateAction(s, {
       actor: s.playerId,

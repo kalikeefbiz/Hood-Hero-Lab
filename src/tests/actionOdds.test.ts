@@ -1,7 +1,7 @@
 import { oneBuyer } from "./sessionFixtures";
 import { acquire } from "../systems/StreetEconomy";
 import { describe, expect, test } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import {
   actionSuccessChance,
   performAction,

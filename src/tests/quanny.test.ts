@@ -1,6 +1,6 @@
 import { skillsOf } from "../systems/Skills";
 import { describe, expect, it } from "vitest";
-import { newGame, enterGameplay } from "../core/Simulation";
+import { newGame, enterGameplay } from "./legacyGame";
 import {
   cash,
   player,

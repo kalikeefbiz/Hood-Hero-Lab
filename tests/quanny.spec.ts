@@ -3,7 +3,7 @@ import {
   QUANNY_LOCATION_REVEAL,
   quannyCollectionInstruction,
 } from "../src/systems/QuannyState";
-import { newGame } from "../src/core/Simulation";
+import { newGame } from "../src/tests/legacyGame";
 import { player, type GameState } from "../src/core/GameState";
 import { moveTo } from "../src/board/presence";
 import { acquire } from "../src/systems/StreetEconomy";

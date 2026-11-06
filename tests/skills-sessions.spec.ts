@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { newGame } from "../src/core/Simulation";
+import { newGame } from "../src/tests/legacyGame";
 import { acquire } from "../src/systems/StreetEconomy";
 import { presenceOf } from "../src/board/presence";
 import { serialize, SAVE_KEY, AUTO_KEY } from "../src/persistence/SaveSystem";

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { oneBuyer } from "./sessionFixtures";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import { acquire } from "../systems/StreetEconomy";
 import type { GameState } from "../core/GameState";
 import { baseline, newExchanges, streetExchange, ITEM_ICONS, CASH_ICON } from "../ui/exchanges";

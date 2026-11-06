@@ -1,3 +1,4 @@
+import { settleAftermath, canQueueLife } from "./StreetLife";
 import { resolveStreetScene } from "./Danger";
 import { expireCrewOffers } from "./CrewAgency";
 import type { EncounterInstance, GameState } from "../core/GameState";
@@ -9,6 +10,7 @@ export const encounterDefinition = (e: EncounterInstance) =>
 const eligible = (s: GameState, e: EncounterInstance) =>
   encounterDefinition(e).eligible(s, e);
 export function syncEncounters(s: GameState) {
+  if (canQueueLife(s)) settleAftermath(s);
   expireCrewOffers(s);
   if (s.end && !s.events.some((e) => e.title === `Run ended: ${s.end}`))
     record(

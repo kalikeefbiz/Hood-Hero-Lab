@@ -1381,3 +1381,7 @@
 }
 .plug-row strong { font-size: 13px; }
 .plug-row small { font-size: 11px; color: var(--muted); }
+
+/* Person-card moves, grouped: Talk · Business · Crew. */
+.move-groups { display: grid; gap: 6px; }
+.move-group .eyebrow { margin: 0 0 2px; }
