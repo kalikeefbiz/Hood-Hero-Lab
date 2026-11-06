@@ -1,3 +1,4 @@
+import { PerfHud } from "./perfHud";
 import { SessionVisitors, type SessionVisitor } from "./SessionVisitors";
 import * as THREE from "three";
 import type { FactionId, ZoneId } from "../core/GameState";
@@ -387,6 +388,14 @@ export class BoardRenderer {
 
   private frame = 0;
   private running = false;
+  /**
+   * iOS drops the WebGL context when Safari is backgrounded under memory
+   * pressure. Until it is restored nothing may draw; restoring re-uploads the
+   * whole city, so it runs as soon as the page is back, behind a veil, rather
+   * than on the player's first tap.
+   */
+  private contextLost = false;
+  private perf: PerfHud | null = null;
   private visible = true;
   private lastFrame = 0;
   private lastActive = 0;
@@ -427,6 +436,10 @@ export class BoardRenderer {
     this.renderer.shadowMap.autoUpdate = false;
     const el = this.renderer.domElement;
     el.className = "board-canvas";
+    el.addEventListener("webglcontextlost", this.onContextLost);
+    el.addEventListener("webglcontextrestored", this.onContextRestored);
+    if (new URLSearchParams(location.search).has("perf"))
+      this.perf = new PerfHud(() => ({ eco: this.eco, lite: this.lite }));
     el.setAttribute("aria-hidden", "true");
     this.pmrem = new THREE.PMREMGenerator(this.renderer);
     this.makeMaterials();
@@ -832,6 +845,10 @@ export class BoardRenderer {
     if (BoardRenderer.instance === this) BoardRenderer.instance = null;
     this.detach();
     document.removeEventListener("visibilitychange", this.onVisibility);
+    const el = this.renderer.domElement;
+    el.removeEventListener("webglcontextlost", this.onContextLost);
+    el.removeEventListener("webglcontextrestored", this.onContextRestored);
+    this.perf?.dispose();
     this.scene.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
     this.renderer.dispose();
   }
@@ -2663,6 +2680,35 @@ export class BoardRenderer {
   }
 
   // ---- loop -----------------------------------------------------------------------
+  private onContextLost = (e: Event) => {
+    e.preventDefault(); // ask the browser to give it back
+    this.contextLost = true;
+    this.perf?.note("context lost");
+    cancelAnimationFrame(this.frame);
+    this.running = false;
+    if (this.host) this.host.dataset.boardContext = "lost";
+  };
+  private onContextRestored = () => {
+    this.contextLost = false;
+    this.perf?.note("context restored");
+    if (this.host) this.host.dataset.boardContext = "restoring";
+    // Lit maps that lived only on the GPU: the environment and the shadows.
+    this.timeApplied = false;
+    this.setTimeOfDay(this.time);
+    this.lastShadowBake = -Infinity;
+    this.shadowDirty = true;
+    const t0 = performance.now();
+    // Compile shaders off the main thread where the browser allows it.
+    this.renderer
+      .compileAsync(this.scene, this.camera)
+      .catch(() => {})
+      .then(() => {
+        if (this.disposed || this.contextLost) return;
+        this.restoring = t0;
+        this.wake();
+      });
+  };
+  private restoring = 0;
   private onVisibility = () => {
     if (!document.hidden) this.start();
   };
@@ -2671,14 +2717,14 @@ export class BoardRenderer {
     this.start();
   }
   private start() {
-    if (this.running || this.disposed || this.paused) return;
+    if (this.running || this.disposed || this.paused || this.contextLost) return;
     this.running = true;
     this.lastFrame = performance.now();
     this.frame = requestAnimationFrame(this.tick);
   }
   private tick = (now: number) => {
     if (this.disposed) return;
-    if (document.hidden || !this.visible || this.paused) {
+    if (document.hidden || !this.visible || this.paused || this.contextLost) {
       this.running = false;
       return;
     }
@@ -2723,6 +2769,12 @@ export class BoardRenderer {
     for (const a of this.focusAnimated) a(this.clock, dt);
     this.updateCamera();
     this.renderer.render(this.scene, this.camera);
+    this.perf?.frame(now, interval, active);
+    if (this.restoring) {
+      this.perf?.note(`city back in ${Math.round(performance.now() - this.restoring)} ms`);
+      this.restoring = 0;
+      this.host.dataset.boardContext = "ok";
+    }
     this.positionOverlays();
     if (Math.abs(this.distance - this.lastLevelDistance) > 4) {
       this.lastLevelDistance = this.distance;

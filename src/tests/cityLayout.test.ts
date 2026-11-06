@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   ALL_BLOCKS,
+  RIVER_WIDTH,
+  riverPath,
   ALL_SECTIONS,
   DEVELOPMENT_LOTS,
   DISTRICTS,
@@ -122,5 +124,17 @@ describe("expanded Stixx City", () => {
           }
         }
       }
+  });
+  it("the river runs in the streets between districts, never through a block", () => {
+    const river = riverPath();
+    for (const b of ALL_BLOCKS)
+      for (const [x, z] of [
+        [b.minX, b.minZ],
+        [b.maxX, b.minZ],
+        [b.minX, b.maxZ],
+        [b.maxX, b.maxZ],
+        [(b.minX + b.maxX) / 2, (b.minZ + b.maxZ) / 2],
+      ])
+        expect(distanceToPath(river, x, z), b.id).toBeGreaterThan(RIVER_WIDTH / 2 + 2);
   });
 });

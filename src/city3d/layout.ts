@@ -71,25 +71,48 @@ const RIVER_SEGMENTS: [number, number][][] = [
   ],
 ];
 export const RIVER_WIDTH = 8;
+// The expanded districts no longer leave the old CityMap curve a gap through
+// the Reservoir, so its western reach is redrawn in world space: up the far
+// side of the Reservoir and east along the channel under the Nawf.
+const WEST_RIVER: [number, number][][] = [
+  [
+    [-225, 150],
+    [-176, 118],
+    [-168, 60],
+    [-167, -40],
+  ],
+  [
+    [-167, -40],
+    [-167, -67],
+    [-167, -67],
+    [-112, -67],
+  ],
+];
+const CHANNEL_Z = -67;
+const bezier = (seg: [number, number][], t: number): [number, number] => {
+  const [p0, p1, p2, p3] = seg,
+    u = 1 - t;
+  return [0, 1].map(
+    (k) =>
+      u * u * u * p0[k] +
+      3 * u * u * t * p1[k] +
+      3 * u * t * t * p2[k] +
+      t * t * t * p3[k],
+  ) as [number, number];
+};
 export function riverPath(samplesPerSegment = 28): [number, number][] {
   const out: [number, number][] = [];
-  // Extend beyond the board on both ends so the river leaves the city.
-  out.push(toWorld(-60, 360));
-  for (const [p0, p1, p2, p3] of RIVER_SEGMENTS)
+  for (const seg of WEST_RIVER)
+    for (let i = out.length ? 1 : 0; i <= samplesPerSegment; i++)
+      out.push(bezier(seg, i / samplesPerSegment));
+  // Straight down the channel between the Nawf and the middle row, then the
+  // old curve takes over north-east of Downtown.
+  const east = DISTRICTS.downtown.maxX + 18;
+  for (let x = -100; x < east; x += 12) out.push([x, CHANNEL_Z]);
+  for (const seg of RIVER_SEGMENTS)
     for (let i = 0; i <= samplesPerSegment; i++) {
-      const t = i / samplesPerSegment,
-        u = 1 - t;
-      const x =
-        u * u * u * p0[0] +
-        3 * u * u * t * p1[0] +
-        3 * u * t * t * p2[0] +
-        t * t * t * p3[0];
-      const y =
-        u * u * u * p0[1] +
-        3 * u * u * t * p1[1] +
-        3 * u * t * t * p2[1] +
-        t * t * t * p3[1];
-      out.push(toWorld(x, y));
+      const w = toWorld(...bezier(seg, i / samplesPerSegment));
+      if (w[0] > east) out.push(w);
     }
   out.push(toWorld(470, -60));
   return out;
