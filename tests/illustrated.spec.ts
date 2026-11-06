@@ -39,13 +39,9 @@ async function nav(page: Page, name: string) {
     .click();
 }
 async function loaded(page: Page, id: keyof typeof scenes) {
-  if (id === "work") await honest(page);
-  else if (id === "rest") {
-    await page
-      .getByRole("navigation")
-      .getByRole("button", { name: "Actions", exact: true })
-      .click();
-  } else await connects(page, "mega");
+  if (id === "work") await honest(page, "work");
+  else if (id === "rest") await honest(page, "rest");
+  else await connects(page, "mega");
   const card = page.locator(`.action-card[data-action="${id}"]`);
   await card.scrollIntoViewIfNeeded();
   if (id === "inquire" || id === "standing") {
@@ -102,7 +98,7 @@ test("approved art maps to real actions and resolves under the production base",
   await nav(page, "Actions");
   for (const id of ["work", "rest"] as const) {
     const card = await loaded(page, id);
-    await expect(card.locator(".ap-cost")).toHaveText(`${ACTIONS[id].ap} AP`);
+    await expect(card.locator(".ap-cost, .tile-ap")).toHaveText(`${ACTIONS[id].ap} AP`);
     await expect(card.locator(".risk")).toHaveText("NO RISK");
     await expect(card).toContainText(ACTIONS[id].description);
     if (id !== "work")
@@ -110,11 +106,6 @@ test("approved art maps to real actions and resolves under the production base",
         await expect(card).toContainText(outcome);
   }
   await expect(page.locator('[data-action="gig"] img')).toHaveCount(0);
-  await page
-    .getByRole("button", { name: "Connects", exact: true })
-    .filter({ hasNot: page.locator("svg") })
-    .click();
-  await page.getByRole("combobox").selectOption("mega");
   await loaded(page, "inquire");
   await loaded(page, "standing");
   for (const id of [
@@ -166,8 +157,7 @@ test("action art loads near the viewport, and failed art preserves layout and ga
   await page.reload();
   await page.getByRole("button", { name: "Resume saved game" }).click();
   await dismissEncounter(page);
-  await nav(page, "Actions");
-  await honest(page);
+  await honest(page, "work");
   const work = page.locator('[data-action="work"]');
   await work.scrollIntoViewIfNeeded();
   await expect(work.locator(".action-art-fallback")).toBeVisible();
@@ -178,10 +168,10 @@ test("action art loads near the viewport, and failed art preserves layout and ga
   await expect(page.locator(".cash-resource strong")).toHaveText("$203");
   await expect(page.locator(".ap b")).toHaveText("0/2");
   await dismissEncounter(page);
-  await honest(page);
+  await honest(page, "work");
   await expect(work.getByRole("button")).toBeDisabled();
   await expect(
-    page.getByText("Not enough AP or availability", { exact: true }),
+    work.getByText("Not enough AP or availability", { exact: true }),
   ).toHaveText("Not enough AP or availability");
   expect((await work.boundingBox())!.width).toBe(size!.width);
 });
@@ -247,6 +237,11 @@ test("GOAL 002C mobile visual review and usable narrow controls", async ({
   await page.setViewportSize({ width: 320, height: 700 });
   await capture("04-everyday-actions-320", true);
   await nav(page, "City");
+  // "Find on map" left the board on a place; return to the whole city.
+  await page
+    .getByRole("group", { name: "Board location" })
+    .getByRole("button", { name: "Stixx City" })
+    .click();
   await capture("04-city-320");
   expect(
     await page.evaluate(

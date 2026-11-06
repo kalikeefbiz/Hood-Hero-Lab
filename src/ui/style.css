@@ -1853,3 +1853,12 @@ html {
   .exchange-side, .exchange-arrows i { animation: none !important; }
   @keyframes exchange-fade { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
 }
+
+/* Info-only menus: say where in the city, and take you there. */
+.city-hint { font-size: 12px; color: var(--muted); margin: 6px 0; }
+.find-list { display: grid; gap: 4px; }
+.find-list .eyebrow { margin: 8px 0 0; }
+.find-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; }
+.find-row strong, .find-row span { grid-column: 1; }
+.find-row span { font-size: 12px; color: var(--muted); }
+.find-row .text-button { grid-column: 2; grid-row: 1 / span 2; min-height: 44px; }

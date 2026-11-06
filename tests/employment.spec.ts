@@ -63,12 +63,9 @@ async function capture(page: Page, name: string) {
   await test.info().attach(name, { path, contentType: "image/png" });
 }
 async function click(page: Page, type: string) {
-  if (type === "rest") {
-    await page
-      .getByRole("navigation")
-      .getByRole("button", { name: "Actions", exact: true })
-      .click();
-  }
+  // Each honest action happens at its own place in the city.
+  if (["rest", "gig", "apply", "acceptJob", "work", "timeOff", "resign"].includes(type))
+    await honest(page, type as Parameters<typeof honest>[1]);
   if (["buyback", "negotiate", "recover", "settlement"].includes(type)) {
     await storyAction(page, type);
     return;
@@ -78,6 +75,10 @@ async function click(page: Page, type: string) {
     .first()
     .getByRole("button")
     .click();
+  // In the city the player walks over first; wait for the outcome to land.
+  await expect
+    .poll(async () => (await page.locator(".action-feedback").count()) + (await page.getByRole("dialog").count()), { timeout: 20000 })
+    .toBeGreaterThan(0);
 }
 async function endDay(page: Page, accept = true) {
   const handle = (dialog: Dialog) =>
@@ -169,7 +170,7 @@ test("absence warning can be cancelled; repeated absences fire and gigs survive 
   await seed(page, s);
   await endDay(page, false);
   expect((await state(page)).day).toBe(2);
-  await nav(page, "Actions");
+  await honest(page, "work");
   await page.locator('[data-action="work"]').scrollIntoViewIfNeeded();
   await capture(page, "05-scheduled-choice");
   for (let d = 2; d <= 6; d++) await endDay(page);

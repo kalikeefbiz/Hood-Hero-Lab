@@ -36,9 +36,13 @@ the city already, and what has to be built before the tab can go.
 1. ~~Person cards show all moves~~ (done in GOAL 011); group them. *(Claude)*
 2. ~~Downtown people spots~~: set aside by the owner.
 3. ~~"On hand" strip~~: not needed, because information stays in menus.
-4. Remove action buttons from the Actions tab and Wallet; keep every
-   information panel. Each removed action has a browser test proving it works
-   from the City tab. *(Claude, Nov 6)*
+4. ~~Remove action buttons from the Actions tab and Wallet~~ (done Nov 6).
+   The tab is now information plus **Find on map**. The test helpers `honest(page, kind)`
+   and `connects(page, person)` in `tests/helpers.ts` reach places and people
+   through the city. Wallet purchases and repayment now point to the map.
+   People-tab "Interact with" opens the person on the map. Remaining shortcut:
+   crew conversations from Set ("Interact with <member>") still open a
+   conversation directly. Move them into the city next.
 5. What's left of the Actions tab is information only. Rename or fold it into
    another tab once it's clear what remains.
 

@@ -71,9 +71,7 @@ export function ActionCard({
       ? employmentCopy!
       : a.type === "gig"
         ? `$${BALANCE.gigIncome} clean. Local work.`
-        : a.target
-          ? `Check in with ${s.characters[a.target].alias ?? s.characters[a.target].name}.`
-          : def.description;
+        : def.description;
   if (compact)
     return (
       <article

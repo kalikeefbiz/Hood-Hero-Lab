@@ -280,7 +280,8 @@ test("supplier to inventory to multiple real sales and repayment through normal 
     .getByRole("heading", { name: "Inventory", exact: true })
     .scrollIntoViewIfNeeded();
   await snap(page, "05-outstanding-balance");
-  await page.getByRole("button", { name: "Discuss repayment" }).click();
+  await page.getByRole("button", { name: "Find Cuzzo on map →" }).click();
+  await page.getByRole("button", { name: "Talk repayment with Cuzzo" }).click();
   await modal.getByRole("button", { name: /Repay full balance/ }).click();
   await dismissEncounter(page);
   expect((await state(page)).street.agreements[0].balance).toBe(0);
@@ -351,10 +352,13 @@ test("seeded real-play arrest serves every day and releases into continued gamep
   expect(after.characters.loco.status).toBe("arrested");
   expect(after.end).toBeNull();
   expect(after.street.custody.at(-1).status).toBe("released");
-  await nav(page, "Actions");
   await honest(page);
+  // The interrupted session's summary sits over the board until dismissed.
+  const summary = page.getByRole("button", { name: "Dismiss session summary" });
+  if (await summary.count()) await summary.click();
   await page.locator('[data-action="gig"]').getByRole("button").click();
-  expect((await state(page)).ap).toBe(1);
+  await expect.poll(async () => (await state(page)).ap, { timeout: 20000 }).toBe(1);
+  await dismissEncounter(page);
   await nav(page, "Wallet");
   await page.getByText("Custody history", { exact: true }).click();
   await expect(page.locator(".transaction-history")).toContainText(

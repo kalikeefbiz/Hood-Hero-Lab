@@ -1,3 +1,4 @@
+import { ITEMS } from "../content/economy";
 import { TutorialObjective, RobberyPlayback } from "./StreetLife";
 import { endStreetSession } from "../systems/StreetSessions";
 import { StreetSessionStart, StreetSessionPlayback } from "./StreetSession";
@@ -38,7 +39,6 @@ import {
 } from "../core/TimeSystem";
 import {
   ACTIONS,
-  availableActions,
   performAction,
   performActionAt,
   validateAction,
@@ -513,8 +513,10 @@ export function App() {
     setScreen("City");
     setHistoryEncounterId(null);
   }
+  /** Meet someone where they are: on the map when they're out, else their info. */
   function openPerson(id: string) {
     setFocus(id);
+    if (people.some((x) => x.id === id)) return showPerson(id);
     setGroup("Connects");
     setScreen("Actions");
   }
@@ -554,15 +556,6 @@ export function App() {
   const request = s.encounters.find(
     (e) => e.definitionId === "mega-chains-request" && e.status === "pending",
   );
-  const all = availableActions(s);
-  const actionCard = (a: Action) => (
-    <ActionCard
-      key={`${a.type}-${a.target ?? a.item ?? a.jobId ?? ""}`}
-      s={s}
-      action={a}
-      onAction={act}
-    />
-  );
   const meetLocals = (zone: ZoneId) => {
     const local = p.known.find((id) => s.characters[id]?.home === zone);
     if (local) setFocus(local);
@@ -593,6 +586,16 @@ export function App() {
       setBusy(false);
     }
     act(a, placeId);
+  }
+  /** Frame a place on the board and open its card. */
+  function showPlace(placeId: string) {
+    const l = locationById(placeId);
+    if (!l) return;
+    setBoard({ zone: l.zone, block: locationBlock(l)?.id ?? null, place: l.id });
+    setPersonId(null);
+    setLookOpen(false);
+    setPanelOpen(true);
+    setScreen("City");
   }
   /** Frame someone on the board and open their card. */
   function showPerson(id: string) {
@@ -1480,12 +1483,8 @@ export function App() {
                 setCategory={setGroup}
                 focus={focus}
                 setFocus={setFocus}
-                act={act}
-                openSupplier={(id) => {
-                  plugInCity.current = false;
-                  setState(openSupplier(s, id));
-                  setScreen("City");
-                }}
+                findPerson={showPerson}
+                findPlace={showPlace}
               />
             )}
             {screen === "Set" && (
@@ -1724,18 +1723,28 @@ export function App() {
                 <InventoryWallet
                   s={s}
                   change={setState}
-                  open={(id) => {
-                    plugInCity.current = false;
-                    setState(openSupplier(s, id));
-                    setScreen("City");
-                  }}
+                  open={showPerson}
                 />
                 <BusinessPanel s={s} onChange={setState} />
                 <RetirementPanel s={s} onChange={setState} />
-                <h3>Personal purchases</h3>
-                <div className="action-grid">
-                  {all.filter((a) => a.type === "buy").map(actionCard)}
-                </div>
+                <section className="panel find-list" aria-label="Where to shop">
+                  <h3>Personal purchases</h3>
+                  <p className="city-hint">Bought in person at shops in the city.</p>
+                  {LOCATIONS.filter((l) => l.links.items?.length).map((l) => (
+                    <div className="known-contact find-row" key={l.id}>
+                      <strong>{l.name}</strong>
+                      <span>
+                        {s.zones[l.zone].name} ·{" "}
+                        {l.links.items!
+                          .map((i) => ITEMS[i as keyof typeof ITEMS]?.name ?? i)
+                          .join(", ")}
+                      </span>
+                      <button className="text-button" onClick={() => showPlace(l.id)}>
+                        Find on map →
+                      </button>
+                    </div>
+                  ))}
+                </section>
                 <Panel>
                   <h3>Money trail</h3>
                   {s.ledger

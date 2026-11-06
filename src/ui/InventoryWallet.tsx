@@ -19,6 +19,7 @@ export function InventoryWallet({
 }: {
   s: GameState;
   change: (s: GameState) => void;
+  /** Find the plug on the board; repayment is settled with them in person. */
   open: (id: string) => void;
 }) {
   const p = player(s),
@@ -165,7 +166,7 @@ export function InventoryWallet({
               }
               onClick={() => open(a.supplier)}
             >
-              Discuss repayment
+              Find {s.characters[a.supplier].alias ?? s.characters[a.supplier].name} on map →
             </button>
           </div>
         ))}

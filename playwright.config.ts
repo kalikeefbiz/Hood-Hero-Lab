@@ -4,6 +4,9 @@ export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
   retries: 0,
+  // Actions happen in the city: the player walks to the place first, so a
+  // gameplay test needs more than the 30 s default.
+  timeout: 90_000,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL:
