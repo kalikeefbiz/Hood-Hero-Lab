@@ -1,5 +1,6 @@
 import { endStreetSession } from "../systems/StreetSessions";
 import { StreetSessionStart, StreetSessionPlayback } from "./StreetSession";
+import { ExchangeFeed } from "./ExchangeFeed";
 import { SKILLS, skillRank } from "../systems/Skills";
 import { SkillsView } from "./SkillsView";
 import { KnownCharacterLocation } from "./KnownCharacterLocation";
@@ -946,6 +947,7 @@ export function App() {
           change={setState}
           visible={screen === "City"}
         />
+        <ExchangeFeed s={s} />
         {screen === "City" && !panelOpen && (
           <button
             className="inspector-tab"
