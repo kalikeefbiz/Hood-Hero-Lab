@@ -1336,3 +1336,31 @@
     animation: none;
   }
 }
+
+/* Plugs: found from your own card, dealt with from theirs. */
+.plug-block {
+  margin: 8px 0;
+  padding-top: 8px;
+  border-top: 1px solid #ffffff14;
+}
+.plug-block .supplier-entry { margin-top: 4px; }
+.plug-list {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #ffffff14;
+}
+.plug-row {
+  display: grid;
+  gap: 1px;
+  text-align: left;
+  min-height: 44px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #ffffff0a;
+  border: 1px solid #ffffff14;
+  color: inherit;
+}
+.plug-row strong { font-size: 13px; }
+.plug-row small { font-size: 11px; color: var(--muted); }

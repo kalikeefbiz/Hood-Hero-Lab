@@ -1,21 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { GameState } from "../core/GameState";
-import { newExchanges, type Exchange } from "./exchanges";
+import { baseline, newExchanges, type Exchange, type ExchangeSide } from "./exchanges";
 
 /** How long each card stays: slide in, hold, fade (CSS keyframes match). */
 export const EXCHANGE_MS = 2600;
 const MAX_VISIBLE = 3;
 
+function Side({ side, dir }: { side: ExchangeSide; dir: "give" | "get" }) {
+  const headline =
+    side.kind === "item"
+      ? `${side.quantity}× ${side.name}`
+      : `${dir === "get" ? "+" : "−"}$${side.amount}`;
+  return (
+    <div className={`exchange-side ${dir} ${side.kind}`}>
+      {side.icon && <img src={side.icon} alt="" />}
+      <div>
+        <strong>{headline}</strong>
+        <small>{side.label}</small>
+        {side.note && <small className="exchange-note">{side.note}</small>}
+      </div>
+    </div>
+  );
+}
+
 /**
- * Item-for-cash cards after each successful exchange. Never a target: taps go
- * straight through to the board and controls, and nothing waits on it.
+ * What changed hands after each exchange: merchandise and cash, in and out.
+ * Never a target: taps go straight through, and nothing waits on it.
  */
 export function ExchangeFeed({ s }: { s: GameState }) {
-  const seen = useRef<{ firstId: string | null; count: number }>({
-    firstId: s.street.transactions[0]?.id ?? null,
-    count: s.street.transactions.length,
-  });
+  const seen = useRef(baseline(s));
   const [cards, setCards] = useState<Exchange[]>([]);
   useEffect(() => {
     const { exchanges, seen: next } = newExchanges(s, seen.current);
@@ -34,35 +48,14 @@ export function ExchangeFeed({ s }: { s: GameState }) {
     <div className="exchange-feed" aria-live="polite">
       {cards.map((e) => (
         <div className="exchange-card" key={e.id} data-transaction={e.id}>
-          {e.give && (
-            <div className="exchange-side give">
-              {e.give.icon && <img src={e.give.icon} alt="" />}
-              <div>
-                <strong>
-                  {e.give.quantity}× {e.give.name}
-                </strong>
-                <small>Given</small>
-              </div>
-            </div>
-          )}
+          {e.give && <Side side={e.give} dir="give" />}
           {e.give && e.get && (
             <span className="exchange-arrows" aria-hidden="true">
               <i>→</i>
               <i>←</i>
             </span>
           )}
-          {e.get && (
-            <div className="exchange-side get">
-              <img src={e.get.icon} alt="" />
-              <div>
-                <strong>+${e.get.amount}</strong>
-                <small>
-                  {e.get.kind === "illicit" ? "Illicit cash" : "Cash"} received
-                </small>
-                {e.get.note && <small className="exchange-note">{e.get.note}</small>}
-              </div>
-            </div>
-          )}
+          {e.get && <Side side={e.get} dir="get" />}
         </div>
       ))}
     </div>,

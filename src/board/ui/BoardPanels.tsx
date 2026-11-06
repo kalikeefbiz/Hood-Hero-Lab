@@ -1,4 +1,6 @@
 import { KnownCharacterLocation } from "../../ui/KnownCharacterLocation";
+import { PlugEntry, isPlug, plugDebt, plugStatus } from "../../ui/PlugEntry";
+import { boardPeople } from "../people";
 import type { ReactNode } from "react";
 import type { GameState, ZoneId } from "../../core/GameState";
 import type { Action } from "../../core/ActionEngine";
@@ -538,11 +540,17 @@ export function PersonInspector({
   personId,
   renderAction,
   openProfile,
+  openPlug,
+  goTo,
 }: {
   s: GameState;
   personId: string;
   renderAction: (a: import("../../core/ActionEngine").Action) => ReactNode;
   openProfile: (id: string) => void;
+  /** Open the plug conversation (terms or repayment). */
+  openPlug?: (id: string) => void;
+  /** Walk the player to a place on the board. */
+  goTo?: (placeId: string) => void;
 }) {
   const c = s.characters[personId];
   if (!c) return null;
@@ -591,6 +599,9 @@ export function PersonInspector({
             : ""}
         </p>
       )}
+      {known && openPlug && isPlug(s, c.id) && (
+        <PlugBlock s={s} id={c.id} open={openPlug} goTo={goTo} />
+      )}
       {moves.length > 0 && (
         <div
           className="board-actions inspector-tiles quick-moves"
@@ -604,15 +615,97 @@ export function PersonInspector({
   );
 }
 
+/** A plug on the board: where to find them, and the deal itself. */
+function PlugBlock({
+  s,
+  id,
+  open,
+  goTo,
+}: {
+  s: GameState;
+  id: string;
+  open: (id: string) => void;
+  goTo?: (placeId: string) => void;
+}) {
+  const at = boardPeople(s).find((x) => x.id === id);
+  const place = at ? locationById(at.placeId) : null;
+  const here = !!place && presenceOf(s).location === place.id;
+  return (
+    <div className="plug-block" aria-label="Plug">
+      <p className="eyebrow">Plug</p>
+      {place && (
+        <p className="board-facts">
+          {here ? `With you at ${place.name}` : `At ${place.name}`}
+          {!here && goTo && (
+            <>
+              {" "}
+              <button className="text-button" onClick={() => goTo(place.id)}>
+                Walk there →
+              </button>
+            </>
+          )}
+        </p>
+      )}
+      <PlugEntry s={s} id={id} open={open} />
+    </div>
+  );
+}
+
+/** Plugs the player knows: status, and a tap to find them on the board. */
+export function PlugList({
+  s,
+  onPlug,
+  zone,
+}: {
+  s: GameState;
+  onPlug: (id: string) => void;
+  /** Only plugs found in this neighborhood. */
+  zone?: ZoneId;
+}) {
+  const p = s.characters[s.playerId];
+  const where = new Map(boardPeople(s).map((x) => [x.id, x.placeId]));
+  const plugs = p.known
+    .filter((id) => s.characters[id] && isPlug(s, id))
+    .filter((id) => !zone || locationById(where.get(id) ?? "")?.zone === zone)
+    .sort(
+      (a, b) =>
+        Number(!!plugDebt(s, b)) - Number(!!plugDebt(s, a)) ||
+        Number(p.connections.includes(b)) - Number(p.connections.includes(a)),
+    )
+    .slice(0, 6);
+  if (!plugs.length) return null;
+  return (
+    <div className="plug-list" role="group" aria-label={zone ? `Plugs in ${s.zones[zone].name}` : "Your plugs"}>
+      <p className="eyebrow">{zone ? `Plugs in ${s.zones[zone].name}` : "Your plugs"}</p>
+      {plugs.map((id) => {
+        const c = s.characters[id],
+          place = locationById(where.get(id) ?? "");
+        return (
+          <button key={id} className="plug-row" onClick={() => onPlug(id)}>
+            <strong>{c.alias ?? c.name}</strong>
+            <small>
+              {place ? `${place.name} · ` : ""}
+              {plugStatus(s, id)}
+            </small>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /** The player's own card: where they stand and what that means. */
 export function PresenceCard({
   s,
   onFind,
   onLook,
+  onPlug,
 }: {
   s: GameState;
   onFind: () => void;
   onLook: () => void;
+  /** Find a plug on the board and open their card. */
+  onPlug?: (id: string) => void;
 }) {
   const pr = presenceOf(s);
   const l = locationById(pr.location)!;
@@ -639,6 +732,7 @@ export function PresenceCard({
       <button className="text-button" onClick={onLook}>
         Change your look →
       </button>
+      {onPlug && <PlugList s={s} onPlug={onPlug} />}
     </section>
   );
 }
