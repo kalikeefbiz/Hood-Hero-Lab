@@ -1,5 +1,11 @@
+import { PREPARATION } from "../systems/Robbery";
 import { MERCHANDISE } from "../content/street";
-import { equip, equipError, equipmentOf, EQUIPMENT } from "../systems/Equipment";
+import {
+  equip,
+  equipError,
+  equipmentOf,
+  EQUIPMENT,
+} from "../systems/Equipment";
 import { quannyCollectionInstruction } from "../systems/QuannyState";
 import { player, type GameState } from "../core/GameState";
 import { lotProfit } from "../systems/StreetEconomy";
@@ -51,6 +57,27 @@ export function InventoryWallet({
       <section className="panel inventory-panel" aria-label="Inventory">
         <p className="eyebrow">ON HAND</p>
         <h3>Inventory</h3>
+        <p>
+          {held.reduce((n, l) => n + l.remaining, 0)} Pink Magic in{" "}
+          {held.length} held lots.
+        </p>
+        <h4>Preparation supplies</h4>
+        {Object.entries(PREPARATION).map(([id, d]) => (
+          <p key={id}>
+            {d.name}: {s.robberies?.items[id as keyof typeof PREPARATION] ?? 0}{" "}
+            · buy at {d.location}
+          </p>
+        ))}
+        <h4>Robbery opportunities</h4>
+        {s.robberies?.jobs
+          .filter((j) => j.status === "offered")
+          .map((j) => (
+            <p key={j.id}>
+              {j.kind} · {j.location} · expires day {j.expiresDay}. Visit the
+              physical City target.
+            </p>
+          ))}
+        <p>Store and bank scores: future content, unavailable.</p>
         <div className="inventory-grid">
           {held.map((l) => (
             <details className="inventory-slot" data-lot={l.id} key={l.id}>
@@ -70,13 +97,39 @@ export function InventoryWallet({
           )}
         </div>
         <h4>Equipment</h4>
-        <p>Only equipped, rank-eligible tools grant bonuses. Story/contact rewards may grant equipment; stores do not sell it.</p>
+        <p>
+          Only equipped, rank-eligible tools grant bonuses. Story/contact
+          rewards may grant equipment; stores do not sell it.
+        </p>
         {equipmentOf(p).owned.length === 0 && <p>No equipment owned.</p>}
-        {equipmentOf(p).owned.map(id => { const def = EQUIPMENT[id], equipped = p.equipment?.equipped === id, reason = equipError(p, id); return <div key={id}>
-          <strong>{def.name} · {def.type}</strong><p>Attack +{def.attack} · Defense +{def.defense} · Combat rank {def.rank}{equipped ? ' · Equipped' : ''}</p>
-          <button disabled={!equipped && !!reason} onClick={() => { const next = structuredClone(s); equip(player(next), equipped ? null : id); change(next); }}>{equipped ? 'Unequip' : 'Equip'} {def.name}</button>
-          {reason && <p>{reason}</p>}
-        </div>; })}
+        {equipmentOf(p).owned.map((id) => {
+          const def = EQUIPMENT[id],
+            equipped = p.equipment?.equipped === id,
+            reason = equipError(p, id);
+          return (
+            <div key={id}>
+              <strong>
+                {def.name} · {def.type}
+              </strong>
+              <p>
+                Attack +{def.attack} · Defense +{def.defense} · Combat rank{" "}
+                {def.rank}
+                {equipped ? " · Equipped" : ""}
+              </p>
+              <button
+                disabled={!equipped && !!reason}
+                onClick={() => {
+                  const next = structuredClone(s);
+                  equip(player(next), equipped ? null : id);
+                  change(next);
+                }}
+              >
+                {equipped ? "Unequip" : "Equip"} {def.name}
+              </button>
+              {reason && <p>{reason}</p>}
+            </div>
+          );
+        })}
         {p.possessions.length > 0 && (
           <>
             <h4>Personal possessions</h4>

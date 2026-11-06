@@ -1,3 +1,4 @@
+import { completeWorkIntro } from "../systems/StreetLife";
 import { awardSkill, proficiency, skillsOf } from "../systems/Skills";
 import { equipmentBonus } from "../systems/Equipment";
 import { openQuanny, quannyError, quannyConversation } from "../systems/Quanny";
@@ -276,6 +277,12 @@ export function validateAction(s: GameState, a: Action): string | null {
     t = a.target ? s.characters[a.target] : undefined,
     i = a.incidentId ? s.incidents[a.incidentId] : undefined;
   if (!c) return "Unknown actor";
+  if (
+    c.id === s.playerId &&
+    s.activeRobbery &&
+    s.activeRobbery.status !== "ended"
+  )
+    return "Finish the robbery session first.";
   if (s.end) return "This run has ended";
   if (c.id === s.playerId && hospitalStay(s))
     return "You are recovering in hospital.";
@@ -419,8 +426,14 @@ export function validateAction(s: GameState, a: Action): string | null {
     c.possessions.includes(a.item)
   )
     return "Already owned";
-  if (a.type === "crime" && a.actor === s.playerId) return "Visit a City street spot and start a trapping session.";
-  if (a.actor === s.playerId && s.activeSession && s.activeSession.status !== "ended") return "End your trapping session before another action.";
+  if (a.type === "crime" && a.actor === s.playerId)
+    return "Visit a City street spot and start a trapping session.";
+  if (
+    a.actor === s.playerId &&
+    s.activeSession &&
+    s.activeSession.status !== "ended"
+  )
+    return "End your trapping session before another action.";
   if (a.type === "crime") {
     if (a.market && !s.zones[a.market]) return "Unknown market";
     return transactionError(s, a.actor, a.market);
@@ -470,7 +483,11 @@ export function actionSuccessChance(s: GameState, a: Action): number | null {
   const c = s.characters[a.actor];
   if (!c) return null;
   if (a.type === "negotiate")
-    return clamp(0.35 + proficiency(c, "social") / 150 - c.stress / 500, 0.1, 0.85);
+    return clamp(
+      0.35 + proficiency(c, "social") / 150 - c.stress / 500,
+      0.1,
+      0.85,
+    );
   if (a.type === "recover") {
     const i = a.incidentId ? s.incidents[a.incidentId] : undefined;
     return i
@@ -523,10 +540,17 @@ export function resolveAction(s: GameState, a: Action) {
   const initialStress = c.stress;
   const socialGain = Math.max(3, 10 - Math.floor(c.stress / 25));
   switch (a.type) {
-    case "apply":
-      return applyForJob(s, a.actor, a.jobId!);
-    case "acceptJob":
-      return acceptJob(s, a.actor, a.jobId!);
+    case "apply": {
+      const e = applyForJob(s, a.actor, a.jobId!);
+      if (a.actor === s.playerId) completeWorkIntro(s, e.id, "apply", a.jobId);
+      return e;
+    }
+    case "acceptJob": {
+      const e = acceptJob(s, a.actor, a.jobId!);
+      if (a.actor === s.playerId)
+        completeWorkIntro(s, e.id, "acceptJob", a.jobId);
+      return e;
+    }
     case "timeOff":
       return requestTimeOff(s, a.actor);
     case "resign":
@@ -582,6 +606,7 @@ export function resolveAction(s: GameState, a: Action) {
       i!.negotiated = true;
       if (random(s) < successChance!) {
         i!.demand = Math.max(i!.minimumDemand, i!.demand - 30);
+        i!.reducedDemand = i!.demand;
         text = `The group lowered its demand to $${i!.demand}.`;
       } else {
         text = "The group refused to lower the demand.";
@@ -596,6 +621,17 @@ export function resolveAction(s: GameState, a: Action) {
       category = "incident";
       break;
     case "buyback": {
+      i!.paidDemand = i!.demand;
+      i!.cleanFullPrice =
+        i!.demand === (i!.originalDemand ?? 150) &&
+        !i!.helpRequested &&
+        !i!.leadershipAware &&
+        !i!.interventions.some((x) =>
+          ["failed-recovery", "settlement", "negotiate", "favor"].includes(
+            x.type,
+          ),
+        ) &&
+        !i!.negotiated;
       const paid = expense(s, c, i!.demand, "Property buyback")!;
       // Group custody and group payment are retained; no invented individual holder.
       s.factions[i!.organization].resources = clamp(
@@ -730,17 +766,33 @@ export function resolveAction(s: GameState, a: Action) {
     [c.id, ...(t ? [t.id] : [])],
     [c.id, ...(t ? [t.id] : [])],
   );
-  if (a.type === 'gig') awardSkill(s, c.id, 'work', 100, `gig:${s.day}`);
-  if (['contact', 'socialize'].includes(a.type) && t) {
+  if (c.id === s.playerId && ["gig", "apply", "acceptJob"].includes(a.type))
+    completeWorkIntro(
+      s,
+      e.id,
+      a.type as "gig" | "apply" | "acceptJob",
+      a.jobId,
+    );
+  if (a.type === "gig") awardSkill(s, c.id, "work", 100, `gig:${s.day}`);
+  if (["contact", "socialize"].includes(a.type) && t) {
     const trust = t.relationships[c.id]?.trust ?? 0;
-    for (const gate of [25, 50, 75]) if (trust >= gate)
-      awardSkill(s, c.id, 'social', 100, `trust:${t.id}:${gate}`);
+    for (const gate of [25, 50, 75])
+      if (trust >= gate)
+        awardSkill(s, c.id, "social", 100, `trust:${t.id}:${gate}`);
   }
-  if (a.type === 'introduce') awardSkill(s, c.id, 'social', 100, `introduction:${t!.id}`);
-  if (a.type === 'negotiate' && i?.negotiated && text.includes('lowered')) awardSkill(s, c.id, 'social', 200, `negotiation:${i.id}`);
-  if (a.type === 'buyback') awardSkill(s, c.id, 'social', 200, `reconciliation:${i!.id}`);
-  if (a.type === 'rest' && initialStress >= 14 && c.stress <= 30 && !skillsOf(c).awards.some(x => x.skill === 'survival' && x.day > s.day - 7))
-    awardSkill(s, c.id, 'survival', 25, `rest:${s.day}`);
+  if (a.type === "introduce")
+    awardSkill(s, c.id, "social", 100, `introduction:${t!.id}`);
+  if (a.type === "negotiate" && i?.negotiated && text.includes("lowered"))
+    awardSkill(s, c.id, "social", 200, `negotiation:${i.id}`);
+  if (a.type === "buyback")
+    awardSkill(s, c.id, "social", 200, `reconciliation:${i!.id}`);
+  if (
+    a.type === "rest" &&
+    initialStress >= 14 &&
+    c.stress <= 30 &&
+    !skillsOf(c).awards.some((x) => x.skill === "survival" && x.day > s.day - 7)
+  )
+    awardSkill(s, c.id, "survival", 25, `rest:${s.day}`);
   if (
     i &&
     ["negotiate", "settlement", "buyback", "recover", "favor"].includes(a.type)

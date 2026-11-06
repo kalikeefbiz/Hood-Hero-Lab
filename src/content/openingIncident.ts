@@ -22,6 +22,7 @@ export function openingIncident(s: GameState) {
     property: "chains",
     startedDay: 1,
     demand: BALANCE.buyback,
+    originalDemand: BALANCE.buyback,
     minimumDemand: BALANCE.minimumBuyback,
     escalation: 15,
     negotiated: false,

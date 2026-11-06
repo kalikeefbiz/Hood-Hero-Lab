@@ -1,3 +1,4 @@
+import { openingDecision } from "./StreetLife";
 import {
   type GameState,
   type Incident,
@@ -14,6 +15,10 @@ export function resolveIncident(
   actor: string,
 ) {
   if (i.status !== "active") return;
+  // Finishing or ignoring the incident without giving a word is still a no-commitment route.
+  // The closed storyline must never leave the lawful-work introduction unreachable.
+  if (i.id === "the-chains" && s.streetLife?.decision === "unasked")
+    openingDecision(s, "delay");
   i.status = resolution === "sold" ? "abandoned" : "resolved";
   i.resolution = resolution;
   const property = s.properties[i.property];

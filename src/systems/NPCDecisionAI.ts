@@ -33,9 +33,11 @@ function decide(s: GameState, c: Character): Action | null {
         score:
           score +
           random(
-            action.target && ["quanny", "mr-lewis"].includes(action.target)
-              ? s.quanny
-              : s,
+            action.target === "contact-angels"
+              ? (s.streetLife ?? s.quanny)
+              : action.target && ["quanny", "mr-lewis"].includes(action.target)
+                ? s.quanny
+                : s,
           ) *
             5,
       });
@@ -77,13 +79,15 @@ function decide(s: GameState, c: Character): Action | null {
 export function advanceNPCs(s: GameState) {
   for (const c of Object.values(s.characters).sort(
     (a, b) =>
-      Number(["quanny", "mr-lewis"].includes(a.id)) -
-      Number(["quanny", "mr-lewis"].includes(b.id)),
+      Number(["quanny", "mr-lewis", "contact-angels"].includes(a.id)) -
+      Number(["quanny", "mr-lewis", "contact-angels"].includes(b.id)),
   )) {
     if (c.id === s.playerId) continue;
-    const authored = ["quanny", "mr-lewis"].includes(c.id),
+    const authored = ["quanny", "mr-lewis", "contact-angels"].includes(c.id),
       previousRng = s.rng;
-    if (authored) s.rng = s.quanny.rng;
+    if (authored)
+      s.rng =
+        c.id === "contact-angels" ? (s.streetLife?.rng ?? 11011) : s.quanny.rng;
     try {
       considerCrewOffer(s, c);
       if (c.agency.lastAssignmentDay === s.day) continue;
@@ -91,7 +95,9 @@ export function advanceNPCs(s: GameState) {
       if (action) resolveAction(s, action);
     } finally {
       if (authored) {
-        s.quanny.rng = s.rng;
+        if (c.id === "contact-angels") {
+          if (s.streetLife) s.streetLife.rng = s.rng;
+        } else s.quanny.rng = s.rng;
         s.rng = previousRng;
       }
     }

@@ -102,7 +102,7 @@ export function missingMilestones(
     missing: string[] = [];
   if (skill === "combat") {
     if (rank >= 2 && !m.certified)
-      missing.push("Story certification — not yet available in the game");
+      missing.push("Complete an optional authored violent-operation introduction");
     const need = rank === 4 ? 12 : rank === 3 ? 3 : 0;
     if ((m.violentSuccess ?? 0) < need)
       missing.push(
@@ -117,7 +117,7 @@ export function missingMilestones(
       missing.push(rank === 4 ? "Gravedigger Combat" : "Certified Combat");
     if (!m[`robberyAccess${rank}`])
       missing.push(
-        "Appropriate activity/story access — not yet available in the game",
+        "Earn an appropriate operation invitation through a trusted contact",
       );
   }
   if (skill === "trapper" && rank >= 3) {

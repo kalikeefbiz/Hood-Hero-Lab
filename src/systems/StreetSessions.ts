@@ -1,3 +1,4 @@
+import { lessonError, workIntroError } from "./StreetAccess";
 import { progress } from "./Progression";
 import { finalizeEnding } from "./EndConditions";
 import { finishSessionPartner, interruptSession } from "./SessionLifecycle";
@@ -79,6 +80,20 @@ function interruption(s: GameState) {
 export function validateStartStreetSession(s: GameState, location: string) {
   const l = locationById(location),
     p = player(s);
+  const work = workIntroError(s);
+  if (work) return work;
+  if (s.activeRobbery && s.activeRobbery.status !== "ended")
+    return "Finish the robbery session first.";
+  if (
+    s.streetLife?.lesson === "waiting" &&
+    (location !== "south.the-lot" ||
+      !s.street.lots.some(
+        (l) =>
+          [s.streetLife?.giftLot, s.streetLife?.starterLot].includes(l.id) &&
+          l.remaining > 0,
+      ))
+  )
+    return lessonError(s);
   if (!l || l.status !== "live" || !l.links.street)
     return "This is not an active street-work spot.";
   if (presenceOf(s).location !== location || presenceOf(s).zone !== l.zone)
@@ -96,7 +111,18 @@ export function validateStartStreetSession(s: GameState, location: string) {
     return "Rival territory blocks street work here.";
   return buyerError(s, s.playerId, l.zone);
 }
-export function startStreetSession(state: GameState, location: string) {
+export function startStreetSession(
+  state: GameState,
+  location: string,
+  lotId?: string,
+) {
+  if (
+    lotId &&
+    !state.street.lots.some(
+      (l) => l.id === lotId && l.owner === state.playerId && l.remaining > 0,
+    )
+  )
+    return { state, error: "Selected stock is unavailable." };
   const error = validateStartStreetSession(state, location);
   if (error) return { state, error };
   const s = structuredClone(state),
@@ -137,6 +163,15 @@ export function startStreetSession(state: GameState, location: string) {
         Math.floor((random(s) - 0.5) * SESSION_BALANCE.variationMs),
     });
   }
+  if (s.streetLife?.lesson === "waiting") {
+    s.streetLife.lesson = "started";
+    record(
+      s,
+      "social",
+      `Mega: “${s.streetLife.initialDecision === "promise" ? "You gave your word about my chain." : "I heard your choice. You’re still my cousin."} Carry yourself like a boss and make me proud. Watch the buyers; nobody owes you a sale.”`,
+      ["mega", s.playerId],
+    );
+  }
   s.ap--;
   const partner = s.assignments.find(
     (a) =>
@@ -149,7 +184,7 @@ export function startStreetSession(state: GameState, location: string) {
     id: `session-${s.nextId++}`,
     location,
     zone: l.zone,
-    lotId: saleLot(s)!.id,
+    lotId: lotId ?? saleLot(s)!.id,
     startDay: s.day,
     paidAP: true,
     partner,
@@ -185,7 +220,12 @@ export function advanceStreetSession(
     interruptSession(s, stop);
     return s;
   }
-  if (saleLot(s)?.id !== session.lotId) {
+  if (
+    !s.street.lots.some(
+      (l) =>
+        l.id === session.lotId && l.owner === s.playerId && l.remaining > 0,
+    )
+  ) {
     session.status = "ended";
     session.reason = "Session stock is no longer available.";
     finishSessionPartner(s);

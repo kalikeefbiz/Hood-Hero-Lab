@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import { advanceDay } from "../core/TimeSystem";
 import { player, type GameState, type ZoneId } from "../core/GameState";
 import {

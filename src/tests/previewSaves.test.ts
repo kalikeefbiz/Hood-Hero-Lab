@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 
 // Main's preview suffix must isolate complete v9 campaigns without changing old Lab slots.
 afterEach(() => {

@@ -1,3 +1,5 @@
+import { atPerson } from "./StreetLife";
+import { lessonError } from "./StreetAccess";
 import { skillsOf } from "./Skills";
 /** Directional consignment uses the same merchandise, agreement, commitment and ledger model. */
 import { type GameState, player, cash } from "../core/GameState";
@@ -34,6 +36,13 @@ export function frontMerchandise(
   debtor: string,
   negotiated = false,
 ) {
+  if (lessonError(s)) return;
+  if (
+    (s.activeSession && s.activeSession.status !== "ended") ||
+    (s.activeRobbery && s.activeRobbery.status !== "ended")
+  )
+    return;
+  if (s.streetLife && !s.streetLife.legacy && !atPerson(s, debtor)) return;
   const terms = consignmentTerms(s, negotiated);
   if (
     !terms ||
@@ -161,7 +170,8 @@ export function collectConsignment(s: GameState, debtor: string) {
     change(n, p.id, { trust: 4, respect: 3 });
     const progress = skillsOf(n);
     progress.milestones.supplierPaid = 1;
-    if ((p.relationships[n.id]?.trust ?? 0) >= 30) progress.milestones.supplierCredible = 1;
+    if ((p.relationships[n.id]?.trust ?? 0) >= 30)
+      progress.milestones.supplierCredible = 1;
   } else {
     s.characters[debtor].wallet.illicit += a.reserve ?? 0;
     a.reserve = 0;

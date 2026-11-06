@@ -21,31 +21,45 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
     !["closed", "acknowledged"].includes(e.status),
   expression: () => "proposing",
   dialogue: (s, e) => {
-    const n = s.characters[e.participants[0]],
-      a = s.street.agreements.find((a) => a.supplier === n.id && a.balance > 0);
-    if (a)
-      return `You still have $${a.balance} with me. ${a.status === "overdue" ? "It's late. I need you to start making this right." : `We said the end of day ${a.dueDay}.`} Losing the goods doesn't settle that. Bring what you can; I'll count every dollar.`;
+    const n = s.characters[e.participants[0]];
+    const debts = s.street.agreements.filter(
+      (a) => a.supplier === n.id && a.debtor === s.playerId && a.balance > 0,
+    );
+    const obligation = debts.length
+      ? `You owe me $${debts.reduce((v, a) => v + a.balance, 0)} across ${debts.length} agreement(s): ${debts.map((a) => `${a.id}, $${a.balance}, day ${a.dueDay}${a.status === "overdue" ? " (late)" : ""}`).join("; ")}. Each clock stays separate. `
+      : "";
+    const cashOnly =
+      n.id === "mega" &&
+      (s.streetLife?.initialDecision === "decline" ||
+        (s.streetLife &&
+          !s.streetLife.legacy &&
+          s.streetLife.lesson === "waiting" &&
+          s.streetLife.initialDecision !== "promise"));
     const tone =
       n.id === "mega"
-        ? "Cuzzo, I'll put my name behind one small lot. Don't make me chase you."
+        ? cashOnly
+          ? s.streetLife?.initialDecision === "decline"
+            ? "You said you couldn’t help with the chain. I’m disappointed, but you’re family. I’ll supply you on CASH terms only, no fronts."
+            : "You never committed, but you’re still family. The first six for this lesson are CASH only, no fronts."
+          : "Cuzzo, you’re family. I’ll supply you unless we become actual enemies. Every pack keeps its own terms."
         : n.id === "pablo"
           ? "You give your word, you keep it. I remember who does."
-          : "Small lot. Clear terms. We see how this goes before there's any more.";
-    return `${tone} ${MERCHANDISE.nightgoods.quantity} Pink Magic: $90 cash now, or $102 on consignment by the end of day ${s.day + B.deadline}. Expected gross here is $${6 * unitPrice(s, n.home)} if it all sells. ${e.selectedResponses.some((r) => r.id === "terms") ? "That's gross, before supplier cost, losses and a partner's share. No guaranteed buyers. Police scrutiny, competition and repeated activity can interrupt trade; you still owe me if goods disappear." : "Buyers aren't promised. Police and local organizations are watching."}`;
+          : "Small pack, clear terms. My own trust, balances and available stock decide each reup.";
+    return `${obligation}${tone} ${MERCHANDISE.nightgoods.quantity} Pink Magic: ${cashOnly ? "$90 cash now." : `$90 cash now, or $102 on consignment by the end of day ${s.day + B.deadline}.`} Expected gross here is $${6 * unitPrice(s, n.home)} if it all sells. Gross is before supplier cost, losses and a partner’s share. No guaranteed buyers. Losing goods never erases a debt.`;
   },
   responses: (s, e) => {
-    const supplier = e.participants[0],
-      a = s.street.agreements.find(
-        (a) => a.supplier === supplier && a.balance > 0,
-      );
-    if (a)
-      return [
+    const supplier = e.participants[0];
+    const repayments = s.street.agreements
+      .filter(
+        (a) =>
+          a.supplier === supplier && a.debtor === s.playerId && a.balance > 0,
+      )
+      .flatMap((a) => [
         {
-          id: "full",
-          label: `Repay full balance · $${a.balance}`,
-          detail: "0 AP · actual cash transferred",
+          id: `full:${a.id}`,
+          label: `Repay ${a.id} · $${a.balance} · due day ${a.dueDay}`,
           effect: {
-            type: "street",
+            type: "street" as const,
             choice: "repay",
             agreementId: a.id,
             amount: a.balance,
@@ -53,37 +67,62 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
           requirement: () => paymentError(s, a.id, a.balance),
         },
         {
-          id: "partial",
-          label: `Make partial payment · $${Math.min(25, a.balance)}`,
-          detail: "0 AP · reduces remaining debt",
+          id: `partial:${a.id}`,
+          label: `Part-pay ${a.id} · $${Math.min(25, a.balance)}`,
           effect: {
-            type: "street",
+            type: "street" as const,
             choice: "repay",
             agreementId: a.id,
             amount: Math.min(25, a.balance),
           },
           requirement: () => paymentError(s, a.id, Math.min(25, a.balance)),
         },
-        {
-          id: "affordable",
-          label: `Pay what you can · $${Math.min(cash(player(s)), a.balance)}`,
-          detail: "0 AP · leaves no cash cushion",
-          effect: {
-            type: "street",
-            choice: "repay",
-            agreementId: a.id,
-            amount: Math.min(cash(player(s)), a.balance),
-          },
-          requirement: () =>
-            paymentError(s, a.id, Math.min(cash(player(s)), a.balance)),
-        },
-        {
-          id: "leave",
-          label: "I'll come back.",
-          effect: { type: "street", choice: "leave" },
-        },
-      ];
+        ...(a ===
+        s.street.agreements.find(
+          (x) =>
+            x.supplier === supplier && x.debtor === s.playerId && x.balance > 0,
+        )
+          ? [
+              {
+                id: "full",
+                label: `Repay full balance · $${a.balance}`,
+                effect: {
+                  type: "street" as const,
+                  choice: "repay",
+                  agreementId: a.id,
+                  amount: a.balance,
+                },
+                requirement: () => paymentError(s, a.id, a.balance),
+              },
+              {
+                id: "partial",
+                label: `Make partial payment · $${Math.min(25, a.balance)}`,
+                effect: {
+                  type: "street" as const,
+                  choice: "repay",
+                  agreementId: a.id,
+                  amount: Math.min(25, a.balance),
+                },
+                requirement: () =>
+                  paymentError(s, a.id, Math.min(25, a.balance)),
+              },
+              {
+                id: "affordable",
+                label: `Pay what you can · $${Math.min(cash(player(s)), a.balance)}`,
+                effect: {
+                  type: "street" as const,
+                  choice: "repay",
+                  agreementId: a.id,
+                  amount: Math.min(cash(player(s)), a.balance),
+                },
+                requirement: () =>
+                  paymentError(s, a.id, Math.min(cash(player(s)), a.balance)),
+              },
+            ]
+          : []),
+      ]);
     return [
+      ...repayments,
       {
         id: "cash",
         label: "Accept cash purchase · $90 · 1 AP",

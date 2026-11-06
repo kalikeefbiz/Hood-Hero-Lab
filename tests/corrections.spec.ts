@@ -1,3 +1,5 @@
+import { newGame as legacyGame } from "../src/tests/legacyGame";
+import { SAVE_KEY, serialize } from "../src/persistence/SaveSystem";
 import { openJournal } from "./journal";
 import { test, expect, type Page } from "@playwright/test";
 import {
@@ -22,6 +24,20 @@ async function start(page: Page, home = "Southside") {
   await page.getByLabel("What do people call you?").fill("Test(6.1)");
   await page.getByRole("radio", { name: home, exact: false }).check();
   await page.getByRole("button", { name: "Enter Stixx City" }).click();
+  await dismissEncounter(page);
+}
+async function startHistorical(page: Page, home: "south" | "rio" = "south") {
+  const historical = legacyGame("Test(6.1)", home);
+  await page.goto(process.env.PLAYWRIGHT_BASE_PATH || "/");
+  await page.evaluate(
+    ({ key, raw }) => {
+      localStorage.clear();
+      localStorage.setItem(key, raw);
+    },
+    { key: SAVE_KEY, raw: serialize(historical) },
+  );
+  await page.reload();
+  await page.getByRole("button", { name: "Resume saved game" }).click();
   await dismissEncounter(page);
 }
 async function clickAction(page: Page, type: string) {
@@ -49,8 +65,8 @@ test.beforeEach(async ({ page }) => {
     );
     const b = await r.json();
     expect(b.commit).toBe(process.env.PLAYWRIGHT_EXPECTED_COMMIT);
-    expect(b.milestone).toBe("GOAL 010");
-    expect(b.saveSchema).toBe(9);
+    expect(b.milestone).toBe("GOAL 011");
+    expect(b.saveSchema).toBe(10);
   }
 });
 test("Actions separate Streets, Honest and Connects; completed reach-out returns to Streets", async ({
@@ -106,8 +122,10 @@ test("Actions separate Streets, Honest and Connects; completed reach-out returns
 test("known suspects and leaders need real introductions; access and inventory survive reload", async ({
   page,
 }) => {
-  test.setTimeout(90000);
-  await start(page, "Rio Gabriel");
+  test.setTimeout(180000);
+  // This historical contact/economy probe resumes a genuine migrated v9 run.
+  // The full fresh tutorial → Rio → stock/robbery route is in street-life.spec.ts.
+  await startHistorical(page, "rio");
   await nav(page, "People");
   await page
     .locator(".person-row")
@@ -132,7 +150,23 @@ test("known suspects and leaders need real introductions; access and inventory s
   await connects(page, "dizzy");
   await clickAction(page, "contact");
   await connects(page, "dizzy");
+  // The Actions view hides an introduction when every remaining candidate is gated.
+  await expect(page.locator('[data-action="introduce"]')).toHaveCount(0);
+  expect((await state(page)).characters.player.connections).not.toContain(
+    "pablo",
+  );
+  // Trust alone no longer bypasses Pablo's membership/Big Dog restriction.
+  for (let n = 0; n < 5; n++) {
+    if ((await state(page)).ap === 0) await day(page);
+    await connects(page, "dizzy");
+    await clickAction(page, "standing");
+  }
+  if ((await state(page)).ap === 0) await day(page);
+  await connects(page, "dizzy");
+  await clickAction(page, "affiliate");
+  await connects(page, "dizzy");
   await clickAction(page, "introduce");
+  expect((await state(page)).characters.player.affiliation).toBe("angels");
   expect((await state(page)).characters.player.connections).toContain("pablo");
   await day(page);
   await connects(page, "dizzy");
@@ -168,7 +202,17 @@ test("active Chains lives in City; fulfillment leaves only completed history", a
   await start(page);
   await storyline(page);
   const modal = page.getByRole("dialog", { name: "Character encounter" });
-  await modal.getByRole("button", { name: /I’ll help you/ }).click();
+  await tapUntil(
+    page,
+    modal.getByRole("button", { name: /I’ll help you/ }),
+    async () =>
+      (await state(page)).commitments.some(
+        (c: any) =>
+          c.kind === "recover-property" &&
+          c.actor === "player" &&
+          c.status === "pending",
+      ),
+  );
   await honest(page);
   await clickAction(page, "gig");
   await storyAction(page, "buyback");
@@ -194,7 +238,7 @@ for (const width of [320, 375, 390, 430])
   }) => {
     test.setTimeout(90000);
     await page.setViewportSize({ width, height: 844 });
-    await start(page);
+    await startHistorical(page);
     await nav(page, "Actions");
     for (const group of ["Streets", "Honest", "Connects"]) {
       await category(page, group);

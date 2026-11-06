@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import { advanceDay } from "../core/TimeSystem";
 import {
   performAction,

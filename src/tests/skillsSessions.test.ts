@@ -4,7 +4,7 @@ import { requestActivity } from "../systems/CrewAgency";
 import { grantEquipment } from "../systems/Equipment";
 import { repay, supplierError } from "../systems/StreetEconomy";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import { player, cash, type GameState } from "../core/GameState";
 import { performAction } from "../core/ActionEngine";
 import { advanceDay } from "../core/TimeSystem";
@@ -142,7 +142,7 @@ describe("eight canonical persistent skill tracks", () => {
     expect(skillRank(c, "robbery")).toBe(1);
     expect(skillRank(c, "trapper")).toBe(2);
     expect(missingMilestones(c, "combat", 2).join(" ")).toContain(
-      "not yet available",
+      "optional authored",
     );
     equipmentOf(c).owned.push("arp");
     expect(equip(c, "arp")).toBeTruthy();
@@ -486,6 +486,8 @@ describe("physical and transactional City sessions", () => {
     player(s).neighborhoodStanding.rio = 25;
     s = moveTo(s, "rio.angels-mural");
     for (const e of s.encounters) e.status = "closed";
+    expect(startStreetSession(s, "rio.angels-mural").error).toContain('prepaid');
+    player(s).affiliation='angels';
     expect(startStreetSession(s, "rio.angels-mural").error).toBeNull();
   });
   it("grounded witness/patrol/rival beats affect exposure and existing custody/injury flows", () => {
@@ -564,7 +566,7 @@ describe("physical and transactional City sessions", () => {
       delete c.equipment;
     }
     const loaded = deserialize(JSON.stringify(old));
-    expect(loaded.version).toBe(9);
+    expect(loaded.version).toBe(10);
     for (const key of ["wallet", "possessions", "relationships"] as const)
       expect(player(loaded)[key]).toEqual(player(s)[key]);
     expect(loaded.presence).toEqual(s.presence);

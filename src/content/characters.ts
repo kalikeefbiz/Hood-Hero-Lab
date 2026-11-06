@@ -206,14 +206,14 @@ export function residents(): Character[] {
         traits: { loyalty: 65, ambition: 35, risk: 20, lawful: 80 },
       },
     ),
-    ...(zone === "reservoir" || zone === "nawf"
+    ...(zone === "reservoir" || zone === "nawf" || zone === "rio"
       ? [
-          (zone === "nawf" ? "blips" : "blocks") as FactionId,
+          (zone === "rio" ? "angels" : zone === "nawf" ? "blips" : "blocks") as FactionId,
           ...(zone === "nawf" ? ["muds" as FactionId] : []),
         ].map((f) =>
           character(
             `contact-${f}`,
-            `${f === "blocks" ? "Block Boys" : f === "blips" ? "Blips" : "Mudgang"} contact`,
+            `${f === "angels" ? "Angels street" : f === "blocks" ? "Block Boys" : f === "blips" ? "Blips" : "Mudgang"} contact`,
             zone,
             f,
             "An ordinary member who can sponsor a membership request.",

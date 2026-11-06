@@ -99,6 +99,10 @@ export interface Incident {
   organization: FactionId;
   property: ID;
   startedDay: number;
+  originalDemand?: number;
+  reducedDemand?: number;
+  paidDemand?: number;
+  cleanFullPrice?: boolean;
   demand: number;
   minimumDemand: number;
   escalation: number;
@@ -219,7 +223,10 @@ export interface GameState {
   quanny: import("../systems/QuannyState").QuannyState;
   danger: import("../systems/DangerState").DangerState;
   presence?: import("../board/presence").Presence;
-  version: 8 | 9;
+  version: 8 | 9 | 10;
+  streetLife?: import("../systems/StreetLifeState").StreetLifeState;
+  activeRobbery?: import("../systems/Robbery").RobberySession;
+  robberies?: import("../systems/Robbery").RobberyState;
   activeSession?: import("../systems/StreetSessions").StreetSession;
   strategic: import("../systems/StrategicTypes").StrategicState;
   street: import("../systems/StreetTypes").StreetState;

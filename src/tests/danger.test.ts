@@ -2,7 +2,7 @@ import { oneBuyer } from "./sessionFixtures";
 import { acquire, transact } from "../systems/StreetEconomy";
 import { connect } from "../systems/Relationships";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import { player, type GameState } from "../core/GameState";
 import * as Random from "../core/Random";
 import { record, visibleEvents } from "../core/EventLog";
@@ -414,4 +414,25 @@ describe("hospital recovery and persistence", () => {
     const manual = serialize(newGame("Morgan", "south"));
     expect(deserialize(manual).end).toBeNull();
   });
+});
+
+describe("GOAL 011 mentor personality eligibility", () => {
+  it.each(["mega", "flacco"])(
+    "never assigns %s a generic corner objection after real street work",
+    (npc) => {
+      let s = world(npc);
+      s.characters.mega.availableDay = 1;
+      acquire(s, "mega", "consignment");
+      s = oneBuyer(s, "south");
+      for (const c of Object.values(s.characters))
+        if (c.id !== s.playerId) c.availableDay = c.id === npc ? 1 : 999;
+      player(s).status = "active";
+      s.danger.exposure.keys = [];
+      for (const scene of s.danger.scenes) scene.status = "resolved";
+      roll();
+      expose(s, "south.court", "activity", "mentor-personality");
+      expect(streetConversation(s)?.npc).toBe(npc);
+      expect(streetConversation(s)?.motive).not.toBe("corner");
+    },
+  );
 });

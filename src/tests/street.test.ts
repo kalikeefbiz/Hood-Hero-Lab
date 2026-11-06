@@ -2,7 +2,7 @@ import { oneBuyer } from "./sessionFixtures";
 import { buyerError } from "../systems/StreetEconomy";
 import { streetConversation } from "../systems/Danger";
 import { describe, it, expect } from "vitest";
-import { newGame } from "../core/Simulation";
+import { newGame } from "./legacyGame";
 import { advanceDay, serveSentence } from "../core/TimeSystem";
 import { player, cash, type GameState, type ZoneId } from "../core/GameState";
 import { performAction, validateAction } from "../core/ActionEngine";
@@ -125,7 +125,7 @@ describe("complete inventory economy", () => {
     expect(a.balance).toBe(102);
     expect(a.status).toBe("overdue");
     expect(s.characters.mega.relationships.player.trust).toBeLessThan(trust);
-    expect(supplierError(s, "mega", "consignment")).toContain("balance");
+    expect(supplierError(s, "mega", "consignment")).toBeNull(); // GOAL011: cousin exception preserves the independent overdue agreement.
     expect(s.commitments.find((c) => c.id === a.commitmentId)?.status).toBe(
       "broken",
     );
@@ -165,7 +165,8 @@ describe("complete inventory economy", () => {
           s = act(s, "introduce", "resident-rio");
           s = act(s, "contact", "dizzy");
         } else s = act(s, "contact", local[0].id);
-        expect(marketAccess(s, "player", home)).toBeNull();
+        if(home==='rio') expect(marketAccess(s,'player',home)).toContain('prepaid');
+        else expect(marketAccess(s, "player", home)).toBeNull();
       }
       expect(marketAccess(s, "player", "downtown")).not.toBeNull();
       expect(s.zones.downtown.police).toBeGreaterThan(s.zones.rio.police);
@@ -178,9 +179,13 @@ describe("complete inventory economy", () => {
       "City street spot",
     );
     s = accept(s);
+    s.ap=0;
     const snapshot = serialize(s);
+    // A real additional pack is now allowed, but its AP cannot be replayed.
+    s.ap=0;
+    const exhausted = serialize(s);
     acquire(s, "mega", "consignment");
-    expect(serialize(s)).toBe(snapshot);
+    expect(serialize(s)).toBe(exhausted);
     transact(s, "player", undefined, "justice");
     expect(serialize(s)).toBe(snapshot);
     const raw = JSON.parse(snapshot);

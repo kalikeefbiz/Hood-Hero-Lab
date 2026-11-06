@@ -3,7 +3,7 @@ import { buyerError } from "../src/systems/StreetEconomy";
 import { connects, honest, navigate, tapUntil } from "./helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { dismissEncounter } from "./helpers";
-import { newGame } from "../src/core/Simulation";
+import { newGame } from "../src/tests/legacyGame";
 import { advanceDay } from "../src/core/TimeSystem";
 import { performAction } from "../src/core/ActionEngine";
 import {
@@ -25,8 +25,8 @@ test.beforeEach(async ({ page }) => {
     expect(r.ok()).toBe(true);
     const info = await r.json();
     expect(info.commit).toBe(process.env.PLAYWRIGHT_EXPECTED_COMMIT);
-    expect(info.milestone).toBe("GOAL 010");
-    expect(info.saveSchema).toBe(9);
+    expect(info.milestone).toBe("GOAL 011");
+    expect(info.saveSchema).toBe(10);
   }
 });
 async function state(page: Page) {

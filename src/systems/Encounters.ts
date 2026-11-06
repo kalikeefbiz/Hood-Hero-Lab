@@ -1,3 +1,8 @@
+import {
+  openingDecision,
+  giveFlaccoStock,
+  settleAftermath,
+} from "./StreetLife";
 import { resolveQuanny } from "./Quanny";
 import { hospitalStay, resolveStreetScene } from "./Danger";
 import { acquire, repay } from "./StreetEconomy";
@@ -52,7 +57,13 @@ export function respondEncounter(
   const startEvent = state.events.length;
   let s = structuredClone(state);
   const effect = response.effect;
-  if (effect.type === "quanny") {
+  if (effect.type === "life") {
+    if (effect.choice === "gift") giveFlaccoStock(s);
+    else settleAftermath(s);
+    const e = s.encounters.find((e) => e.id === id)!;
+    e.status = "acknowledged";
+    e.followUpPending = false;
+  } else if (effect.type === "quanny") {
     const e = s.encounters.find((x) => x.id === id)!;
     resolveQuanny(s, e, effect.choice);
     e.selectedResponses.push({
@@ -143,6 +154,11 @@ export function respondEncounter(
     const e = s.encounters.find((e) => e.id === id)!;
     const incident = e.incidentId ? s.incidents[e.incidentId] : undefined;
     if (incident && effect.type !== "acknowledge") incident.informed = true;
+    if (
+      ["promise", "decline", "delay"].includes(effect.type) &&
+      e.incidentId === "the-chains"
+    )
+      openingDecision(s, effect.type as "promise" | "decline" | "delay");
     if (effect.type === "promise" && incident) promiseHelp(s, incident, e.id);
     if (effect.type === "decline")
       record(
