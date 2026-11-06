@@ -1752,3 +1752,100 @@ html {
 .session-playback { max-height: 38vh; overflow-y: auto; font-size: 12px; }
 .session-playback details { font-size: 11px; margin: 4px 0; }
 .session-controls button { font-size: 12px; }
+
+/* ==========================================================================
+   Exchange feed: what left your hands and what landed in them.
+   Over the middle of the board, clear of the HUD strips and the session
+   panel; never a tap target.
+   ========================================================================== */
+.exchange-feed {
+  position: fixed;
+  z-index: 30;
+  left: 50%;
+  top: 38%;
+  transform: translateX(-50%);
+  width: min(360px, calc(100vw - 20px));
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.exchange-feed,
+.board-mode .game-body > .exchange-feed,
+.exchange-feed * {
+  pointer-events: none;
+}
+.exchange-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 12px;
+  background: #121418f5;
+  border: 1px solid #ffffff1c;
+  box-shadow: 0 6px 18px #0008;
+  animation: exchange-life 2.6s ease forwards;
+}
+.exchange-side {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.exchange-side img {
+  width: 44px;
+  height: 44px;
+  border-radius: 9px;
+  object-fit: cover;
+  background: #000;
+  border: 2px solid;
+  flex: none;
+}
+.exchange-side.give img { border-color: #d65ae0; }
+.exchange-side.get img { border-color: #4fc27a; }
+.exchange-side div { display: grid; line-height: 1.1; min-width: 0; }
+.exchange-side strong {
+  font: 700 18px/1 "Barlow Condensed", "Arial Narrow", sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.exchange-side small {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.exchange-side.get strong { color: #8be0a8; font-size: 22px; }
+.exchange-side.get small:first-of-type { color: #6fcf91; }
+.exchange-side .exchange-note { text-transform: none; letter-spacing: 0; }
+.exchange-arrows {
+  display: grid;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 0.9;
+  flex: none;
+}
+.exchange-arrows i { font-style: normal; }
+.exchange-arrows i:first-child { color: #d65ae0; animation: exchange-give 0.5s 0.15s ease both; }
+.exchange-arrows i:last-child { color: #4fc27a; animation: exchange-get 0.5s 0.3s ease both; }
+.exchange-side.give { animation: exchange-give 0.45s ease both; }
+.exchange-side.get { animation: exchange-get 0.45s 0.2s ease both; }
+@keyframes exchange-life {
+  0% { opacity: 0; transform: translateY(10px) scale(0.96); }
+  10%, 80% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+@keyframes exchange-give {
+  from { opacity: 0; transform: translateX(-14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes exchange-get {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exchange-card { animation: exchange-fade 2.6s linear forwards; }
+  .exchange-side, .exchange-arrows i { animation: none !important; }
+  @keyframes exchange-fade { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
+}
