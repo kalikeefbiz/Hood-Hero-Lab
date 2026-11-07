@@ -126,7 +126,7 @@ export default function BoardStage({
     // The first focus flies in from the city overview.
     board.current?.setFocus(focus, true);
     first.current = false;
-  }, [focus.zone, focus.block, focus.place, ready]);
+  }, [focus.zone, focus.block, focus.place, focus.target, ready]);
 
   type Range = {
     maxDistance?: number;

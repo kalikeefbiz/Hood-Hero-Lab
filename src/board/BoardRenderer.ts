@@ -83,6 +83,37 @@ import {
 
 export type TimeOfDay = "dusk" | "night" | "day";
 export type Lens = "streets" | "influence" | "police" | "opportunity";
+/**
+ * Residential blocks with three individually selectable houses. Each house is
+ * a robbery target (home.<zone>.<n>, see content/robberyCareer) and opens its
+ * own card when tapped.
+ */
+const HOME_ROWS: Record<string, { zone: ZoneId; models: string[]; tints: string[] }> = {
+  "rio.courtyard": {
+    zone: "rio",
+    models: ["bungalow", "shotgun-house", "walkup"],
+    tints: ["#f2d3b0", "#d9e8d0", "#f0c9a8"],
+  },
+  "south.rowhouses": {
+    zone: "south",
+    models: ["walkup", "shotgun-house", "bungalow"],
+    tints: ["#e8b7a3", "#f0ddc8", "#d8c0b0"],
+  },
+  "reservoir.homes": {
+    zone: "reservoir",
+    models: ["shotgun-house", "bungalow", "walkup"],
+    tints: ["#dcd6c4", "#cfe3c9", "#e9dcc0"],
+  },
+  "nawf.projects": {
+    zone: "nawf",
+    models: ["shotgun-house", "walkup", "bungalow"],
+    tints: ["#d6dbe6", "#efe2c4", "#e2d0c8"],
+  },
+};
+export const HOME_TARGETS = Object.entries(HOME_ROWS).flatMap(([place, r]) =>
+  r.models.map((_, i) => ({ place, target: `home.${r.zone}.${i + 1}` })),
+);
+
 export interface Focus {
   zone: ZoneId | null;
   block: string | null;
@@ -326,6 +357,9 @@ export class BoardRenderer {
   private pmrem: THREE.PMREMGenerator;
   private envTarget: THREE.WebGLRenderTarget | null = null;
   private placePickers: THREE.Mesh[] = [];
+  private homePickers: THREE.Mesh[] = [];
+  private homeSpots = new Map<string, THREE.Vector3>();
+  private homeMarker: THREE.Mesh | null = null;
   private walls = new Map<string, WallSlot[]>();
   private roofs = new Map<string, V3[]>();
   private streets = Object.fromEntries(
@@ -528,13 +562,21 @@ export class BoardRenderer {
     const prev = this.focus;
     this.focus = { ...focus };
     this.rebuildFocus();
+    this.markHome(focus.target);
     if (this.view && prev.zone !== focus.zone) this.rebuildDynamic();
     if (fly) {
       const place = focus.place
         ? LOCATIONS.find((l) => l.id === focus.place)
         : null;
       const block = focus.block ? blockById(focus.block) : null;
-      if (place) {
+      const home = focus.target ? this.homeSpots.get(focus.target) : null;
+      if (place && home) {
+        this.flyTo(
+          home.x,
+          home.z + 2,
+          LEVEL_DISTANCE.place * (this.camera.aspect < 1 ? 1.2 : 1),
+        );
+      } else if (place) {
         const [x, z] = locationPosition(place);
         this.flyTo(
           x,
@@ -1172,20 +1214,25 @@ export class BoardRenderer {
             { ...pieces[0].rect },
           );
         for (const l of here) {
+          const row = HOME_ROWS[l.id];
+          const [lot, homes] = row ? splitForHomes(use, l) : [use, null];
           if (l.model) {
             // Measure the procedural footprint on a scratch kit, then let the
             // GLB occupy exactly that space so the rest of the block fills.
-            exclude = buildLocation(kit(1), this.atlas, l, use, {
+            exclude = buildLocation(kit(1), this.atlas, l, lot, {
               trainZ: Number.NaN,
               scene: () => {},
             });
             this.loadModel(l, exclude);
-            continue;
+          } else
+            exclude = buildLocation(k, this.atlas, l, lot, {
+              trainZ: Number.NaN,
+              scene: (o) => this.scene.add(o),
+            });
+          if (homes && row) {
+            this.buildHomeRow(l, homes, row);
+            exclude = union(exclude, homes);
           }
-          exclude = buildLocation(k, this.atlas, l, use, {
-            trainZ: Number.NaN,
-            scene: (o) => this.scene.add(o),
-          });
         }
         if (!here.length && lotBlocks.has(b.id)) {
           developmentLot(k, use, this.atlas);
@@ -1263,6 +1310,91 @@ export class BoardRenderer {
         this.shadowDirty = true;
         this.wake();
       });
+  }
+  /** Three houses side by side, each its own model, tint and picker. */
+  private buildHomeRow(
+    l: LocationDef,
+    r: Rect,
+    row: (typeof HOME_ROWS)[string],
+  ) {
+    const alongX = r.maxX - r.minX >= r.maxZ - r.minZ;
+    const len = alongX ? r.maxX - r.minX : r.maxZ - r.minZ;
+    const step = len / 3;
+    row.models.forEach((model, i) => {
+      const lot: Rect = alongX
+        ? { minX: r.minX + step * i, maxX: r.minX + step * (i + 1), minZ: r.minZ, maxZ: r.maxZ }
+        : { minX: r.minX, maxX: r.maxX, minZ: r.minZ + step * i, maxZ: r.minZ + step * (i + 1) };
+      const cx = (lot.minX + lot.maxX) / 2,
+        cz = (lot.minZ + lot.maxZ) / 2;
+      const target = `home.${row.zone}.${i + 1}`;
+      this.homeSpots.set(target, new THREE.Vector3(cx, CURB, cz));
+      const w = lot.maxX - lot.minX,
+        d = lot.maxZ - lot.minZ;
+      // Fronts face the street on the row's long side.
+      const yaw = alongX ? 0 : Math.PI / 2;
+      void loadModelPiece(`assets/models/${model}.glb`, this.lite).then(
+        (piece) => {
+          if (!piece) return;
+          const size = piece.geometry.boundingBox!.getSize(new THREE.Vector3());
+          const sx = alongX ? size.x : size.z,
+            sz = alongX ? size.z : size.x;
+          const material = Array.isArray(piece.material)
+            ? piece.material
+            : (piece.material as THREE.MeshStandardMaterial).clone();
+          if (!Array.isArray(material) && "color" in material)
+            (material as THREE.MeshStandardMaterial).color.set(row.tints[i]);
+          const mesh = new THREE.Mesh(piece.geometry, material);
+          mesh.scale.setScalar(Math.min(w / (sx || 1), d / (sz || 1)) * 0.82);
+          mesh.rotation.y = yaw;
+          mesh.position.set(cx, CURB, cz);
+          mesh.castShadow = mesh.receiveShadow = !this.lite;
+          mesh.name = `home:${target}`;
+          this.scene.add(mesh);
+          this.shadowDirty = true;
+          this.wake();
+        },
+      );
+      const picker = new THREE.Mesh(
+        new THREE.BoxGeometry(w * 0.95, 5, d * 0.95).translate(0, 2.5, 0),
+        new THREE.MeshBasicMaterial({ visible: false }),
+      );
+      picker.position.set(cx, 0, cz);
+      picker.userData.place = l.id;
+      picker.userData.target = target;
+      this.homePickers.push(picker);
+      this.scene.add(picker);
+    });
+  }
+  /** Client coordinates of a house's door (automated checks only). */
+  homeScreenPoint(target: string) {
+    const at = this.homeSpots.get(target);
+    if (!at) return null;
+    const v = at.clone().setY(1.5).project(this.camera);
+    const r = this.renderer.domElement.getBoundingClientRect();
+    return { x: r.left + ((v.x + 1) / 2) * r.width, y: r.top + ((1 - v.y) / 2) * r.height };
+  }
+  /** A ring under the selected house, so the card and the board agree. */
+  private markHome(target: string | null | undefined) {
+    const at = target ? this.homeSpots.get(target) : null;
+    if (!at) {
+      if (this.homeMarker) this.homeMarker.visible = false;
+      return;
+    }
+    if (!this.homeMarker) {
+      this.homeMarker = new THREE.Mesh(
+        new THREE.RingGeometry(1.7, 2.1, 32).rotateX(-Math.PI / 2),
+        new THREE.MeshBasicMaterial({
+          color: "#ffd27a",
+          transparent: true,
+          opacity: 0.9,
+          depthWrite: false,
+        }),
+      );
+      this.homeMarker.renderOrder = 2;
+      this.scene.add(this.homeMarker);
+    }
+    this.homeMarker.position.set(at.x, CURB + 0.05, at.z);
+    this.homeMarker.visible = true;
   }
   /** Optional GLB replacement for a location (see LocationDef.model). */
   private loadModel(l: LocationDef, rect: Rect) {
@@ -2604,7 +2736,8 @@ export class BoardRenderer {
       if (this.pointers.size === 1)
         this.gesture = {
           moved: 0,
-          start: performance.now(),
+          // Device timestamps: a busy frame must not turn a tap into a hold.
+          start: e.timeStamp,
           groundStart: this.groundAt(e.clientX, e.clientY) ?? undefined,
         };
       else if (this.pointers.size === 2 && this.gesture) {
@@ -2661,7 +2794,7 @@ export class BoardRenderer {
       this.pointers.delete(e.pointerId);
       const g = this.gesture;
       if (g && this.pointers.size === 0) {
-        if (g.moved < 10 && performance.now() - g.start < 500)
+        if (g.moved < 10 && e.timeStamp - g.start < 500)
           this.pickAt(e.clientX, e.clientY);
         this.gesture = null;
       } else if (g && this.pointers.size === 1) {
@@ -2696,6 +2829,17 @@ export class BoardRenderer {
   private pickAt(clientX: number, clientY: number) {
     this.ray(clientX, clientY);
     if (this.distance < 120) {
+      const house = this.raycaster.intersectObjects(this.homePickers, false)[0];
+      if (house) {
+        const l = LOCATIONS.find((l) => l.id === house.object.userData.place)!;
+        this.onPick({
+          zone: l.zone,
+          block: locationBlock(l)?.id ?? null,
+          place: l.id,
+          target: house.object.userData.target as string,
+        });
+        return;
+      }
       const hit = this.raycaster.intersectObjects(this.placePickers, false)[0];
       if (hit) {
         const l = LOCATIONS.find((l) => l.id === hit.object.userData.place)!;
@@ -2876,4 +3020,29 @@ export function placeHeight(l: LocationDef) {
     default:
       return l.zone === "downtown" ? 6.5 : l.zone === "nawf" ? 4.8 : 3.2;
   }
+}
+
+/**
+ * Give a home block's front or back strip to its three houses. The strip
+ * always runs east-west, so from the default camera the houses stand side by
+ * side instead of hiding behind each other.
+ */
+function splitForHomes<T extends Rect>(use: T, l: LocationDef): [T, Rect] {
+  const [, z] = locationPosition(l);
+  const d = use.maxZ - use.minZ;
+  const cut = Math.max(4, d * 0.4),
+    gap = 0.5;
+  // Houses take the side away from the place's own landmark.
+  return z > (use.minZ + use.maxZ) / 2
+    ? [{ ...use, minZ: use.minZ + cut + gap }, { ...use, maxZ: use.minZ + cut }]
+    : [{ ...use, maxZ: use.maxZ - cut - gap }, { ...use, minZ: use.maxZ - cut }];
+}
+function union(a: Rect | null, b: Rect): Rect {
+  if (!a) return { ...b };
+  return {
+    minX: Math.min(a.minX, b.minX),
+    maxX: Math.max(a.maxX, b.maxX),
+    minZ: Math.min(a.minZ, b.minZ),
+    maxZ: Math.max(a.maxZ, b.maxZ),
+  };
 }
