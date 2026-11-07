@@ -113,7 +113,16 @@ export function CareerPerson({ s, id, change }: Props & { id: string }) {
         ["dizzy", "baby-canon", "joker", "quanny"].includes(id) &&
         skillRank(s.characters[s.playerId], "robbery") >= 2 && (
           <details>
-            <summary>Ask about house and commercial leads</summary>
+            <summary
+              style={{
+                minHeight: 44,
+                display: "flex",
+                alignItems: "center",
+                touchAction: "manipulation",
+              }}
+            >
+              Ask about house and commercial leads
+            </summary>
             {ROBBERY_TARGETS.filter((t) => t.lead).map((t) => (
               <button
                 key={t.id}
