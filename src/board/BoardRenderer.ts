@@ -58,6 +58,7 @@ import type { BoardView } from "./viewModel";
 import { buildFigure, loadFigureModel } from "./character";
 import {
   hasCharacterModel,
+  disposeCharacter,
   spawnCharacter,
   type CharacterInstance,
   type Motion,
@@ -715,19 +716,55 @@ export class BoardRenderer {
   /** Characters standing at places: one figure each, in their colors. */
   private characters = new Map<string, CharacterInstance>();
   private figureGen = 0;
+  private figureKey = "";
+  private figureSpots = new Map<string, { placeId: string; slot: number }>();
+  private spawning = new Set<string>();
+  private crowd: THREE.InstancedMesh | null = null;
+  /**
+   * Called on every game-state change, so it must be cheap when nothing moved
+   * and must never re-copy a rigged character that's already standing there:
+   * each copy owns GPU data (its skeleton's bone texture), and re-spawning on
+   * every action leaked it until iOS ran out of graphics memory.
+   */
   setFigures(
     list: { id: string; placeId: string; slot: number; color: string }[],
   ) {
-    this.clear(this.figures);
-    this.characters.clear();
-    const gen = ++this.figureGen;
+    const key = list
+      .map((f) => `${f.id}@${f.placeId}#${f.slot}:${f.color}`)
+      .join("|");
+    if (key === this.figureKey) return;
+    this.figureKey = key;
+    ++this.figureGen;
     // Named characters with a rigged model stand in person; everyone else is
     // a capsule in the crowd layer.
-    const crowd = list.filter((f) => !hasCharacterModel(f.id));
-    for (const f of list.filter((f) => hasCharacterModel(f.id)))
-      void spawnCharacter(f.id).then((c) => {
-        if (!c || gen !== this.figureGen) return;
+    const rigged = list.filter((f) => hasCharacterModel(f.id));
+    this.figureSpots = new Map(
+      rigged.map((f) => [f.id, { placeId: f.placeId, slot: f.slot }]),
+    );
+    for (const [id, c] of this.characters)
+      if (!this.figureSpots.has(id)) {
+        disposeCharacter(c);
+        this.characters.delete(id);
+      }
+    for (const f of rigged) {
+      const have = this.characters.get(f.id);
+      if (have) {
         const v = this.personSpot(f.placeId, f.slot);
+        have.root.position.set(v.x, CURB, v.z);
+        continue;
+      }
+      if (this.spawning.has(f.id)) continue;
+      this.spawning.add(f.id);
+      void spawnCharacter(f.id).then((c) => {
+        this.spawning.delete(f.id);
+        if (!c) return;
+        const spot = this.figureSpots.get(f.id);
+        // Gone (or already placed) by the time the model loaded: free it.
+        if (this.disposed || !spot || this.characters.has(f.id)) {
+          disposeCharacter(c);
+          return;
+        }
+        const v = this.personSpot(spot.placeId, spot.slot);
         c.root.position.set(v.x, CURB, v.z);
         c.root.name = `character:${f.id}`;
         this.figures.add(c.root);
@@ -735,19 +772,29 @@ export class BoardRenderer {
         this.shadowDirty = true;
         this.wake();
       });
-    if (!crowd.length) return;
-    const geo = new THREE.CapsuleGeometry(0.26, 0.66, 3, 8).translate(
-      0,
-      0.58,
-      0,
-    );
-    const mesh = new THREE.InstancedMesh(geo, this.plainMat, crowd.length);
-    crowd.forEach((f, i) => {
-      const v = this.personSpot(f.placeId, f.slot);
-      mesh.setMatrixAt(i, placed(v.x, CURB, v.z));
-      mesh.setColorAt(i, col(f.color));
-    });
-    this.figures.add(mesh);
+    }
+    const crowd = list.filter((f) => !hasCharacterModel(f.id));
+    if (this.crowd) {
+      this.figures.remove(this.crowd);
+      this.crowd.geometry.dispose();
+      this.crowd.dispose();
+      this.crowd = null;
+    }
+    if (crowd.length) {
+      const geo = new THREE.CapsuleGeometry(0.26, 0.66, 3, 8).translate(
+        0,
+        0.58,
+        0,
+      );
+      const mesh = new THREE.InstancedMesh(geo, this.plainMat, crowd.length);
+      crowd.forEach((f, i) => {
+        const v = this.personSpot(f.placeId, f.slot);
+        mesh.setMatrixAt(i, placed(v.x, CURB, v.z));
+        mesh.setColorAt(i, col(f.color));
+      });
+      this.figures.add(mesh);
+      this.crowd = mesh;
+    }
     this.wake();
   }
   /**
