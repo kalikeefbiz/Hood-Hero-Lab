@@ -188,7 +188,7 @@ export function TransferPanel({
     to = pick?.side === "b" ? a : b,
     stack = pick ? from.inv.slots.find((x) => x.id === pick.id) : undefined;
   const select = (side: "a" | "b") => (x: ItemStack) => {
-    setPick(pick?.id === x.id ? null : { side, id: x.id });
+    setPick({ side, id: x.id });
     setQty(x.quantity);
     setError(null);
   };

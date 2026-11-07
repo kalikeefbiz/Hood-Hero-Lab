@@ -104,7 +104,7 @@ export function CarriedPanel({ s, change }: { s: GameState; change: Change }) {
       return;
     }
     setMode(null);
-    setSel(sel === y.id ? null : y.id);
+    setSel(y.id);
     setQty(Math.max(1, Math.floor(y.quantity / 2)));
   };
   const mergeTargets = x
@@ -223,7 +223,7 @@ export function SelfCarryCard({ s, change }: { s: GameState; change: Change }) {
         selected={sel}
         equipped={p.equipment?.equipped}
         onSelect={(y) => {
-          setSel(sel === y.id ? null : y.id);
+          setSel(y.id);
           setQty(y.quantity);
           setErr(null);
         }}
@@ -259,7 +259,7 @@ export function SelfCarryCard({ s, change }: { s: GameState; change: Change }) {
             label="Legacy holding"
             selected={sel}
             onSelect={(y) => {
-              setSel(sel === y.id ? null : y.id);
+              setSel(y.id);
               setQty(y.quantity);
               setErr(null);
             }}

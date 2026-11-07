@@ -1947,3 +1947,75 @@ html {
 .member-gear { border-top: 0; padding-top: 0; }
 .overflow-list, .safes-list { margin-top: 10px; display: grid; gap: 6px; }
 .lot-records summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+
+/* GOAL 013 robbery presentation */
+.robbery-place, .robbery-person { display: grid; gap: 10px; margin-top: 12px; }
+.target-card, .invite-card, .return-card, .claim-card, .pawn-counter, .loot-card {
+  display: grid; gap: 6px; padding: 12px; border: 1px solid var(--line);
+  border-radius: 12px; background: var(--panel);
+}
+.target-card header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.target-card p { margin: 0; }
+.target-kind {
+  justify-self: start; font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted);
+}
+.target-card.kind-home { border-left: 3px solid #c9a46a; }
+.target-card.kind-liquor { border-left: 3px solid #8fb3d9; }
+.target-card.kind-store { border-left: 3px solid #b48fd9; }
+.target-card.kind-strong-arm { border-left: 3px solid var(--accent); }
+.target-card.kind-criminal { border-left: 3px solid var(--danger); }
+.target-card.hot { opacity: .82; }
+.target-lock { font-size: 12px; color: var(--danger); }
+.target-card:not(.hot) .target-lock { color: var(--positive); }
+.target-held { font-size: 13px; color: var(--positive); }
+.risk-pips, .pressure { display: inline-flex; align-items: center; gap: 3px; }
+.risk-pips i, .pressure i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.risk-pips i.on { background: var(--danger); }
+.target-pool { display: flex; flex-wrap: wrap; gap: 8px; }
+.pool-item { display: grid; justify-items: center; gap: 2px; width: 56px; text-align: center; }
+.pool-item .item-art, .pool-item .item-badge { width: 36px; height: 36px; }
+.pool-item small { font-size: 10px; color: var(--muted); line-height: 1.1; }
+.pawn-counter h3 { margin: 0; font-size: 15px; }
+.pawn-row { display: grid; grid-template-columns: 44px 1fr; gap: 8px 10px; align-items: center; }
+.pawn-row > button, .pawn-row > .disabled-reason { grid-column: 1 / -1; }
+.pawn-row .item-art, .loot-head .item-art { width: 44px; height: 44px; }
+.pawn-copy, .loot-head > div { display: grid; gap: 2px; }
+.pawn-copy small, .loot-head small, .carrier small { color: var(--muted); font-size: 12px; }
+.lead-list summary { min-height: 44px; display: flex; align-items: center; touch-action: manipulation; }
+.lead-list { display: grid; gap: 6px; }
+.claim-card span { font-size: 13px; color: var(--muted); }
+.robbery-controls { display: grid; gap: 10px; }
+.robbery-controls button { min-height: 44px; touch-action: manipulation; }
+.robbery-status { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.pressure b { font-size: 12px; font-weight: 600; margin-right: 4px; color: var(--muted); }
+.pressure i.on { background: #e6c46a; }
+.pressure i.on.hot { background: var(--danger); }
+.room { font-size: 12px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; }
+.carriers { display: flex; flex-wrap: wrap; gap: 6px; }
+.carrier { display: grid; padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,.04); }
+.loot-grid { display: grid; gap: 8px; }
+.loot-head { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: center; }
+.loot-card.taken { opacity: .6; }
+.loot-card.shut { border-style: dashed; }
+.loot-flag { font-size: 12px; color: var(--muted); }
+.loot-flag.carried { color: var(--positive); }
+.loot-take { display: grid; gap: 6px; }
+.dial { display: grid; gap: 8px; justify-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.dial legend { padding: 0 6px; font-size: 13px; }
+.dial p { margin: 0; font-size: 13px; color: var(--muted); }
+.dial-face {
+  position: relative; width: 96px; height: 96px; border-radius: 50%;
+  border: 2px solid var(--line); display: grid; place-items: center;
+  background: repeating-conic-gradient(var(--line) 0 2deg, transparent 2deg 36deg);
+}
+.dial-face output { font-size: 22px; font-weight: 700; }
+.dial-needle {
+  position: absolute; top: 4px; left: calc(50% - 2px); width: 4px; height: 44px;
+  border-radius: 2px; background: var(--danger); transform-origin: 50% 44px;
+  transform: rotate(var(--dial)); transition: transform .2s ease;
+}
+.dial-row { display: flex; gap: 8px; width: 100%; }
+.dial-row button { flex: 1; }
+.robbery-actions { display: grid; gap: 8px; }
+.target-card.focused { border-color: var(--accent-secondary); box-shadow: 0 0 0 2px rgba(217,215,209,.35); opacity: 1; }
