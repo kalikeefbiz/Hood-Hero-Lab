@@ -314,7 +314,10 @@ test("a real session arrest opens custody, reloads safely, and releases without 
     arrested.street.transactions.filter(
       (t: { actor: string }) => t.actor === "player",
     ),
-  ).toHaveLength(1);
+  ).toHaveLength(2);
+  expect(arrested.robberyCareer.seizures.filter((x:{actor:string})=>x.actor==='player')).toHaveLength(1);
+  expect(arrested.characters.player.inventory.slots.some((x:{itemId:string})=>x.itemId==='nightgoods')).toBe(false);
+  expect(arrested.street.transactions.filter((t:{sessionId?:string})=>t.sessionId===arrested.activeSession.id)).toHaveLength(1);
   await page.reload();
   await page.getByRole("button", { name: "Resume saved game" }).click();
   await expect(
@@ -336,7 +339,7 @@ test("a real session arrest opens custody, reloads safely, and releases without 
     released.street.transactions.filter(
       (t: { actor: string }) => t.actor === "player",
     ),
-  ).toHaveLength(1);
+  ).toHaveLength(2);
   expect(released.characters.loco.status).toBe("arrested");
 });
 

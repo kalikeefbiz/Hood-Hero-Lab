@@ -1,3 +1,4 @@
+import { ROBBERY_TARGETS, PAWN_LOCATION } from "../../content/robberyCareer";
 import { pabloError } from "../../systems/StreetAccess";
 import { LifePerson, LifePlace } from "../../ui/StreetLife";
 import { KnownCharacterLocation } from "../../ui/KnownCharacterLocation";
@@ -434,7 +435,9 @@ export function PlaceSheet({
         </button>
       )}
       {(l.status === "planned" ||
-        (!actions.length &&
+        (!ROBBERY_TARGETS.some((t) => t.location === l.id) &&
+          l.id !== PAWN_LOCATION &&
+          !actions.length &&
           !business &&
           !l.links.street &&
           !people.length &&
@@ -444,9 +447,12 @@ export function PlaceSheet({
           {l.planned ?? "Nothing to do here yet."}
         </p>
       )}
-      {!st?.live && l.status === "live" && (
-        <p className="muted">Nothing needs you here right now.</p>
-      )}
+      {!st?.live &&
+        l.status === "live" &&
+        l.id !== PAWN_LOCATION &&
+        !ROBBERY_TARGETS.some((t) => t.location === l.id) && (
+          <p className="muted">Nothing needs you here right now.</p>
+        )}
     </section>
   );
 }

@@ -320,7 +320,7 @@ describe("GOAL 012 dual capacity and physical inventory", () => {
       delete s.residences;
       for (const c of Object.values(s.characters)) delete c.inventory;
       let n = deserialize(serialize(s));
-      expect(n.version).toBe(11);
+      expect(n.version).toBe(12);
       expect(n.characters.player.equipment!.equipped).toBe("arp");
       expect(usedLoad(inventoryOf(n))).toBeLessThanOrEqual(20);
       const overflow = n.inventory!.overflow.player;

@@ -372,9 +372,9 @@ describe("physical and transactional City sessions", () => {
     expect(a.totals.sold).toBe(ts.reduce((n, t) => n + t.sold, 0));
     expect(a.totals.gross).toBe(ts.reduce((n, t) => n + t.gross, 0));
     expect(cash(player(s)) - before).toBe(a.totals.gross - a.totals.loss);
-    expect(saleLot(s)?.remaining ?? 0).toBe(6 - a.totals.sold - a.totals.lost);
+    expect(saleLot(s)?.remaining ?? 0).toBe(6 - ts.reduce((n,t)=>n+t.sold+t.lost,0));
     expect(s.street.agreements[0].balance).toBe(debt);
-    expect(a.totals.xp).toBe(ts.reduce((n, t) => n + (t.sold ? 50 : 20), 0));
+    expect(a.totals.xp).toBe(ts.filter(t=>t.sessionId===a.id).reduce((n, t) => n + (t.sold ? 50 : 20), 0));
     expect(skillsOf(player(s)).xp.combat).toBe(0);
     expect(s.street.markets.south.used).toBeLessThanOrEqual(6);
     expect(deserialize(serialize(s))).toEqual(s);
@@ -572,7 +572,7 @@ describe("physical and transactional City sessions", () => {
       delete c.equipment;
     }
     const loaded = deserialize(JSON.stringify(old));
-    expect(loaded.version).toBe(11);
+    expect(loaded.version).toBe(12);
     for (const key of ["wallet", "possessions", "relationships"] as const)
       expect(player(loaded)[key]).toEqual(player(s)[key]);
     expect(loaded.presence).toEqual(s.presence);

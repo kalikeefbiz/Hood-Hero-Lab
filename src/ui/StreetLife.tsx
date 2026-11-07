@@ -1,3 +1,4 @@
+import { CareerPlace, CareerPerson, CareerControls } from "./RobberyCareer";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { player, type GameState } from "../core/GameState";
 import { LOCATIONS, locationById } from "../board/locations";
@@ -99,6 +100,7 @@ export function LifePerson({
   };
   return (
     <section aria-label="Street-life encounters">
+      <CareerPerson s={s} id={id} change={change} />
       {!here && <p>Meet this person on their City spot to talk business.</p>}
       {talks.map((t) => (
         <button
@@ -201,6 +203,7 @@ export function LifePlace({
     ) ?? [];
   return (
     <>
+      <CareerPlace s={s} location={location} change={change} />
       {Object.entries(PREPARATION)
         .filter(([, d]) => d.location === location)
         .map(([key, d]) => {
@@ -217,6 +220,12 @@ export function LifePlace({
                 onClick={() => change(purchasePrep(s, id, location))}
               >
                 Buy {d.name} · ${d.price} · 1 AP
+              </button>
+              <button
+                disabled={!!purchasePrepError(s, id, location, 3)}
+                onClick={() => change(purchasePrep(s, id, location, 3))}
+              >
+                Buy 3 {d.name} · ${d.price * 3} · 1 AP
               </button>
               {error && <p className="disabled-reason">{error}</p>}
             </section>
@@ -301,7 +310,11 @@ export function RobberyPlayback({
     >
       <strong>
         {locationById(a.location)?.name} ·{" "}
-        {a.status === "ended" ? "Operation ended" : `Beat ${a.cursor + 1}/3`}
+        {a.status === "ended"
+          ? "Operation ended"
+          : a.career
+            ? "Robbery encounter"
+            : `Beat ${a.cursor + 1}/3`}
       </strong>
       <p role="status">{a.text}</p>
       {a.status === "ended" ? (
@@ -329,6 +342,30 @@ export function RobberyPlayback({
         >
           Continue robbery session
         </button>
+      ) : a.career ? (
+        <>
+          <CareerControls
+            s={s}
+            change={(next) =>
+              change((cur) =>
+                cur?.activeRobbery?.id === a.id &&
+                cur.activeRobbery.cursor === a.cursor &&
+                cur.activeRobbery.status === "active" &&
+                !document.hidden
+                  ? next
+                  : cur,
+              )
+            }
+            input={input}
+          />
+          <button
+            onClick={() =>
+              change((cur) => (cur ? pauseRobbery(cur, a.id, true) : cur))
+            }
+          >
+            Pause robbery
+          </button>
+        </>
       ) : (
         <>
           {a.cursor === 0 && (

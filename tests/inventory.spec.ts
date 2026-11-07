@@ -32,9 +32,7 @@ async function place(page: Page, id: string) {
     );
   const l = LOCATIONS.find((l) => l.id === id)!,
     s = await state(page),
-    districts = page.getByRole("group", {
-      name: "Five neighborhoods of Stixx City",
-    });
+    districts = page.locator(".district-chips");
   if (!(await districts.isVisible()))
     await tapUntil(
       page,

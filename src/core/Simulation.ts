@@ -1,3 +1,4 @@
+import { newRobberyCareer } from "../systems/RobberyCareerState";
 import { newInventoryState } from "../systems/Inventory";
 import { newStreetLife } from "../systems/StreetLifeState";
 import { skillsOf } from "../systems/Skills";
@@ -35,7 +36,8 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
     },
   );
   const s: GameState = {
-    version: 11,
+    version: 12,
+    robberyCareer: newRobberyCareer(),
     inventory: newInventoryState(),
     residences: {},
     streetLife: newStreetLife(),
