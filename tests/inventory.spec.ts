@@ -88,7 +88,8 @@ test("City residence and member cards enforce slot/load rules and real equipment
     async () => !!(await state(page)).residences?.[residence.id],
   );
   const home = page.getByRole("region", { name: "Your residence" });
-  await home.getByRole("group", { name: "On you" }).getByRole("button", { name: /Pocket music player ×1/ }).click();
+  const music = home.getByRole("group", { name: "On you" }).getByRole("button", { name: /Pocket music player ×1/ });
+  await tapUntil(page, music, async () => (await music.getAttribute("aria-pressed")) === "true");
   await expect(home.getByText(/→ \d+\/40 load/)).toBeVisible(); // safe load preview
   await tapUntil(
     page,
@@ -150,13 +151,15 @@ test("City residence and member cards enforce slot/load rules and real equipment
   );
   const before = serialize(await state(page));
   const gear2 = page.locator(".member-inventory");
-  await gear2.getByRole("group", { name: "You" }).getByRole("button", { name: /^ARP ×1/ }).click();
+  const gear2Arp = gear2.getByRole("group", { name: "You" }).getByRole("button", { name: /^ARP ×1/ });
+  await tapUntil(page, gear2Arp, async () => (await gear2Arp.getAttribute("aria-pressed")) === "true");
   await expect(gear2.getByRole("button", { name: /^Give .* 1$/ })).toBeDisabled();
   await expect(gear2.getByText("Need 6 more load capacity.")).toBeVisible();
   expect(serialize(await state(page))).toBe(before);
   await place(page, residence.id);
   const home2 = page.getByRole("region", { name: "Your residence" });
-  await home2.getByRole("group", { name: "On you" }).getByRole("button", { name: /^ARP ×1/ }).click();
+  const home2Arp = home2.getByRole("group", { name: "On you" }).getByRole("button", { name: /^ARP ×1/ });
+  await tapUntil(page, home2Arp, async () => (await home2Arp.getAttribute("aria-pressed")) === "true");
   await expect(home2.getByRole("button", { name: "Put in safe 1" })).toBeDisabled();
   await expect(home2.getByText("Need 6 more load capacity.")).toBeVisible();
   await page.screenshot({ path: test.info().outputPath("safe-full.png") });

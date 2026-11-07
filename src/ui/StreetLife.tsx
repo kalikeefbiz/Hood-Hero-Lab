@@ -191,11 +191,13 @@ export function LifePlace({
   location,
   change,
   onStart,
+  targetId,
 }: {
   s: GameState;
   location: string;
   change: (s: GameState) => void;
   onStart?: () => void;
+  targetId?: string | null;
 }) {
   const jobs =
     s.robberies?.jobs.filter(
@@ -203,7 +205,7 @@ export function LifePlace({
     ) ?? [];
   return (
     <>
-      <CareerPlace s={s} location={location} change={change} />
+      <CareerPlace s={s} location={location} change={change} focus={targetId} />
       {Object.entries(PREPARATION)
         .filter(([, d]) => d.location === location)
         .map(([key, d]) => {

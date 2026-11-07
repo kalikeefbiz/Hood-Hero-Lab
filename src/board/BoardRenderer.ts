@@ -87,6 +87,8 @@ export interface Focus {
   zone: ZoneId | null;
   block: string | null;
   place: string | null;
+  /** A selectable object inside the place, e.g. one house of a home block. */
+  target?: string | null;
 }
 export interface PickResult extends Focus {}
 export interface OverlayAnchor {
