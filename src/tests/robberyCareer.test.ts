@@ -679,3 +679,36 @@ it("targeting Quanny uses his authored business-block baseline; old earned evide
     s.quanny.repairBaseline,
   );
 });
+
+it("occasional Set initiative shares an optional local lead only with a real trusted member physically present; no XP, AP, cash or obligation", () => {
+  const s = base();
+  ranks(s);
+  s.crew.members = ["mega"];
+  s.day = 10;
+  person(s, "mega");
+  const beforeXP = skillsOf(player(s)).xp.robbery,
+    beforeCash = cash(player(s)),
+    beforeAP = s.ap;
+  tickRobberyCareer(s);
+  const job = s.robberies!.jobs[0];
+  expect(job).toMatchObject({
+    kind: "home",
+    source: "mega",
+    status: "offered",
+  });
+  expect(job.targetId).toMatch(/^home.south./);
+  expect(skillsOf(player(s)).xp.robbery).toBe(beforeXP);
+  expect(cash(player(s))).toBe(beforeCash);
+  expect(s.ap).toBe(beforeAP);
+  expect(s.robberyCareer!.invitations).toEqual([]);
+  tickRobberyCareer(s);
+  expect(s.robberies!.jobs).toHaveLength(1);
+  expect(deserialize(serialize(s)).robberies).toEqual(s.robberies);
+  const remote = base();
+  ranks(remote);
+  remote.crew.members = ["mega"];
+  remote.day = 10;
+  at(remote, "downtown.designer-drop");
+  tickRobberyCareer(remote);
+  expect(remote.robberies?.jobs ?? []).toEqual([]);
+});

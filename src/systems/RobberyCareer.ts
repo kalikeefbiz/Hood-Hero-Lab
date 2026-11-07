@@ -1070,6 +1070,61 @@ export function tickRobberyCareer(s: GameState) {
       (s.robberies?.jobs.find((j) => j.id === i.jobId)?.expiresDay ?? 0) < s.day
     )
       i.status = "expired";
+  // A trusted Set member can occasionally share local knowledge in person.
+  // This is an optional lead, never participation, loot, XP or an automatic crime.
+  if (
+    s.day % B.initiativeDays === 0 &&
+    (skillsOf(player(s)).milestones.robberySuccess ?? 0) >= 3 &&
+    !physicalActionError(s) &&
+    !lessonError(s) &&
+    !s.robberies?.jobs.some(
+      (j) =>
+        j.status === "active" ||
+        (j.status === "offered" && j.expiresDay >= s.day),
+    )
+  ) {
+    const member = s.crew.members.find(
+      (id) =>
+        atPerson(s, id) &&
+        !personalBeef(s, id) &&
+        (s.characters[id].relationships[s.playerId]?.trust ?? 0) >=
+          B.initiativeTrust &&
+        (id !== "quanny" || s.quanny.business === "open") &&
+        cooperation(s, s.characters[id], "partner-crime", 0).accepted,
+    );
+    const targets = member
+      ? ROBBERY_TARGETS.filter(
+          (t) =>
+            t.kind === "home" &&
+            t.zone === s.characters[member].home &&
+            (cooldownFor(s, t)?.nextDay ?? 0) <= s.day,
+        )
+      : [];
+    const target =
+      targets[
+        Math.floor(s.day / B.initiativeDays) % Math.max(1, targets.length)
+      ];
+    if (member && target) {
+      const jobs = (s.robberies ??= newRobberyState());
+      jobs.jobs.push({
+        id: `lick-${s.nextId++}`,
+        targetId: target.id,
+        kind: "home",
+        source: member,
+        location: target.location,
+        createdDay: s.day,
+        expiresDay: s.day + 6,
+        status: "offered",
+      });
+      skillsOf(player(s)).milestones.robberyAccess2 = 1;
+      record(
+        s,
+        "crew",
+        `${s.characters[member].name} shared a local tip about ${target.name}. Optional home lead; you still need an in-person agreement with a willing equipped partner. Ignoring this creates no obligation.`,
+        [s.playerId, member],
+      );
+    }
+  }
   for (const c of r.claims)
     if (c.paid < c.amount && s.day > c.dueDay && !c.warned) {
       c.warned = true;

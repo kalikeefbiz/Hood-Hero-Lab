@@ -74,6 +74,8 @@ Representative errors are plain presentation strings: “Need N more load capaci
 
 **Mobile review:** retain 44px targets, scroll within existing inspectors/playback, no controls beneath HUD/nav, reduced-motion behavior, readable value/load/crew-cut previews. Verify actor-specific carrier selection and disabled capacity errors. Add final tactile dial/loot presentation as desired without changing rule ownership.
 
+A trusted, willing Set member can also occasionally share a local home lead while physically together (every ten-day opportunity window, 55 trust, three real successes, no live lead or local home lock). This grants no AP, cash, XP, participation or obligation; the lead expires in six days and still requires an actual equipped partner invitation.
+
 ## Money, loot, consequences
 
 Central tuning: `ROBBERY_BALANCE` in `content/robberyCareer.ts`; physical capacity remains in `content/inventory.ts`. New item IDs: `phone` (1 load), `plain-chain` (1), `jewelry` (1), `high-chain` (1), `console` (5), `pc` (8), `art` (10). Existing smokes/booze/Pink Magic reused. Cash never takes inventory slots. Duffle has real load, no magic bonus.

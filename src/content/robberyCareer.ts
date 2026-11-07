@@ -13,6 +13,8 @@ export const ROBBERY_BALANCE = {
   crewClaimDays: 5,
   sourceTrust: 45,
   stolenUnitValue: 28,
+  initiativeDays: 10,
+  initiativeTrust: 55,
   homeCooldown: 5,
   localCooldown: 1,
   criminalCooldown: 7,
