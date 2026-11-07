@@ -253,6 +253,9 @@ test("City named victim → physical chain → original owner sell-back has acti
       .getByRole("button", { name: new RegExp(mega.name) }),
     () => page.locator(".person-card").isVisible(),
   );
+  const returnedIdentity = inventoryOf(await state(page)).slots.find(
+    (x) => x.itemId === "high-chain",
+  )!.provenance;
   const before = (await state(page)).characters.player.notoriety;
   await tapUntil(
     page,
@@ -267,5 +270,10 @@ test("City named victim → physical chain → original owner sell-back has acti
     after.danger.conflicts.find((c) => c.participants.includes("mega")),
   ).toMatchObject({ state: "worsening", scope: "personal", intent: "seek" });
   expect(after.characters.player.notoriety).toBe(before + 8);
+  expect(
+    inventoryOf(after, "mega").slots.find(
+      (x) => x.provenance === `returned:${returnedIdentity}`,
+    )?.quantity,
+  ).toBe(1);
   await page.screenshot({ path: info.outputPath("original-owner-beef.png") });
 });

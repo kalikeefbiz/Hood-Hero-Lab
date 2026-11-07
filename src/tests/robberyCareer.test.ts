@@ -243,6 +243,14 @@ describe("GOAL013 City robberies", () => {
     s = ok(sellProperty(s, slot.id, "mega"));
     expect(cash(player(s))).toBe(before + amount);
     expect(
+      inventoryOf(s, "mega").slots.find(
+        (x) =>
+          x.itemId === "high-chain" &&
+          x.provenance === `returned:stolen:${chain.id}`,
+      )?.quantity,
+    ).toBe(1);
+    expect(s.inventory!.history.at(-1)!.quantity).toBe(1);
+    expect(
       s.danger.conflicts.find((c) => c.participants.includes("mega")),
     ).toMatchObject({ state: "worsening", intent: "seek", scope: "personal" });
     expect(sellProperty(s, slot.id, "mega")).toMatch(/No eligible/);
@@ -268,6 +276,7 @@ describe("GOAL013 City robberies", () => {
     expect(quote.price / quote.value).toBeGreaterThanOrEqual(0.55);
     expect(quote.price / quote.value).toBeLessThanOrEqual(0.7);
     s = ok(sellProperty(s, x.id));
+    expect(s.inventory!.history.at(-1)!.quantity).toBe(1);
     expect(typeof sellProperty(s, x.id)).toBe("string");
     expect(typeof sellProperty(s, x.id, "mega")).toBe("string");
   });

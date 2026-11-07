@@ -971,7 +971,7 @@ export function sellProperty(
   const error = dispositionError(s, slotId, owner);
   if (error) return error;
   const n = structuredClone(s),
-    x = inventoryOf(n).slots.find((x) => x.id === slotId)!,
+    x = { ...inventoryOf(n).slots.find((x) => x.id === slotId)! },
     q = pawnQuote(n, slotId)!,
     amount = owner ? Math.floor(q.value * B.sellBackRatio) : q.price;
   removePhysical(inventoryOf(n), slotId, x.quantity);
