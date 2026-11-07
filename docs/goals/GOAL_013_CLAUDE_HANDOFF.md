@@ -58,6 +58,8 @@ Imports from `systems/RobberyCareer.ts`, `systems/Robbery.ts`. Error functions r
 | `payCrewClaim(s, claimId)` | In-person goods buyout payment; explicit due date, exact amount and paid ledger |
 | `answerExtortion(s, demandId, pay)` | In-person personal demand; real provenance-preserving transfer or durable grievance |
 
+`inviteRobbery` reuses existing `heistReadiness` equipment/Combat checks plus cooperation and availability, then persists the accepted job roster and meeting location. The older `inviteHeist` readiness/event-log call alone does **not** enroll a participant; final City invitation controls must call the concrete job API.
+
 Representative errors are plain presentation strings: “Need N more load capacity”, “Visit the Reservoir Pawn Shop with the item on you”, “Only its exact original owner…”, “Requires an accepted in-person invitation…”, “Neighborhood/target cooldown: day N; started day D by JOB”. Do not key logic on localized string text: derive disabled state from a non-null error and read structured cooldown/claim/quote fields for numbers.
 
 ## Session presentation
@@ -104,4 +106,4 @@ Use existing models where practical; no art was generated. New valuables use the
 
 Suggested iPhone review route: earned trio lead → buy real prep in shops → physically invite an equipped willing partner → target residential block → approach → take PC → search → pause/background/reload → leave without optional lock → visit Pawn Shop → quote/sell → partner card to pay goods buyout. Then a known eligible criminal at their own card → take chain → finish → same owner card → compare pawn versus sell-back preview → sell-back → verify real payment, item removal and active personal beef. Try another same-zone house before D+5 and a different-zone lead. Verify liquor at Rank 2 and commercial partner coordination at Rank 3.
 
-See `GOAL_013_VALIDATION.md` for exact test results and economy evidence.
+Final integrated checks: 404 unit tests, TypeScript and production build pass; selected touch browser batch is 25/26 (Chromium 13/13, WebKit 12/13). The only failure is the inventory full-safe ARP slot-selection case, independently reproduced with the same error on unchanged current main `a5aeece`; review its native single-tap/input-guard handling. All new robbery flows pass. See [GOAL_013_VALIDATION.md](GOAL_013_VALIDATION.md) for exact commands, baseline evidence and economy measurements.

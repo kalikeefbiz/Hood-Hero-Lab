@@ -1,6 +1,6 @@
 # GOAL 013 validation and balance
 
-Implementation branch: `codex/goal-013-robbery-career`. PR target: Lab main. Latest integrated main: `6bf845f` (Claude's report-only audit PR #17). Production repository, deployment workflow, save keys and Lab main are untouched by this implementation. See [Claude handoff](GOAL_013_CLAUDE_HANDOFF.md) for ownership and integration dependencies.
+Implementation branch: `codex/goal-013-robbery-career`. PR target: Lab main. Latest integrated main: `a5aeecef5c8c240dc14f50cd4494c3e2665fb9b6` (Claude's input-guard/renderer lifecycle PR #18, after audit PR #17). Production repository, deployment workflow, save keys and Lab main are untouched by this implementation. See [Claude handoff](GOAL_013_CLAUDE_HANDOFF.md) for ownership and integration dependencies.
 
 ## Deterministic economy evidence
 
@@ -31,68 +31,57 @@ Balance follow-up for Claude/owner: review the collector-house upper tail, actua
 
 ## Test evidence
 
-Final command results are recorded below after validation completes. Interim harness issues were diagnosed rather than labelled baseline: WebKit lacked runtime libraries; test navigation needed to acknowledge real City news/close encounters; a hidden inspector needed reopening before selecting the original owner. The trapping sale-selection regression caused by the new central seizure boundary was fixed in production code and covered by the existing session/crew assertions. No test is disabled or skipped to make the suite pass.
-
-Browser runtime: official Playwright Chromium and WebKit downloaded. The executor has no sudo/package helper, so missing official Debian runtime libraries were downloaded/extracted in user-owned scratch and copied into the user-owned Playwright bundle. `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1` skips only host library probing (which cannot see these bundle libraries); the tests launch and exercise real engines. Browser tests use real touch-enabled iPhone projects and real City controls; no input guard bypass.
-
-### Final code / commands
-
-Validated implementation: `de725b6` (subsequent report/screenshots do not change gameplay code).
+Validated source: `ab37972e53355ea091f9476c971ea663e809de25`, integrating Lab main `a5aeecef5c8c240dc14f50cd4494c3e2665fb9b6` before this run. Subsequent documentation/screenshots do not change gameplay code.
 
 | Check | Result |
 |---|---|
-| `npm test` | **403 passed**, 23 files; no failures/errors (101.14 s) |
+| `npm test` | **404 passed**, 23 files; no failures/errors (107.67 s) |
 | `npx tsc -b` | Passed |
-| `npm run build` | Passed (3.65 s Vite build; standard inherited large-chunk warning) |
-| Final feature/recovery/custody browser batch | **10 passed**, 0 failed (10.0 min), Chromium + WebKit |
+| `npm run build` | Passed (3.63 s Vite build; standard inherited large-chunk warning) |
+| Final integrated Chromium + WebKit browser batch | **25 passed / 1 failed** (32.7 min): Chromium **13/13**, WebKit **12/13**; the one failure is independently reproduced on unchanged current main below |
 
-The final browser command is:
-
-```sh
-PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1 WEBKIT_SOFTWARE_SCALE=1 npm run test:e2e -- tests/robbery-career.spec.ts tests/robbery-recovery.spec.ts tests/skills-sessions.spec.ts --grep 'City home loot|City named victim|career encounter survives|a real session arrest' --workers=1
-```
-
-It checks City home loot and pawn sale at 390 and 360 px, saved optional session state, exact owner-return inventory and beef, real freeze/hidden-board/reduced-motion/reload recovery without duplicate AP/prep/XP, and actual custody/seizure/release in both touch-enabled iPhone 13 engine projects. Chromium uses the default device DPR; WebKit uses the repository's software-scale override at DPR 1, keeping the same CSS layout and touch profile.
-
-The broader regression command was:
+Exact browser command:
 
 ```sh
-PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1 WEBKIT_SOFTWARE_SCALE=1 npm run test:e2e -- tests/robbery-career.spec.ts tests/street-life.spec.ts tests/inventory.spec.ts tests/skills-sessions.spec.ts tests/input-guard.spec.ts tests/danger.spec.ts --grep 'City home loot|City named victim|fresh promise|decline cash|earned contact|City residence|background, menu|a real session arrest|terminal conflict|a tap right' --workers=1
+PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1 WEBKIT_SOFTWARE_SCALE=1 npm run test:e2e -- tests/robbery-career.spec.ts tests/robbery-recovery.spec.ts tests/street-life.spec.ts tests/inventory.spec.ts tests/skills-sessions.spec.ts tests/input-guard.spec.ts tests/danger.spec.ts tests/board-memory.spec.ts --grep 'City home loot|City named victim|career encounter survives|fresh promise|decline cash|earned contact|City residence|background, menu|a real session arrest|terminal conflict|a tap right|board GPU memory' --workers=1
 ```
 
-That initial 22-case batch completed **18 passed / 4 failed**. Both fresh promise and decline starts, physical work, Flacco's six, Mega's lesson, Chains, earned contact/preparation/robbery at 360 px, home/pawn/sell-back, background/unmount/reduced-motion/End Day, and terminal death/manual restore passed in both engines. Two custody failures used the old cached expectation of one transaction: correct state contains one sale AND one new confiscation loss. The current test explicitly expects both plus one seizure and no carried Pink Magic; the final batch reruns those checks. The remaining two failures are independently confirmed baseline WebKit touch failures below. The entire legacy browser library was not run; do not describe it as fully green.
+Coverage includes actual City home loot/pawn at 390 and 360 px, original-owner property return and guaranteed active beef, saved seed/optional-session state, freeze/background/menu/reduced-motion/reload recovery without duplicate AP/prep/XP, real custody/seizure/release, inventory/equipment/capacity, both fresh-start routes (Chains/work/Flacco/Mega/real trapping), earned contact/preparation/contextual robbery at 360 px, terminal death/manual restore, and GPU memory across actions/tab switches. The entire legacy browser library was not run; this report does not claim it fully green.
 
-### Confirmed baseline failures — unchanged latest main
+Browser runtime: official Playwright Chromium and WebKit. The executor has no sudo/package helper, so missing official Debian runtime libraries were downloaded/extracted in user-owned scratch and copied into the user-owned Playwright bundle. `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1` skips only host library probing, which cannot see those bundle libraries. Real engines launch with the existing 3D board; no mocked engine or input-guard bypass. Chromium uses the default touch-enabled iPhone 13 DPR; WebKit uses the repository's software-scale override at DPR 1 with the same CSS layout and touch profile.
 
-Detached checkout: `/workspace/Hood-Hero-Lab-baseline`, commit **`6bf845fdd3e6c7ac946e35b6a7d34f97cbfd3c49`**. `git diff --exit-code 6bf845f` passed before/after reproduction; only the local dependency symlink/build output were added outside tracked source.
+### Confirmed current-main failure
 
-After an independent baseline production build, the exact command was:
+The only failed final-batch case is `[webkit-mobile] tests/inventory.spec.ts` — **City residence and member cards enforce slot/load rules and real equipment bonuses**. At feature line 160, `Your residence` → `Put in safe 1` is absent after the preceding single ARP-slot `.click()`: `toBeDisabled()` times out with “element(s) not found”. The snapshot shows the correct full safe (40/40 load) and physically carried ARP, but no selected slot. Chromium passes this case. This is a UI/input-selection review dependency, not a capacity or stock conservation failure.
+
+Independently reproduced **the same case and same final safe-slot error** on unchanged current Lab main **`a5aeecef5c8c240dc14f50cd4494c3e2665fb9b6`** in detached `/workspace/Hood-Hero-Lab-baseline`, after its own production build. `git diff --exit-code a5aeecef5c8c240dc14f50cd4494c3e2665fb9b6` passed before and after; only the local dependency symlink/build output were added outside tracked source. Exact command:
 
 ```sh
-PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1 WEBKIT_SOFTWARE_SCALE=1 PLAYWRIGHT_PORT=4174 npm run test:e2e -- tests/input-guard.spec.ts tests/inventory.spec.ts --project=webkit-mobile --workers=1
+PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=1 WEBKIT_SOFTWARE_SCALE=1 PLAYWRIGHT_PORT=4174 npm run test:e2e -- tests/inventory.spec.ts --project=webkit-mobile --workers=1
 ```
 
-**2 failed / 0 passed**, with the same errors as the implementation branch:
+Result: **1 failed / 0 passed**, 1.3 min, baseline line 162 (two-line selector formatting difference), same missing `Put in safe 1` control following ARP-slot selection. This case remains enabled and unchanged in its assertions. Claude should review native slot-selection/input-guard handling; the feature does not broaden into a replacement input system.
 
-1. `[webkit-mobile] tests/input-guard.spec.ts:18` — **a tap right after a freeze ends, once the page has drawn, goes through once**. At line 52, expected AP **1**, received **2**: the single post-freeze click was dropped. Baseline duration 23.4 s (feature branch 22.9 s).
-2. `[webkit-mobile] tests/inventory.spec.ts:69` — **City residence and member cards enforce slot/load rules and real equipment bonuses**. At line 115 (`tapUntil` → `tests/helpers.ts:59`), timed out awaiting the Give action after the unretired single Law-19 slot click; selected-slot state was not applied. Baseline duration 58.5 s (feature branch 58.4 s, corresponding line 113 due to narrower district selector formatting).
+Earlier validation on prior main `6bf845f` also reproduced WebKit touch failures, including the post-freeze AP tap. After merging Claude’s PR #18, the dedicated post-freeze case **passes in both engines** in the final integrated run. It is no longer listed as an outstanding failure.
 
-These tests remain enabled. Chromium passed both. This is a **Claude UI/input-guard review dependency**, consistent with the existing [main audit](../CODEBASE_AUDIT_2026-11-06.md), particularly T2/T3/T5. It is not a new stock, payout, equipment, AP or save failure, and it is not hidden by changing game rules or weakening the assertions. The new robbery recovery case uses the repository's native-touch acknowledgement helper and separately verifies no duplicate outcome after a freeze/menu/reload.
+The central seizure boundary initially exposed an existing trapping assumption that the last street transaction was always the sale. Production code now selects the actual sale by session/cursor, preserving XP/cuts when arrest also writes a confiscation. The custody regression explicitly verifies one sale plus one seizure loss and no carried Pink Magic. Physical pawn/return receipts snapshot quantities before inventory removal. No tests were disabled, skipped or weakened to hide failures.
 
-### Performance / artifact size
+## Performance / artifact size
 
-Independent builds on main and the final implementation measured:
+Independent production builds on unchanged main and the integrated implementation measured:
 
-| Artifact | Main `6bf845f` | Implementation `de725b6` |
+| Artifact | Main `a5aeece` | Implementation `ab37972` |
 |---|---:|---:|
-| Main JS | 720.04 kB / 227.40 kB gzip | 757.63 kB / 239.02 kB gzip |
-| BoardStage JS | 639.41 kB / 171.09 kB gzip | 639.41 kB / 171.09 kB gzip |
+| Main JS | 720.15 kB / 227.46 kB gzip | 757.73 kB / 239.06 kB gzip |
+| BoardStage JS | 640.28 kB / 171.42 kB gzip | 640.28 kB / 171.42 kB gzip |
 | Main CSS | 101.27 kB / 20.72 kB gzip | 101.27 kB / 20.72 kB gzip |
 
-The expansion adds about **11.62 kB gzip** of rules, schemas, content and functional UI. No model assets, renderer loops, per-frame rule work or robbery timers were added. Real software-rendered Chromium/WebKit flows, stall recovery checks and 180-day persistence simulations were exercised; this is not a real-device FPS certification. Final 3D placement and iPhone presentation remain Claude's work.
+The expansion adds about **11.60 kB gzip** of rules, schemas, content and functional UI. No model assets, renderer loops, per-frame rule work or robbery timers were added. Real software-rendered mobile engines, stall recovery and 180-day persistence simulations were exercised; this is not a real-device FPS certification. Final 3D placement and iPhone presentation remain Claude's work.
 
-### Delivery state
+## Delivery state
 
-The final 10-case batch passed **5/5 Chromium and 5/5 WebKit**, including both corrected custody cases and the exact original-owner item-return assertion. Across the selected flows, all GOAL013-specific checks and both full fresh-start routes pass. The two broader WebKit tap failures above remain enabled and confirmed on main; the overall browser library is not claimed green.
+All new GOAL013 flows pass in both touch-enabled engines, at 390/360 px where specified, including exact original-owner return, real pawn receipt quantity, persistence and no duplicate spending. Both fresh-start routes, earned progression, custody, terminal restore and memory checks also pass. The selected broader browser batch is **not fully green** because of the independently confirmed current-main WebKit inventory selection failure above.
+
+Gameplay scope is implemented and ready for Claude review. Individual residential 3D blocks, final City cards/loot/lock presentation and iPhone polish remain the explicit Claude integration dependency. This implementation is unmerged and has not deployed.
 
 Curated review artifacts: [Chromium home loot](../screenshots/goal-013/chromium-home-loot.png) and [WebKit pawn sale with actual quantity](../screenshots/goal-013/webkit-pawn-sold.png). Detailed integration contract and remaining Claude presentation work: [GOAL_013_CLAUDE_HANDOFF.md](GOAL_013_CLAUDE_HANDOFF.md).
