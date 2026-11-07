@@ -1,3 +1,4 @@
+import { tickRobberyCareer } from "../systems/RobberyCareer";
 import { interruptSession } from "../systems/SessionLifecycle";
 import { awardSkill } from "../systems/Skills";
 import { advanceQuanny } from "../systems/Quanny";
@@ -35,6 +36,7 @@ export function advanceDay(state: GameState): GameState {
   settleWorkplaceScenes(s);
   settleAttendance(s);
   s.day++;
+  tickRobberyCareer(s);
   advanceConflicts(s);
   advanceQuanny(s);
   for (const i of s.danger.injuries)

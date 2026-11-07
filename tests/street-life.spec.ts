@@ -18,20 +18,7 @@ async function click(
 ) {
   await tapUntil(page, button, done, 45000);
 }
-async function enterPattern(page: Page, pattern: number[]) {
-  const colors = ["Amber", "Blue", "Violet"];
-  for (let i = 0; i < pattern.length; i++) {
-    const expected = `Your sequence: ${pattern
-      .slice(0, i + 1)
-      .map((n) => colors[n])
-      .join(" → ")}`;
-    await click(
-      page,
-      page.getByRole("button", { name: colors[pattern[i]], exact: true }),
-      async () => page.getByText(expected, { exact: true }).isVisible(),
-    );
-  }
-}
+
 async function close(page: Page) {
   for (let i = 0; i < 8; i++) {
     const d = page.getByRole("dialog", {
@@ -83,7 +70,7 @@ async function place(page: Page, id: string) {
     l = LOCATIONS.find((l) => l.id === id)!;
   if (
     !(await page
-      .getByRole("group", { name: "Five neighborhoods of Stixx City" })
+      .locator(".district-chips")
       .isVisible())
   )
     await click(
@@ -93,13 +80,13 @@ async function place(page: Page, id: string) {
         .getByRole("button", { name: "Stixx City", exact: true }),
       async () =>
         page
-          .getByRole("group", { name: "Five neighborhoods of Stixx City" })
+          .locator(".district-chips")
           .isVisible(),
     );
   await click(
     page,
     page
-      .getByRole("group", { name: "Five neighborhoods of Stixx City" })
+      .locator(".district-chips")
       .getByRole("button", { name: new RegExp(s.zones[l.zone].name) }),
     async () =>
       page
@@ -379,18 +366,7 @@ test("fresh promise → physical application → queued Day 3 six → real Lot s
     page.getByRole("button", { name: "Wait and watch · lower pressure" }),
     async () => (await state(page)).activeRobbery!.cursor === 1,
   );
-  const pattern = (await state(page)).activeRobbery!.pattern;
-  await enterPattern(page, pattern);
-  await click(
-    page,
-    page.getByRole("button", { name: "Commit sequence once" }),
-    async () => (await state(page)).activeRobbery!.cursor === 2,
-  );
-  await click(
-    page,
-    page.getByRole("button", { name: "Leave with partial proceeds · safer" }),
-    async () => (await state(page)).activeRobbery!.status === "ended",
-  );
+  await click(page, page.getByRole("button", { name: "De-escalate and finish" }), async () => (await state(page)).activeRobbery!.status === "ended");
   expect((await state(page)).robberies!.history).toHaveLength(1);
   expect(errors).toEqual([]);
   await page.screenshot({
@@ -426,7 +402,7 @@ test("decline cash starter and one-AP City trapping", async ({ page }) => {
   );
   expect((await state(page)).streetLife?.lesson).toBe("started");
 });
-test("earned contact → City preparation shops → real robbery puzzle → persisted outcome on 360px", async ({
+test("earned contact → City preparation shops → real contextual robbery → persisted outcome on 360px", async ({
   page,
 }, info) => {
   test.setTimeout(300000);
@@ -481,18 +457,7 @@ test("earned contact → City preparation shops → real robbery puzzle → pers
     page.getByRole("button", { name: "Continue robbery session" }),
     async () => (await state(page)).activeRobbery?.status === "active",
   );
-  const a = (await state(page)).activeRobbery!;
-  await enterPattern(page, a.pattern);
-  await click(
-    page,
-    page.getByRole("button", { name: "Commit sequence once" }),
-    async () => (await state(page)).activeRobbery?.cursor === 2,
-  );
-  await click(
-    page,
-    page.getByRole("button", { name: "Leave with partial proceeds · safer" }),
-    async () => (await state(page)).activeRobbery?.status === "ended",
-  );
+  await click(page, page.getByRole("button", { name: "De-escalate and finish" }), async () => (await state(page)).activeRobbery?.status === "ended");
   const result = await state(page);
   if (result.characters.player.status === "active")
     expect(result.ap).toBe(paid);

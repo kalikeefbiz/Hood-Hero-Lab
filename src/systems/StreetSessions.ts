@@ -241,7 +241,9 @@ export function advanceStreetSession(
   s.rng = beat.seed;
   if (beat.kind === "buyer") {
     const result = resolveStreetBuyer(s, id, cursor),
-      t = result && s.street.transactions.at(-1);
+      t = result && s.street.transactions.find(
+        t => t.sessionId === id && t.sessionCursor === cursor,
+      );
     if (t) {
       session.totals.gross += t.gross;
       session.totals.loss += t.loss + t.crewPaid;

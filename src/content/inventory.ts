@@ -6,6 +6,18 @@ export const INVENTORY_BALANCE = {
   residencePrice: 600,
 } as const;
 export const ITEM_DEFINITIONS = {
+  phone: { kind: "possession", name: "Ordinary phone", load: 1, stack: 1 },
+  "plain-chain": { kind: "possession", name: "Plain chain", load: 1, stack: 1 },
+  jewelry: { kind: "possession", name: "Jewelry", load: 1, stack: 1 },
+  "high-chain": {
+    kind: "possession",
+    name: "High-end chain",
+    load: 1,
+    stack: 1,
+  },
+  console: { kind: "possession", name: "Game console", load: 5, stack: 1 },
+  pc: { kind: "possession", name: "Personal computer", load: 8, stack: 1 },
+  art: { kind: "possession", name: "Antique art", load: 10, stack: 1 },
   nightgoods: { kind: "merchandise", name: "Pink Magic", load: 1, stack: 10 },
   "law-19": { kind: "equipment", name: "Law-19", load: 3, stack: 1 },
   "law-19-switch": {

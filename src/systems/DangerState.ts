@@ -24,6 +24,7 @@ export const dangerSchema = z.object({
       originEvent: id,
       seriousness: z.number().min(0).max(100),
       lethal: z.boolean(),
+      requiresReconciliation: z.boolean().optional(),
       state: z.enum(["unresolved", "worsening", "cooling", "settled"]),
       scope: z.enum(["personal", "circle"]),
       associates: z.array(id),

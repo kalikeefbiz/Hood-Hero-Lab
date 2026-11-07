@@ -1,4 +1,13 @@
-import { inventorySchema, inventoryStateSchema } from "../systems/InventoryTypes";
+import { ROBBERY_BALANCE } from "../content/robberyCareer";
+import { validateRobberyCareer } from "../systems/RobberyCareer";
+import {
+  robberyCareerSchema,
+  newRobberyCareer,
+} from "../systems/RobberyCareerState";
+import {
+  inventorySchema,
+  inventoryStateSchema,
+} from "../systems/InventoryTypes";
 import { residenceSchema } from "../systems/Residences";
 import { migrateInventory, validateInventory } from "./InventoryMigration";
 import { streetLifeSchema, newStreetLife } from "../systems/StreetLifeState";
@@ -134,12 +143,19 @@ const presenceSchema = z.object({
   }),
 });
 const schema = z.object({
+  robberyCareer: robberyCareerSchema.optional(),
   inventory: inventoryStateSchema.optional(),
   residences: record(residenceSchema).optional(),
   presence: presenceSchema.optional(),
   quanny: quannySchema.default(newQuannyState),
   danger: dangerSchema.default(() => newDangerState()),
-  version: z.union([z.literal(8), z.literal(9), z.literal(10), z.literal(11)]),
+  version: z.union([
+    z.literal(8),
+    z.literal(9),
+    z.literal(10),
+    z.literal(11),
+    z.literal(12),
+  ]),
   activeSession: streetSessionSchema.optional(),
   streetLife: streetLifeSchema.optional(),
   robberies: robberyStateSchema.optional(),
@@ -447,13 +463,19 @@ export function deserialize(raw: string): GameState {
   const envelope = z
     .object({
       format: z.literal("syndicate"),
-      version: z.union([z.literal(8), z.literal(9), z.literal(10), z.literal(11)]),
+      version: z.union([
+        z.literal(8),
+        z.literal(9),
+        z.literal(10),
+        z.literal(11),
+        z.literal(12),
+      ]),
       state: schema,
     })
     .safeParse(parsed);
   if (!envelope.success)
     throw new Error(
-      "Incompatible or damaged save. Expected Hood Hero save version 8, 9, 10 or 11. Start a new test run from the new game menu.",
+      "Incompatible or damaged save. Expected Hood Hero save version 8, 9, 10, 11 or 12. Start a new test run from the new game menu.",
     );
   const s: GameState = envelope.data.state;
   if (s.version === 8) {
@@ -477,6 +499,16 @@ export function deserialize(raw: string): GameState {
   s.characters["contact-angels"] ??= residents().find(
     (c) => c.id === "contact-angels",
   )!;
+  // Only unstarted legacy leads adopt the new rules. In-flight sessions keep their saved engine.
+  if (s.version < 12)
+    for (const j of s.robberies?.jobs ?? []) {
+      if (j.status === "offered" && !j.targetId) {
+        if (j.kind === "home" && j.location === "reservoir.boarded-house")
+          j.targetId = "home.reservoir.1";
+        else if (j.kind === "strong-arm" && j.location === "rio.courtyard")
+          j.targetId = "street.rio";
+      }
+    }
   validateRobberyReferences(s);
   const life = s.streetLife;
   if (
@@ -545,6 +577,21 @@ export function deserialize(raw: string): GameState {
   }
   if (needsInventoryMigration) migrateInventory(s);
   validateInventory(s);
+  if (s.version < 12) {
+    s.robberyCareer = newRobberyCareer();
+    const a = s.activeRobbery,
+      j = s.robberies?.jobs.find((j) => j.id === a?.jobId);
+    if (a && a.status !== "ended" && j?.kind === "home") {
+      const zone = s.presence?.zone ?? "reservoir";
+      s.robberyCareer.cooldowns[`home:${zone}`] = {
+        day: a.day,
+        nextDay: a.day + ROBBERY_BALANCE.homeCooldown,
+        jobId: j.id,
+      };
+    }
+    s.version = 12;
+  }
+  if (!s.robberyCareer) throw new Error("Missing v12 robbery career state.");
   validateSessionReferences(s);
   validateConsignments(s);
   const exists = (id: string) => !!s.characters[id];
@@ -612,7 +659,10 @@ export function deserialize(raw: string): GameState {
         (l.transferred ?? 0) !==
           st.lots
             .filter((child) => child.sourceLotId === l.id)
-            .reduce((n, child) => n + child.received - (child.returned ?? 0), 0) ||
+            .reduce(
+              (n, child) => n + child.received - (child.returned ?? 0),
+              0,
+            ) ||
         l.remaining +
           (l.returned ?? 0) +
           l.lost +
@@ -780,6 +830,7 @@ export function deserialize(raw: string): GameState {
         s.crewOffers.length
   )
     throw new Error("Save contains missing or invalid world references.");
+  validateRobberyCareer(s);
   return s;
 }
 export function saveGame(storage: Storage, s: GameState, key = SAVE_KEY) {

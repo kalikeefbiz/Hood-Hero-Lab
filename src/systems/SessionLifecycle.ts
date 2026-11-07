@@ -1,3 +1,4 @@
+import { settleCareer } from "./RobberyCareer";
 import type { GameState } from "../core/GameState";
 import { record } from "../core/EventLog";
 import { awardSkill } from "./Skills";
@@ -29,6 +30,8 @@ export function finishSessionPartner(s: GameState) {
 }
 /** Stop future beats while settling only outcomes already committed. Mutates an owned snapshot. */
 export function interruptSession(s: GameState, reason: string) {
+  if (s.activeRobbery?.career && s.activeRobbery.status !== 'ended')
+    settleCareer(s, false, true);
   if (s.activeRobbery && s.activeRobbery.status !== 'ended') {
     s.activeRobbery.status = 'ended'; s.activeRobbery.text = reason;
     const job=s.robberies?.jobs.find(j=>j.id===s.activeRobbery!.jobId);

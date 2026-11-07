@@ -224,7 +224,8 @@ export interface GameState {
   quanny: import("../systems/QuannyState").QuannyState;
   danger: import("../systems/DangerState").DangerState;
   presence?: import("../board/presence").Presence;
-  version: 8 | 9 | 10 | 11;
+  version: 8 | 9 | 10 | 11 | 12;
+  robberyCareer?: import("../systems/RobberyCareerState").RobberyCareer;
   inventory?: import("../systems/Inventory").InventoryState;
   residences?: Record<string, import("../systems/Residences").Residence>;
   streetLife?: import("../systems/StreetLifeState").StreetLifeState;

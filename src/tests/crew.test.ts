@@ -341,7 +341,7 @@ describe("assignment boundaries and personal consequences", () => {
       expect(s.ap).toBe(0);
       expect(player(s).police).toBeGreaterThan(0);
       expect(s.characters[c.id].police).toBeGreaterThan(0);
-      const t = s.street.transactions.at(-1)!;
+      const t = s.street.transactions.filter(t=>t.partner===c.id).at(-1)!;
       expect(s.characters[c.id].wallet.clean + s.characters[c.id].wallet.illicit).toBe(
         80 + t.crewPaid - t.crewLoss,
       );
