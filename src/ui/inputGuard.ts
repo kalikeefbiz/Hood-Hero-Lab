@@ -11,7 +11,13 @@
  */
 const BEAT_MS = 100;
 /** A heartbeat gap longer than this counts as a stall. */
-export const STALL_MS = 700;
+export const STALL_MS = 1000;
+/**
+ * Escape valve: after taps were dropped in this many separate stalls in a
+ * row, the next tap goes through anyway, so a device that stalls constantly
+ * can never lock the player out.
+ */
+export const MAX_DROPPED_STALLS = 3;
 /**
  * After a stall, input is held until the page has drawn a frame (the moment
  * the player can see it respond), and never longer than this. Browsers may
@@ -21,6 +27,9 @@ export const STALL_MS = 700;
 export const SETTLE_MS = 350;
 
 let lastBeat = 0;
+/** Consecutive stalls in which taps were dropped, and the last one counted. */
+let droppedStalls = 0;
+let lastDroppedStall = -1;
 let recoveredAt = -Infinity;
 let settling = false;
 let dropped = 0;
@@ -73,6 +82,8 @@ export function installInputGuard(target: GuardTarget = document) {
   lastBeat = clock();
   recoveredAt = -Infinity;
   settling = false;
+  droppedStalls = 0;
+  lastDroppedStall = -1;
   const timer = globalThis.setInterval(beat, BEAT_MS);
   // Background tabs throttle timers; coming back is not a stall.
   const onVisible = () => {
@@ -88,7 +99,20 @@ export function installInputGuard(target: GuardTarget = document) {
   const onInput = (e: Event) => {
     const stale = staleGesture || queuedDuringStall();
     staleGesture = false;
-    if (!stale) return;
+    if (!stale) {
+      droppedStalls = 0;
+      return;
+    }
+    // Every tap of one queued batch shares a stall (and its last beat).
+    const stall = Math.max(lastBeat, recoveredAt);
+    if (stall !== lastDroppedStall) {
+      lastDroppedStall = stall;
+      droppedStalls++;
+    }
+    if (droppedStalls > MAX_DROPPED_STALLS) {
+      droppedStalls = 0;
+      return;
+    }
     dropped++;
     e.preventDefault();
     e.stopImmediatePropagation();

@@ -114,6 +114,21 @@ function loadTemplate(id: string): Promise<Template | null> {
   return p;
 }
 
+/**
+ * Free one spawned copy: stop its animation and release the GPU data it owns
+ * (each clone has its own skeleton, and a skeleton holds a bone texture).
+ * Geometry, materials and textures are shared with the template and stay.
+ */
+export function disposeCharacter(c: CharacterInstance) {
+  c.mixer.stopAllAction();
+  c.mixer.uncacheRoot(c.mixer.getRoot());
+  c.root.traverse((o) => {
+    const m = o as THREE.SkinnedMesh;
+    if (m.isSkinnedMesh) m.skeleton.dispose();
+  });
+  c.root.removeFromParent();
+}
+
 export function hasCharacterModel(id: string) {
   return id in CHARACTER_MODELS;
 }
