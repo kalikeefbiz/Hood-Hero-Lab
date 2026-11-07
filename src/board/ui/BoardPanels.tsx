@@ -284,10 +284,12 @@ export function PlaceSheet({
   openStoryline,
   goHere,
   busy,
+  targetId,
 }: {
   s: GameState;
   view: BoardView;
   placeId: string;
+  targetId?: string | null;
   renderAction: (a: Action) => ReactNode;
   renderStreet: (zone: ZoneId) => ReactNode;
   openPerson: (id: string) => void;
@@ -346,7 +348,7 @@ export function PlaceSheet({
           </button>
         )}
       </div>
-      <LifePlace s={s} location={l.id} change={setState} />
+      <LifePlace s={s} location={l.id} change={setState} targetId={targetId} />
       <RiskBadge risk={assessRisk(s, l.id)} />
       <p>{l.description}</p>
       {facts.map((f) => (

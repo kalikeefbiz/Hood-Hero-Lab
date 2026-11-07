@@ -670,6 +670,7 @@ export function App() {
           zone: place.zone,
           block: locationBlock(place)?.id ?? null,
           place: place.id,
+          target: f.target ?? null,
         }
       : f;
     setBoard(next);
@@ -1064,6 +1065,7 @@ export function App() {
                 s={s}
                 view={boardView}
                 placeId={board.place}
+                targetId={board.target}
                 renderAction={(a) => boardTile(a, board.place!)}
                 renderStreet={() => (
                   <StreetSessionStart
