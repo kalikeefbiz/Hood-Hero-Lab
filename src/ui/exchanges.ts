@@ -185,8 +185,13 @@ export function newExchanges(
       });
     }
   for (const h of s.inventory?.history ?? []) {
+    const memberSeizure =
+      h.action === "confiscated on arrest" &&
+      h.to === "lost" &&
+      s.crew.members.includes(h.from);
     if (
-      (h.from !== s.playerId && h.to !== s.playerId) ||
+      (h.from !== s.playerId && h.to !== s.playerId && !memberSeizure) ||
+      (h.itemId === "nightgoods" && h.action === "robbery loot") ||
       seen.inventoryIds.includes(h.id) ||
       ["split", "merge"].includes(h.action)
     )
@@ -199,8 +204,9 @@ export function newExchanges(
         : other === "lost"
           ? ""
           : nameOf(s, other);
-    const label =
-      h.action === "deposited"
+    const label = memberSeizure
+      ? `Confiscated from ${nameOf(s, h.from)}`
+      : h.action === "deposited"
         ? "Put in your safe"
         : h.action === "withdrawn"
           ? "Taken from your safe"
@@ -222,7 +228,7 @@ export function newExchanges(
     };
     exchanges.push({
       id: h.id,
-      give: h.from === s.playerId ? goods : undefined,
+      give: h.from === s.playerId || memberSeizure ? goods : undefined,
       get: h.to === s.playerId ? goods : undefined,
     });
   }
@@ -246,7 +252,14 @@ export function newExchanges(
       get: item(
         l.category,
         l.received,
-        `Received from ${from}`,
+        s.characters[s.playerId].inventory?.slots.some(
+          (x) =>
+            x.kind === "merchandise" &&
+            x.lotId === l.id &&
+            x.provenance.startsWith("stolen:"),
+        )
+          ? `Stolen from ${from}`
+          : `Received from ${from}`,
         l.arrangement === "consignment"
           ? `Fronted · $${l.owed} owed by day ${l.dueDay}`
           : undefined,

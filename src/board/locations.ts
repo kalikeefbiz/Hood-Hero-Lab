@@ -59,6 +59,8 @@ export type Archetype =
   | "watertower";
 
 export interface LocationLinks {
+  /** Physical stolen-property sales, backed by RobberyCareer. */
+  pawn?: boolean;
   /** Existing JOBS id: apply / accept / work / time off happen here. */
   job?: string;
   /** Existing BUSINESSES id: buy / maintain / sell / close happen here. */
@@ -586,10 +588,9 @@ export const LOCATIONS: LocationDef[] = [
     description: "Resale, no questions, bars on every window.",
     at: [0.71, 0.17],
     palette: ["#8d9a9a", "#e3c23a", "#1c1c1c", "#e3c23a"],
-    links: {},
-    status: "planned",
+    links: { pawn: true },
+    status: "live",
     model: "assets/models/small-storefront.glb",
-    planned: "Resale and recovered goods.",
   }),
   L({
     id: "reservoir.water-tower",

@@ -643,7 +643,7 @@ export function advanceConflicts(s: GameState) {
     const other = c.participants.find((id) => id !== npc.id)!;
     const roll = random(s);
     if (roll < (npc.traits.lawful + 25) / 210) {
-      c.seriousness = clamp(c.seriousness - 12);
+      c.seriousness = clamp(c.seriousness - 12, c.requiresReconciliation ? 20 : 0);
       c.state = c.seriousness < 10 ? "settled" : "cooling";
       c.intent = "avoid";
       change(npc, other, { grievance: -4 });

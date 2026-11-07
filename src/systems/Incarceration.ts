@@ -1,3 +1,4 @@
+import { confiscateCarried } from "./RobberyCareer";
 import { interruptSession } from "./SessionLifecycle";
 import { clamp, type GameState } from "../core/GameState";
 import { record } from "../core/EventLog";
@@ -20,6 +21,7 @@ export function arrest(s: GameState, id: string, cause: string, severity = 1) {
     id === s.playerId || s.crew.members.includes(id) ? [s.playerId, id] : [id],
     { importance: "critical", title: `${c.name} in custody` },
   );
+  confiscateCarried(s, id, e.id);
   s.street.custody.push({
     id: `custody-${s.nextId++}`,
     character: id,

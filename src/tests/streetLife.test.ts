@@ -367,6 +367,8 @@ describe("real City robbery sessions", () => {
     s.characters.dizzy.relationships.player.trust = 40;
     s = offerRobbery(s, "dizzy");
     expect(s.robberies!.jobs).toHaveLength(1);
+    // Preserve the pre-GOAL013 session compatibility path in these legacy tests.
+    delete s.robberies!.jobs[0].targetId;
     for (const item of ["gloves", "mask"] as const) {
       s.ap = 2;
       at(s, PREPARATION[item].location);
@@ -480,6 +482,7 @@ it("three actual successful operations unlock and play the home follow-on withou
     s = offerRobbery(s, "dizzy");
     const job = s.robberies!.jobs.at(-1)!;
     expect(job.kind).toBe("strong-arm");
+    delete job.targetId;
     shop("gloves");
     shop("mask");
     s.ap = 2;
@@ -499,6 +502,9 @@ it("three actual successful operations unlock and play the home follow-on withou
   person(s, "dizzy");
   s = offerRobbery(s, "dizzy");
   const home = s.robberies!.jobs.at(-1)!;
+  // An existing GOAL011 home lead retains its old schema and session path.
+  delete home.targetId;
+  home.location="reservoir.boarded-house";
   const priorOperations = s.robberies!.history.length;
   expect(home.kind).toBe("home");
   expect(skillRank(player(s), "robbery")).toBe(2);

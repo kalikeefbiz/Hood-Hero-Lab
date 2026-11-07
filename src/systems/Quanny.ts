@@ -162,7 +162,7 @@ function revealQuannyLocation(s: GameState) {
   ]);
   s.quanny.history.push(e.id);
 }
-function blockBusiness(s: GameState) {
+export function blockQuannyBusiness(s: GameState) {
   s.quanny.business = "blocked";
   s.quanny.blockedDay = s.day;
   s.quanny.repairBaseline = evidenceScore(s);
@@ -216,7 +216,7 @@ export function resolveQuanny(
       c.intent = "seek";
       // The player heard the dismissal, not the private retaliation decision.
       p.memories = p.memories.filter((m) => m.eventId !== secret.id);
-      blockBusiness(s);
+      blockQuannyBusiness(s);
       e.status = "acknowledged";
       return;
     }
@@ -245,7 +245,7 @@ export function resolveQuanny(
       );
       c.intent = "seek";
       state.shooting = introductoryShooting(s, q, event.id);
-      blockBusiness(s);
+      blockQuannyBusiness(s);
       e.status = "acknowledged";
       return;
     }
@@ -287,12 +287,12 @@ export function resolveQuanny(
       q.agency.unreasonableRequests++;
       note("Quanny: “That ain’t worth my time. Bring a real proposal.”");
       change(q, p.id, { trust: -6, respect: -4, grievance: 4 });
-      if (q.agency.unreasonableRequests >= 3) blockBusiness(s);
+      if (q.agency.unreasonableRequests >= 3) blockQuannyBusiness(s);
     } else frontMerchandise(s, q.id, choice === "negotiate");
   } else if (choice === "collect") {
     const result = collectConsignment(s, q.id);
     if (result && !result.paid) {
-      blockBusiness(s);
+      blockQuannyBusiness(s);
       addGrievance(
         s,
         p.id,

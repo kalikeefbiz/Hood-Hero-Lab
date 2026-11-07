@@ -1,3 +1,13 @@
+import { ROBBERY_BALANCE } from "../content/robberyCareer";
+import { careerSessionSchema } from "./RobberyCareerState";
+import {
+  careerStartError,
+  initializeCareer,
+  careerInput,
+  settleCareer,
+  offerCareerLead,
+  targetForJob,
+} from "./RobberyCareer";
 import {
   gain,
   gainError,
@@ -29,14 +39,14 @@ import {
 } from "./Equipment";
 const uint = z.number().int().nonnegative();
 const prepId = z.enum(["gloves", "mask", "duffle", "pattern-token"]);
-const kind = z.enum(["strong-arm", "home", "store", "bank"]);
+const kind = z.enum(["strong-arm", "home", "store", "bank", "liquor"]);
 export const ROBBERY_TYPES = {
   "strong-arm": {
     name: "Strong-arm",
     combat: 1,
     robbery: 1,
     prep: ["gloves", "mask"] as string[],
-    loot: [65, 125],
+    loot: ROBBERY_BALANCE.civilianCash,
     risk: 0.18,
     weapon: null,
   },
@@ -44,8 +54,8 @@ export const ROBBERY_TYPES = {
     name: "Home invasion",
     combat: 2,
     robbery: 2,
-    prep: ["gloves", "mask", "duffle", "pattern-token"] as string[],
-    loot: [190, 340],
+    prep: ["gloves", "mask", "duffle"] as string[],
+    loot: ROBBERY_BALANCE.homeCash,
     risk: 0.3,
     weapon: "law-19",
   },
@@ -54,9 +64,18 @@ export const ROBBERY_TYPES = {
     combat: 3,
     robbery: 3,
     prep: ["gloves", "mask", "duffle"] as string[],
-    loot: [0, 0],
+    loot: ROBBERY_BALANCE.commercialCash,
     risk: 0.4,
-    weapon: "law-19-switch",
+    weapon: "law-19",
+  },
+  liquor: {
+    name: "Liquor-store robbery",
+    combat: 2,
+    robbery: 2,
+    prep: ["gloves", "mask"] as string[],
+    loot: ROBBERY_BALANCE.liquorCash,
+    risk: 0.4,
+    weapon: "law-19",
   },
   bank: {
     name: "Major score",
@@ -88,12 +107,15 @@ export const robberyStateSchema = z.object({
       day: uint,
       location: z.string(),
       cost: uint,
+      quantity: uint.min(1).max(5).optional(),
     }),
   ),
   jobs: z.array(
     z.object({
       id: z.string(),
       kind,
+      targetId: z.string().optional(),
+      victim: z.string().optional(),
       source: z.string(),
       location: z.string(),
       createdDay: uint,
@@ -134,7 +156,8 @@ export const robberySessionSchema = z
     day: uint,
     paidAP: z.literal(true),
     status: z.enum(["active", "paused", "ended"]),
-    cursor: uint.max(3),
+    career: careerSessionSchema.optional(),
+    cursor: uint,
     seed: uint.max(4294967295),
     pattern: z.array(uint.max(2)).length(3),
     answers: z.array(z.string()).max(3),
@@ -144,15 +167,16 @@ export const robberySessionSchema = z
   })
   .refine(
     (a) =>
-      a.cursor === a.answers.length &&
-      (a.cursor !== 3 || a.status === "ended") &&
-      a.answers.every((answer, i) =>
-        i === 0
-          ? ["patient", "rush", "withdraw"].includes(answer)
-          : i === 1
-            ? /^[0-2],[0-2],[0-2]$/.test(answer)
-            : ["leave", "push"].includes(answer),
-      ),
+      !!a.career ||
+      (a.cursor === a.answers.length &&
+        (a.cursor !== 3 || a.status === "ended") &&
+        a.answers.every((answer, i) =>
+          i === 0
+            ? ["patient", "rush", "withdraw"].includes(answer)
+            : i === 1
+              ? /^[0-2],[0-2],[0-2]$/.test(answer)
+              : ["leave", "push"].includes(answer),
+        )),
   );
 export type RobberySession = z.infer<typeof robberySessionSchema>;
 export function robberySourceError(s: GameState, id: string) {
@@ -198,14 +222,6 @@ export function robberyOfferError(s: GameState, id: string) {
   );
   if (active)
     return `You already have ${active.id}. Prepare and visit ${locationById(active.location)?.name}.`;
-  if (
-    s.robberies?.history.some(
-      (h) => s.robberies?.jobs.find((j) => j.id === h.jobId)?.kind === "home",
-    )
-  )
-    return "That home lead is resolved. Store and bank scores are not available yet.";
-  if (s.robberies?.jobs.some((j) => j.createdDay === s.day))
-    return "No fresh lead today. Ask again tomorrow.";
   return null;
 }
 export function offerRobbery(state: GameState, source: string) {
@@ -221,14 +237,18 @@ export function offerRobbery(state: GameState, source: string) {
     return state;
   const m = skillsOf(player(s)).milestones,
     home = (m.robberySuccess ?? 0) >= 3;
-  if (
-    r.history.some((h) => r.jobs.find((j) => j.id === h.jobId)?.kind === "home")
-  )
-    return state;
-  if (home) m.robberyAccess2 = 1;
+  if (home) {
+    const result = offerCareerLead(
+      state,
+      source,
+      (m.robberySuccess ?? 0) >= 9 ? "commercial.designer" : "home.reservoir.1",
+    );
+    return typeof result === "string" ? state : result;
+  }
   const job: RobberyState["jobs"][number] = {
     id: `lick-${s.nextId++}`,
-    kind: home ? "home" : "strong-arm",
+    targetId: "street.rio",
+    kind: "strong-arm",
     source,
     location: home ? "reservoir.boarded-house" : "rio.courtyard",
     createdDay: s.day,
@@ -252,8 +272,11 @@ export function purchasePrepError(
   s: GameState,
   item: PrepId,
   location: string,
+  quantity = 1,
 ) {
   const d = PREPARATION[item];
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 5)
+    return "Choose 1–5 units.";
   if (!d || d.location !== location || presenceOf(s).location !== location)
     return "Visit the actual shop for this item.";
   if (
@@ -270,32 +293,42 @@ export function purchasePrepError(
   )
     return "Finish your current session first.";
   if (s.ap < 1) return "Requires 1 AP to shop.";
-  if (cash(player(s)) < d.price) return `Requires $${d.price}.`;
-  if ((s.robberies?.items[item] ?? 0) >= 2)
-    return "You already hold two; this shop limits personal stock.";
-  return gainError(s, s.playerId, gain(item));
+  if (cash(player(s)) < d.price * quantity) return `Requires $${d.price * quantity}.`;
+  return gainError(s, s.playerId, gain(item, quantity));
 }
-export function purchasePrep(state: GameState, item: PrepId, location: string) {
-  if (purchasePrepError(state, item, location)) return state;
+export function purchasePrep(
+  state: GameState,
+  item: PrepId,
+  location: string,
+  quantity = 1,
+) {
+  if (purchasePrepError(state, item, location, quantity)) return state;
   const s = structuredClone(state),
     r = (s.robberies ??= newRobberyState()),
     d = PREPARATION[item];
   s.ap--;
-  expense(s, player(s), d.price, `City supplies · ${d.name}`);
-  r.items[item]++;
-  receivePhysical(s, s.playerId, gain(item));
+  expense(s, player(s), d.price * quantity, `City supplies · ${d.name}`);
+  r.items[item] += quantity;
+  receivePhysical(s, s.playerId, gain(item, quantity));
   const e = record(
     s,
     "money",
-    `Bought ${d.name} for $${d.price} at ${locationById(location)?.name} · 1 AP. Used on a robbery attempt, including failure.`,
+    `Bought ${d.name} ×${quantity} for $${d.price * quantity} at ${locationById(location)?.name} · 1 AP. Used on a robbery attempt, including failure.`,
     [s.playerId],
   );
-  r.purchases.push({ id: e.id, item, day: s.day, location, cost: d.price });
+  r.purchases.push({
+    id: e.id,
+    item,
+    day: s.day,
+    location,
+    cost: d.price * quantity,
+    quantity,
+  });
   s.streetLife?.exchanges.push({
     id: e.id,
     item: d.name,
-    quantity: 1,
-    paid: d.price,
+    quantity,
+    paid: d.price * quantity,
     received: 0,
   });
   return s;
@@ -307,7 +340,7 @@ export function robberyStartError(s: GameState, jobId: string) {
   if (!j || j.status !== "offered" || j.expiresDay < s.day)
     return "This opportunity is unavailable, resolved or expired.";
   const d = ROBBERY_TYPES[j.kind];
-  if (j.kind === "store" || j.kind === "bank")
+  if (j.kind === "bank" || (j.kind === "store" && !j.targetId))
     return "Future tier: no authored opportunity is available.";
   if (
     s.end ||
@@ -330,15 +363,25 @@ export function robberyStartError(s: GameState, jobId: string) {
     skillRank(player(s), "robbery") < d.robbery
   )
     return `Requires Combat rank ${d.combat} and Robbery rank ${d.robbery}.`;
+  const carriedWeapon = equipmentOf(player(s)).equipped;
   if (
     d.weapon &&
-    (equipmentOf(player(s)).equipped !== d.weapon ||
-      equipError(player(s), d.weapon))
+    (!carriedWeapon ||
+      (!j.targetId && carriedWeapon !== d.weapon) ||
+      equipError(player(s), carriedWeapon))
   )
     return `Requires equipped ${d.weapon}. Seek equipment through a trusted contact after certification.`;
-  const missing = d.prep.filter(
-    (id) => !inventoryOf(s).slots.some((x) => x.itemId === id),
-  );
+  if (j.targetId) {
+    const error = careerStartError(s, jobId);
+    if (error) return error;
+  }
+  const missing = (
+    j.targetId
+      ? d.prep
+      : j.kind === "home"
+        ? [...d.prep, "pattern-token"]
+        : d.prep
+  ).filter((id) => !inventoryOf(s).slots.some((x) => x.itemId === id));
   if (missing.length)
     return `Prepare in the City: ${missing.map((id) => PREPARATION[id as PrepId].name).join(", ")}.`;
   return null;
@@ -350,7 +393,11 @@ export function startRobbery(state: GameState, jobId: string) {
     j = s.robberies!.jobs.find((j) => j.id === jobId)!;
   s.ap--;
   j.status = "active";
-  for (const item of ROBBERY_TYPES[j.kind].prep) {
+  for (const item of j.targetId
+    ? ROBBERY_TYPES[j.kind].prep
+    : j.kind === "home"
+      ? [...ROBBERY_TYPES.home.prep, "pattern-token"]
+      : ROBBERY_TYPES[j.kind].prep) {
     s.robberies!.items[item as PrepId]--;
     const slot = inventoryOf(s).slots.find((x) => x.itemId === item)!;
     removePhysical(inventoryOf(s), slot.id, 1);
@@ -382,6 +429,7 @@ export function startRobbery(state: GameState, jobId: string) {
     loot: 0,
     score: 0,
   };
+  if (j.targetId) initializeCareer(s, jobId);
   record(
     s,
     "risk",
@@ -408,6 +456,8 @@ export function robberyInput(
   cursor: number,
   answer: string,
 ) {
+  if (state.activeRobbery?.career)
+    return careerInput(state, id, cursor, answer);
   const old = state.activeRobbery;
   if (
     !old ||
@@ -504,7 +554,13 @@ export function robberyInput(
   const firstCertification = !skillsOf(player(s)).milestones.certified;
   skillsOf(player(s)).milestones.certified = 1;
   awardCombat(s, s.playerId, a.id, success ? "success" : "failed");
-  awardRobbery(s, s.playerId, a.id, j.kind, success);
+  awardRobbery(
+    s,
+    s.playerId,
+    a.id,
+    j.kind === "liquor" ? "home" : j.kind,
+    success,
+  );
   addExposure(
     s,
     s.playerId,
@@ -570,6 +626,7 @@ export function leaveRobbery(state: GameState, id: string) {
   if (state.activeRobbery?.id !== id || state.activeRobbery.status === "ended")
     return state;
   const s = structuredClone(state);
+  if (s.activeRobbery!.career) return settleCareer(s, false, true);
   s.activeRobbery!.status = "ended";
   s.activeRobbery!.text =
     "Attempt abandoned. No loot; spent AP and preparation remain spent.";
@@ -618,7 +675,7 @@ export function validateRobberyReferences(s: GameState) {
     r.purchases.some(
       (p) =>
         p.location !== PREPARATION[p.item].location ||
-        p.cost !== PREPARATION[p.item].price ||
+        p.cost !== PREPARATION[p.item].price * (p.quantity ?? 1) ||
         p.day > s.day ||
         !s.events.some((e) => e.id === p.id),
     ) ||
@@ -627,7 +684,9 @@ export function validateRobberyReferences(s: GameState) {
     (Object.keys(PREPARATION) as PrepId[]).some(
       (item) =>
         r.items[item] !==
-        r.purchases.filter((p) => p.item === item).length +
+        r.purchases
+          .filter((p) => p.item === item)
+          .reduce((n, p) => n + (p.quantity ?? 1), 0) +
           (s.inventory?.history
             .filter(
               (h) =>
@@ -650,7 +709,12 @@ export function validateRobberyReferences(s: GameState) {
           r.jobs.filter(
             (j) =>
               ["active", "success", "partial", "failed"].includes(j.status) &&
-              (ROBBERY_TYPES[j.kind].prep as readonly string[]).includes(item),
+              (j.targetId
+                ? ROBBERY_TYPES[j.kind].prep
+                : j.kind === "home"
+                  ? [...ROBBERY_TYPES.home.prep, "pattern-token"]
+                  : ROBBERY_TYPES[j.kind].prep
+              ).includes(item),
           ).length,
     ) ||
     r.jobs.some(
@@ -671,11 +735,13 @@ export function validateRobberyReferences(s: GameState) {
     r.jobs.some(
       (j) =>
         !s.characters[j.source] ||
-        !locationById(j.location) ||
+        (!locationById(j.location) && !targetForJob(s, j.id)) ||
         j.createdDay > s.day ||
         j.expiresDay !== j.createdDay + 6 ||
-        j.location !==
-          (j.kind === "home" ? "reservoir.boarded-house" : "rio.courtyard"),
+        (j.targetId
+          ? targetForJob(s, j.id)?.location !== j.location
+          : j.location !==
+            (j.kind === "home" ? "reservoir.boarded-house" : "rio.courtyard")),
     ) ||
     r.history.some(
       (h) =>
@@ -700,7 +766,8 @@ export function validateRobberyReferences(s: GameState) {
           a.day !== s.day ||
           presenceOf(s).location !== a.location ||
           (s.activeSession && s.activeSession.status !== "ended"))) ||
-      (a.cursor === 3 &&
+      (!a.career &&
+        a.cursor === 3 &&
         !r.history.some((h) => h.id === a.id && h.loot === a.loot))
     )
       throw new Error("Invalid robbery session references.");
