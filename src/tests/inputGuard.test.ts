@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  MAX_DROPPED_STALLS,
   SETTLE_MS,
   STALL_MS,
   droppedTaps,
@@ -100,6 +101,21 @@ describe("input guard", () => {
     offset = 0;
     vi.advanceTimersByTime(150);
     button.dispatchEvent(new Event("pointerdown"));
+    tap(button);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("never locks the player out of a page that stalls constantly", () => {
+    const { button, onClick } = setup();
+    run(200);
+    for (let i = 0; i < MAX_DROPPED_STALLS; i++) {
+      now += STALL_MS + 300;
+      tap(button);
+      run(500);
+    }
+    expect(onClick).not.toHaveBeenCalled();
+    // A fourth stall in a row: this tap goes through.
+    now += STALL_MS + 300;
     tap(button);
     expect(onClick).toHaveBeenCalledTimes(1);
   });
