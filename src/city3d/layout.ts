@@ -613,16 +613,29 @@ function grid() {
         open[j * nx + i] = 0;
   }
   const bridges = [...AVENUES_X.map((v) => ["x", v] as const), ...AVENUES_Z.map((v) => ["z", v] as const)];
-  for (let i = 0; i < nx; i++)
-    for (let j = 0; j < nz; j++) {
-      const x = x0 + (i + 0.5) * CELL,
-        z = z0 + (j + 0.5) * CELL;
-      if (distanceToPath(RIVER, x, z) > RIVER_WIDTH / 2 + 0.5) continue;
-      const onBridge = bridges.some(([axis, v]) =>
-        Math.abs((axis === "x" ? x : z) - v) < 2.5,
-      );
-      if (!onBridge) open[j * nx + i] = 0;
-    }
+  // Only cells near a river segment can be water: visiting just each
+  // segment's box keeps the first walk from stalling the phone (the full-board
+  // scan took ~0.6 s on a desktop).
+  const reach = RIVER_WIDTH / 2 + 0.5;
+  for (let s = 0; s < RIVER.length - 1; s++) {
+    const seg = [RIVER[s], RIVER[s + 1]];
+    const i0 = Math.max(0, Math.floor((Math.min(seg[0][0], seg[1][0]) - reach - x0) / CELL)),
+      i1 = Math.min(nx - 1, Math.ceil((Math.max(seg[0][0], seg[1][0]) + reach - x0) / CELL)),
+      j0 = Math.max(0, Math.floor((Math.min(seg[0][1], seg[1][1]) - reach - z0) / CELL)),
+      j1 = Math.min(nz - 1, Math.ceil((Math.max(seg[0][1], seg[1][1]) + reach - z0) / CELL));
+    for (let i = i0; i <= i1; i++)
+      for (let j = j0; j <= j1; j++) {
+        const k = j * nx + i;
+        if (!open[k]) continue;
+        const x = x0 + (i + 0.5) * CELL,
+          z = z0 + (j + 0.5) * CELL;
+        if (distanceToPath(seg, x, z) > reach) continue;
+        const onBridge = bridges.some(([axis, v]) =>
+          Math.abs((axis === "x" ? x : z) - v) < 2.5,
+        );
+        if (!onBridge) open[k] = 0;
+      }
+  }
   walkGrid = { x0, z0, nx, nz, open };
   return walkGrid;
 }

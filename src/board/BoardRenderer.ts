@@ -359,6 +359,7 @@ export class BoardRenderer {
   private placePickers: THREE.Mesh[] = [];
   private homePickers: THREE.Mesh[] = [];
   private homeSpots = new Map<string, THREE.Vector3>();
+  private homeSize = new Map<string, number>();
   private homeMarker: THREE.Mesh | null = null;
   private walls = new Map<string, WallSlot[]>();
   private roofs = new Map<string, V3[]>();
@@ -1330,6 +1331,7 @@ export class BoardRenderer {
       this.homeSpots.set(target, new THREE.Vector3(cx, CURB, cz));
       const w = lot.maxX - lot.minX,
         d = lot.maxZ - lot.minZ;
+      this.homeSize.set(target, Math.min(w, d) * 0.5);
       // Fronts face the street on the row's long side.
       const yaw = alongX ? 0 : Math.PI / 2;
       void loadModelPiece(`assets/models/${model}.glb`, this.lite).then(
@@ -1382,7 +1384,7 @@ export class BoardRenderer {
     }
     if (!this.homeMarker) {
       this.homeMarker = new THREE.Mesh(
-        new THREE.RingGeometry(1.7, 2.1, 32).rotateX(-Math.PI / 2),
+        new THREE.RingGeometry(0.86, 1, 40).rotateX(-Math.PI / 2),
         new THREE.MeshBasicMaterial({
           color: "#ffd27a",
           transparent: true,
@@ -1394,6 +1396,7 @@ export class BoardRenderer {
       this.scene.add(this.homeMarker);
     }
     this.homeMarker.position.set(at.x, CURB + 0.05, at.z);
+    this.homeMarker.scale.setScalar(this.homeSize.get(target!) ?? 2);
     this.homeMarker.visible = true;
   }
   /** Optional GLB replacement for a location (see LocationDef.model). */
