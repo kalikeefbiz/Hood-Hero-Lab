@@ -652,7 +652,7 @@ export class BoardRenderer {
     this.lampHeadMat.color.set(t.lamps ? "#ffd9a0" : "#8c8a84");
     this.renderer.toneMappingExposure = t.exposure;
     // Characters get a rim in the light's colour so they read when backlit.
-    const rim = { dusk: ["#ffc89a", 0.9], night: ["#9db8ff", 0.8], day: ["#fff4e0", 0.35] } as const;
+    const rim = { dusk: ["#ffc89a", 0.35], night: ["#9db8ff", 0.4], day: ["#fff4e0", 0.15] } as const;
     CHARACTER_RIM.color.value.set(rim[time][0]);
     CHARACTER_RIM.strength.value = rim[time][1];
     if (!this.lite) {

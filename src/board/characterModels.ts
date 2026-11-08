@@ -45,7 +45,7 @@ export type Motion = "stand" | string;
  */
 export const CHARACTER_RIM = {
   color: { value: new THREE.Color("#ffd2a8") },
-  strength: { value: 0.9 },
+  strength: { value: 0.35 },
 };
 function upgradeMaterial(m: THREE.MeshStandardMaterial) {
   if (m.userData.characterLook) return;
@@ -53,7 +53,7 @@ function upgradeMaterial(m: THREE.MeshStandardMaterial) {
   if (m.map) {
     m.emissiveMap = m.map;
     m.emissive = new THREE.Color("#ffffff");
-    m.emissiveIntensity = 0.16;
+    m.emissiveIntensity = 0.1;
   }
   m.roughness = 0.72;
   m.onBeforeCompile = (shader) => {
@@ -197,7 +197,12 @@ export async function spawnCharacter(
     mixer.update(0);
   };
   play("stand");
-  const idle = standingIdle(body, Math.random() * 10);
+  const tracked = new Set(
+    (t.clips.walk?.tracks ?? [])
+      .filter((k) => k.name.endsWith(".quaternion"))
+      .map((k) => k.name.split(".")[0]),
+  );
+  const idle = standingIdle(body, Math.random() * 10, tracked);
   let standing = true;
   return {
     root,
@@ -219,7 +224,11 @@ export async function spawnCharacter(
  * relaxed against the body and an occasional look around. Applied after the
  * mixer each frame, in world-space axes, so it works on any Meshy rig.
  */
-function standingIdle(body: THREE.Object3D, phase: number) {
+function standingIdle(
+  body: THREE.Object3D,
+  phase: number,
+  tracked: Set<string>,
+) {
   const bones: Record<string, THREE.Bone> = {};
   body.traverse((o) => {
     if ((o as THREE.Bone).isBone) bones[o.name] = o as THREE.Bone;
@@ -237,9 +246,15 @@ function standingIdle(body: THREE.Object3D, phase: number) {
     axis.copy(worldAxis).applyQuaternion(pq.invert()).normalize();
     b.quaternion.premultiply(q.setFromAxisAngle(axis, angle));
   };
+  // Bones the clip doesn't animate are never reset by the mixer: put them
+  // back to their pose each frame, or the offsets would pile up.
+  const rest = Object.entries(bones)
+    .filter(([name]) => !tracked.has(name))
+    .map(([, b]) => [b, b.quaternion.clone()] as const);
   let t = phase;
   return (dt: number) => {
     t += dt;
+    for (const [b, q0] of rest) b.quaternion.copy(q0);
     body.updateWorldMatrix(true, false);
     body.getWorldDirection(fwd);
     side.crossVectors(up, fwd).normalize();
