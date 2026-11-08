@@ -149,52 +149,59 @@ const TIMES: Record<
     signs: number;
     lamps: number;
     exposure: number;
+    /** Strength of the sky reflection on full-quality materials. */
+    env: number;
   }
 > = {
+  // Tuned at full quality on a desktop GPU (2026-11-07): cool shadows against
+  // warm light at dusk, readable moonlight at night, a clear blue day.
   dusk: {
-    top: "#2a2350",
-    horizon: "#f2925a",
-    sun: "#ffb27a",
+    top: "#1b2152",
+    horizon: "#ff9560",
+    sun: "#ffc28e",
     sunIntensity: 3.4,
     sunDir: [-0.72, 0.46, -0.52],
-    hemiSky: "#c39ac0",
-    hemiGround: "#5a4038",
-    hemi: 1.7,
-    fog: "#b07a78",
+    hemiSky: "#9aa6e8",
+    hemiGround: "#262838",
+    hemi: 1.35,
+    fog: "#6c6496",
     windows: 1,
     signs: 0.35,
-    lamps: 0.8,
-    exposure: 1.3,
+    lamps: 0.33,
+    exposure: 1.15,
+    env: 0.6,
   },
   night: {
-    top: "#05070f",
-    horizon: "#1f2848",
-    sun: "#9fb4e6",
-    sunIntensity: 0.9,
+    top: "#060a1c",
+    horizon: "#24305a",
+    sun: "#a9bdf0",
+    sunIntensity: 1.3,
     sunDir: [0.45, 0.6, -0.4],
-    hemiSky: "#4a5a8a",
-    hemiGround: "#16141c",
-    hemi: 0.9,
-    fog: "#1a2238",
+    hemiSky: "#5a6cb0",
+    hemiGround: "#1a1c2a",
+    hemi: 1.25,
+    fog: "#141c34",
     windows: 1.8,
     signs: 0.75,
-    lamps: 1,
-    exposure: 1.3,
+    lamps: 1.27,
+    exposure: 1.25,
+    env: 0.55,
   },
   day: {
-    top: "#5d8fcf",
-    horizon: "#dfe6ea",
-    sun: "#fff1dc",
-    sunIntensity: 3,
+    top: "#3f7fd0",
+    horizon: "#cfe0ee",
+    sun: "#fff0d6",
+    sunIntensity: 3.6,
     sunDir: [-0.4, 0.82, 0.35],
-    hemiSky: "#c3d8ef",
-    hemiGround: "#5c5a50",
+    hemiSky: "#bcd4f2",
+    hemiGround: "#5a564c",
     hemi: 1.6,
-    fog: "#c3ced6",
+    fog: "#c4d6e8",
     windows: 0.05,
     signs: 0,
     lamps: 0,
-    exposure: 1,
+    exposure: 1.15,
+    env: 0.95,
   },
 };
 
@@ -468,7 +475,8 @@ export class BoardRenderer {
     if (this.lite) dpr = 1;
     this.renderer.setPixelRatio(dpr);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    // Neutral keeps hues true; ACES pushed the whole city toward brown.
+    this.renderer.toneMapping = THREE.NeutralToneMapping;
     this.renderer.shadowMap.enabled = !this.lite;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
@@ -648,7 +656,7 @@ export class BoardRenderer {
       this.envTarget?.dispose();
       this.envTarget = this.pmrem.fromScene(envScene, 0.04);
       this.scene.environment = this.envTarget.texture;
-      this.scene.environmentIntensity = time === "night" ? 0.5 : 0.85;
+      this.scene.environmentIntensity = t.env;
     }
     this.shadowDirty = true;
     this.wake();
