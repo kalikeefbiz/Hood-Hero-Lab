@@ -197,12 +197,7 @@ export async function spawnCharacter(
     mixer.update(0);
   };
   play("stand");
-  const tracked = new Set(
-    (t.clips.walk?.tracks ?? [])
-      .filter((k) => k.name.endsWith(".quaternion"))
-      .map((k) => k.name.split(".")[0]),
-  );
-  const idle = standingIdle(body, Math.random() * 10, tracked);
+  const idle = standingIdle(body, Math.random() * 10);
   let standing = true;
   return {
     root,
@@ -210,10 +205,11 @@ export async function spawnCharacter(
     play: (motion) => {
       standing = motion === "stand";
       play(motion);
+      if (standing) idle.capture();
     },
     update: (dt) => {
       mixer.update(dt);
-      if (standing) idle(dt);
+      if (standing) idle.step(dt);
     },
   };
 }
@@ -224,11 +220,7 @@ export async function spawnCharacter(
  * relaxed against the body and an occasional look around. Applied after the
  * mixer each frame, in world-space axes, so it works on any Meshy rig.
  */
-function standingIdle(
-  body: THREE.Object3D,
-  phase: number,
-  tracked: Set<string>,
-) {
+function standingIdle(body: THREE.Object3D, phase: number) {
   const bones: Record<string, THREE.Bone> = {};
   body.traverse((o) => {
     if ((o as THREE.Bone).isBone) bones[o.name] = o as THREE.Bone;
@@ -246,15 +238,18 @@ function standingIdle(
     axis.copy(worldAxis).applyQuaternion(pq.invert()).normalize();
     b.quaternion.premultiply(q.setFromAxisAngle(axis, angle));
   };
-  // Bones the clip doesn't animate are never reset by the mixer: put them
-  // back to their pose each frame, or the offsets would pile up.
-  const rest = Object.entries(bones)
-    .filter(([name]) => !tracked.has(name))
-    .map(([, b]) => [b, b.quaternion.clone()] as const);
+  // A paused action doesn't re-apply its pose on update, so the idle keeps
+  // the standing pose itself and starts from it every frame; otherwise the
+  // offsets would pile up and tip the body over.
+  const moved = ["Hips", "Spine01", "Spine02", "Head", "LeftArm", "RightArm"]
+    .map((n) => bones[n])
+    .filter(Boolean);
+  const pose = moved.map((b) => b.quaternion.clone());
+  const capture = () => moved.forEach((b, i) => pose[i].copy(b.quaternion));
   let t = phase;
-  return (dt: number) => {
+  const step = (dt: number) => {
     t += dt;
-    for (const [b, q0] of rest) b.quaternion.copy(q0);
+    moved.forEach((b, i) => b.quaternion.copy(pose[i]));
     body.updateWorldMatrix(true, false);
     body.getWorldDirection(fwd);
     side.crossVectors(up, fwd).normalize();
@@ -266,4 +261,5 @@ function standingIdle(
     turn("LeftArm", fwd, -0.12 - 0.02 * breath);
     turn("RightArm", fwd, 0.12 + 0.02 * breath);
   };
+  return { step, capture };
 }
