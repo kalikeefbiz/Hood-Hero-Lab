@@ -592,9 +592,12 @@ describe("physical and transactional City sessions", () => {
 
 describe("focused progression balance and presentation adapter", () => {
   for (const days of [30, 60, 180, 365])
-    it(`${days}-day focused City simulation avoids instant mastery`, () => {
+    it(`${days}-day focused City simulation avoids instant mastery`, async () => {
       let s = ready(42);
       while (s.day <= days && !s.end) {
+        // Yield now and then: a minute-long synchronous loop starves the
+        // test worker's reporting channel and CI fails with an RPC timeout.
+        if (s.day % 10 === 0) await new Promise((r) => setTimeout(r, 0));
         // The strategy prioritizes paying real debts, selling held stock, then earning lawful fallback income.
         for (const scene of s.danger.scenes.filter(
           (scene) => scene.status === "open",
