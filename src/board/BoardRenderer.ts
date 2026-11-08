@@ -62,6 +62,7 @@ import {
   spawnCharacter,
   type CharacterInstance,
   type Motion,
+  CHARACTER_RIM,
 } from "./characterModels";
 import { DEFAULT_APPEARANCE, type Appearance } from "./presence";
 import {
@@ -650,6 +651,10 @@ export class BoardRenderer {
     this.lampPoolMat.opacity = 0.55 * t.lamps;
     this.lampHeadMat.color.set(t.lamps ? "#ffd9a0" : "#8c8a84");
     this.renderer.toneMappingExposure = t.exposure;
+    // Characters get a rim in the light's colour so they read when backlit.
+    const rim = { dusk: ["#ffc89a", 0.9], night: ["#9db8ff", 0.8], day: ["#fff4e0", 0.35] } as const;
+    CHARACTER_RIM.color.value.set(rim[time][0]);
+    CHARACTER_RIM.strength.value = rim[time][1];
     if (!this.lite) {
       const envScene = new THREE.Scene();
       envScene.add(this.sky.clone());

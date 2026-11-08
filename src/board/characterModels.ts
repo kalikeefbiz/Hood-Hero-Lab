@@ -38,6 +38,43 @@ export const CHARACTER_MODELS: Record<string, CharacterModel> = {
 
 export type Motion = "stand" | string;
 
+/**
+ * Characters are small and often backlit on the board, so their materials get
+ * a soft rim and a little self-light: they read against the street at any
+ * time of day. The renderer sets the rim colour with the lighting.
+ */
+export const CHARACTER_RIM = {
+  color: { value: new THREE.Color("#ffd2a8") },
+  strength: { value: 0.9 },
+};
+function upgradeMaterial(m: THREE.MeshStandardMaterial) {
+  if (m.userData.characterLook) return;
+  m.userData.characterLook = true;
+  if (m.map) {
+    m.emissiveMap = m.map;
+    m.emissive = new THREE.Color("#ffffff");
+    m.emissiveIntensity = 0.16;
+  }
+  m.roughness = 0.72;
+  m.onBeforeCompile = (shader) => {
+    shader.uniforms.rimColor = CHARACTER_RIM.color;
+    shader.uniforms.rimStrength = CHARACTER_RIM.strength;
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        "#include <common>",
+        "#include <common>\nuniform vec3 rimColor;\nuniform float rimStrength;",
+      )
+      .replace(
+        "#include <emissivemap_fragment>",
+        `#include <emissivemap_fragment>
+        float rimF = 1.0 - clamp(dot(normal, normalize(vViewPosition)), 0.0, 1.0);
+        totalEmissiveRadiance += rimColor * rimStrength * pow(rimF, 3.0);`,
+      );
+  };
+  m.customProgramCacheKey = () => "character-rim";
+  m.needsUpdate = true;
+}
+
 interface Template {
   scene: THREE.Group;
   clips: Record<string, THREE.AnimationClip>;
@@ -101,6 +138,9 @@ function loadTemplate(id: string): Promise<Template | null> {
           const m = o as THREE.Mesh;
           if (m.isMesh) {
             m.castShadow = true;
+            for (const mat of [m.material].flat())
+              if ((mat as THREE.MeshStandardMaterial).isMeshStandardMaterial)
+                upgradeMaterial(mat as THREE.MeshStandardMaterial);
             // Skinned bounds don't follow the pose; never cull a figure.
             m.frustumCulled = false;
           }
@@ -157,5 +197,58 @@ export async function spawnCharacter(
     mixer.update(0);
   };
   play("stand");
-  return { root, mixer, play, update: (dt) => mixer.update(dt) };
+  const idle = standingIdle(body, Math.random() * 10);
+  let standing = true;
+  return {
+    root,
+    mixer,
+    play: (motion) => {
+      standing = motion === "stand";
+      play(motion);
+    },
+    update: (dt) => {
+      mixer.update(dt);
+      if (standing) idle(dt);
+    },
+  };
+}
+
+/**
+ * There is no idle clip yet, so a standing character holds the walk's passing
+ * pose and layers small motions on top: breathing, a weight shift, arms
+ * relaxed against the body and an occasional look around. Applied after the
+ * mixer each frame, in world-space axes, so it works on any Meshy rig.
+ */
+function standingIdle(body: THREE.Object3D, phase: number) {
+  const bones: Record<string, THREE.Bone> = {};
+  body.traverse((o) => {
+    if ((o as THREE.Bone).isBone) bones[o.name] = o as THREE.Bone;
+  });
+  const q = new THREE.Quaternion(),
+    pq = new THREE.Quaternion(),
+    axis = new THREE.Vector3(),
+    fwd = new THREE.Vector3(),
+    side = new THREE.Vector3();
+  const up = new THREE.Vector3(0, 1, 0);
+  const turn = (name: string, worldAxis: THREE.Vector3, angle: number) => {
+    const b = bones[name];
+    if (!b?.parent) return;
+    b.parent.getWorldQuaternion(pq);
+    axis.copy(worldAxis).applyQuaternion(pq.invert()).normalize();
+    b.quaternion.premultiply(q.setFromAxisAngle(axis, angle));
+  };
+  let t = phase;
+  return (dt: number) => {
+    t += dt;
+    body.updateWorldMatrix(true, false);
+    body.getWorldDirection(fwd);
+    side.crossVectors(up, fwd).normalize();
+    const breath = Math.sin(t * 1.7);
+    turn("Hips", fwd, 0.035 * Math.sin(t * 0.45));
+    turn("Spine01", side, -0.025 * breath);
+    turn("Spine02", side, -0.015 * breath);
+    turn("Head", up, 0.22 * Math.sin(t * 0.33) * Math.max(0, Math.sin(t * 0.11)));
+    turn("LeftArm", fwd, -0.12 - 0.02 * breath);
+    turn("RightArm", fwd, 0.12 + 0.02 * breath);
+  };
 }
