@@ -1,0 +1,67 @@
+
+> syndicate@0.1.0 test:e2e
+> playwright test --config=/workspace/cloud-setup/baseline.playwright.config.ts tests/mobile.spec.ts --grep buyback resolves --workers=1 --reporter=list
+
+[WebServer] (node:8239) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:8252) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:8301) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium-mobile] › tests/mobile.spec.ts:85:1 › buyback resolves the incident and the ordinary loop remains playable (1.6m)
+
+
+  1) [chromium-mobile] › tests/mobile.spec.ts:85:1 › buyback resolves the incident and the ordinary loop remains playable 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('.action-card').filter({ has: getByRole('heading', { name: 'Pick up a gig', exact: true }) }).getByRole('button')
+        - locator resolved to <button disabled aria-describedby="gig-default-reason">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        146 × waiting for element to be visible, enabled and stable
+            - element is not enabled
+          - retrying click action
+            - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      32 |     .filter({ has: page.getByRole("heading", { name: title, exact: true }) })
+      33 |     .getByRole("button")
+    > 34 |     .click();
+         |      ^
+      35 | }
+      36 | async function noOverflow(page: import("@playwright/test").Page) {
+      37 |   expect(
+        at action (/tmp/hood-hero-lab-main-check/tests/mobile.spec.ts:34:6)
+        at /tmp/hood-hero-lab-main-check/tests/mobile.spec.ts:93:3
+
+    Error Context: ../../workspace/cloud-setup/baseline-test-results/mobile-buyback-resolves-th-c9430-inary-loop-remains-playable-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../workspace/cloud-setup/baseline-test-results/mobile-buyback-resolves-th-c9430-inary-loop-remains-playable-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../workspace/cloud-setup/baseline-test-results/mobile-buyback-resolves-th-c9430-inary-loop-remains-playable-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium-mobile] › tests/mobile.spec.ts:85:1 › buyback resolves the incident and the ordinary loop remains playable 
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice

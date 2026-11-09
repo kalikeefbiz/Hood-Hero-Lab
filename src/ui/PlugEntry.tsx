@@ -1,3 +1,4 @@
+import { playerText } from "../presentation/PlayerInformation";
 import { MERCHANDISE } from "../content/street";
 import type { GameState } from "../core/GameState";
 import { player } from "../core/GameState";
@@ -27,7 +28,7 @@ export function plugStatus(s: GameState, id: string) {
     supplierError(s, id, "cash"),
     supplierError(s, id, "consignment"),
   ];
-  return reasons.some((r) => !r) ? "Pack available" : (reasons[0] ?? "");
+  return reasons.some((r) => !r) ? "Pack available" : playerText(s, reasons[0]);
 }
 
 /**
@@ -87,8 +88,8 @@ export function PlugEntry({
       {connected &&
         !debt &&
         reasons.map((r) => (
-          <p className="disabled-reason" key={r}>
-            {r}
+          <p className="disabled-reason" key={playerText(s, r)}>
+            {playerText(s, r)}
           </p>
         ))}
     </div>

@@ -1,3 +1,4 @@
+import { playerText, playerReason, jobName } from "../presentation/PlayerInformation";
 import { CareerPlace, CareerPerson, CareerControls } from "./RobberyCareer";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { player, type GameState } from "../core/GameState";
@@ -71,7 +72,7 @@ export function TutorialObjective({
       {t.workEvent && !t.giftLot && !t.starterLot && (
         <p>
           {t.initialDecision === "promise"
-            ? "Flacco will approach on or after Day 3 when you are safely outside."
+            ? "Keep exploring the City and talk to people you meet."
             : "Meet Mega physically on Southside: six Pink Magic, $90 cash only."}
         </p>
       )}
@@ -88,7 +89,7 @@ export function LifePerson({
   change: (s: GameState) => void;
 }) {
   if (pabloError(s, id))
-    return <p className="disabled-reason">{pabloError(s, id)}</p>;
+    return <p className="disabled-reason">{playerReason(s, pabloError(s, id))}</p>;
   const here = atPerson(s, id);
   const talks = LIFE_TALKS.filter(
     (t) => t.person === id && t.when(s) && !s.streetLife?.scenes[t.key],
@@ -128,7 +129,7 @@ export function LifePerson({
             })
           }
         >
-          Talk · {t.key.replaceAll("-", " ")}
+          {t.label}
         </button>
       ))}
       {TRIO.includes(id) && (
@@ -139,7 +140,7 @@ export function LifePerson({
           >
             Ask for a Rio street introduction · 1 AP
           </button>
-          <p>{rioIntroductionError(s, id)}</p>
+          <p>{playerReason(s, rioIntroductionError(s, id))}</p>
         </>
       )}
       {id === "contact-angels" && (
@@ -154,7 +155,7 @@ export function LifePerson({
           >
             Agree and pay $12 territory tribute
           </button>
-          <p>{tributeError(s)}</p>
+          <p>{playerReason(s, tributeError(s))}</p>
         </>
       )}
       {(TRIO.includes(id) || id === "quanny") && (
@@ -165,14 +166,14 @@ export function LifePerson({
           >
             Ask about an optional robbery job
           </button>
-          <p>{robberyOfferError(s, id)}</p>
+          <p>{playerReason(s, robberyOfferError(s, id))}</p>
           <button
             disabled={!!equipmentContactError(s, id)}
             onClick={() => change(obtainContactEquipment(s, id))}
           >
             Ask contact for Law-19 · $75 · 1 AP
           </button>
-          <p>{equipmentContactError(s, id)}</p>
+          <p>{playerReason(s, equipmentContactError(s, id))}</p>
         </>
       )}
       {id === "mr-lewis" && !s.streetLife?.scenes.lewis && (
@@ -229,7 +230,7 @@ export function LifePlace({
               >
                 Buy 3 {d.name} · ${d.price * 3} · 1 AP
               </button>
-              {error && <p className="disabled-reason">{error}</p>}
+              {error && <p className="disabled-reason">{playerReason(s, error)}</p>}
             </section>
           );
         })}
@@ -239,11 +240,11 @@ export function LifePlace({
         return (
           <section key={j.id} aria-label="Robbery opportunity">
             <h3>
-              {d.name} · {j.id}
+              {jobName(s, j.id)}
             </h3>
             <p>
               From {s.characters[j.source].name} · expires day {j.expiresDay} ·
-              potential ${d.loot[0]}–${d.loot[1]} · failure can mean no loot,
+              contents unknown · failure can mean no loot,
               injury or arrest.
             </p>
             <p>
@@ -261,7 +262,7 @@ export function LifePlace({
             >
               Begin {d.name} session · 1 AP
             </button>
-            {error && <p className="disabled-reason">{error}</p>}
+            {error && <p className="disabled-reason">{playerReason(s, error)}</p>}
           </section>
         );
       })}
@@ -318,7 +319,7 @@ export function RobberyPlayback({
             ? "Robbery encounter"
             : `Beat ${a.cursor + 1}/3`}
       </strong>
-      <p role="status">{a.text}</p>
+      <p role="status">{playerText(s, a.text)}</p>
       {a.status === "ended" ? (
         <>
           <p>

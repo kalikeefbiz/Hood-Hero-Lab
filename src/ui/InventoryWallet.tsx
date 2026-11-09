@@ -1,3 +1,4 @@
+import { placeName, jobName, playerText } from "../presentation/PlayerInformation";
 import { PREPARATION } from "../systems/Robbery";
 import { MERCHANDISE } from "../content/street";
 import { quannyCollectionInstruction } from "../systems/QuannyState";
@@ -56,7 +57,7 @@ export function InventoryWallet({
         {Object.entries(PREPARATION).map(([id, d]) => (
           <p key={id}>
             {d.name}: {s.robberies?.items[id as keyof typeof PREPARATION] ?? 0}{" "}
-            · buy at {d.location}
+            · buy at {placeName(s, d.location)}
           </p>
         ))}
         <h4>Robbery opportunities</h4>
@@ -64,11 +65,10 @@ export function InventoryWallet({
           .filter((j) => j.status === "offered")
           .map((j) => (
             <p key={j.id}>
-              {j.kind} · {j.location} · expires day {j.expiresDay}. Visit the
+              {jobName(s, j.id)} · {placeName(s, j.location)} · expires day {j.expiresDay}. Visit the
               physical City target.
             </p>
           ))}
-        <p>Store and bank scores: future content, unavailable.</p>
         <details className="lot-records">
           <summary>
             Pink Magic lots · {held.length} open (on you, in safes or fronted)
@@ -144,7 +144,7 @@ export function InventoryWallet({
                 </p>
                 {a.collections?.map((c) => (
                   <p key={c.eventId}>
-                    Day {c.day} · {c.result} · notoriety {c.notoriety}
+                    Day {c.day} · {playerText(s, c.result)}
                   </p>
                 ))}
               </div>

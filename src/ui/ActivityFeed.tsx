@@ -1,4 +1,6 @@
-import type { GameState, GameEvent } from "../core/GameState";
+import { eventView } from "../presentation/PlayerInformation";
+import { playerText } from "../presentation/PlayerInformation";
+import type { GameState } from "../core/GameState";
 import { visibleEvents } from "../core/EventLog";
 import { themeStyle } from "./theme";
 export function ActivityFeed({
@@ -8,7 +10,7 @@ export function ActivityFeed({
   s: GameState;
   personal?: boolean;
 }) {
-  const visible = visibleEvents(s).filter(
+  const visible = visibleEvents(s).flatMap(e => { const view = eventView(s, e); return view ? [view] : []; }).filter(
     (e) => !personal || e.category !== "city",
   );
   const recent = new Set(
@@ -18,7 +20,7 @@ export function ActivityFeed({
       .map((e) => e.id),
   );
   const days = [...new Set(visible.map((e) => e.day))].reverse();
-  const describe = (e: GameEvent) =>
+  const describe = (e: NonNullable<ReturnType<typeof eventView>>) =>
     e.factionId ? s.factions[e.factionId].name : e.category.toUpperCase();
   return (
     <div className="timeline">
@@ -53,8 +55,8 @@ export function ActivityFeed({
                           : ""}
                     </b>
                   </small>
-                  {e.title && <h4>{e.title}</h4>}
-                  <p>{e.text}</p>
+                  {e.title && <h4>{playerText(s, e.title)}</h4>}
+                  <p>{playerText(s, e.text)}</p>
                 </div>
               </article>
             ))}
@@ -81,7 +83,7 @@ export function ActivityFeed({
                       data-faction={e.factionId}
                       style={e.factionId ? themeStyle(e.factionId) : undefined}
                     >
-                      <strong>{describe(e)}</strong> · {e.text}
+                      <strong>{describe(e)}</strong> · {playerText(s, e.text)}
                     </p>
                   ))}
               </details>

@@ -79,7 +79,7 @@ export function BoardHUD({
         aria-label={`Heat ${heatDescription(p.police)}`}
       >
         <small>Heat</small>
-        <strong>{Math.round(p.police)}</strong>
+        <strong>{heatDescription(p.police)}</strong>
       </span>
       <button className="board-hud-btn" onClick={save} aria-label="Save game">
         <Icon name="save" />

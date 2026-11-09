@@ -128,7 +128,7 @@ export function GameHUD({
         <Stat label="Stress" value={Math.round(p.stress)} icon="pulse" />
         <Stat
           label={`Heat · ${heatDescription(p.police)}`}
-          value={Math.round(p.police)}
+          value={heatDescription(p.police)}
           icon="heat"
           className="heat-resource"
         />

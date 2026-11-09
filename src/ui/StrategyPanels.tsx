@@ -1,3 +1,4 @@
+import { playerText, playerReason, latestPlayerEvent } from "../presentation/PlayerInformation";
 import { payArrears } from "../systems/Economy";
 import { useState } from "react";
 import { player, type GameState, type ZoneId } from "../core/GameState";
@@ -37,7 +38,7 @@ function useResult(onChange: Props["onChange"]) {
       else {
         finalizeEnding(result.state);
         onChange(result.state);
-        setMessage(result.state.events.at(-1)?.text ?? "Recorded.");
+        setMessage(latestPlayerEvent(result.state)?.text ?? "Recorded.");
       }
     },
   };
@@ -64,15 +65,9 @@ export function NeighborhoodStrategy({
         {t.controller
           ? `Recognized control since day ${t.controlSince}: ${s.factions[t.controller].name}.`
           : "No organization has established recognized dominance."}{" "}
-        {t.candidate &&
-          `${s.factions[t.candidate].name} is consolidating a challenge (${t.candidateDays}/${B.stabilizationDays} days).`}
       </p>
       <p className="muted">
-        Civilian climate {Math.round(s.zones[zone].support)}/100 · Lawful
-        economy {Math.round(t.lawfulEconomy)}/100.{" "}
-        {t.contested
-          ? "Rival pressure increases market risk and reduces local trade."
-          : "Local trade faces ordinary competition."}
+        {t.contested ? "Rival groups are competing for influence. Local trade feels unsettled." : "Local trade faces ordinary competition."}
       </p>
       {meaningful.map(([id, q]) => (
         <div
@@ -81,27 +76,8 @@ export function NeighborhoodStrategy({
           style={{ borderLeftColor: THEMES[id as keyof typeof THEMES].accent }}
         >
           <strong>{s.factions[id as keyof typeof s.factions].name}</strong>
-          <div
-            className="power-track"
-            role="meter"
-            aria-label={`${s.factions[id as keyof typeof s.factions].name} relative influence`}
-            aria-valuenow={Math.round(
-              dominanceScore(s, zone, id as keyof typeof s.factions),
-            )}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          >
-            <i
-              style={{
-                width: `${dominanceScore(s, zone, id as keyof typeof s.factions)}%`,
-                background: THEMES[id as keyof typeof THEMES].accent,
-              }}
-            />
-          </div>
           <small>
-            Presence {Math.round(q.presence)} · Economy {Math.round(q.economy)}{" "}
-            · Support {Math.round(q.support)} · Pressure{" "}
-            {Math.round(q.pressure)}
+            {q.presence < 35 ? "A local foothold" : q.presence < 65 ? "An established presence" : "A strong local presence"}
           </small>
         </div>
       ))}
@@ -139,24 +115,12 @@ export function NeighborhoodStrategy({
               >
                 {a.label} · ${a.cost} · 1 AP
               </button>
-              {error && <small>{error}</small>}
+              {error && <small>{playerText(s, error)}</small>}
             </div>
           );
         })}
       </details>
-      {r.message && <p role="status">{r.message}</p>}
-      <details>
-        <summary>Recent faction decisions</summary>
-        {Object.values(s.factions).map((f) => {
-          const plan = s.strategic.strategies[f.id],
-            last = plan.history.filter((h) => h.zone === zone).at(-1);
-          return last ? (
-            <p key={f.id}>
-              Day {last.day} · {f.name}: {last.kind} · ${last.cost} committed.
-            </p>
-          ) : null;
-        })}
-      </details>
+      {r.message && <p role="status">{playerText(s, r.message)}</p>}
     </section>
   );
 }
@@ -191,7 +155,7 @@ export function OrganizationPanel({ s, onChange }: Props) {
               <h4>Next: {next.stage.name}</h4>
               <ul>
                 {next.missing.map((m) => (
-                  <li key={m}>{m}</li>
+                  <li key={playerText(s, m)}>{playerText(s, m)}</li>
                 ))}
               </ul>
               <button
@@ -220,15 +184,15 @@ export function OrganizationPanel({ s, onChange }: Props) {
       <details>
         <summary>Successor eligibility</summary>
         <p>
-          Requires council authority, shared affiliation, 60 trust, 60 loyalty
-          and availability.
+          Requires council authority, shared affiliation, availability, and
+          someone willing to take on the responsibility.
         </p>
         {s.crew.members.map((id) => {
           const error = successorError(s, id);
           return (
             <div className="strategy-action" key={id}>
               <strong>{s.characters[id].name}</strong>
-              <small>{error ?? "Eligible to accept succession"}</small>
+              <small>{playerReason(s, error) ?? "Ready to discuss succession"}</small>
               <button
                 disabled={
                   !!error || s.ap < 1 || !!s.end || p.status !== "active"
@@ -241,7 +205,7 @@ export function OrganizationPanel({ s, onChange }: Props) {
           );
         })}
       </details>
-      {r.message && <p role="status">{r.message}</p>}
+      {r.message && <p role="status">{playerText(s, r.message)}</p>}
     </section>
   );
 }
@@ -303,7 +267,7 @@ export function BusinessPanel({ s, onChange }: Props) {
                           : "Close"}{" "}
                     {d.name} · 1 AP
                   </button>
-                  {error && <small>{error}</small>}
+                  {error && <small>{playerText(s, error)}</small>}
                 </div>
               );
             })}
@@ -324,7 +288,7 @@ export function BusinessPanel({ s, onChange }: Props) {
           </article>
         );
       })}
-      {r.message && <p role="status">{r.message}</p>}
+      {r.message && <p role="status">{playerText(s, r.message)}</p>}
     </section>
   );
 }
@@ -357,7 +321,7 @@ export function RetirementPanel({ s, onChange }: Props) {
       </p>
       <ul>
         {v.missing.map((m) => (
-          <li key={m}>{m}</li>
+          <li key={playerText(s, m)}>{playerText(s, m)}</li>
         ))}
       </ul>
       {!v.missing.length && <p>You qualify. Retirement is your decision.</p>}
@@ -367,7 +331,7 @@ export function RetirementPanel({ s, onChange }: Props) {
       >
         Retire voluntarily
       </button>
-      {r.message && <p role="status">{r.message}</p>}
+      {r.message && <p role="status">{playerText(s, r.message)}</p>}
     </section>
   );
 }

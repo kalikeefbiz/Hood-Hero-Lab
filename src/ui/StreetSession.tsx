@@ -1,3 +1,4 @@
+import { marketView, playerText, playerReason } from "../presentation/PlayerInformation";
 import { hospitalStay } from "../systems/Danger";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { player, type GameState } from "../core/GameState";
@@ -35,10 +36,7 @@ export function StreetSessionStart({
         {unitPrice(s, l.zone)} per unit before rank margin.
       </p>
       <p>
-        Demand {s.street.markets[l.zone].demand} · competition{" "}
-        {s.street.markets[l.zone].competition} · pressure{" "}
-        {Math.round(s.street.markets[l.zone].pressure)} ·{" "}
-        {assessRisk(s, location).level}
+        {marketView(s, l.zone)} · {assessRisk(s, location).level}
       </p>
       <label>
         Stock lot
@@ -52,7 +50,7 @@ export function StreetSessionStart({
             .filter((l) => l.owner === s.playerId && l.remaining > 0)
             .map((l) => (
               <option key={l.id} value={l.id}>
-                {l.id} · {s.characters[l.supplier].name} · {l.remaining} held ·
+                Received day {l.acquiredDay} · {s.characters[l.supplier].name} · {l.remaining} held ·
                 ${l.owed} owed · day {l.dueDay}
               </option>
             ))}
@@ -64,7 +62,7 @@ export function StreetSessionStart({
           .reduce((n, l) => n + l.remaining, 0)}{" "}
         total units across your lots.
       </p>
-      <p>4–6 visitors · about 30–45 seconds · no guaranteed sales.</p>
+      <p>Spend some time on the block · about 30–45 seconds · visitors and sales are uncertain.</p>
       <button
         disabled={busy || !!reason}
         onClick={() => {
@@ -78,7 +76,7 @@ export function StreetSessionStart({
       >
         Start trapping — 1 AP
       </button>
-      {reason && <p className="disabled-reason">{reason}</p>}
+      {reason && <p className="disabled-reason">{playerReason(s, reason)}</p>}
     </section>
   );
 }
@@ -134,13 +132,13 @@ export function StreetSessionPlayback({
         {locationById(a.location)?.name} ·{" "}
         {a.status === "ended"
           ? "Session ended"
-          : `Visitor ${a.cursor + 1}/${a.beats.length}`}
+          : `On the block · ${a.cursor} visitors met`}
       </strong>
-      <p role="status">{a.lastText}</p>
+      <p role="status">{playerText(s, a.lastText)}</p>
       <p>
         {a.totals.sold} sold · {a.totals.lost} lost · $
         {a.totals.gross - a.totals.loss} cash · +
-        {(a.totals.xp / 100).toFixed(2)} XP · +{a.totals.heat.toFixed(1)} heat
+        {(a.totals.xp / 100).toFixed(2)} XP · police attention may rise
       </p>
       <details>
         <summary>Stock, obligations and AP</summary>
@@ -154,7 +152,7 @@ export function StreetSessionPlayback({
       </details>
       {a.status === "ended" ? (
         <>
-          <p>{a.reason}</p>
+          <p>{playerText(s, a.reason)}</p>
           <button
             onClick={() =>
               change((cur) =>
