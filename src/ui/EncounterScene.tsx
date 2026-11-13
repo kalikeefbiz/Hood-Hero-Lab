@@ -96,7 +96,9 @@ export function EncounterScene({
                 <p className="dialogue">{playerText(s, resultEvents.at(-1)?.text)}</p>
               ) : null
             ) : (
-              <p className="dialogue">“{playerText(s, d.dialogue(s, e))}”</p>
+              <p className="dialogue">{["flacco-six", "trio-aftermath", "street-reaction"].includes(d.id)
+                ? playerText(s, d.dialogue(s, e))
+                : `“${playerText(s, d.dialogue(s, e))}”`}</p>
             )}
             {source && !quannyOutcome && (
               <p className="encounter-fact">
@@ -171,7 +173,7 @@ export function EncounterScene({
         {historical
           ? "A recorded outcome. Viewing it changes no relationships or obligations."
           : d.id === "workplace"
-            ? "Shift wages and attendance are recorded. Closing defers this choice; ending the day applies the Skip scene outcome."
+            ? `Shift wages and attendance are recorded. Closing leaves this decision pending. ${source?.title === "Difficult shift" ? "Ending the day flags the count for the next shift, with the same reliability and respect consequences." : "Ending the day passes on the task; regular pay stays unchanged."}`
             : "Closing makes no new promise. Unfinished conversations can be resumed from City."}
       </p>
     </section>

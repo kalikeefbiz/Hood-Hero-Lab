@@ -13,6 +13,7 @@ import { deriveBoardView } from "../board/viewModel";
 import { deserialize, serialize } from "../persistence/SaveSystem";
 import {
   currentEncounter,
+  encounterDefinition,
   dismissEncounter,
   respondEncounter,
   syncEncounters,
@@ -112,7 +113,8 @@ describe("contextual street life", () => {
     expose(s, "nawf.deli", "linger");
     syncEncounters(s);
     expect(streetConversation(s)?.motive).toBe("history");
-    expect(sceneDialogue(s, streetConversation(s)!)).toMatch(/disrespect/);
+    expect(sceneDialogue(s, streetConversation(s)!)).toContain("talk it through");
+    expect(encounterDefinition(currentEncounter(s)!).responses(s, currentEncounter(s)!)[0].detail).toMatch(/disrespect/i);
     rng.mockReturnValue(0.01);
     s = respondEncounter(s, currentEncounter(s)!.id, "apologize").state;
     expect(s.danger.conflicts[0].state).toBe("settled");

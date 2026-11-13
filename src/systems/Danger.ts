@@ -347,11 +347,17 @@ export function sceneDialogue(s: GameState, scene: StreetScene) {
       : "I remember you. Got any business to discuss?";
   switch (scene.motive) {
     case "history":
-      return `Last time between us — ${c?.cause.toLowerCase()}. We never really talked that through. What are you saying now?`;
+      return c?.state === "settled"
+        ? "We talked things through. What brings you back?"
+        : "There’s still something between us. Are we going to talk it through?";
     case "war":
-      return `I've heard who you're running with. You know our sets are at war. Why are you here?`;
+      return warRecognized(s, s.characters[scene.npc])
+        ? "I’ve heard who you’re running with. You know our sets are at war. Why are you here?"
+        : "What brings you around here?";
     case "debt":
-      return `You still owe me on ${s.street.agreements.filter(a=>a.debtor===s.playerId && a.supplier===scene.npc && a.balance>0).map(a=>`${a.id}: $${a.balance}, due day ${a.dueDay}`).join('; ')}. Each agreement is separate. Come talk payments; every dollar counts.`;
+      return s.street.agreements.some(a => a.debtor === s.playerId && a.supplier === scene.npc && a.balance > 0)
+        ? "You still owe me. Come talk payments. I haven’t forgotten what we agreed."
+        : "There’s no balance left between us. What brings you by?";
     case "corner":
       return `I saw you working this neighborhood. People live here too. Are you going to keep things quiet around here?`;
     case "family":

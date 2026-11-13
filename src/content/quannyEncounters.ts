@@ -84,7 +84,12 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
     }
     if (q.business === "new")
       return [
-        response("explain", "Explain your actual membership"),
+        response(
+          "explain",
+          p.affiliation
+            ? "Explain your actual membership"
+            : "Tell him you’re unaffiliated",
+        ),
         response("decline-details", "Keep the details to yourself"),
       ];
     const a = receivable(s, "quanny");
@@ -174,11 +179,24 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
           "Creates lasting conflict memory",
         ),
       );
-    responses.push(response("leave", "Leave it unresolved"));
+    responses.push(
+      response(
+        "leave",
+        q.business === "blocked" || later
+          ? "Leave it unresolved"
+          : "Catch you later.",
+      ),
+    );
     for (const r of responses)
       if (["rob", "retaliate", "fight", "disrespect"].includes(r.id)) {
         r.detail = `1 AP · ${r.detail}`;
-        r.requirement = (state) => state.ap < 1 ? "Requires 1 AP." : r.id === "retaliate" && skillRank(state.characters[state.playerId], "combat") < 2 ? "Requires story Combat certification — not yet available in the game." : null;
+        r.requirement = (state) =>
+          state.ap < 1
+            ? "Requires 1 AP."
+            : r.id === "retaliate" &&
+                skillRank(state.characters[state.playerId], "combat") < 2
+              ? "Requires story Combat certification — not yet available in the game."
+              : null;
       }
     return responses;
   },

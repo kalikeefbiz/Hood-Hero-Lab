@@ -111,7 +111,7 @@ test("Actions separate Streets, Honest and Connects; completed reach-out returns
   await expect(
     modal.getByRole("button", { name: /Accept consignment/ }),
   ).toBeDisabled();
-  await modal.getByRole("button", { name: "Decline. No arrangement." }).click();
+  await modal.getByRole("button", { name: "Leave without a new arrangement." }).click();
   await expect(
     page.getByRole("button", { name: "Streets", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");

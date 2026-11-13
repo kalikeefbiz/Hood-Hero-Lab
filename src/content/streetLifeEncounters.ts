@@ -29,16 +29,24 @@ export const FLACCO_GIFT: EncounterDefinition = {
     s: import("../core/GameState").GameState,
     e: import("../core/GameState").EncounterInstance,
   ) => !["closed", "acknowledged"].includes(e.status),
-  dialogue: () =>
-    "Flacco catches you outside: “You know I got you, right? I heard you gave Cuz your word. Six Pink Magic. Don’t ask where I got it. Just use that to help Cuz, then come holla at me.” Free, no debt. Honest-work introduction still comes first.",
-  responses: () => [
+  dialogue: (s) =>
+    s.incidents["the-chains"]?.status !== "active"
+      ? "Flacco catches you outside: “Six Pink Magic. Don’t ask where I got it. That’s for you, no debt. Come holla at me.”"
+      : "Flacco catches you outside: “You know I got you, right? I heard you gave Cuz your word. Six Pink Magic. Don’t ask where I got it. Just use that to help Cuz, then come holla at me.”",
+  responses: (s) => [
     {
       id: "receive",
       label: "Take Flacco’s six Pink Magic",
+      detail:
+        `Gift: no payment or debt.${s.streetLife?.workEvent ? "" : " Complete the honest-work introduction before the trapping lesson."}`,
       effect: { type: "life", choice: "gift" },
       requirement: (s) =>
         safeStory(s)
-          ? gainError(s, s.playerId, gain("nightgoods", 6, "gift", "pending-lot"))
+          ? gainError(
+              s,
+              s.playerId,
+              gain("nightgoods", 6, "gift", "pending-lot"),
+            )
           : "Flacco will wait until you are safely back in the City.",
     },
   ],
