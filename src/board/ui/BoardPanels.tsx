@@ -38,6 +38,7 @@ export const blockLabel = (id: string) => {
 /** Breadcrumb, lenses and time of day, floating over the city. */
 export function BoardControls({
   s,
+  busy = false,
   endDay,
   focus,
   setFocus,
@@ -47,6 +48,7 @@ export function BoardControls({
   setTime,
 }: {
   s: GameState;
+  busy?: boolean;
   endDay: () => void;
   focus: Focus;
   setFocus: (f: Focus) => void;
@@ -104,7 +106,7 @@ export function BoardControls({
         <button
           className="advance board-end-day"
           onClick={endDay}
-          disabled={!!s.end}
+          disabled={!!s.end || busy}
           aria-label="End day"
         >
           <span className="advance-label">End day</span>{" "}

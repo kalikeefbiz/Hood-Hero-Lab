@@ -209,6 +209,10 @@ export function App() {
   // The details sidebar can be tucked away to see the whole board.
   const [panelOpen, setPanelOpen] = useState(true);
   const [busy, setBusy] = useState(false);
+  // City commands finish after an animated walk. Never resolve them against
+  // the render that started the walk: AP, encounters or the loaded save may change.
+  const currentState = useRef(s);
+  currentState.current = s;
   useEffect(() => {
     if (s?.activeRobbery && s.activeRobbery.status !== "ended")
       setPanelOpen(false);
@@ -350,6 +354,7 @@ export function App() {
       }
   }
   function act(a: Action, at?: string) {
+    const s = currentState.current;
     if (!s) return;
     const result = at ? performActionAt(s, a, at) : performAction(s, a);
     if (result.error) {
@@ -647,7 +652,7 @@ export function App() {
     />
   );
   function endDay() {
-    if (!s) return;
+    if (!s || busy) return;
     const warning = absenceWarning(s);
     if (warning && !window.confirm(warning + " End day anyway?")) return;
     setActionFeedback(null);
@@ -858,6 +863,7 @@ export function App() {
           {screen === "City" && (
             <BoardControls
               s={s}
+              busy={busy}
               endDay={endDay}
               focus={board}
               setFocus={focusBoard}
@@ -1248,7 +1254,7 @@ export function App() {
               <button
                 className="advance"
                 onClick={endDay}
-                disabled={!!s.end}
+                disabled={!!s.end || busy}
                 aria-label="End day"
               >
                 <span className="advance-label">End day</span>{" "}
