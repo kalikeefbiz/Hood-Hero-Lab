@@ -174,11 +174,13 @@ export function TransferPanel({
   b,
   change,
   note,
+  presentReason,
 }: {
   a: { label: string; inv: Inventory; type: Container; verb: TransferVerb; equipped?: string | null };
   b: { label: string; inv: Inventory; type: Container; verb: TransferVerb; equipped?: string | null };
   change: (s: GameState) => void;
   note?: ReactNode;
+  presentReason: (reason: string | null) => string;
 }) {
   const [pick, setPick] = useState<{ side: "a" | "b"; id: string } | null>(null);
   const [qty, setQty] = useState(1);
@@ -235,7 +237,7 @@ export function TransferPanel({
           >
             {from.verb.label} {q}
           </button>
-          {(reason || error) && <p className="disabled-reason">{reason ?? error}</p>}
+          {(reason || error) && <p className="disabled-reason">{presentReason(reason ?? error)}</p>}
         </div>
       )}
     </div>

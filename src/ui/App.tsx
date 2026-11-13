@@ -1,3 +1,4 @@
+import { playerText, playerReason, relationshipView, latestPlayerEvent } from "../presentation/PlayerInformation";
 import { MemberInventory, ResidencePanel, SelfCarryCard, MemberGear } from "./inventory/InventoryPanels";
 import { ITEMS } from "../content/economy";
 import { TutorialObjective, RobberyPlayback } from "./StreetLife";
@@ -140,6 +141,13 @@ function Meter({
   value: number;
   description: string;
 }) {
+  const contextual = /trust|Police|Notoriety|Rival/i.test(label);
+  if (contextual)
+    return (
+      <div className="meter" aria-label={`${label}: ${description}`}>
+        <div><span>{label}</span><strong>{description}</strong></div>
+      </div>
+    );
   return (
     <div className="meter">
       <div>
@@ -419,15 +427,15 @@ export function App() {
       const actionResult =
         result.state.events
           .slice(s.events.length)
-          .find((e) => e.category === "money") ??
-        result.state.events.slice(s.events.length).at(-1);
+          .find((e) => e.category === "money" && e.observedBy.includes(s.playerId)) ??
+        result.state.events.slice(s.events.length).filter(e => e.observedBy.includes(s.playerId)).at(-1);
       const dangerResponse = sourceEncounter.definitionId === "living-danger";
       const quannyResponse = sourceEncounter.definitionId === "quanny";
       const lifeResponse = ["flacco-six", "trio-aftermath"].includes(
         sourceEncounter.definitionId,
       );
       const reply = lifeResponse
-        ? (result.state.events.slice(s.events.length).at(-1)?.text ??
+        ? (latestPlayerEvent(result.state, s.events.length)?.text ??
           "Your encounter is recorded.")
         : quannyResponse
           ? (result.state.events
@@ -441,12 +449,12 @@ export function App() {
             : actionResponse
               ? (actionResult?.text ?? "Action completed.")
               : streetResponse
-                ? (result.state.events.slice(s.events.length).at(-1)?.text ??
+                ? (latestPlayerEvent(result.state, s.events.length)?.text ??
                   (response === "terms"
                     ? "Supplier terms clarified; no goods or debt accepted."
                     : "Supplier conversation concluded."))
                 : crewResponse
-                  ? (result.state.events.slice(s.events.length).at(-1)?.text ??
+                  ? (latestPlayerEvent(result.state, s.events.length)?.text ??
                     (response === "details"
                       ? "They shared more about their plans."
                       : "Conversation concluded."))
@@ -460,7 +468,7 @@ export function App() {
                           ? "Outcome acknowledged. The city moves on; the history remains."
                           : s.encounters.find((e) => e.id === id)
                                 ?.definitionId === "workplace"
-                            ? (result.state.events.at(-1)?.text ??
+                            ? (latestPlayerEvent(result.state, s.events.length)?.text ??
                               "Workplace choice recorded.")
                             : "Cuzzo explains what happened.";
       const finished = result.state.encounters.find((e) => e.id === id);
@@ -532,7 +540,7 @@ export function App() {
       role={actionFeedback ? undefined : "status"}
       aria-live={actionFeedback ? "off" : "polite"}
     >
-      {notice || "A persistent city. Every day leaves a mark."}
+      {s ? playerText(s, notice || "A persistent city. Every day leaves a mark.") : (notice || "A persistent city. Every day leaves a mark.")}
     </div>
   );
   if (!s)
@@ -709,11 +717,11 @@ export function App() {
               ? "Your run ended: arrested"
               : s.end === "killed"
                 ? "Your run ended: killed"
-                : `Victory: ${s.end}`}
+                : s.end === "legitimate-exit" ? "Victory: Legitimate Exit" : "Victory: Underlord"}
           </h3>
           <p>
             {s.strategic.ending
-              ? s.events.find((e) => e.id === s.strategic.ending?.eventId)?.text
+              ? playerText(s, s.events.find((e) => e.id === s.strategic.ending?.eventId && e.observedBy.includes(s.playerId))?.text)
               : ""}{" "}
             Your history remains available to inspect. Start a new life from the
             game menu below. Manual Load still restores your chosen checkpoint,
@@ -952,7 +960,7 @@ export function App() {
         {actionFeedback && (
           <div className="action-feedback" role="status" aria-live="polite">
             <small>YOUR MOVE</small>
-            <p>{actionFeedback}</p>
+            <p>{s ? playerText(s, actionFeedback) : actionFeedback}</p>
           </div>
         )}
         {screen === "City" && dayTransition !== null && (
@@ -1431,29 +1439,14 @@ export function App() {
                     {person.status === "active"
                       ? person.availableDay > s.day
                         ? "Currently committed elsewhere."
-                        : `${accessStatus(s, p.id, person.id)}${contactError(s, p.id, person.id) ? " · " + contactError(s, p.id, person.id) : " · Available to contact"}`
+                        : `${accessStatus(s, p.id, person.id)}${contactError(s, p.id, person.id) ? " · " + playerReason(s, contactError(s, p.id, person.id)) : " · Available to contact"}`
                       : "Currently " + person.status + "."}
                   </p>
                   {p.connections.includes(person.id) && (
                     <>
-                      <Meter
-                        label="Their trust in you"
-                        value={person.relationships[p.id]?.trust ?? 0}
-                        description={band(
-                          person.relationships[p.id]?.trust ?? 0,
-                          ["Wary", "Acquainted", "Trusting", "Close"],
-                        )}
-                      />
-                      <Meter
-                        label="Your trust in them"
-                        value={p.relationships[person.id]?.trust ?? 0}
-                        description={band(
-                          p.relationships[person.id]?.trust ?? 0,
-                          ["Wary", "Acquainted", "Trusting", "Close"],
-                        )}
-                      />
+                      <p className="relationship-impression">{relationshipView(s, person.id)}</p>
                       {s.crew.members.includes(person.id) && (
-                        <SkillsView character={person} />
+                        <p>{knownCapabilities(person)}</p>
                       )}
                     </>
                   )}
@@ -1472,7 +1465,7 @@ export function App() {
                     .map((m, i) => (
                       <p className="memory" key={i}>
                         <small>DAY {m.day}</small>
-                        {m.meaning}
+                        {playerText(s, m.meaning)}
                       </p>
                     ))}
                   {!p.memories.some((m) => m.about === person.id) && (
@@ -1488,7 +1481,7 @@ export function App() {
                     .map((e) => (
                       <p className="memory" key={e.id}>
                         <small>DAY {e.day}</small>
-                        {e.text}
+                        {playerText(s, e.text)}
                       </p>
                     ))}
                 </Panel>
@@ -1546,11 +1539,7 @@ export function App() {
                           </div>
                         </div>
                         <p>{c.description}</p>
-                        <Meter
-                          label="Their trust in you"
-                          value={c.relationships[p.id]?.trust ?? 0}
-                          description={`${Math.round(c.relationships[p.id]?.trust ?? 0)} / 100`}
-                        />
+                        <p className="relationship-impression">{relationshipView(s, id)}</p>
                         <p className="muted">{knownCapabilities(c)}</p>
                         <MemberGear s={s} id={id} />
                         <p>
@@ -1565,7 +1554,7 @@ export function App() {
                         </button>
                         {(["remove"] as ActionType[]).map((type) => {
                           const a: Action = { type, actor: p.id, target: id },
-                            reason = validateAction(s, a);
+                            reason = playerReason(s, validateAction(s, a));
                           return (
                             <button
                               className="secondary"
@@ -1625,7 +1614,7 @@ export function App() {
                     .reverse()
                     .map((a) => (
                       <p className="muted" key={a.id}>
-                        {a.outcome}
+                        {playerText(s, a.outcome)}
                       </p>
                     ))}
                   {!s.assignments.length && !s.crewOffers.length && (
@@ -1637,8 +1626,8 @@ export function App() {
                 </Panel>
                 <h3>People you could ask</h3>
                 <p className="muted">
-                  Available people need 42 trust, compatible loyalties, and an
-                  open place.
+                  You need an open place in your Set. Get to know people and
+                  ask whether they are willing to join.
                 </p>
                 <div className="recruit-list">
                   {p.known
@@ -1655,15 +1644,14 @@ export function App() {
                           actor: p.id,
                           target: id,
                         },
-                        reason = validateAction(s, a);
+                        reason = playerReason(s, validateAction(s, a));
                       return (
                         <div key={id} className="recruit-row">
                           <Portrait c={c} />
                           <span className="recruit-info">
                             <strong>{c.name}</strong>
                             <small>
-                              Trust{" "}
-                              {Math.round(c.relationships[p.id]?.trust ?? 0)} ·{" "}
+                              {relationshipView(s, id)} ·{" "}
                               {c.affiliation
                                 ? s.factions[c.affiliation].name
                                 : "Civilian"}
@@ -1772,7 +1760,7 @@ export function App() {
                     .map((entry, i) => (
                       <div className="ledger" key={i}>
                         <span>
-                          <strong>{entry.reason}</strong>
+                          <strong>{playerText(s, entry.reason)}</strong>
                           <small>
                             DAY {entry.day} · {entry.provenance.toUpperCase()}
                           </small>
@@ -1812,7 +1800,7 @@ export function App() {
                         <small>
                           DAY {e.day} / {e.category.toUpperCase()}
                         </small>
-                        <p>{e.text}</p>
+                        <p>{playerText(s, e.text)}</p>
                       </div>
                     ))}
                 </Panel>
@@ -1852,7 +1840,7 @@ export function App() {
                             )
                             .map((e) => (
                               <p key={e.id}>
-                                <small>DAY {e.day}</small> · {e.text}
+                                <small>DAY {e.day}</small> · {playerText(s, e.text)}
                               </p>
                             ))}
                         </details>
@@ -1868,9 +1856,9 @@ export function App() {
                     .reverse()
                     .map((e) => (
                       <article key={e.id}>
-                        <h3>{e.title ?? "Important development"}</h3>
+                        <h3>{playerText(s, e.title) || "Important development"}</h3>
                         <p>
-                          DAY {e.day} · {e.text}
+                          DAY {e.day} · {playerText(s, e.text)}
                         </p>
                         {s.encounters.some((x) => x.sourceEventId === e.id) && (
                           <button
@@ -1927,7 +1915,7 @@ export function App() {
                 device.
               </p>
               <p>
-                Version 0.1 · Seed state {s.rng} · No maximum campaign length.
+                Version 0.1 · No maximum campaign length.
               </p>
               <button
                 className="secondary"

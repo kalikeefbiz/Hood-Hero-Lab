@@ -1,3 +1,4 @@
+import { robberyPlaceView, robberyDiscoveryView, playerText, jobName } from "../presentation/PlayerInformation";
 /**
  * Robbery presentation over RobberyCareer's rules (GOAL 013). Everything is
  * read from, or sent to, the career API: no rolls, prices or awards here.
@@ -10,9 +11,8 @@ import {
   ROBBERY_BALANCE as B,
   type CareerKind,
 } from "../content/robberyCareer";
-import { ITEM_DEFINITIONS as D, type PhysicalItemId } from "../content/inventory";
+import { ITEM_DEFINITIONS as D } from "../content/inventory";
 import {
-  careerOpportunities,
   offerTarget,
   offerCareerLead,
   inviteRobbery,
@@ -40,7 +40,7 @@ const KIND: Record<CareerKind, string> = {
   "strong-arm": "Street",
 };
 const nameOf = (s: GameState, id: string) =>
-  s.characters[id]?.alias ?? s.characters[id]?.name ?? id;
+  s.characters[id]?.alias ?? s.characters[id]?.name ?? "someone";
 
 function useRun(change: (s: GameState) => void) {
   const [error, setError] = useState("");
@@ -48,10 +48,10 @@ function useRun(change: (s: GameState) => void) {
     typeof r === "string" ? setError(r) : (setError(""), change(r));
   return { error, run };
 }
-const Alert = ({ error }: { error: string }) =>
+const Alert = ({ error, s }: { error: string; s: GameState }) =>
   error ? (
     <p className="disabled-reason" role="alert">
-      {error}
+      {playerText(s, error)}
     </p>
   ) : null;
 
@@ -66,20 +66,6 @@ function Risk({ risk }: { risk: number }) {
   );
 }
 
-function Pool({ pool }: { pool: PhysicalItemId[] }) {
-  if (!pool.length) return null;
-  return (
-    <div className="target-pool" aria-label="Might hold">
-      {pool.map((id) => (
-        <span key={id} className="pool-item">
-          <ItemArt itemId={id} />
-          <small>{D[id].name}</small>
-        </span>
-      ))}
-    </div>
-  );
-}
-
 /** What a place offers: its targets, and the pawn counter at the Reservoir. */
 export function CareerPlace({
   s,
@@ -88,7 +74,7 @@ export function CareerPlace({
   focus,
 }: Props & { location: string; focus?: string | null }) {
   const { error, run } = useRun(change);
-  const targets = careerOpportunities(s, location);
+  const view = robberyPlaceView(s, location), targets = view.targets;
   const root = useRef<HTMLElement>(null);
   // A house tapped on the board opens its own card.
   useEffect(() => {
@@ -100,45 +86,38 @@ export function CareerPlace({
   return (
     <section ref={root} className="robbery-place" aria-label="Robbery career">
       {targets.length > 0 && <p className="eyebrow">Opportunities here</p>}
+      {view.possibilities.length > 0 && <details className="city-hint"><summary>Possible finds around here</summary>{view.possibilities.map(text => <p key={text}>{text}</p>)}</details>}
       {targets.map((t) => {
-        const held = s.robberies?.jobs.find(
-          (j) => j.targetId === t.id && j.status === "offered" && j.expiresDay >= s.day,
-        );
-        const hot = !!t.cooldown && s.day < t.cooldown.nextDay;
+        const held = t.expiresDay !== undefined;
+        const hot = t.unsettled;
         return (
           <article
-            key={t.id}
-            className={`target-card kind-${t.kind}${hot ? " hot" : ""}${focus === t.id ? " focused" : ""}`}
-            data-target={t.id}
+            key={t.ref}
+            className={`target-card kind-${t.kind}${hot ? " hot" : ""}${focus === t.ref ? " focused" : ""}`}
+            data-target={t.ref}
           >
             <header>
               <strong>{t.name}</strong>
-              <Risk risk={t.risk} />
+              <small>{t.warning}</small>
             </header>
             <span className="target-kind">{KIND[t.kind]}</span>
             <p>{t.circumstance}</p>
-            <Pool pool={t.pool} />
-            {t.cooldown && (
-              <p className="target-lock">
-                {hot ? "Hot" : "Cooled"} · next eligible day {t.cooldown.nextDay} · {t.cooldown.jobId}
-                {t.kind === "home" ? ` · shared by every house in ${s.zones[t.zone]?.name ?? t.zone}` : ""}
-              </p>
-            )}
+            {hot && <p className="target-lock">People nearby are still on alert.</p>}
             {held ? (
-              <p className="target-held">Job lined up · expires day {held.expiresDay}</p>
-            ) : t.lead ? (
+              <p className="target-held">Job lined up · expires day {t.expiresDay}</p>
+            ) : t.leadRequired ? (
               <p className="city-hint">Needs an earned lead from someone who knows the place.</p>
             ) : (
-              <button disabled={!!t.error} onClick={() => run(offerTarget(s, t.id))}>
+              <button disabled={!!t.error} onClick={() => run(offerTarget(s, t.ref))}>
                 Notice {t.name}
               </button>
             )}
-            {t.error && !held && !t.lead && <p className="disabled-reason">{t.error}</p>}
+            {t.error && !held && !t.leadRequired && <p className="disabled-reason">{t.error}</p>}
           </article>
         );
       })}
       {location === PAWN_LOCATION && <PawnCounter s={s} run={run} />}
-      <Alert error={error} />
+      <Alert error={error} s={s} />
     </section>
   );
 }
@@ -167,7 +146,7 @@ function PawnCounter({ s, run }: { s: GameState; run: (r: GameState | string) =>
             <button disabled={!!e} onClick={() => run(sellProperty(s, x.id))}>
               Pawn {D[x.itemId].name} · ${q!.price}
             </button>
-            {e && <small className="disabled-reason">{e}</small>}
+            {e && <small className="disabled-reason">{playerText(s, e)}</small>}
           </div>
         );
       })}
@@ -184,10 +163,10 @@ export function CareerPerson({ s, id, change }: Props & { id: string }) {
     parts.push(
       <article key="score" className="target-card kind-criminal">
         <header>
-          <strong>{who} is holding</strong>
+          <strong>Confront {who}</strong>
           <Risk risk={1} />
         </header>
-        <span className="target-kind">Personal score</span>
+        <span className="target-kind">Personal confrontation</span>
         <p className="city-hint">Robbing someone in the game makes it personal.</p>
         <button onClick={() => run(offerTarget(s, `criminal.${id}`, id))}>
           Notice high-risk opportunity · {s.characters[id].name}
@@ -220,9 +199,9 @@ export function CareerPerson({ s, id, change }: Props & { id: string }) {
           {B.crewClaimDays} days after. Brings their own equipment.
         </p>
         <button disabled={!!e} onClick={() => run(inviteRobbery(s, id, j.id))}>
-          Invite to {j.id} · own equipment required
+          Invite to {jobName(s, j.id)} · own equipment required
         </button>
-        {e && <small className="disabled-reason">{e}</small>}
+        {e && <small className="disabled-reason">{playerText(s, e)}</small>}
       </article>,
     );
   }
@@ -245,12 +224,12 @@ export function CareerPerson({ s, id, change }: Props & { id: string }) {
           </div>
         </div>
         <p className="disabled-reason">
-          Sell-back guarantees active personal beef and +{B.sellBackNotoriety} notoriety.
+          Selling stolen goods back can make the conflict personal and draw attention.
         </p>
         <button disabled={!!e} onClick={() => run(sellProperty(s, x.id, id))}>
           Sell {D[x.itemId].name} back · ${back}
         </button>
-        {e && <small className="disabled-reason">{e}</small>}
+        {e && <small className="disabled-reason">{playerText(s, e)}</small>}
       </article>,
     );
   }
@@ -272,7 +251,7 @@ export function CareerPerson({ s, id, change }: Props & { id: string }) {
     parts.push(
       <article key={d.id} className="return-card">
         <strong>
-          {who} saw {d.jobId} · wants ${d.amount}
+          {who} witnessed your job · wants ${d.amount}
         </strong>
         <div className="slot-actions">
           <button onClick={() => run(answerExtortion(s, d.id, true))}>Pay personal cut</button>
@@ -288,7 +267,7 @@ export function CareerPerson({ s, id, change }: Props & { id: string }) {
     <section className="robbery-person" aria-label="Personal robbery business">
       <p className="eyebrow">Robbery business</p>
       {parts}
-      <Alert error={error} />
+      <Alert error={error} s={s} />
     </section>
   );
 }
@@ -312,25 +291,21 @@ export function CareerControls({ s, change, input }: Props & { input: (a: string
         <button className="choice secondary" onClick={() => input("withdraw")}>
           Withdraw
         </button>
-        <Alert error={error} />
+        <Alert error={error} s={s} />
       </div>
     );
   const carriers = [
     s.playerId,
     ...c.participants.filter((p) => s.crew.members.includes(p.id)).map((p) => p.id),
   ];
-  const seen = c.goods.filter((g) => g.beat <= c.revealed);
-  const safeHere = c.goods.some((g) => g.locked && g.beat <= c.revealed);
-  const pips = Math.max(5, c.pressure);
+  const discovery = robberyDiscoveryView(s);
+  const seen = discovery.goods;
+  const safeHere = discovery.lockedContainer;
+  const pressure = c.pressure < 2 ? "Steady" : c.pressure < 4 ? "Tense" : "Dangerous";
   return (
     <div className="robbery-controls" aria-label="Robbery choices">
       <div className="robbery-status">
-        <span className="pressure" aria-label={`Pressure ${c.pressure}`}>
-          <b>Pressure</b>
-          {Array.from({ length: pips }, (_, i) => (
-            <i key={i} className={i < c.pressure ? (c.pressure >= 4 ? "on hot" : "on") : ""} />
-          ))}
-        </span>
+        <span className="pressure" aria-label={`Pressure: ${pressure}`}><b>Pressure</b> {pressure}</span>
         {c.kind === "home" && <span className="room">Room {c.revealed} of 3</span>}
       </div>
       <div className="carriers">
@@ -346,12 +321,12 @@ export function CareerControls({ s, change, input }: Props & { input: (a: string
           );
         })}
       </div>
+      {discovery.lockedContainer && <p className="loot-flag">A locked safe · contents unknown</p>}
       {seen.length > 0 && (
         <div className="loot-grid">
           {seen.map((g) => {
-            const shut = g.locked && !c.dial.open;
             return (
-              <article key={g.id} className={`loot-card${g.takenBy ? " taken" : ""}${shut ? " shut" : ""}`}>
+              <article key={g.ref} className={`loot-card${g.takenBy ? " taken" : ""}`}>
                 <div className="loot-head">
                   <ItemArt itemId={g.itemId} />
                   <div>
@@ -363,19 +338,18 @@ export function CareerControls({ s, change, input }: Props & { input: (a: string
                     </small>
                   </div>
                 </div>
-                {shut && <small className="loot-flag">Locked in the safe · optional</small>}
                 {g.takenBy && (
                   <small className="loot-flag carried">
                     Carried by {g.takenBy === s.playerId ? "you" : nameOf(s, g.takenBy)}
                   </small>
                 )}
-                {!g.takenBy && !shut && (
+                {!g.takenBy && (
                   <div className="loot-take">
                     {carriers.map((id) => (
                       <button
                         key={id}
                         className={id === s.playerId ? "" : "secondary"}
-                        onClick={() => run(takeLoot(s, a.id, a.cursor, g.id, id))}
+                        onClick={() => run(takeLoot(s, a.id, a.cursor, g.ref, id))}
                       >
                         Take {D[g.itemId].name} · {s.characters[id].name}
                       </button>
@@ -433,7 +407,7 @@ export function CareerControls({ s, change, input }: Props & { input: (a: string
           Leave with current take
         </button>
       </div>
-      <Alert error={error} />
+      <Alert error={error} s={s} />
     </div>
   );
 }

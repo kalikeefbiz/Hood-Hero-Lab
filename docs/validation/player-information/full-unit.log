@@ -1,0 +1,104 @@
+
+> syndicate@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v3.2.7 /workspace/Hood-Hero-Lab
+
+stdout | src/tests/robberyBalance.test.ts > economy 30 real days: supplies, opportunity limits, shares, pawn, storage, trapping, arrest and legal fallback
+ROBBERY ECONOMY {"days":30,"attempts":13,"homes":1,"successes":10,"rank":3,"gross":944,"goodsSold":3,"prepSpent":300,"work":6,"trap":0,"seized":0,"wallet":180,"arrears":0,"debts":102,"end":null}
+
+stdout | src/tests/skillsSessions.test.ts > focused progression balance and presentation adapter > 30-day focused City simulation avoids instant mastery
+FOCUSED 30 days: 19.40 XP, rank 1, 56 buyers, ended=null
+
+stdout | src/tests/robberyBalance.test.ts > economy 60 real days: supplies, opportunity limits, shares, pawn, storage, trapping, arrest and legal fallback
+ROBBERY ECONOMY {"days":60,"attempts":19,"homes":1,"successes":13,"rank":3,"gross":1140,"goodsSold":4,"prepSpent":420,"work":11,"trap":1,"seized":1,"wallet":20,"arrears":51,"debts":306,"end":null}
+
+stdout | src/tests/skillsSessions.test.ts > focused progression balance and presentation adapter > 60-day focused City simulation avoids instant mastery
+FOCUSED 60 days: 19.40 XP, rank 1, 56 buyers, ended=null
+
+stdout | src/tests/skillsSessions.test.ts > focused progression balance and presentation adapter > 180-day focused City simulation avoids instant mastery
+FOCUSED 180 days: 21.10 XP, rank 1, 63 buyers, ended=null
+
+stdout | src/tests/robberyBalance.test.ts > economy 180 real days: supplies, opportunity limits, shares, pawn, storage, trapping, arrest and legal fallback
+ROBBERY ECONOMY {"days":180,"attempts":56,"homes":4,"successes":33,"rank":3,"gross":2732,"goodsSold":14,"prepSpent":1200,"work":53,"trap":3,"seized":0,"wallet":176,"arrears":322,"debts":714,"end":null}
+
+ ✓ src/tests/robberyBalance.test.ts (3 tests) 22674ms
+   ✓ economy 30 real days: supplies, opportunity limits, shares, pawn, storage, trapping, arrest and legal fallback  841ms
+   ✓ economy 60 real days: supplies, opportunity limits, shares, pawn, storage, trapping, arrest and legal fallback  1881ms
+   ✓ economy 180 real days: supplies, opportunity limits, shares, pawn, storage, trapping, arrest and legal fallback  19950ms
+stdout | src/tests/skillsSessions.test.ts > focused progression balance and presentation adapter > 365-day focused City simulation avoids instant mastery
+FOCUSED 365 days: 23.80 XP, rank 1, 69 buyers, ended=null
+
+ ✓ src/tests/skillsSessions.test.ts (39 tests) 41542ms
+   ✓ physical and transactional City sessions > real failed buyers gain 0.20 and real exposure; seeded runs include independent failures/successes  316ms
+   ✓ physical and transactional City sessions > includes rare local personal-conflict risk for a neutral player without making every visitor hostile  477ms
+   ✓ focused progression balance and presentation adapter > 30-day focused City simulation avoids instant mastery  534ms
+   ✓ focused progression balance and presentation adapter > 60-day focused City simulation avoids instant mastery  1368ms
+   ✓ focused progression balance and presentation adapter > 180-day focused City simulation avoids instant mastery  8642ms
+   ✓ focused progression balance and presentation adapter > 365-day focused City simulation avoids instant mastery  29693ms
+ ✓ src/tests/employment.test.ts (20 tests) 22189ms
+   ✓ employment commitments and survival > 30+ day strategies and deterministic replay seed 1  5301ms
+   ✓ employment commitments and survival > 30+ day strategies and deterministic replay seed 7  5468ms
+   ✓ employment commitments and survival > 30+ day strategies and deterministic replay seed 21  5249ms
+   ✓ employment commitments and survival > 30+ day strategies and deterministic replay seed 2026  5506ms
+ ✓ src/tests/corrections.test.ts (11 tests) 7851ms
+   ✓ 006.1 routine, accumulated and significant exposure > low-scrutiny arrest is possible, but never fixed by action count  7524ms
+ ✓ src/tests/crew.test.ts (22 tests) 13654ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 1: independent lives, occasional offers, real appointments, save/load and bounded growth  2369ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 7: independent lives, occasional offers, real appointments, save/load and bounded growth  2102ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 21: independent lives, occasional offers, real appointments, save/load and bounded growth  2189ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 83: independent lives, occasional offers, real appointments, save/load and bounded growth  2294ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 2026: independent lives, occasional offers, real appointments, save/load and bounded growth  1688ms
+   ✓ autonomous offers and extended seeded campaigns > 60 days seed 5099: independent lives, occasional offers, real appointments, save/load and bounded growth  2254ms
+   ✓ assignment boundaries and personal consequences > shared risky outcomes expose and reward or cost both people through the existing engine  305ms
+ ✓ src/tests/quanny.test.ts (41 tests) 4533ms
+   ✓ Quanny first intentional contact > all three seeded introductory shooting categories are nonfatal for both real and false Angels  1584ms
+   ✓ Quanny first intentional contact > minor injuries recover with time and hospital recovery keeps the simulation running  1616ms
+   ✓ directional consignment, collection and persistent relationships > early lucky conflict cannot kill Quanny; capable opponents can eventually defeat him  421ms
+ ✓ src/tests/actionOdds.test.ts (3 tests) 2290ms
+   ✓ odds presented to the player > negotiate predicts the actual seeded outcome without changing the world or RNG  606ms
+   ✓ odds presented to the player > recover predicts the actual seeded outcome without changing the world or RNG  593ms
+   ✓ odds presented to the player > crime predicts the actual seeded outcome without changing the world or RNG  1088ms
+ ✓ src/tests/simulation.test.ts (44 tests) 5206ms
+   ✓ The Chains and automated playthroughs > ignores the incident while continuing repeatable legitimate work  410ms
+   ✓ The Chains and automated playthroughs > has no fixed turn limit and no arbitrary defeat timer  3737ms
+ ✓ src/tests/encounters.test.ts (20 tests) 2216ms
+   ✓ correction: conversations conclude independently of storylines > does not reopen a fulfilled story over 40 further days, including reload  696ms
+   ✓ correction: conversations conclude independently of storylines > does not reopen a broken story over 40 further days, including reload  1173ms
+ ✓ src/tests/danger.test.ts (23 tests) 2260ms
+   ✓ contextual street life > ordinary civilians can cross contested neighborhoods without automatic violence  1890ms
+ ✓ src/tests/streetLife.test.ts (32 tests) 1365ms
+   ✓ real City robbery sessions > deterministic real success and failure award correct progression, no automatic kill  777ms
+stdout | src/tests/inventory.test.ts > long-running capacity tradeoffs > simulates 30/60/180 days with two independent property safes and bounded stock
+INVENTORY 30 days: 19 packs accepted, 11 capacity refusals, 24 units voluntarily discarded; safes 36/36
+INVENTORY 60 days: 23 packs accepted, 37 capacity refusals, 48 units voluntarily discarded; safes 36/36
+INVENTORY 180 days: 40 packs accepted, 140 capacity refusals, 150 units voluntarily discarded; safes 36/36
+
+ ✓ src/tests/inventory.test.ts (20 tests) 1686ms
+   ✓ long-running capacity tradeoffs > simulates 30/60/180 days with two independent property safes and bounded stock  1234ms
+ ✓ src/tests/street.test.ts (15 tests) 986ms
+   ✓ exposure, custody and city continuity > history survives harmless activity; repeated work raises risk gradually, without a fixed punishment count  327ms
+ ✓ src/tests/robberyCareer.test.ts (31 tests) 750ms
+ ✓ src/tests/previewSaves.test.ts (1 test) 394ms
+   ✓ preview manual/auto saves cannot read or overwrite the existing Lab campaign  393ms
+ ✓ src/tests/strategy.test.ts (36 tests) 656ms
+ ✓ src/tests/playerInformation.test.ts (13 tests) 291ms
+ ✓ src/tests/quannyPortraits.test.ts (11 tests) 298ms
+ ✓ src/tests/exchanges.test.ts (9 tests) 190ms
+ ✓ src/tests/presence.test.ts (3 tests) 123ms
+ ✓ src/tests/setPieces.test.ts (5 tests) 57ms
+ ✓ src/tests/board.test.ts (8 tests) 82ms
+ ✓ src/tests/inputGuard.test.ts (5 tests) 16ms
+ ✓ src/tests/actionArt.test.ts (2 tests) 6ms
+
+ Test Files  24 passed (24)
+      Tests  417 passed (417)
+   Start at  03:54:18
+   Duration  72.87s (transform 1.44s, setup 0ms, collect 7.74s, tests 131.32s, environment 17ms, prepare 1.93s)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice

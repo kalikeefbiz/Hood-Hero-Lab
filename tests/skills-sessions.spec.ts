@@ -218,7 +218,7 @@ test("Actions gives directions only; Skills and inventory remain readable on iPh
   await expect(skills).toBeVisible();
   await expect(skills.locator(".skill-track")).toHaveCount(8);
   await skills.getByText("Combat · Uncertified", { exact: true }).click();
-  await expect(skills).toContainText("Story certification");
+  await expect(skills).toContainText("Required: Complete training with an experienced contact");
   await nav(page, "Wallet");
   await expect(
     page.getByRole("region", { name: "Inventory", exact: true }),

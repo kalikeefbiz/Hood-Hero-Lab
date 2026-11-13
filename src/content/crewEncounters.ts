@@ -2,7 +2,6 @@ import type { EncounterDefinition, EncounterResponse } from "../core/Encounter";
 import type { EncounterInstance, GameState } from "../core/GameState";
 import {
   activityName,
-  assignmentChance,
   attendError,
   availability,
   cooperation,
@@ -47,21 +46,20 @@ export const CREW_CONVERSATION: EncounterDefinition = {
       "partner-crime",
     ] as const) {
       const decision = cooperation(s, c, activity);
-      const chance = Math.round(assignmentChance(s, c, activity) * 100);
       const detail =
         activity === "work"
-          ? `$12 reserved compensation · possible $${24 + Math.floor(c.skills.work / 6)} tomorrow · ${chance}% reliability`
+          ? `$12 reserved compensation · possible $${24 + Math.floor(c.skills.work / 6)} tomorrow · payment depends on completed work`
           : activity === "partner-gig"
             ? "same daily gig limit · both earn; skills affect pay"
             : activity === "partner-crime"
               ? "requires held merchandise · 15% of actual gross to partner · both face exposure and loss"
               : activity === "social"
                 ? "trust, affection and stress relief"
-                : `only their contacts and knowledge · ${chance}% chance of useful information`;
+                : "only information they know and are willing to share";
       rows.push({
         id: activity,
         label: activityName[activity],
-        detail: `1 AP if accepted · ${detail}${!decision.accepted ? ` · ${decision.negotiate ? "Negotiate" : "Likely refusal"}: ${decision.reason}` : ""}`,
+        detail: `1 AP if accepted · ${detail}`,
         effect: { type: "crew", choice: "request", activity },
         requirement: () => requestError(s, c.id, activity),
       });

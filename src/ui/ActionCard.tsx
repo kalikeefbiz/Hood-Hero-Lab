@@ -1,7 +1,6 @@
+import { actionView } from "../presentation/PlayerInformation";
 import {
   ACTIONS,
-  actionSuccessChance,
-  validateAction,
   type Action,
 } from "../core/ActionEngine";
 import type { GameState } from "../core/GameState";
@@ -44,9 +43,9 @@ export function ActionCard({
       : job
         ? `${job.description} $${job.wage} / shift · 2 AP · ${job.workdays.map((d) => WEEKDAYS[d]).join(" / ")} · ${s.zones[job.location].name}.`
         : null;
-  const chance = actionSuccessChance(s, a);
+  const view = actionView(s, a);
   const def = ACTIONS[a.type],
-    reason = validateAction(s, a);
+    reason = view.reason;
   const cost =
     a.type === "buy"
       ? ITEMS[a.item!].price
@@ -71,7 +70,7 @@ export function ActionCard({
       ? employmentCopy!
       : a.type === "gig"
         ? `$${BALANCE.gigIncome} clean. Local work.`
-        : def.description;
+        : view.description;
   if (compact)
     return (
       <article
@@ -121,7 +120,7 @@ export function ActionCard({
           <details className="tile-details">
             <summary>Outcomes</summary>
             <small>
-              {def.description} {def.outcomes.join(" / ")}
+              {view.description} {view.outcomes}
             </small>
           </details>
         </div>
@@ -159,29 +158,18 @@ export function ActionCard({
       )}
       <p>
         {employmentCopy
-          ? `${employmentCopy} ${def.description}`
+          ? `${employmentCopy} ${view.description}`
           : a.type === "buy"
             ? ITEMS[a.item!].description
-            : def.description}
+            : view.description}
       </p>
-      {chance !== null && (
-        <p className="chance">
-          Success chance <strong>{Math.round(chance * 100)}%</strong>
-          <small>
-            Based on current skills, stress
-            {a.type === "recover"
-              ? ", escalation and available Set support"
-              : ""}
-            .
-          </small>
-        </p>
-      )}
+      {view.uncertainty && <p className="chance">{view.uncertainty}</p>}
       <small className="outcome">
         {a.type === "buy"
           ? `−${ITEMS[a.item!].relief} stress`
           : a.type === "work"
             ? "Scheduled wages; +1 work skill, +3 legitimacy, +8 stress"
-            : def.outcomes.join(" / ")}
+            : view.outcomes}
       </small>
       <button
         disabled={!!reason}

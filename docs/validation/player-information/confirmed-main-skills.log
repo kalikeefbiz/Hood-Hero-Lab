@@ -1,0 +1,58 @@
+
+> syndicate@0.1.0 test:e2e
+> playwright test --config=/workspace/cloud-setup/baseline.playwright.config.ts tests/skills-sessions.spec.ts --grep Actions gives --workers=1 --reporter=list
+
+[WebServer] (node:10191) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:10204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:10301) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium-mobile] › tests/skills-sessions.spec.ts:203:1 › Actions gives directions only; Skills and inventory remain readable on iPhone (12.7s)
+
+
+  1) [chromium-mobile] › tests/skills-sessions.spec.ts:203:1 › Actions gives directions only; Skills and inventory remain readable on iPhone 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: 'Morgan skills' })
+    Expected substring: "Story certification"
+    Received string:    "SkillsCombat · UncertifiedRank 1/4 · 0.00 XPUncertified → Certified → Stepper → GravediggerNext: Certified · 0.00 cumulative XP (0.00 remaining)Required: Complete an optional authored violent-operation introductionFuture authored operations remain unavailable until story access exists.Robbery · Strong-ArmRank 1/4 · 0.00 XPStrong-Arm → Home Invasion → Armed Stickup → Major ScoreNext: Home Invasion · 9.00 cumulative XP (9.00 remaining)Required: 0/3 successful robberiesRequired: Certified CombatRequired: Earn an appropriate operation invitation through a trusted contactFuture authored operations remain unavailable until story access exists.Trapper · PeonRank 1/4 · 0.00 XPPeon → Corner Boy → Local Plug → Big DogNext: Corner Boy · 35.00 cumulative XP (35.00 remaining)Current margin +$0/unit · up to 1 units per committed buyer, limited by stock and demand.Ranks improve margins, volume and future supply access. Buyer decisions depend on the block.Survival · GreenRank 1/4 · 0.00 XPGreen → Alert → Hardened → SurvivorNext: Alert · 12.00 cumulative XP (12.00 remaining)Experience comes from completed, meaningful outcomes.Social · FamiliarRank 1/4 · 0.00 XPFamiliar → Connected → Influential → Power BrokerNext: Connected · 20.00 cumulative XP (20.00 remaining)Experience comes from completed, meaningful outcomes.Leadership · UnprovenRank 1/4 · 0.00 XPUnproven → Reliable → Organizer → Shot CallerNext: Reliable · 12.00 cumulative XP (12.00 remaining)Coordination improves Set outcome checks; faction authority remains independent.Experience comes from completed, meaningful outcomes.Work · Entry-LevelRank 1/4 · 0.00 XPEntry-Level → Reliable → Skilled → ProfessionalNext: Reliable · 25.00 cumulative XP (25.00 remaining)Experience comes from completed, meaningful outcomes.Business · BeginnerRank 1/4 · 0.00 XPBeginner → Operator → Proprietor → EntrepreneurNext: Operator · 20.00 cumulative XP (20.00 remaining)Experience comes from completed, meaningful outcomes.Recent XP records"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Morgan skills' }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Morgan skills' })
+        14 × locator resolved to <section class="panel skills-view" aria-label="Morgan skills">…</section>
+           - unexpected value "SkillsCombat · UncertifiedRank 1/4 · 0.00 XPUncertified → Certified → Stepper → GravediggerNext: Certified · 0.00 cumulative XP (0.00 remaining)Required: Complete an optional authored violent-operation introductionFuture authored operations remain unavailable until story access exists.Robbery · Strong-ArmRank 1/4 · 0.00 XPStrong-Arm → Home Invasion → Armed Stickup → Major ScoreNext: Home Invasion · 9.00 cumulative XP (9.00 remaining)Required: 0/3 successful robberiesRequired: Certified CombatRequired: Earn an appropriate operation invitation through a trusted contactFuture authored operations remain unavailable until story access exists.Trapper · PeonRank 1/4 · 0.00 XPPeon → Corner Boy → Local Plug → Big DogNext: Corner Boy · 35.00 cumulative XP (35.00 remaining)Current margin +$0/unit · up to 1 units per committed buyer, limited by stock and demand.Ranks improve margins, volume and future supply access. Buyer decisions depend on the block.Survival · GreenRank 1/4 · 0.00 XPGreen → Alert → Hardened → SurvivorNext: Alert · 12.00 cumulative XP (12.00 remaining)Experience comes from completed, meaningful outcomes.Social · FamiliarRank 1/4 · 0.00 XPFamiliar → Connected → Influential → Power BrokerNext: Connected · 20.00 cumulative XP (20.00 remaining)Experience comes from completed, meaningful outcomes.Leadership · UnprovenRank 1/4 · 0.00 XPUnproven → Reliable → Organizer → Shot CallerNext: Reliable · 12.00 cumulative XP (12.00 remaining)Coordination improves Set outcome checks; faction authority remains independent.Experience comes from completed, meaningful outcomes.Work · Entry-LevelRank 1/4 · 0.00 XPEntry-Level → Reliable → Skilled → ProfessionalNext: Reliable · 25.00 cumulative XP (25.00 remaining)Experience comes from completed, meaningful outcomes.Business · BeginnerRank 1/4 · 0.00 XPBeginner → Operator → Proprietor → EntrepreneurNext: Operator · 20.00 cumulative XP (20.00 remaining)Experience comes from completed, meaningful outcomes.Recent XP records"
+
+
+      219 |   await expect(skills.locator(".skill-track")).toHaveCount(8);
+      220 |   await skills.getByText("Combat · Uncertified", { exact: true }).click();
+    > 221 |   await expect(skills).toContainText("Story certification");
+          |                        ^
+      222 |   await nav(page, "Wallet");
+      223 |   await expect(
+      224 |     page.getByRole("region", { name: "Inventory", exact: true }),
+        at /tmp/hood-hero-lab-main-check/tests/skills-sessions.spec.ts:221:24
+
+    Error Context: ../../workspace/cloud-setup/baseline-test-results/skills-sessions-Actions-gi-2af72-y-remain-readable-on-iPhone-chromium-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../workspace/cloud-setup/baseline-test-results/skills-sessions-Actions-gi-2af72-y-remain-readable-on-iPhone-chromium-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../workspace/cloud-setup/baseline-test-results/skills-sessions-Actions-gi-2af72-y-remain-readable-on-iPhone-chromium-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium-mobile] › tests/skills-sessions.spec.ts:203:1 › Actions gives directions only; Skills and inventory remain readable on iPhone 
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice

@@ -1,8 +1,9 @@
+import { playerText, playerReason, relationshipView } from "../presentation/PlayerInformation";
 import { availability, knownCapabilities } from "../systems/CrewAgency";
 import type { EncounterInstance, GameState } from "../core/GameState";
 import { encounterDefinition, responseError } from "../systems/Encounters";
 import { incidentPromise } from "../systems/Commitments";
-import { ACTIONS, actionSuccessChance } from "../core/ActionEngine";
+import { ACTIONS } from "../core/ActionEngine";
 import { quannyExpression } from "./quannyExpression";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { money } from "./ActionCard";
@@ -23,7 +24,7 @@ export function EncounterScene({
   const d = encounterDefinition(e),
     c = s.characters[e.participants[0]],
     promise = e.incidentId ? incidentPromise(s, e.incidentId) : undefined;
-  const source = s.events.find((x) => x.id === e.sourceEventId);
+  const source = s.events.find((x) => x.id === e.sourceEventId && x.observedBy.includes(s.playerId));
   const last = e.selectedResponses.at(-1),
     resultEvents = last?.eventIds
       .map((id) => s.events.find((x) => x.id === id))
@@ -36,7 +37,7 @@ export function EncounterScene({
   const counts = new Map<string, number>();
   if (d.id === "street-supplier")
     for (const r of responses) {
-      const error = responseError(s, e, r);
+      const error = playerReason(s, responseError(s, e, r));
       if (error) counts.set(error, (counts.get(error) ?? 0) + 1);
     }
   return (
@@ -49,7 +50,7 @@ export function EncounterScene({
         <span className="eyebrow">
           {historical
             ? "RECORDED ENCOUNTER"
-            : (source?.title ?? "A CONVERSATION IN THE CITY")}
+            : (playerText(s, source?.title) || "A CONVERSATION IN THE CITY")}
         </span>
         <button
           className="text-button"
@@ -87,20 +88,19 @@ export function EncounterScene({
               <p className="encounter-fact">
                 {knownCapabilities(c)}
                 <br />
-                {availability(s, c) ?? "Available to discuss plans"} · Trust{" "}
-                {Math.round(c.relationships[s.playerId]?.trust ?? 0)}
+                {availability(s, c) ?? "Available to discuss plans"} · {relationshipView(s, c.id)}
               </p>
             )}
             {quannyOutcome ? (
               resultEvents?.length ? (
-                <p className="dialogue">{resultEvents.at(-1)?.text}</p>
+                <p className="dialogue">{playerText(s, resultEvents.at(-1)?.text)}</p>
               ) : null
             ) : (
-              <p className="dialogue">“{d.dialogue(s, e)}”</p>
+              <p className="dialogue">“{playerText(s, d.dialogue(s, e))}”</p>
             )}
             {source && !quannyOutcome && (
               <p className="encounter-fact">
-                DAY {source.day} · {source.text}
+                DAY {source.day} · {playerText(s, source.text)}
               </p>
             )}
             {promise && (
@@ -117,7 +117,7 @@ export function EncounterScene({
             )}
             {last && resultEvents?.length && !source && !quannyOutcome ? (
               <p className="encounter-result" role="status">
-                {resultEvents.at(-1)?.text}
+                {playerText(s, resultEvents.at(-1)?.text)}
               </p>
             ) : null}
           </div>
@@ -141,9 +141,8 @@ export function EncounterScene({
           </button>
         ) : (
           responses.map((r) => {
-            const reason = responseError(s, e, r),
+            const reason = playerReason(s, responseError(s, e, r)),
               action = r.effect.type === "action" ? r.effect.action : null;
-            const chance = action ? actionSuccessChance(s, action) : null;
             return (
               <button
                 key={r.id}
@@ -151,11 +150,11 @@ export function EncounterScene({
                 disabled={!!reason}
                 onClick={() => respond(e.id, r.id)}
               >
-                <span>{r.label}</span>
+                <span>{playerText(s, r.label)}</span>
                 <small>
-                  {r.detail ??
+                  {(r.detail ? playerText(s, r.detail) : null) ??
                     (action
-                      ? `${ACTIONS[action.type].ap} AP${action.type === "buyback" ? ` · ${money(s.incidents[action.incidentId!].demand)}` : ""} · ${ACTIONS[action.type].risk} risk${chance !== null ? ` · ${Math.round(chance * 100)}% success` : ""}`
+                      ? `${ACTIONS[action.type].ap} AP${action.type === "buyback" ? ` · ${money(s.incidents[action.incidentId!].demand)}` : ""} · ${ACTIONS[action.type].risk} risk`
                       : r.effect.type === "crew"
                         ? "Personal request · costs and conditions above; refusal costs no AP"
                         : "Conversation · No AP")}

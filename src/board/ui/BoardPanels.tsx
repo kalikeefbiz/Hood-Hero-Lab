@@ -1,3 +1,4 @@
+import { relationshipView, playerReason, dangerExplanation } from "../../presentation/PlayerInformation";
 import { ROBBERY_TARGETS, PAWN_LOCATION } from "../../content/robberyCareer";
 import { pabloError } from "../../systems/StreetAccess";
 import { LifePerson, LifePlace } from "../../ui/StreetLife";
@@ -386,7 +387,7 @@ export function PlaceSheet({
                   <button
                     key={kind}
                     disabled={!!error}
-                    title={error ?? undefined}
+                    title={playerReason(s, error) ?? undefined}
                     onClick={() => {
                       const r = businessAction(s, business.id, kind);
                       if (!r.error) setState(r.state);
@@ -397,7 +398,7 @@ export function PlaceSheet({
                       : kind === "maintain"
                         ? "Maintain · $120"
                         : "Sell"}
-                    {error && <small>{error}</small>}
+                    {error && <small>{playerReason(s, error)}</small>}
                   </button>
                 );
               },
@@ -425,7 +426,7 @@ export function PlaceSheet({
                   />
                   <strong>{p.name}</strong>
                   <small>
-                    {p.known ? `Trust ${Math.round(p.trust)}` : "Not met yet"}
+                    {p.known ? relationshipView(s, p.id) : "Not met yet"}
                   </small>
                 </button>
               </li>
@@ -541,7 +542,7 @@ export function RiskBadge({
     >
       <strong>{RISK_LABEL[risk.level]}</strong>
       {!compact && risk.reasons[0] && (
-        <span>{risk.reasons.slice(0, 2).join(" ")}</span>
+        <span>{risk.reasons.slice(0, 2).map(dangerExplanation).join(" ")}</span>
       )}
     </div>
   );
@@ -608,10 +609,7 @@ export function PersonInspector({
       {known && <LifePerson s={s} id={c.id} change={onChange} />}
       {known && rel && c.id !== "quanny" && (
         <p className="board-facts">
-          Trust {Math.round(rel.trust)} · Respect {Math.round(rel.respect)}
-          {rel.grievance > 10
-            ? ` · Grievance ${Math.round(rel.grievance)}`
-            : ""}
+          {relationshipView(s, c.id)}
         </p>
       )}
       {known && openPlug && isPlug(s, c.id) && (
