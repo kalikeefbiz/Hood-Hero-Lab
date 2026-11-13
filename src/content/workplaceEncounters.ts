@@ -1,7 +1,12 @@
 import type { EncounterDefinition, EncounterResponse } from "../core/Encounter";
-const response = (id: string, label: string): EncounterResponse => ({
+const response = (
+  id: string,
+  label: string,
+  detail?: string,
+): EncounterResponse => ({
   id,
   label,
+  detail,
   effect: { type: "workplace", choice: id },
 });
 export const WORKPLACE_ENCOUNTER: EncounterDefinition = {
@@ -31,17 +36,34 @@ export const WORKPLACE_ENCOUNTER: EncounterDefinition = {
     return [
       ...(title === "Difficult shift"
         ? [
-            response("push", "Fix it · +6 stress, better performance"),
-            response("flag", "Flag it · −3 reliability, keep wages"),
+            response(
+              "push",
+              "Fix it before I leave.",
+              "+6 stress; better performance; full wages retained",
+            ),
+            response(
+              "flag",
+              "Flag it for the next shift.",
+              "−3 reliability; employer respect decreases; keep wages",
+            ),
           ]
         : title === "Coworker request"
-          ? [response("help", "Help Flacco · +4 stress, build trust")]
-          : [response("extra", "Take the task · +$18, +10 stress")]),
+          ? [
+              response(
+                "help",
+                "Help Flacco clear the station.",
+                "+4 stress; build trust",
+              ),
+            ]
+          : [response("extra", "Take the task.", "+$18; +10 stress")]),
       response(
         "skip",
         title === "Difficult shift"
-          ? "Skip scene · Flag it, −3 reliability"
-          : "Skip scene · Pass, keep regular pay",
+          ? "Leave the count for the next shift."
+          : "Pass. I’m done for today.",
+        title === "Difficult shift"
+          ? "Flags the problem: −3 reliability; employer respect decreases; keep wages"
+          : "Keep regular pay; no extra stress or reward",
       ),
     ];
   },

@@ -119,12 +119,13 @@ export const CREW_OFFER: EncounterDefinition = {
         : o.activity === "social"
           ? `I've had a lot on my mind. Could use some time with a friend on day ${o.activityDay}. You free?`
           : `I could introduce you to ${contact} on day ${o.activityDay}. Might be useful for both of us.`;
-    return `${intro} ${e.selectedResponses.some((r) => r.id === "details") ? `It takes 1 AP when we meet. ${o.activity === "partner-gig" ? "Same local gig as usual, once per day. You get $38 plus a small work-skill bonus; I get $16. No wages before we work." : "No cash payment. We both make time; I can only share what I know."} If you can't come, I'll keep on with my own day.` : `Let me know by day ${Math.min(o.expiresDay, o.activityDay)}.`} ${c.stress > 35 ? "I could really use the break." : "No pressure if you've got other plans."}`;
+    return `${intro} ${e.selectedResponses.some((r) => r.id === "details") ? `We’ll need to make time when we meet. ${o.activity === "partner-gig" ? "It’s local paid work. We both get paid after we finish." : "No cash payment. We both make time; I can only share what I know."} If you can't come, I'll keep on with my own day.` : `Let me know by day ${Math.min(o.expiresDay, o.activityDay)}.`} ${c.stress > 35 ? "I could really use the break." : "No pressure if you've got other plans."}`;
   },
   responses: (s, e) => [
     {
       id: "accept-offer",
-      label: `I'm in. Schedule day ${offer(s, e)!.activityDay} · 1 AP on arrival`,
+      label: `I'm in. Schedule day ${offer(s, e)!.activityDay}`,
+      detail: `1 AP on arrival. ${offer(s, e)!.activity === "partner-gig" ? "Same daily gig limit; your pay is $38 plus a work-skill bonus; partner receives $16 after work." : "No cash payment."}`,
       effect: { type: "crew", choice: "accept" },
       requirement: () => offerError(s, offer(s, e)!.id),
     },
@@ -139,7 +140,8 @@ export const CREW_OFFER: EncounterDefinition = {
       : []),
     {
       id: "decline-offer",
-      label: "Can't make it. You go ahead. No friendship penalty.",
+      label: "Can't make it. You go ahead.",
+      detail: "No friendship penalty.",
       effect: { type: "crew", choice: "decline" },
     },
   ],

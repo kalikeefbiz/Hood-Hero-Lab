@@ -73,6 +73,8 @@ test("board street conversation: choices, persistent grievance, menus cannot rer
   const modal = page.getByRole("dialog", { name: "Character encounter" });
   await expect(modal).toContainText("Mudgang contact", { timeout: 25000 });
   await expect(modal).toContainText("Where are you from?");
+  await expect(modal.getByRole("button", { name: /Acknowledge their concern/ })).toHaveCount(0);
+  await expect(modal.getByRole("button", { name: /Tell them what brings you here/ })).toBeVisible();
   await expect(
     modal.getByRole("button", { name: /Hear them out/ }),
   ).toBeVisible();

@@ -121,7 +121,7 @@ test("hire, scheduled wages, save and a thirty-day employment playthrough", asyn
       await click(page, "work");
       if (await modal(page).count())
         await modal(page)
-          .getByRole("button", { name: /Skip scene/ })
+          .getByRole("button", { name: /Leave the count for the next shift|Pass. I’m done for today/ })
           .click();
       s = await state(page);
       expect(s.ap).toBe(0);
@@ -283,7 +283,7 @@ test("employment competes with The Chains through actual AP, wages, attendance a
   await click(page, "work");
   if (await modal(page).count())
     await modal(page)
-      .getByRole("button", { name: /Skip scene/ })
+      .getByRole("button", { name: /Leave the count for the next shift|Pass. I’m done for today/ })
       .click();
   await nav(page, "Actions");
   await storyline(page);
