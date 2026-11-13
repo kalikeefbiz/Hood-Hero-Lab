@@ -28,6 +28,7 @@ For every new feature:
 
 ## 1. Repository and deployment boundaries
 
+- **The bigger city is the official game.** Since 2026-11-13 it lives on `main`; the old `claude/city-expansion` branch and the `/next/` preview are retired. Build every feature against it.
 - **Hood-Hero-Lab/main is the shared, playable integration branch.** It deploys automatically to https://kalikeefbiz.github.io/Hood-Hero-Lab/ on push. Do not use main as a development worktree, push unfinished work to it, or publish experimental changes directly.
 - **Codex works on codex/<short-feature-name> branches. Claude works on claude/<short-feature-name> branches.** Create each feature branch from the latest Lab main, not from a stale feature branch, unless explicitly coordinated.
 - Work-in-progress commits belong on the agent's feature branch. Push the feature branch and open a pull request **targeting Lab main** only when ready for review.

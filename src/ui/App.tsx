@@ -75,6 +75,7 @@ import {
   saveGame,
   SAVE_KEY,
   AUTO_KEY,
+  adoptPreviewSaves,
 } from "../persistence/SaveSystem";
 import { BoardBackdrop } from "../board/ui/Board";
 import {
@@ -278,6 +279,8 @@ export function App() {
   ]);
   useEffect(() => {
     try {
+      if (adoptPreviewSaves(localStorage))
+        setNotice("Your bigger-city campaign is now the official game.");
       setHasSave(
         !!(localStorage.getItem(SAVE_KEY) || localStorage.getItem(AUTO_KEY)),
       );

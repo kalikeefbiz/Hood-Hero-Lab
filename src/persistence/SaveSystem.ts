@@ -448,6 +448,33 @@ export const SAVE_KEY =
   "blackhouse.hoodhero-lab.v1" +
   ((import.meta.env?.VITE_SAVE_SUFFIX as string | undefined) ?? "");
 export const AUTO_KEY = SAVE_KEY + ".auto";
+const BASE_KEY = "blackhouse.hoodhero-lab.v1";
+const ADOPTED_KEY = BASE_KEY + ".adopted-next";
+/**
+ * The bigger city became the official Lab build on 2026-11-13 and the /next/
+ * preview was retired. Its campaign lived in the ".next" slots on the same
+ * origin. The first time the official build runs, that campaign moves into
+ * the main slots; any small-map campaign already there is kept, untouched,
+ * under ".smallmap". Runs once, and never on a build with its own suffix.
+ */
+export function adoptPreviewSaves(storage: Storage) {
+  if (SAVE_KEY !== BASE_KEY || storage.getItem(ADOPTED_KEY)) return false;
+  const pairs = [
+    [BASE_KEY, BASE_KEY + ".next"],
+    [BASE_KEY + ".auto", BASE_KEY + ".next.auto"],
+  ] as const;
+  const found = pairs.some(([, next]) => storage.getItem(next));
+  if (found)
+    for (const [main, next] of pairs) {
+      const old = storage.getItem(main),
+        preview = storage.getItem(next);
+      if (old) storage.setItem(main.replace(BASE_KEY, BASE_KEY + ".smallmap"), old);
+      if (preview) storage.setItem(main, preview);
+      else storage.removeItem(main);
+    }
+  storage.setItem(ADOPTED_KEY, new Date().toISOString());
+  return found;
+}
 export function serialize(s: GameState): string {
   return JSON.stringify({ format: "syndicate", version: s.version, state: s });
 }

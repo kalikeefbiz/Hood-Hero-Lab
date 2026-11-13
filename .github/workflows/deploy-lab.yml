@@ -2,18 +2,13 @@ name: Deploy Hood Hero Lab
 # Publishes the experimental strategy board to this repository's own Pages
 # site. It never touches the production Hood-Hero repository or its site.
 #
-# The site holds two builds:
-#   /Hood-Hero-Lab/       Lab main (the current playable Lab)
-#   /Hood-Hero-Lab/next/  the preview branch (PREVIEW_BRANCH), when it exists,
-#                         with its own save slot so the two never share saves.
-# Pushing to main deploys both. To refresh the preview after pushing the
-# preview branch, run this workflow by hand on main (workflow_dispatch).
+# The bigger city is the official Lab build (2026-11-13). The old /next/
+# preview is retired: /Hood-Hero-Lab/next/ only redirects here
+# (public/next/index.html), and the first run adopts its saves.
 on:
   push:
     branches: [main]
   workflow_dispatch:
-env:
-  PREVIEW_BRANCH: claude/city-expansion
 permissions:
   contents: read
   pages: write
@@ -35,29 +30,6 @@ jobs:
       - run: npm run build
         env:
           VITE_BASE_PATH: /Hood-Hero-Lab/
-      - name: Check for the preview branch
-        id: preview
-        run: |
-          if git ls-remote --exit-code --heads origin "$PREVIEW_BRANCH" >/dev/null; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          fi
-      - uses: actions/checkout@v4
-        if: steps.preview.outputs.exists == 'true'
-        with:
-          ref: ${{ env.PREVIEW_BRANCH }}
-          path: preview-src
-      - name: Build the preview at /next/
-        if: steps.preview.outputs.exists == 'true'
-        working-directory: preview-src
-        env:
-          VITE_BASE_PATH: /Hood-Hero-Lab/next/
-          VITE_SAVE_SUFFIX: .next
-        run: |
-          npm ci
-          npm test
-          npm run build
-          mkdir -p ../dist/next
-          cp -r dist/. ../dist/next/
       - uses: actions/configure-pages@v5
         with:
           enablement: true
