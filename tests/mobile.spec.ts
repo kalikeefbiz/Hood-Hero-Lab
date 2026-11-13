@@ -1,13 +1,25 @@
-import { tapUntil } from "./helpers";
+import { tapUntil, navigate } from "./helpers";
+import { AUTO_KEY } from "../src/persistence/SaveSystem";
 import { openJournal } from "./journal";
 import { honest, connects, storyAction, storyline } from "./helpers";
 import { dismissEncounter } from "./helpers";
+import type { GameState } from "../src/core/GameState";
 import { test, expect } from "@playwright/test";
-async function nav(page: import("@playwright/test").Page, name: string) {
-  await page
-    .getByRole("navigation")
-    .getByRole("button", { name, exact: true })
-    .click();
+const state = (page: import("@playwright/test").Page): Promise<GameState> =>
+  page.evaluate(
+    (key) => JSON.parse(localStorage.getItem(key)!).state,
+    AUTO_KEY,
+  );
+const nav = navigate;
+async function endDay(page: import("@playwright/test").Page) {
+  const before = await state(page);
+  await tapUntil(
+    page,
+    page.getByRole("button", { name: "End day", exact: true }),
+    async () => (await state(page)).day === before.day + 1,
+  );
+  await dismissEncounter(page);
+  expect((await state(page)).day).toBe(before.day + 1);
 }
 async function start(
   page: import("@playwright/test").Page,
@@ -27,11 +39,16 @@ async function action(page: import("@playwright/test").Page, title: string) {
   }
   if (title === "Reach out") await connects(page, "mega");
   else await honest(page);
-  await page
+  const before = await state(page);
+  const button = page
     .locator(".action-card")
     .filter({ has: page.getByRole("heading", { name: title, exact: true }) })
-    .getByRole("button")
-    .click();
+    .getByRole("button");
+  await tapUntil(
+    page,
+    button,
+    async () => (await state(page)).ap === before.ap - 1,
+  );
 }
 async function noOverflow(page: import("@playwright/test").Page) {
   expect(
@@ -56,14 +73,12 @@ test("phone gameplay: contact, lawful income, days, save and load", async ({
   await page.getByRole("button", { name: "Honest", exact: true }).click();
   await action(page, "Pick up a gig");
   await expect(page.locator(".ap b")).toHaveText("0/2");
-  await page.getByRole("button", { name: "End day" }).click();
-  await dismissEncounter(page);
+  await endDay(page);
   await expect(page.locator(".day")).toHaveText("DAY 02");
   await page.getByLabel("Save game", { exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Saved day 2");
   await action(page, "Pick up a gig");
-  await page.getByRole("button", { name: "End day" }).click();
-  await dismissEncounter(page);
+  await endDay(page);
   await expect(page.locator(".day")).toHaveText("DAY 03");
   await page.getByLabel("Load game", { exact: true }).click();
   await expect(page.locator(".day")).toHaveText("DAY 02");
@@ -86,38 +101,80 @@ test("buyback resolves the incident and the ordinary loop remains playable", asy
   page,
 }) => {
   await start(page);
-  await nav(page, "Actions");
-  await action(page, "Pick up a gig");
-  await page.getByRole("button", { name: "End day" }).click();
+  await storyline(page);
+  const modal = page.getByRole("dialog", { name: "Character encounter" });
+  await tapUntil(
+    page,
+    modal.getByRole("button", { name: /Let me think/ }),
+    async () => (await state(page)).streetLife?.decision === "delay",
+  );
   await dismissEncounter(page);
-  await action(page, "Pick up a gig");
-  await page.getByRole("button", { name: "End day" }).click();
-  await dismissEncounter(page);
-  await nav(page, "Actions");
 
+  // The City action includes a walk. Ending the day during that walk used to
+  // advance to day 2 and then overwrite it with the gig's day-1 snapshot.
+  await honest(page);
+  const gig = page.locator('[data-action="gig"]');
+  await gig.getByRole("button").tap();
+  await expect(
+    page.getByRole("button", { name: "End day", exact: true }),
+  ).toBeDisabled();
+  await expect
+    .poll(async () => (await state(page)).employmentSearch.player.lastGigDay)
+    .toBe(1);
+  let s = await state(page);
+  expect(s.day).toBe(1);
+  expect(s.ap).toBe(1);
+  expect(s.characters.player.wallet).toEqual({ clean: 163, illicit: 0 });
+  expect(s.presence?.location).toBe("downtown.docks");
+  expect(s.streetLife?.workEvent).toBeTruthy();
+  expect(s.progression.cleanEarned).toBe(38);
+  await expect(gig.getByRole("button")).toBeDisabled();
+
+  await endDay(page);
+  expect((await state(page)).ap).toBe(2);
+  await action(page, "Pick up a gig");
+  await endDay(page);
   await action(page, "Reach out");
+  expect((await state(page)).ap).toBe(1);
   await action(page, "Buy back · $150");
   await dismissEncounter(page);
+  s = await state(page);
+  expect(s.day).toBe(3);
+  expect(s.ap).toBe(0);
+  expect(s.incidents["the-chains"].resolution).toBe("buyback");
+  expect(s.properties.chains.possession).toEqual({
+    kind: "character",
+    id: "mega",
+  });
+  expect(s.characters.player.wallet).toEqual({ clean: 15, illicit: 0 });
+  expect(s.streetLife?.workEvent).toBeTruthy();
   await nav(page, "City");
   await openJournal(page);
   await page.getByText("Completed storylines", { exact: true }).click();
   await expect(page.locator(".situation-history")).toContainText("resolved");
-  await page.getByRole("button", { name: "End day" }).click();
+  await page.getByLabel("Save game", { exact: true }).click();
+  await page.reload();
+  await page.getByRole("button", { name: "Resume saved game" }).click();
   await dismissEncounter(page);
-  await nav(page, "Actions");
-  await page.getByRole("button", { name: "Honest", exact: true }).click();
+  expect((await state(page)).incidents["the-chains"].resolution).toBe(
+    "buyback",
+  );
+  await endDay(page);
   await action(page, "Pick up a gig");
   await expect(page.getByRole("status")).toContainText("$38");
+  s = await state(page);
+  expect(s.ap).toBe(1);
+  expect(s.presence?.location).toBe("downtown.docks");
+  expect(s.progression.cleanEarned).toBe(114);
+  await expect(page.locator('[data-action="gig"] button')).toBeDisabled();
   await nav(page, "Set");
-  await page.getByRole("button", { name: "End day" }).click();
-  await dismissEncounter(page);
+  await endDay(page);
   await nav(page, "Set");
   await page
     .getByRole("button", { name: "Interact with Flacco", exact: true })
     .click();
   await page.getByRole("button", { name: /^Paid local work/ }).click();
-  await page.getByRole("button", { name: "End day" }).click();
-  await dismissEncounter(page);
+  await endDay(page);
   await nav(page, "Set");
   await expect(page.locator("main")).toContainText("Paid local work");
   await nav(page, "Wallet");

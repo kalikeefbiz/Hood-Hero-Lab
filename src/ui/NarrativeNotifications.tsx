@@ -1,3 +1,4 @@
+import { playerText } from "../presentation/PlayerInformation";
 import type { GameState } from "../core/GameState";
 import { unseenEvents } from "../core/EventLog";
 export function NarrativeNotifications({
@@ -28,8 +29,8 @@ export function NarrativeNotifications({
         {unseen.length} UNSEEN IMPORTANT{" "}
         {unseen.length === 1 ? "DEVELOPMENT" : "DEVELOPMENTS"}
       </p>
-      <h3>{event.title ?? "A major development"}</h3>
-      <p>{event.text}</p>
+      <h3>{playerText(s, event.title ?? "A major development")}</h3>
+      <p>{playerText(s, event.text)}</p>
       <div className="notification-controls">
         {s.encounters.some((e) => e.sourceEventId === event.id) && (
           <button onClick={() => view(event.id)}>

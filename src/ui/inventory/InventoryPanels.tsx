@@ -1,3 +1,4 @@
+import { playerText } from "../../presentation/PlayerInformation";
 import { useState } from "react";
 import type { GameState } from "../../core/GameState";
 import { player } from "../../core/GameState";
@@ -163,9 +164,9 @@ export function CarriedPanel({ s, change }: { s: GameState; change: Change }) {
             ))}
           </div>
           {x.kind === "equipment" && equipped !== x.itemId && equipItemError(s, p.id, weapon(x.itemId)!) && (
-            <p className="disabled-reason">{equipItemError(s, p.id, weapon(x.itemId)!)}</p>
+            <p className="disabled-reason">{playerText(s, equipItemError(s, p.id, weapon(x.itemId)!))}</p>
           )}
-          {err && <p className="disabled-reason">{err}</p>}
+          {err && <p className="disabled-reason">{playerText(s, err)}</p>}
           <p className="city-hint">
             Hand it to someone in your Set, put it in your safe, or get rid of it in the city.
           </p>
@@ -246,7 +247,7 @@ export function SelfCarryCard({ s, change }: { s: GameState; change: Change }) {
             Gone for good: no refund{x.kind === "merchandise" ? ", and what you owe your plug still stands" : ""}.
           </p>
           {(discardItemError(s, x.id, q, here) || err) && (
-            <p className="disabled-reason">{discardItemError(s, x.id, q, here) ?? err}</p>
+            <p className="disabled-reason">{playerText(s, discardItemError(s, x.id, q, here) ?? err)}</p>
           )}
         </div>
       )}
@@ -286,7 +287,7 @@ export function SelfCarryCard({ s, change }: { s: GameState; change: Change }) {
                 </button>
               )}
               {(claimOverflowError(s, p.id, o.id, q, ownedHere) || err) && (
-                <p className="disabled-reason">{err ?? claimOverflowError(s, p.id, o.id, q, ownedHere)}</p>
+                <p className="disabled-reason">{playerText(s, err ?? claimOverflowError(s, p.id, o.id, q, ownedHere))}</p>
               )}
             </div>
           )}
@@ -319,7 +320,7 @@ export function ResidencePanel({ s, placeId, change }: { s: GameState; placeId: 
           Buy for ${d.price}
         </button>
         {(buyPropertyError(s, placeId) || err) && (
-          <p className="disabled-reason">{err ?? buyPropertyError(s, placeId)}</p>
+          <p className="disabled-reason">{playerText(s, err ?? buyPropertyError(s, placeId))}</p>
         )}
       </section>
     );
@@ -335,6 +336,7 @@ export function ResidencePanel({ s, placeId, change }: { s: GameState; placeId: 
         </>
       ) : (
         <TransferPanel
+          presentReason={(text) => playerText(s, text)}
           change={change}
           a={{
             label: "On you",
@@ -384,6 +386,7 @@ export function MemberInventory({ s, id, change }: { s: GameState; id: string; c
         {bonus.defense}
       </p>
       <TransferPanel
+        presentReason={(text) => playerText(s, text)}
         change={change}
         note={<p className="city-hint">Pink Magic you hand over is always fronted: {who} owes you for it.</p>}
         a={{
@@ -436,11 +439,11 @@ export function MemberInventory({ s, id, change }: { s: GameState; id: string; c
             Collect ${a.balance}
           </button>
           {collectSetConsignmentError(s, a.id) && (
-            <small className="disabled-reason">{collectSetConsignmentError(s, a.id)}</small>
+            <small className="disabled-reason">{playerText(s, collectSetConsignmentError(s, a.id))}</small>
           )}
         </div>
       ))}
-      {err && <p className="disabled-reason">{err}</p>}
+      {err && <p className="disabled-reason">{playerText(s, err)}</p>}
     </div>
   );
 }

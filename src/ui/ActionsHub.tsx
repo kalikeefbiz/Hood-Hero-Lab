@@ -1,3 +1,4 @@
+import { relationshipView } from "../presentation/PlayerInformation";
 import { KnownCharacterLocation } from "./KnownCharacterLocation";
 import type { GameState } from "../core/GameState";
 import { player } from "../core/GameState";
@@ -170,8 +171,7 @@ export function ActionsHub({
             </p>
             {c.relationships[p.id] && (
               <p className="board-facts">
-                Trust {Math.round(c.relationships[p.id].trust)} · Respect{" "}
-                {Math.round(c.relationships[p.id].respect)}
+                {relationshipView(s, c.id)}
               </p>
             )}
             {isPlug(s, c.id) && <p className="board-facts">Plug · {plugStatus(s, c.id)}</p>}

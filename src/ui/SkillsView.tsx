@@ -1,3 +1,4 @@
+import { publicRequirement } from "../presentation/PlayerInformation";
 import type { Character } from "../core/GameState";
 import {
   SKILLS,
@@ -35,7 +36,7 @@ export function SkillsView({ character }: { character: Character }) {
                 : "Top rank reached."}
             </p>
             {missing.map((m) => (
-              <p key={m}>Required: {m}</p>
+              <p key={m}>Required: {publicRequirement(m)}</p>
             ))}
             {id === "trapper" && (
               <p>
@@ -54,7 +55,7 @@ export function SkillsView({ character }: { character: Character }) {
               {id === "trapper"
                 ? "Ranks improve margins, volume and future supply access. Buyer decisions depend on the block."
                 : id === "combat" || id === "robbery"
-                  ? "Future authored operations remain unavailable until story access exists."
+                  ? "Learn about further opportunities by talking to trusted contacts."
                   : "Experience comes from completed, meaningful outcomes."}
             </p>
           </details>

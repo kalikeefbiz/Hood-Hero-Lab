@@ -76,12 +76,14 @@ export const TRIO_AFTERMATH: EncounterDefinition = {
 export const LIFE_TALKS = [
   {
     key: "family",
+    label: "Talk about work and family",
     person: "mega",
     when: (s: Parameters<typeof safeStory>[0]) => !!s.streetLife?.workEvent,
     text: "“You got that work handled. Good. A shift is a promise too. Meet me at the Lot when your stock is ready.”",
   },
   {
     key: "lesson",
+    label: "Talk about the trapping lesson",
     person: "mega",
     when: (s: Parameters<typeof safeStory>[0]) =>
       s.streetLife?.lesson === "complete",
@@ -89,6 +91,7 @@ export const LIFE_TALKS = [
   },
   {
     key: "loss",
+    label: "Talk about the lost chain",
     person: "mega",
     when: (s: Parameters<typeof safeStory>[0]) =>
       s.incidents["the-chains"]?.resolution === "sold",
@@ -96,6 +99,7 @@ export const LIFE_TALKS = [
   },
   {
     key: "reliable",
+    label: "Talk about the pack you repaid",
     person: "mega",
     when: (s: Parameters<typeof safeStory>[0]) =>
       s.street.agreements.some(
@@ -108,12 +112,14 @@ export const LIFE_TALKS = [
   },
   {
     key: "pressure",
+    label: "Talk about the attention on you",
     person: "mega",
     when: (s: Parameters<typeof safeStory>[0]) => player(s).police >= 25,
     text: "“Too many eyes on you. I’ll still supply family, but slow your feet and watch that pressure. A boss knows when to sit.”",
   },
   {
     key: "flacco-follow",
+    label: "Talk about the stock Flacco gave you",
     person: "flacco",
     when: (s: Parameters<typeof safeStory>[0]) =>
       !!s.streetLife?.giftLot &&
@@ -122,24 +128,28 @@ export const LIFE_TALKS = [
   },
   {
     key: "rio-business",
+    label: "Talk about territory terms",
     person: "contact-angels",
     when: (s: Parameters<typeof safeStory>[0]) => !!s.streetLife?.rioContact,
     text: "“Product, territory, reputation: three different things. Twelve dollars buys three days here. That doesn’t buy my trust or Pablo’s time.”",
   },
   {
     key: "quanny-continuity",
+    label: "Talk about your arrangements",
     person: "quanny",
     when: (s: Parameters<typeof safeStory>[0]) => s.quanny.business === "open",
     text: "“Don’t mix up who owes who. If I take your stock, I owe you. Your plugs are your business. Earn trust before you ask me for something dangerous.”",
   },
   {
     key: "lewis-neighbors",
+    label: "Talk about helping neighbors",
     person: "mr-lewis",
     when: () => true,
     text: "“People still need groceries and a paycheck. Help a neighbor if you want. You don’t owe the street your whole life.”",
   },
   {
     key: "flacco-set",
+    label: "Talk about your Set",
     person: "flacco",
     when: (s: Parameters<typeof safeStory>[0]) => s.day >= 5,
     text: "“My Set means something to me. Moving product isn’t the problem. Forgetting who stands beside you is.”",

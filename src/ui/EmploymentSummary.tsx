@@ -1,3 +1,4 @@
+import { relationshipView } from "../presentation/PlayerInformation";
 import type { GameState } from "../core/GameState";
 import {
   currentEmployment,
@@ -41,9 +42,7 @@ export function EmploymentSummary({ s }: { s: GameState }) {
               .join(" · ")}
           </p>
           <p>
-            Reliability {e.reliability}/100 · Performance {e.performance} ·
-            Formal warnings {e.warnings} · Employer trust{" "}
-            {s.characters[e.employer].relationships[s.playerId]?.trust ?? 0}
+            Formal warnings {e.warnings} · {relationshipView(s, e.employer)}
           </p>
           <p className="muted">
             Three absences in the last five scheduled shifts end the job. One
@@ -55,7 +54,7 @@ export function EmploymentSummary({ s }: { s: GameState }) {
         <p>
           {s.day < search.eligibleDay
             ? `Formal applications reopen on day ${search.eligibleDay}. Local gigs remain available.`
-            : "Apply in Actions, then accept an offer. Every neighborhood has a local route; warehouse applications are citywide."}
+            : "Visit a workplace in the City, then review and accept an offer. Every neighborhood has a local route; warehouse applications are citywide."}
         </p>
       )}
       <p>
