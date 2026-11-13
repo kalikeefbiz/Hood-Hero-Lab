@@ -270,7 +270,9 @@ export function resolveQuanny(
       note(
         sponsor
           ? `You name ${s.characters[sponsor.observer].name}, who sponsored you.`
-          : `You truthfully explain your membership in ${s.factions[p.affiliation!].name}; you don't invent a sponsor.`,
+          : p.affiliation
+            ? `You truthfully explain your membership in ${s.factions[p.affiliation].name}; you don't invent a sponsor.`
+            : "You explain that you’re unaffiliated; you don’t invent a sponsor.",
       );
     } else
       note(

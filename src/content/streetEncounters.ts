@@ -1,6 +1,6 @@
 import type { EncounterDefinition } from "../core/Encounter";
 import { cash, player, type GameState } from "../core/GameState";
-import { MERCHANDISE, STREET_BALANCE as B } from "./street";
+import { STREET_BALANCE as B } from "./street";
 import {
   paymentError,
   supplierError,
@@ -26,7 +26,7 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
       (a) => a.supplier === n.id && a.debtor === s.playerId && a.balance > 0,
     );
     const obligation = debts.length
-      ? `You owe me $${debts.reduce((v, a) => v + a.balance, 0)} across ${debts.length} agreement(s): ${debts.map((a) => `${a.id}, $${a.balance}, day ${a.dueDay}${a.status === "overdue" ? " (late)" : ""}`).join("; ")}. Each clock stays separate. `
+      ? `You still owe me $${debts.reduce((v, a) => v + a.balance, 0)}. We haven’t changed those terms. `
       : "";
     const cashOnly =
       n.id === "mega" &&
@@ -41,11 +41,11 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
           ? s.streetLife?.initialDecision === "decline"
             ? "You said you couldn’t help with the chain. I’m disappointed, but you’re family. I’ll supply you on CASH terms only, no fronts."
             : "You never committed, but you’re still family. The first six for this lesson are CASH only, no fronts."
-          : "Cuzzo, you’re family. I’ll supply you unless we become actual enemies. Every pack keeps its own terms."
+          : "Cuzzo, you’re family. But we still need to be clear about what you’re taking and what you owe."
         : n.id === "pablo"
           ? "You give your word, you keep it. I remember who does."
-          : "Small pack, clear terms. My own trust, balances and available stock decide each reup.";
-    return `${obligation}${tone} ${MERCHANDISE.nightgoods.quantity} Pink Magic: ${cashOnly ? "$90 cash now." : `$90 cash now, or $102 on consignment by the end of day ${s.day + B.deadline}.`} Expected gross here is $${6 * unitPrice(s, n.home)} if it all sells. Gross is before supplier cost, losses and a partner’s share. No guaranteed buyers. Losing goods never erases a debt.`;
+          : "Small pack, clear terms. I need to know you’ll keep your word.";
+    return `${obligation}${tone} ${e.selectedResponses.some((r) => r.id === "terms") ? "Pay cash and it’s yours. If I front it, you owe me even if you lose it. I can’t promise you buyers." : "What are you looking for?"}`;
   },
   responses: (s, e) => {
     const supplier = e.participants[0];
@@ -126,7 +126,7 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
       {
         id: "cash",
         label: "Accept cash purchase · $90 · 1 AP",
-        detail: "6 units · ownership transfers; no supplier debt",
+        detail: `6 units · ownership transfers; no supplier debt · possible gross $${6 * unitPrice(s, s.characters[supplier].home)} if all sell, before costs, losses and partner share; buyers not guaranteed`,
         effect: {
           type: "street",
           choice: "acquire",
@@ -138,7 +138,7 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
       {
         id: "consignment",
         label: `Accept consignment · $102 due day ${s.day + B.deadline} · 1 AP`,
-        detail: "6 units · personal repayment obligation, including losses",
+        detail: `6 units · personal repayment obligation, including losses · possible gross $${6 * unitPrice(s, s.characters[supplier].home)} if all sell, before costs, losses and partner share; buyers not guaranteed`,
         effect: {
           type: "street",
           choice: "acquire",
@@ -158,7 +158,8 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
         : []),
       {
         id: "leave",
-        label: "Decline. No arrangement.",
+        label: "Leave without a new arrangement.",
+        detail: "Existing debts and agreements remain in place.",
         effect: { type: "street", choice: "leave" },
       },
     ];

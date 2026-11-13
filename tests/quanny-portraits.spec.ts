@@ -84,7 +84,7 @@ test("all five Quanny portraits display and follow real iPhone encounter states 
     .click();
   await checkPortrait(page, "talking", info);
   await modal(page)
-    .getByRole("button", { name: /Leave it unresolved/ })
+    .getByRole("button", { name: /Catch you later/ })
     .click();
   await checkPortrait(page, "disappointed", info);
   await expect(modal(page).locator(".dialogue")).toHaveCount(0); // A silent reaction uses no invented NPC line.
