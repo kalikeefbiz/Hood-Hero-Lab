@@ -1336,6 +1336,23 @@
     animation: none;
   }
 }
+/* iOS dropped the WebGL context while the app was away; the city is being
+   re-uploaded. Say so instead of looking frozen. */
+.board-stage[data-board-context="lost"]::after,
+.board-stage[data-board-context="restoring"]::after {
+  content: "Waking the city…";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 10, 14, 0.55);
+  color: var(--muted, #bbb);
+  font: 600 13px/1 var(--font-ui, system-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 2;
+}
 
 /* Plugs: found from your own card, dealt with from theirs. */
 .plug-block {

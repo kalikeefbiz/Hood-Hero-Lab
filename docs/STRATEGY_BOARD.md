@@ -48,6 +48,25 @@ src/ui/App.tsx        board shell, focus, inspector, walking actions, ledger
 
 The data flow only goes one way: `GameState → deriveBoardView → BoardRenderer / panels`. The renderer never writes game state. Taps come back as `Focus { zone, block, place }`.
 
+## City layout, rail and lots (`src/city3d/layout.ts`)
+
+The 3D city is 2.5x the land area of the 2D map (1.58x each way) and keeps its arrangement: Nawf north, Reservoir west, Downtown centre, Rio Gabriel east, Southside south, and the river.
+
+- **Sections.** Each district is a list in `SECTIONS`: a rectangle (fractions of the district box), a block size and a `BlockKind` (`dense`, `rowhouse`, `projects`, `suburban`, `commercial`, `industrial`, `civic`, `highrise`, `lowrise`). The gaps between sections are streets and boulevards; uncovered corners give the irregular outlines. Block ids are `<zone>.<section>.b<col>-<row>`; they are presentation only and never saved.
+- **Places** keep their id and their relative `at` position; the board snaps that point into the nearest real block (`locationPosition`, cached). `railStation` puts a place at an El station; `lot` puts it on a development lot.
+- **Development lots** (`DEVELOPMENT_LOTS`): 15 named empty blocks, three per district, held for future places. Until a place uses one, the board shows a fenced lot for lease. To add a business, hangout or story spot, give its `LocationDef` `lot: "<id>"`, e.g. `lot: "rio.lot-2"`:
+
+  | District | Lots |
+  | --- | --- |
+  | The Nawf | `nawf.lot-1` Mudgang side, north edge · `nawf.lot-2` Mudgang side, by the boulevard · `nawf.lot-3` Blips side, north edge |
+  | The Reservoir | `reservoir.lot-1` south suburbs · `reservoir.lot-2` north suburbs, by the river · `reservoir.lot-3` south suburbs, by the river |
+  | Downtown | `downtown.lot-1` east towers · `downtown.lot-2` northeast towers · `downtown.lot-3` northwest towers |
+  | Rio Gabriel | `rio.lot-1` north side, west end · `rio.lot-2` north side · `rio.lot-3` north side, east end |
+  | Southside | `south.lot-1` rail yards · `south.lot-2` west projects · `south.lot-3` rail yards, by the line |
+
+- **The El** (`RAIL_LINES`, `RAIL_STATIONS`). Two lines: *The El* (Westside → up the west arterial → across the Nawf → down the east arterial → Rio Gabriel) and the older *Southside Line* (from the Nawf down through Downtown to Southside Yards). Stations: `westside`, `nawf-ave`, `rio`, `central` (Stixx Central, the interchange), `yards`. Each has a `front` sidewalk point. Trains follow the track and stop at every station. The ids are stable, so riding the train can become a travel action later without changing the map. Nothing may build within `RAIL_CLEARANCE` of the track (`buildable()` gives blocks along the line a setback for the columns); this is tested.
+- **Walking** (`walkRoute`): characters follow the streets (a grid search, straightened); a trip across the whole city takes about 2.5 s.
+
 ## Integration points for Vesper and Codex
 
 ### 1. Location registry (`src/board/locations.ts`)
@@ -102,13 +121,13 @@ There's no block-level control in the simulation yet. `deriveBlocks` *presents* 
 
 ### 5. Custom models (GLB slots)
 
-Set `model: "assets/models/<file>.glb"` on a location. The board measures the footprint the procedural building would use, places the GLB there (the rest of the block still fills in), and loads it lazily; until it arrives, or if it fails, nothing breaks. `modelFit` tunes the fit: `height` (scale to a world height instead of the footprint), `scale`, `yaw`, `y`, `offset`, and `trackGap` for a station that brings its own stretch of El track. Vehicles live in `src/board/models.ts` (`MODEL_FILES`) and are swapped into the instanced traffic and police layers.
+Set `model: "assets/models/<file>.glb"` on a location. The board measures the footprint the procedural building would use, places the GLB there (the rest of the block still fills in), and loads it lazily; until it arrives, or if it fails, nothing breaks. `modelFit` tunes the fit: `height` (scale to a world height instead of the footprint), `scale`, `yaw`, `y`, `offset`. Vehicles live in `src/board/models.ts` (`MODEL_FILES`) and are swapped into the instanced traffic and police layers.
 
 **Formats.** Every GLB is meshopt-compressed geometry plus one KTX2 (Basis ETC1S) base-color texture: 1024px for landmarks, 512px for everything else, 256px for cars. iPhones keep KTX2 compressed on the GPU (ASTC), about 1.4 MB for a 1024 texture and 0.35 MB for a 512, so all 40 models need roughly 25 MB of texture memory. The loader (`models.ts`) reads both formats through the transcoder in `public/basis/`. Download for the full set is about 7 MB.
 
 **Pipeline** (tools in a scratch folder, not the repo): Meshy `image-to-3d --model-type smart-topology --ai-model meshy-t2.5 --target-polycount 2500–5000 --texture-resolution 2k --enable-pbr false` (15 credits), then a glTF Transform script using `ktx2-encoder` (resize, ETC1S quality 200, mipmaps), then `gltf-transform meshopt`. Studio art sheets are cropped one structure per image first. Chain-link fences come back from Meshy as solid walls; for courts and lots, the vertical triangles near the edges are stripped.
 
-**Places with a model** (`LocationDef.model`, fitted to the procedural footprint; `modelFit` tunes height, scale, yaw, offset and `trackGap`; `companions` adds more GLBs in the same footprint):
+**Places with a model** (`LocationDef.model`, fitted to the procedural footprint; `modelFit` tunes height, scale, yaw and offset; `companions` adds more GLBs in the same footprint):
 
 | File | Used for |
 | --- | --- |
@@ -134,7 +153,7 @@ Set `model: "assets/models/<file>.glb"` on a location. The board measures the fo
 
 Vehicles (`MODEL_FILES`): `lowrider.glb` (three cruise Rio), `police-cruiser.glb` (every patrol car).
 
-**Set pieces** (`setPieces.ts`): generic lots that dress the blocks no named place uses, drawn as one instanced mesh per piece, so repeats cost no extra memory. Each district has its own weighted pool and guaranteed signature pieces (Rio: taco lot, palm park; Southside: liquor corner; Reservoir: storefront church; Downtown: transit plaza and a parking garage), and the Nawf's El gets an underpass stretch. Placement is seeded per district, so the city is the same every session; houses and walk-ups are tinted per instance. Pieces: gas station, basketball court, pocket park, vacant lot, strip mall, fast food, car wash, walk-up, shotgun house, parking lot, taco lot, palm park, liquor corner, storefront church, parking garage, transit plaza, El underpass. The software-GL fallback skips set pieces and keeps box cars; `?fullgl` forces the full board there for screenshots.
+**Set pieces** (`setPieces.ts`): generic lots that dress the blocks no named place uses, drawn as one instanced mesh per piece, so repeats cost no extra memory. Each district has its own weighted pool, guaranteed signature pieces (Rio: taco lot, palm park; Southside: liquor corner; Reservoir: storefront church) and per-district caps so nothing repeats too often; the transit plaza always stands beside Stixx Central. Southside's three housing developments (`south-tower.glb`, `south-courtyard.glb`, `south-garden.glb`, from studio art) take every free project block and every other block of the dense south-west, in place of the generic slabs; `MAX_HEIGHT` keeps the tower below Southside Towers. Placement is seeded per district, so the city is the same every session; houses and walk-ups are tinted per instance. Pieces: gas station, basketball court, pocket park, vacant lot, strip mall, fast food, car wash, walk-up, shotgun house, parking lot, taco lot, palm park, liquor corner, storefront church, parking garage, transit plaza. (`el-station.glb` and `el-underpass.glb` are no longer used: the rail system draws its own stations.) The software-GL fallback skips set pieces and keeps box cars; `?fullgl` forces the full board there for screenshots.
 
 **Characters** (`characterModels.ts`): a named character listed in `CHARACTER_MODELS` stands at their spot as a rigged GLB in place of the crowd capsule (main characters stand; they do not wander). Mega is first: Meshy image-to-image A-pose sheet from studio art (6 credits) → image-to-3D Smart Topology 10k triangles, `--pose-mode a-pose` (15) → auto-rig at 1.85 m (5); 268 KB after KTX2 + meshopt, with Meshy's walk and run clips (~85 KB each). There is no bundled idle, so standing holds the walk cycle's passing pose. `board.characterMotion(id, "walk" | "run" | "stand")` plays a clip; new clips (cup, cigar, aiming) are added by name under `clips`. Person pins now sit at 2.3 so they clear a full-height model. Quanny is modeled and rigged from the studio's own A-pose (15 + 5 credits) and registered under id `quanny`; he appears as soon as a character with that id is added to the game data.
 
