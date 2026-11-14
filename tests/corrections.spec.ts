@@ -45,6 +45,18 @@ async function clickAction(page: Page, type: string) {
   // In the city the player walks over first; wait for the result to land.
   await expect(page.locator(".action-feedback")).toBeVisible({ timeout: 20000 });
 }
+/** Pink Magic lots sit in the Wallet's collapsed "lots" record; open it, then one lot. */
+async function openLot(page: Page) {
+  const records = page.locator(".lot-records");
+  await tapUntil(page, records.locator(":scope > summary"), async () =>
+    records.evaluate((el) => (el as HTMLDetailsElement).open),
+  );
+  const lot = records.locator(".inventory-slot").first();
+  await tapUntil(page, lot.locator("summary"), async () =>
+    lot.evaluate((el) => (el as HTMLDetailsElement).open),
+  );
+  return lot;
+}
 async function day(page: Page) {
   await dismissEncounter(page);
   await page.getByRole("button", { name: "End day" }).click();
@@ -178,11 +190,13 @@ test("known suspects and leaders need real introductions; access and inventory s
     page.getByRole("button", { name: "Streets", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
   await nav(page, "Wallet");
-  await expect(page.locator(".inventory-slot")).toContainText("×6");
-  await page.locator(".inventory-slot summary").click();
-  await expect(page.locator(".inventory-panel .lot-details")).toContainText(
-    "debt $102",
-  );
+  // The carried slot and the lot record both show the six units received.
+  await expect(
+    page.getByRole("group", { name: "Your slots" }).getByRole("button", { name: /^Pink Magic ×6/ }),
+  ).toBeVisible();
+  const lot = await openLot(page);
+  await expect(lot).toContainText("×6");
+  await expect(lot.locator(".lot-details")).toContainText("debt $102");
   await shot(page, ".inventory-panel", "06-inventory");
   const saved = await state(page);
   await page.reload();
@@ -257,10 +271,15 @@ for (const width of [320, 375, 390, 430])
       async () => (await state(page)).street.lots.length > 0,
     );
     await nav(page, "Wallet");
-    const summary = page.locator(".inventory-slot summary");
-    await tapUntil(page, summary, async () =>
-      summary.evaluate((el) => (el.parentElement as HTMLDetailsElement).open),
+    await openLot(page);
+    // Selecting the carried stack opens its detail card; both must fit too.
+    const stack = page
+      .getByRole("group", { name: "Your slots" })
+      .getByRole("button", { name: /^Pink Magic ×/ });
+    await tapUntil(page, stack, async () =>
+      (await stack.getAttribute("aria-pressed")) === "true",
     );
+    await expect(page.getByLabel("Selected item")).toBeVisible();
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBeLessThanOrEqual(width);

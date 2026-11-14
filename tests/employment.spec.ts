@@ -1,4 +1,4 @@
-import { honest, connects, storyline, storyAction } from "./helpers";
+import { honest, connects, storyline, storyAction, navigate, category } from "./helpers";
 import { test, expect, type Page, type Dialog } from "@playwright/test";
 import { AUTO_KEY, SAVE_KEY, serialize } from "../src/persistence/SaveSystem";
 import { newGame } from "../src/core/Simulation";
@@ -11,12 +11,10 @@ const root = process.env.PLAYWRIGHT_BASE_PATH || "/";
 const modal = (page: Page) =>
   page.getByRole("dialog", { name: "Character encounter", exact: true });
 const nav = async (page: Page, name: string) => {
-  await page
-    .getByRole("navigation")
-    .getByRole("button", { name, exact: true })
-    .click();
-  if (name === "Actions")
-    await page.getByRole("button", { name: "Honest", exact: true }).click();
+  // A street conversation can open on its own as days pass; put it aside first.
+  await close(page);
+  await navigate(page, name);
+  if (name === "Actions") await category(page, "Honest");
 };
 const state = async (page: Page): Promise<GameState> =>
   page.evaluate(
@@ -63,6 +61,7 @@ async function capture(page: Page, name: string) {
   await test.info().attach(name, { path, contentType: "image/png" });
 }
 async function click(page: Page, type: string) {
+  await close(page);
   // Each honest action happens at its own place in the city.
   if (["rest", "gig", "apply", "acceptJob", "work", "timeOff", "resign"].includes(type))
     await honest(page, type as Parameters<typeof honest>[1]);
@@ -70,14 +69,23 @@ async function click(page: Page, type: string) {
     await storyAction(page, type);
     return;
   }
+  const before = await state(page);
   await page
     .locator(`[data-action="${type}"]`)
     .first()
     .getByRole("button")
     .click();
-  // In the city the player walks over first; wait for the outcome to land.
+  // In the city the player walks over first; wait for the outcome to land:
+  // its feedback card, a scene it opened, or the AP it spent (the card can
+  // come and go between two polls on a slow renderer).
   await expect
-    .poll(async () => (await page.locator(".action-feedback").count()) + (await page.getByRole("dialog").count()), { timeout: 20000 })
+    .poll(
+      async () =>
+        (await page.locator(".action-feedback").count()) +
+        (await page.getByRole("dialog").count()) +
+        ((await state(page)).ap < before.ap ? 1 : 0),
+      { timeout: 20000 },
+    )
     .toBeGreaterThan(0);
 }
 async function endDay(page: Page, accept = true) {
@@ -91,7 +99,8 @@ async function endDay(page: Page, accept = true) {
 test("hire, scheduled wages, save and a thirty-day employment playthrough", async ({
   page,
 }) => {
-  test.setTimeout(180000);
+  // Thirty in-City days on a software renderer: give the walk-ins room.
+  test.setTimeout(480000);
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto(root);
@@ -117,12 +126,18 @@ test("hire, scheduled wages, save and a thirty-day employment playthrough", asyn
         c.status === "pending",
     );
     if (due) {
-      await nav(page, "Actions");
-      await click(page, "work");
-      if (await modal(page).count())
-        await modal(page)
-          .getByRole("button", { name: /Leave the count for the next shift|Pass. I’m done for today/ })
-          .click();
+      // A street conversation can meet the player on the way in, before the
+      // shift starts; put it aside and clock in again until the shift lands.
+      for (let attempt = 0; attempt < 3 && (await state(page)).ap > 0; attempt++) {
+        await nav(page, "Actions");
+        await click(page, "work");
+        // A workplace scene may follow the shift: decline the extra and keep regular pay.
+        const skip = modal(page).getByRole("button", {
+          name: /Leave the count for the next shift|Pass. I’m done for today/,
+        });
+        if (await skip.count()) await skip.click();
+        await close(page);
+      }
       s = await state(page);
       expect(s.ap).toBe(0);
       expect(s.employment[0].attendance.at(-1)?.status).toBe("worked");
@@ -183,9 +198,12 @@ test("absence warning can be cancelled; repeated absences fire and gigs survive 
   await capture(page, "06-termination");
   await nav(page, "Wallet");
   await capture(page, "07-hiring-restriction");
-  await nav(page, "Actions");
-  for (const b of await page.locator('[data-action="apply"] button').all())
-    await expect(b).toBeDisabled();
+  // At the employer itself, every application is refused during the cooldown.
+  await close(page);
+  await honest(page, "apply");
+  const applications = page.locator('[data-action="apply"] button');
+  expect(await applications.count()).toBeGreaterThan(0);
+  for (const b of await applications.all()) await expect(b).toBeDisabled();
   await click(page, "gig");
   expect((await state(page)).progression.cleanEarned).toBe(38);
   await expect(page.locator('[data-action="gig"] button')).toBeDisabled();

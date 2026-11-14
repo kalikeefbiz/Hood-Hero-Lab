@@ -1,4 +1,4 @@
-import { navigate, tapUntil } from "./helpers";
+import { navigate, openPlace, tapUntil } from "./helpers";
 import { performAction } from "../src/core/ActionEngine";
 import { expect, test, type Page } from "@playwright/test";
 import { newGame } from "../src/core/Simulation";
@@ -198,7 +198,7 @@ test("terminal conflict death ends activity and manual load can restore the earl
   expect((await snapshot(page)).end).toBeNull();
 });
 
-test("a meaningful Wallet activity opens a contextual street conversation on the City board", async ({
+test("a meaningful City purchase opens a contextual street conversation on the City board", async ({
   page,
 }) => {
   test.setTimeout(90000);
@@ -222,8 +222,9 @@ test("a meaningful Wallet activity opens a contextual street conversation on the
   }
   expect(chosen).toBeDefined();
   await seed(page, chosen!);
-  await navigate(page, "Wallet");
-  await page.locator('[data-action="buy"]').first().getByRole("button").click();
+  // Buying happens at the store itself, on the City board.
+  const deli = await openPlace(page, "The Nawf", "Nawf Deli & Grocery");
+  await deli.locator('[data-action="buy"]').first().getByRole("button").click();
   const modal = page.getByRole("dialog", { name: "Character encounter" });
   await expect(modal).toContainText("Mudgang contact");
   await tapUntil(
