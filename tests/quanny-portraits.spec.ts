@@ -1,5 +1,6 @@
 import { expect, test, type Page, type TestInfo } from "@playwright/test";
-import { newGame } from "../src/core/Simulation";
+// Pre-onboarding state: plugs only deal once the opening steps are done.
+import { newGame } from "../src/tests/legacyGame";
 import { player } from "../src/core/GameState";
 import { moveTo } from "../src/board/presence";
 import { connect } from "../src/systems/Relationships";

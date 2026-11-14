@@ -85,6 +85,31 @@ export async function category(page: Page, name: string) {
     )
     .toBe("true");
 }
+/** Open a place's card by walking the board: city → district → place list. */
+export async function openPlace(page: Page, district: string, place: string) {
+  await dismissEncounter(page);
+  await navigate(page, "City");
+  const districts = page.locator(".district-chips");
+  if (!(await districts.isVisible()))
+    await tapUntil(
+      page,
+      page
+        .getByRole("group", { name: "Board location" })
+        .getByRole("button", { name: "Stixx City", exact: true }),
+      () => districts.isVisible(),
+    );
+  const list = page.getByRole("region", { name: `Places in ${district}` });
+  await tapUntil(
+    page,
+    page.getByRole("button", { name: `Select ${district}`, exact: true }),
+    () => list.isVisible(),
+  );
+  const card = page.getByRole("region", { name: place, exact: true });
+  await tapUntil(page, list.getByRole("button", { name: new RegExp(place) }), () =>
+    card.isVisible(),
+  );
+  return card;
+}
 /** Actions happen in the city. The Actions tab says where; "Find on map" goes there. */
 export async function cityPlace(
   page: Page,
