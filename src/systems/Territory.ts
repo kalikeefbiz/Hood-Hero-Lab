@@ -3,6 +3,7 @@ import {
   type GameState,
   type FactionId,
   type ZoneId,
+  type Character,
 } from "../core/GameState";
 import { record } from "../core/EventLog";
 import { STRATEGY_BALANCE as B } from "../content/strategy";
@@ -192,13 +193,37 @@ export function syncTerritory(s: GameState, zone: ZoneId) {
   for (const id of ranked)
     s.factions[id].influence[zone] = t.factions[id].influence;
 }
+/** Current control is the source of truth; no cached modifiers can outlive a reversal. */
+export function rivalControl(s: GameState, zone: ZoneId, c: Character) {
+  const controller = s.strategic.territories[zone].controller;
+  return !!(
+    controller &&
+    c.affiliation &&
+    (s.factions[controller].enemies.includes(c.affiliation) ||
+      s.factions[c.affiliation].enemies.includes(controller))
+  );
+}
+
 function changeControl(s: GameState, zone: ZoneId, to: FactionId | null) {
   const t = s.strategic.territories[zone],
     from = t.controller;
+  // Displaced local networks lose working capital; victories fund the new foothold.
+  // Applied once per recognized transition, never again during load or inspection.
+  if (from) {
+    s.factions[from].resources = Math.max(0, s.factions[from].resources - 60);
+    s.factions[from].instability = clamp(s.factions[from].instability + 6);
+  }
+  if (to) {
+    s.factions[to].resources = Math.min(
+      B.resourceCap,
+      s.factions[to].resources + 40,
+    );
+    s.factions[to].instability = clamp(s.factions[to].instability - 2);
+  }
   const e = record(
     s,
     "city",
-    `${s.zones[zone].name}: ${to ? s.factions[to].name + " established sustained neighborhood control" : (from ? s.factions[from].name : "The former controller") + " lost recognized dominance"}. Commercial access and local pressure have shifted.`,
+    `${s.zones[zone].name}: ${to ? s.factions[to].name + " established sustained neighborhood control" : (from ? s.factions[from].name : "The former controller") + " lost recognized dominance"}. ${from ? s.factions[from].name + " lost local operating funds and its network is unsettled. " : ""}${to ? s.factions[to].name + " now backs the local commercial network. Rival-affiliated businesses lose customers, and rival street traders need established neighborhood ties. " : "Local trade no longer answers to a single organization. "}Lawful jobs and independent businesses remain open.`,
     [],
     [s.playerId],
     {
@@ -269,6 +294,30 @@ export function resolveTerritories(s: GameState) {
       t.weakDays = weak ? t.weakDays + 1 : 0;
       if (t.weakDays >= B.lossDays) changeControl(s, z.id, null);
     }
+    const challenger = ranked.find(
+      (id) =>
+        id !== t.controller &&
+        t.factions[id].presence >= 25 &&
+        (t.factions[id].pressure >= 12 || t.candidate === id),
+    );
+    if (
+      challenger &&
+      !s.events.some(
+        (e) => e.title === `${z.name}: Rival pressure` && s.day - e.day < 14,
+      )
+    )
+      record(
+        s,
+        "city",
+        `${z.name}: local traders report ${s.factions[challenger].name} organizing and challenging established interests. Trade is unsettled. Neighborhood ties, backing local operations, or an agreed organizational priority can help protect a foothold; lawful work remains available.`,
+        [],
+        [s.playerId],
+        {
+          title: `${z.name}: Rival pressure`,
+          importance: "major",
+          factionId: challenger,
+        },
+      );
     t.lawfulEconomy = clamp(
       t.lawfulEconomy +
         (z.commerce - t.lawfulEconomy) * 0.03 -

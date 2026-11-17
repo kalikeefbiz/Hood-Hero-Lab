@@ -38,7 +38,6 @@ export function advanceFactions(s: GameState) {
         leadership / 3000,
     );
     if (s.day < strategy.nextDecisionDay) continue;
-    const home = s.strategic.territories[f.home];
     const options: {
       kind: DecisionKind;
       zone: ZoneId;
@@ -215,7 +214,7 @@ export function advanceFactions(s: GameState) {
       eventId: e.id,
     });
     // Presence needs local social investment as well as economic spending.
-    if (choice.kind === "maintain" || choice.kind === "expand")
+    if (["maintain", "expand", "contest"].includes(choice.kind))
       applyInfluence(s, {
         actor: f.id,
         faction: f.id,

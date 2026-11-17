@@ -10,7 +10,7 @@ import { workIntroError, pabloError, personalBeef } from "./StreetAccess";
 import { boardPeople } from "../board/people";
 import { presenceOf } from "../board/presence";
 import { awardBuyer, skillsOf, skillRank } from "./Skills";
-import { applyInfluence } from "./Territory";
+import { applyInfluence, rivalControl } from "./Territory";
 import { STRATEGY_BALANCE } from "../content/strategy";
 import { arrest } from "./Incarceration";
 import {
@@ -107,11 +107,8 @@ export function marketAccess(
     ["dizzy", "babycanon", "joker"].some((id) => personalBeef(s, id))
   )
     return "The crew’s unresolved personal beef blocks local business. Resolve it through actual encounters.";
-  const controller = s.strategic.territories[zone].controller;
   if (
-    controller &&
-    c.affiliation &&
-    s.factions[controller].enemies.includes(c.affiliation) &&
+    rivalControl(s, zone, c) &&
     c.neighborhoodStanding[zone] < 25
   )
     return "Rival control restricts market access; requires 25 local standing";

@@ -699,6 +699,7 @@ export function App() {
     sheetRef.current?.scrollTo({ top: 0 });
   };
   const showPolitics = (zone: ZoneId) => {
+    focusBoard({ zone, block: null, place: null, target: null });
     setSelected(zone);
     requestAnimationFrame(() =>
       document

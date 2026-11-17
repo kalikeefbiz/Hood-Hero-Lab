@@ -4,7 +4,8 @@
  * fields to these views: menus, city cards and dialogue share these adapters.
  * No rolls, awards, save fields or inferred discoveries belong here.
  */
-import type { GameState, GameEvent } from "../core/GameState";
+import { rivalControl } from "../systems/Territory";
+import type { GameState, GameEvent, ZoneId } from "../core/GameState";
 import { LOCATIONS, locationById } from "../board/locations";
 import { ROBBERY_TARGETS, type CareerKind } from "../content/robberyCareer";
 import { ITEM_DEFINITIONS } from "../content/inventory";
@@ -281,4 +282,14 @@ export function robberyDiscoveryView(s: GameState) {
         takenBy: g.takenBy,
       })),
   };
+}
+
+/** Public neighborhood conditions and personal consequences, never AI intentions/scores. */
+export function rivalryView(s: GameState, zone: ZoneId) {
+  const t = s.strategic.territories[zone], p = s.characters[s.playerId];
+  if (rivalControl(s, zone, p))
+    return "A rival organization controls the local network. Your business here loses customers; street trade requires established neighborhood ties. Build local relationships, work through your representative, or pursue lawful work elsewhere. Jobs remain open.";
+  if (t.contested)
+    return "Local traders report competing organizations building their networks. Business takings are unsettled. Backing local interests or negotiating cooperation through a trusted representative can strengthen your organization's foothold. Independent and lawful work remain available.";
+  return "Local businesses answer to the current neighborhood balance. Lawful jobs and independent trade remain open; organization membership is optional.";
 }

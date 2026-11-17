@@ -146,6 +146,16 @@ export function politicalAction(
     s.zones[zone].support = clamp(s.zones[zone].support + 1);
   }
   if (faction) {
+    // Durable influence needs local cooperation as well as money or pressure.
+    applyInfluence(s, {
+      actor: p.id,
+      participants: target ? [target] : [],
+      faction,
+      zone,
+      kind: "community",
+      magnitude: type === "cooperate" ? 8 : 4,
+      cause: `${p.name}'s work through local contacts strengthened ${s.factions[faction].name}'s neighborhood relationships.`,
+    });
     s.factions[faction].resources = clamp(
       s.factions[faction].resources + a.cost * 0.4,
       0,

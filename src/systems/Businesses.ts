@@ -4,7 +4,7 @@ import { BUSINESSES } from "../content/strategy";
 import { earn, expense } from "./Economy";
 import { record } from "../core/EventLog";
 import { random } from "../core/Random";
-import { applyInfluence } from "./Territory";
+import { applyInfluence, rivalControl } from "./Territory";
 export const operating = (status: string) =>
   ["operating", "profitable", "struggling"].includes(status);
 export function businessError(
@@ -133,7 +133,8 @@ export function advanceBusinesses(s: GameState) {
     const demand =
       0.45 + t.lawfulEconomy / 150 + (s.zones[d.zone].support - 40) / 250;
     const disruption =
-      (t.contested ? 0.13 : 0) + (p.status === "arrested" ? 0.1 : 0);
+      (t.contested ? 0.13 : 0) +
+      (rivalControl(s, d.zone, p) ? 0.2 : 0) + (p.status === "arrested" ? 0.1 : 0);
     const revenue = Math.max(
       0,
       Math.round(
