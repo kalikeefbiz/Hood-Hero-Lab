@@ -1,4 +1,4 @@
-import { playerText, playerReason, latestPlayerEvent } from "../presentation/PlayerInformation";
+import { rivalryView, playerText, playerReason, latestPlayerEvent } from "../presentation/PlayerInformation";
 import { payArrears } from "../systems/Economy";
 import { useState } from "react";
 import { player, type GameState, type ZoneId } from "../core/GameState";
@@ -69,6 +69,7 @@ export function NeighborhoodStrategy({
       <p className="muted">
         {t.contested ? "Rival groups are competing for influence. Local trade feels unsettled." : "Local trade faces ordinary competition."}
       </p>
+      <p className="muted">{rivalryView(s, zone)}</p>
       {meaningful.map(([id, q]) => (
         <div
           className="foothold"
