@@ -38,7 +38,7 @@ export const FLACCO_GIFT: EncounterDefinition = {
       id: "receive",
       label: "Take Flacco’s six Pink Magic",
       detail:
-        `Gift: no payment or debt.${s.streetLife?.workEvent ? "" : " Complete the honest-work introduction before the trapping lesson."}`,
+        `A gift. You don’t owe him anything.${s.streetLife?.workEvent ? "" : " Find some honest work before your first lesson with Cuzzo."}`,
       effect: { type: "life", choice: "gift" },
       requirement: (s) =>
         safeStory(s)
@@ -47,7 +47,7 @@ export const FLACCO_GIFT: EncounterDefinition = {
               s.playerId,
               gain("nightgoods", 6, "gift", "pending-lot"),
             )
-          : "Flacco will wait until you are safely back in the City.",
+          : "Flacco will catch you when things calm down.",
     },
   ],
   rules,
@@ -116,7 +116,7 @@ export const LIFE_TALKS = [
           a.debtor === s.playerId &&
           a.status === "fulfilled",
       ),
-    text: "“You paid that pack. I noticed. Each new pack keeps its own clock. Family doesn’t mean the numbers disappear.”",
+    text: "“You paid that pack. I noticed. Every pack’s got its own due date. Family don’t make the numbers disappear.”",
   },
   {
     key: "pressure",
@@ -181,7 +181,7 @@ export const LIFE_ENCOUNTERS: EncounterDefinition[] = [
     responses: () => [
       {
         id: "hear",
-        label: "I hear you. Back to City.",
+        label: "I hear you.",
         effect: { type: "acknowledge" as const },
       },
     ],

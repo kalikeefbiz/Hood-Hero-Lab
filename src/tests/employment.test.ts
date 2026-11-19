@@ -53,7 +53,7 @@ describe("employment commitments and survival", () => {
       expect(cash(player(s))).toBe(125);
       expect(currentEmployment(s)).toBeUndefined();
       expect(validateAction(s, { type: "work", actor: "player" })).toMatch(
-        /employment/i,
+        /shift to work today/,
       );
       s = hire(s);
       expect(s.ap).toBe(1);
@@ -76,7 +76,7 @@ describe("employment commitments and survival", () => {
         actor: "player",
         jobId: "retail-nawf",
       }),
-    ).toMatch(/contact/);
+    ).toMatch(/from the neighb/);
     s = hire(s, "warehouse");
     expect(nextShift(s, currentEmployment(s)!)).toBe(3);
     expect(validateAction(s, { type: "work", actor: "player" })).toBeTruthy();
@@ -140,10 +140,10 @@ describe("employment commitments and survival", () => {
           actor: "player",
           jobId: "warehouse",
         }),
-      ).toMatch(/reopen/);
+      ).toMatch(/apply for jobs again/);
       s = action(s, "gig");
       expect(validateAction(s, { type: "gig", actor: "player" })).toMatch(
-        /complete/,
+        /already done a gig today/,
       );
       expect(
         s.commitments.some(
@@ -158,7 +158,7 @@ describe("employment commitments and survival", () => {
     ).toHaveLength(1);
     let warning = hire(newGame("Warn", "south"));
     warning = advanceDay(warning);
-    expect(absenceWarning(warning)).toMatch(/forfeits \$96/);
+    expect(absenceWarning(warning)).toMatch(/lose \$96/);
   });
   it("excuses unpaid leave, limits leave, and resignation releases obligations without wiping history", () => {
     let s = advanceDay(hire(newGame("Worker", "south")));
@@ -179,7 +179,7 @@ describe("employment commitments and survival", () => {
     ).toBe(false);
     expect(
       validateAction(s, { type: "apply", actor: "player", jobId: "warehouse" }),
-    ).toMatch(/reopen/);
+    ).toMatch(/apply for jobs again/);
     for (let d = 0; d < 3; d++) s = advanceDay(s);
     expect(
       validateAction(s, {
@@ -187,7 +187,7 @@ describe("employment commitments and survival", () => {
         actor: "player",
         jobId: "retail-south",
       }),
-    ).toMatch(/rehire/);
+    ).toMatch(/take you back/);
     expect(s.employment[0].attendance).toHaveLength(1);
   });
   it("uses a rolling five scheduled shifts so old absences expire", () => {
@@ -244,7 +244,7 @@ describe("employment commitments and survival", () => {
         e.status = "closed";
       const source = [...s.events]
         .reverse()
-        .find((e) => e.text.includes("worked a scheduled shift"))!;
+        .find((e) => e.text.includes("worked a shift and earned"))!;
       source.title = title;
       syncEncounters(s);
       const scene = s.encounters.find((e) => e.sourceEventId === source.id)!;

@@ -20,7 +20,7 @@ export const AUTHORITY_STAGES = [
     contribution: 0,
     days: 0,
     trust: 35,
-    permission: "Local support and community work",
+    permission: "Help out in the neighborhood",
   },
   {
     authority: 25,
@@ -29,7 +29,7 @@ export const AUTHORITY_STAGES = [
     contribution: 100,
     days: 10,
     trust: 40,
-    permission: "Back neighborhood operations and negotiate cooperation",
+    permission: "Back neighborhood moves and work out deals with other sets",
   },
   {
     authority: 45,
@@ -38,7 +38,7 @@ export const AUTHORITY_STAGES = [
     contribution: 300,
     days: 30,
     trust: 50,
-    permission: "Challenge rivals and propose territorial priorities",
+    permission: "Push back on rivals and pick which turf to focus on",
   },
   {
     authority: 70,
@@ -47,7 +47,7 @@ export const AUTHORITY_STAGES = [
     contribution: 700,
     days: 60,
     trust: 60,
-    permission: "Appoint an eligible Set successor",
+    permission: "Name someone to take your place",
   },
 ];
 export const BUSINESSES = [

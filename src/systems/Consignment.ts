@@ -53,27 +53,27 @@ export function frontMerchandiseError(
   negotiated = false,
 ): string | null {
   const terms = consignmentTerms(s, negotiated);
-  if (!terms) return "No Pink Magic on person.";
+  if (!terms) return "You don’t have any Pink Magic on you.";
   if (s.crew.members.includes(debtor)) {
     const x = s.characters[s.playerId].inventory?.slots.find(
       (x) => x.kind === "merchandise" && x.lotId === terms.lot.id,
     );
     return x
       ? giveItemError(s, debtor, x.id, x.quantity)
-      : "No Pink Magic on person.";
+      : "You don’t have any Pink Magic on you.";
   }
   if (lessonError(s)) return lessonError(s);
   if (
     (s.activeSession && s.activeSession.status !== "ended") ||
     (s.activeRobbery && s.activeRobbery.status !== "ended")
   )
-    return "Finish your current session first.";
+    return "Finish what you’re doing first.";
   if (!s.characters[debtor]) return "Unknown contact.";
   if (s.streetLife && !s.streetLife.legacy && !atPerson(s, debtor))
-    return "Meet this contact in the City first.";
-  if (receivable(s, debtor)) return "Collect the existing agreement first.";
+    return "Find them in the City first.";
+  if (receivable(s, debtor)) return "Collect what they owe you first.";
   if (cash(s.characters[debtor]) < terms.amount)
-    return "Contact operating cash is unavailable.";
+    return "They don’t have the cash right now.";
   return gainError(
     s,
     debtor,
@@ -135,7 +135,7 @@ export function frontMerchandise(
   const e = record(
     s,
     "money",
-    `Quanny: “I can make some happen but I need a front.” You transferred ${quantity} Pink Magic. Quanny owes you $${amount}, collectible day ${dueDay}. No money paid up front. ${quannyCollectionInstruction(s, dueDay)}`,
+    `Quanny: “I can make some happen but I need a front.” You fronted him ${quantity} Pink Magic. He owes you $${amount}. ${quannyCollectionInstruction(s, dueDay)}.`,
     ["quanny", s.playerId],
     undefined,
     { title: "Merchandise fronted", importance: "major", commitmentId },
@@ -193,7 +193,7 @@ export function collectConsignment(s: GameState, debtor: string) {
     "money",
     paid
       ? `Quanny paid the agreed $${a.balance}. “We square. Bring something real next time.”`
-      : `Quanny: “What merchandise? You ain't give me nothing.” He refuses payment. You leave with no goods and no payout.`,
+      : `Quanny: “What merchandise? You ain’t give me nothing.” He won’t pay, and you walk away with nothing.`,
     [debtor, p.id],
     undefined,
     {
@@ -217,7 +217,7 @@ export function collectConsignment(s: GameState, debtor: string) {
     const n = s.characters[debtor],
       amount = a.balance;
     a.reserve = 0;
-    earn(s, p, amount, "illicit", `Consignment collection · ${a.id}`);
+    earn(s, p, amount, "illicit", `Collected from ${n.alias ?? n.name}`);
     a.repaid += amount;
     a.balance = 0;
     a.status = "fulfilled";

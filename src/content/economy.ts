@@ -9,7 +9,7 @@ export const ITEMS = {
     name: "Smokes",
     price: 12,
     relief: 5,
-    description: "A brief break. No lasting advantage.",
+    description: "A quick break.",
   },
   booze: {
     name: "Booze",
@@ -21,13 +21,13 @@ export const ITEMS = {
     name: "Pocket music player",
     price: 65,
     relief: 16,
-    description: "Your own soundtrack. A lasting possession.",
+    description: "Your own soundtrack, wherever you go.",
   },
   clothing: {
     name: "Fresh clothes",
     price: 48,
     relief: 8,
-    description: "A small luxury. Feel more put together.",
+    description: "Look sharp, feel put together.",
   },
 } as const;
 export type ItemId = keyof typeof ITEMS;

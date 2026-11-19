@@ -31,15 +31,15 @@ export function legitimateProgress(s: GameState) {
   const missing: string[] = [];
   if (wealth < BALANCE.cleanWealthVictory)
     missing.push(
-      `$${BALANCE.cleanWealthVictory.toLocaleString()} qualifying net clean wealth`,
+      `$${BALANCE.cleanWealthVictory.toLocaleString()} in clean savings and assets`,
     );
   if (income < BALANCE.recurringIncomeVictory)
     missing.push(
-      `$${BALANCE.recurringIncomeVictory}/day net recurring lawful income`,
+      `$${BALANCE.recurringIncomeVictory} a day in steady, honest income`,
     );
   if (s.strategic.lawfulStreak < B.lawfulSustainDays)
     missing.push(
-      `${B.lawfulSustainDays} consecutive days of sustainable lawful income`,
+      `${B.lawfulSustainDays} days in a row of steady, honest income`,
     );
   if (
     p.wallet.illicit > 0 ||
@@ -48,16 +48,16 @@ export function legitimateProgress(s: GameState) {
         b.provenance === "illicit" && !["sold", "closed"].includes(b.status),
     )
   )
-    missing.push("No illicit cash or operating illicit-funded business");
+    missing.push("No dirty money, and no business bought with it");
   if (s.street.lots.some((l) => l.owner === p.id && l.remaining > 0))
-    missing.push("No merchandise remaining in distribution");
+    missing.push("No product left on you");
   if (recentCrime)
     missing.push(
-      `${BALANCE.legitimateCooldownDays} days since criminal activity or illicit earnings`,
+      `${BALANCE.legitimateCooldownDays} days clean of crime and dirty money`,
     );
   if (debt > 0)
-    missing.push("Clear outstanding supplier obligations and living arrears");
-  if (p.status !== "active") missing.push("Be active and available to retire");
+    missing.push("Pay off your suppliers and any unpaid living costs");
+  if (p.status !== "active") missing.push("Be free and able to walk away");
   return { wealth, income, debt, recentCrime, missing };
 }
 export function evaluateEnd(s: GameState): GameState["end"] {
@@ -79,17 +79,17 @@ export function finalizeEnding(s: GameState) {
   if (s.strategic.ending) return;
   const ending = evaluateEnd(s);
   s.end = ending;
-  if (ending) interruptSession(s, "Campaign ended. Unresolved visitors cancelled.");
+  if (ending) interruptSession(s, "Your story ended. Anyone still waiting moved on.");
   if (!ending || ending === "arrested") return;
   const p = player(s),
     text =
       ending === "underlord"
-        ? `${p.name} secured recognized power through ${s.factions[p.affiliation!].name}, with ${s.characters[s.crew.successor!].name} ready to carry the position forward. The city's record of your rise remains.`
+        ? `${p.name} made it to the top of ${s.factions[p.affiliation!].name}, with ${s.characters[s.crew.successor!].name} ready to carry it on. The city won’t forget how you rose.`
         : ending === "legitimate-exit"
-          ? `${p.name} chose to leave the streets behind. Proven lawful income and clean assets support an independent life; the record of how you got here remains.`
-          : `${p.name}'s life ended. Stixx City keeps its memory.`;
+          ? `${p.name} left the streets behind. Honest income and clean money pay for the life now. The city remembers how you got here.`
+          : `${p.name}’s life ended. Stixx City remembers.`;
   const e = record(s, "system", text, [p.id], [p.id], {
-    title: ending === "killed" ? "Campaign ended" : "A life established",
+    title: ending === "killed" ? "A life cut short" : "A life of your own",
     importance: "critical",
   });
   s.strategic.ending = { day: s.day, kind: ending, eventId: e.id };

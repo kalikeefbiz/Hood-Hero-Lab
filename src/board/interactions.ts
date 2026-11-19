@@ -91,14 +91,14 @@ export function placeFacts(s: GameState, l: LocationDef): string[] {
     const a = receivable(s, "quanny");
     if (a)
       facts.push(
-        `${quannyCollectionInstruction(s, a.dueDay)} $${a.balance} owed.`,
+        `${quannyCollectionInstruction(s, a.dueDay)} · $${a.balance} owed`,
       );
     if (
       s.street.agreements.some(
         (a) => a.debtor === "quanny" && a.status === "disputed",
       )
     )
-      facts.push("A refused consignment remains in your shared history.");
+      facts.push("He still hasn’t paid for the pack you fronted him.");
   }
   const job = currentEmployment(s);
   if (l.links.job) {
@@ -116,14 +116,14 @@ export function placeFacts(s: GameState, l: LocationDef): string[] {
     );
     facts.push(
       b
-        ? `Owned by you · ${b.status} · last day ${b.lastNet >= 0 ? "+" : "−"}$${Math.abs(b.lastNet)}`
-        : `Available · $${d.cost.toLocaleString()} · needs ${d.legitimacy} legitimacy`,
+        ? `You own this · ${b.status === "struggling" ? "losing money" : b.status === "profitable" ? "making money" : "just opened"} · yesterday ${b.lastNet >= 0 ? "+" : "−"}$${Math.abs(b.lastNet)}`
+        : `For sale · $${d.cost.toLocaleString()}${player(s).legitimacy < d.legitimacy ? " · you need a more legitimate name to buy" : ""}`,
     );
   }
   if (l.links.incident) {
     const i = s.incidents[l.links.incident];
     if (i?.status === "active")
-      facts.push(`Storyline: ${i.title} · demand $${i.demand}`);
+      facts.push(`${i.title} · they want $${i.demand}`);
   }
   if (l.links.rest && player(s).home === l.zone) facts.push("Your home turf");
   return facts;

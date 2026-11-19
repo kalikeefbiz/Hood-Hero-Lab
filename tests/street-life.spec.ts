@@ -326,20 +326,20 @@ test("fresh promise → physical application → queued Day 3 six → real Lot s
   await click(
     page,
     page.getByRole("button", {
-      name: "Ask for a Rio street introduction · 1 AP",
+      name: "Ask to be introduced around Rio Gabriel · 1 AP",
     }),
     async () => !!(await state(page)).streetLife?.rioContact,
   );
   await person(page, "contact-angels");
   await click(
     page,
-    page.getByRole("button", { name: "Agree and pay $12 territory tribute" }),
+    page.getByRole("button", { name: "Pay the Angels $12" }),
     async () => (await state(page)).streetLife!.tribute.length === 1,
   );
   await person(page, "dizzy");
   await click(
     page,
-    page.getByRole("button", { name: "Ask about an optional robbery job" }),
+    page.getByRole("button", { name: "Ask if they know about a job" }),
     async () => !!(await state(page)).robberies?.jobs.length,
   );
   for (const [location, label, item] of [
@@ -381,14 +381,14 @@ test("decline cash starter and one-AP City trapping", async ({ page }) => {
     page,
     page.getByRole("button", { name: "Talk terms with Cuzzo" }),
     async () =>
-      page.getByRole("button", { name: /Accept cash purchase/ }).isVisible(),
+      page.getByRole("button", { name: /Buy the pack/ }).isVisible(),
   );
   await expect(
-    page.getByRole("button", { name: /Accept consignment/ }),
+    page.getByRole("button", { name: /Take it on a front/ }),
   ).toBeDisabled();
   await click(
     page,
-    page.getByRole("button", { name: /Accept cash purchase/ }),
+    page.getByRole("button", { name: /Buy the pack/ }),
     async () => !!(await state(page)).streetLife?.starterLot,
   );
   await close(page);
@@ -418,7 +418,7 @@ test("earned contact → City preparation shops → real contextual robbery → 
   await person(page, "dizzy");
   await click(
     page,
-    page.getByRole("button", { name: "Ask about an optional robbery job" }),
+    page.getByRole("button", { name: "Ask if they know about a job" }),
     async () => !!(await state(page)).robberies?.jobs.length,
   );
   await place(page, "south.food-mart");
@@ -454,7 +454,7 @@ test("earned contact → City preparation shops → real contextual robbery → 
   await close(page);
   await click(
     page,
-    page.getByRole("button", { name: "Continue robbery session" }),
+    page.getByRole("button", { name: "Get back to the job" }),
     async () => (await state(page)).activeRobbery?.status === "active",
   );
   await click(page, page.getByRole("button", { name: "De-escalate and finish" }), async () => (await state(page)).activeRobbery?.status === "ended");

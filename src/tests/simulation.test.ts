@@ -122,7 +122,7 @@ describe("actions, economy, AP and persistence", () => {
       actor: "player",
       incidentId: "the-chains",
     });
-    expect(r.error).toMatch(/Insufficient/);
+    expect(r.error).toMatch(/enough cash/);
     expect(r.state).toBe(s);
     expect(cash(player(s))).toBe(125);
   });
@@ -270,10 +270,10 @@ describe("living simulation and personal Set", () => {
     s.characters.flacco.status = "arrested";
     expect(
       validateAction(s, { actor: "player", target: "flacco", type: "assign" }),
-    ).toMatch(/unavailable/);
+    ).toMatch(/locked up/);
     s.characters.flacco.status = "active";
     requestActivity(s, "flacco", "work");
-    expect(availability(s, s.characters.flacco)).toMatch(/committed/);
+    expect(availability(s, s.characters.flacco)).toMatch(/tied up until day/);
     const cashBefore = cash(player(s));
     s = advanceDay(s);
     expect(s.commitments[0].status).toMatch(/fulfilled|failed/);
@@ -513,7 +513,7 @@ describe("regression checks for autonomous schedules and ordinary crew members",
     s = advanceDay(s);
     expect(s.ap).toBe(2);
     expect(validateAction(s, { type: "gig", actor: npc.id })).toMatch(
-      /availability/,
+      /busy right now/,
     );
     expect(
       validateAction(s, { type: "recruit", actor: "player", target: npc.id }),

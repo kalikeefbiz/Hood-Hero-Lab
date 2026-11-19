@@ -6,7 +6,7 @@ export function openingIncident(s: GameState) {
   const participants = ["dizzy", "babycanon", "joker"];
   s.properties.chains = {
     id: "chains",
-    name: "Mega’s chains",
+    name: "Cuzzo’s chains",
     owner: "mega",
     possession: { kind: "group", id: "the-chains" },
     value: 400,

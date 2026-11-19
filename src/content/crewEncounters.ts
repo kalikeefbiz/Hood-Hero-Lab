@@ -34,7 +34,7 @@ export const CREW_CONVERSATION: EncounterDefinition = {
     ))
       rows.push({
         id: `attend-${a.id}`,
-        label: `Join scheduled activity · day ${a.dueDay} · 1 AP`,
+        label: `Meet up as planned · day ${a.dueDay} · 1 AP`,
         effect: { type: "crew", choice: "attend", assignmentId: a.id },
         requirement: () => attendError(s, a.id),
       });
@@ -48,14 +48,14 @@ export const CREW_CONVERSATION: EncounterDefinition = {
       const decision = cooperation(s, c, activity);
       const detail =
         activity === "work"
-          ? `$12 reserved compensation · possible $${24 + Math.floor(c.skills.work / 6)} tomorrow · payment depends on completed work`
+          ? `$12 set aside for their time · could bring in $${24 + Math.floor(c.skills.work / 6)} tomorrow if the work gets done`
           : activity === "partner-gig"
-            ? "same daily gig limit · both earn; skills affect pay"
+            ? "counts as your gig for the day · you both get paid"
             : activity === "partner-crime"
-              ? "requires held merchandise · 15% of actual gross to partner · both face exposure and loss"
+              ? "needs product on you · they take 15% of what sells · you both take the risk"
               : activity === "social"
-                ? "trust, affection and stress relief"
-                : "only information they know and are willing to share";
+                ? "time together; you both unwind"
+                : "they’ll share what they know, if they want to";
       rows.push({
         id: activity,
         label: activityName[activity],
@@ -66,7 +66,7 @@ export const CREW_CONVERSATION: EncounterDefinition = {
       if (activity === "work" && decision.negotiate)
         rows.push({
           id: "work-negotiated",
-          label: "Agree to $18 compensation · 1 AP if accepted",
+          label: "Pay them $18 for their time · 1 AP if accepted",
           effect: {
             type: "crew",
             choice: "request",
@@ -78,7 +78,7 @@ export const CREW_CONVERSATION: EncounterDefinition = {
     }
     rows.push({
       id: "leave",
-      label: "Catch you later. Return to City.",
+      label: "Catch you later.",
       effect: { type: "crew", choice: "leave" },
     });
     return rows;
@@ -119,13 +119,13 @@ export const CREW_OFFER: EncounterDefinition = {
         : o.activity === "social"
           ? `I've had a lot on my mind. Could use some time with a friend on day ${o.activityDay}. You free?`
           : `I could introduce you to ${contact} on day ${o.activityDay}. Might be useful for both of us.`;
-    return `${intro} ${e.selectedResponses.some((r) => r.id === "details") ? `We’ll need to make time when we meet. ${o.activity === "partner-gig" ? "It’s local paid work. We both get paid after we finish." : "No cash payment. We both make time; I can only share what I know."} If you can't come, I'll keep on with my own day.` : `Let me know by day ${Math.min(o.expiresDay, o.activityDay)}.`} ${c.stress > 35 ? "I could really use the break." : "No pressure if you've got other plans."}`;
+    return `${intro} ${e.selectedResponses.some((r) => r.id === "details") ? `${o.activity === "partner-gig" ? "It’s paid work, right here. We both get paid when it’s done." : "Ain’t about money. Just make the time."} If you can’t make it, no stress, I’ll do my own thing.` : `Let me know by day ${Math.min(o.expiresDay, o.activityDay)}.`} ${c.stress > 35 ? "I could really use the break." : "No pressure if you've got other plans."}`;
   },
   responses: (s, e) => [
     {
       id: "accept-offer",
-      label: `I'm in. Schedule day ${offer(s, e)!.activityDay}`,
-      detail: `1 AP on arrival. ${offer(s, e)!.activity === "partner-gig" ? "Same daily gig limit; your pay is $38 plus a work-skill bonus; partner receives $16 after work." : "No cash payment."}`,
+      label: `I’m in. Day ${offer(s, e)!.activityDay}`,
+      detail: `1 AP when you meet. ${offer(s, e)!.activity === "partner-gig" ? "Counts as your gig that day: you earn $38, a little more with experience, and they get $16." : "No pay; just time together."}`,
       effect: { type: "crew", choice: "accept" },
       requirement: () => offerError(s, offer(s, e)!.id),
     },
@@ -141,7 +141,7 @@ export const CREW_OFFER: EncounterDefinition = {
     {
       id: "decline-offer",
       label: "Can't make it. You go ahead.",
-      detail: "No friendship penalty.",
+      detail: "No hard feelings.",
       effect: { type: "crew", choice: "decline" },
     },
   ],

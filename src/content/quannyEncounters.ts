@@ -46,7 +46,9 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
       return "I ain’t never heard of you. Who put you on?";
     const a = receivable(s, "quanny");
     if (a)
-      return `We got an arrangement. $${a.balance}. ${quannyCollectionInstruction(s, a.dueDay)}`;
+      return s.day < a.dueDay
+        ? `We got an arrangement. I owe you $${a.balance}. Come see me day ${a.dueDay}.`
+        : `We got an arrangement. $${a.balance}, right?`;
     if (s.quanny.business === "blocked") return "What you coming around for?";
     if (e.selectedResponses.at(-1)?.id === "terms") {
       const t = consignmentTerms(s);
@@ -73,12 +75,12 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
           p.affiliation
             ? labels[p.affiliation]
             : "Ion bang, but Im trynna touch some money.",
-          "Truthful affiliation",
+          "The truth",
         ),
         ...(["blocks", "angels"] as const)
           .filter((f) => f !== p.affiliation)
           .map((f) =>
-            response(`claim:${f}`, labels[f], "False affiliation claim"),
+            response(`claim:${f}`, labels[f], "A lie"),
           ),
       ];
     }
@@ -87,7 +89,7 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
         response(
           "explain",
           p.affiliation
-            ? "Explain your actual membership"
+            ? "Tell him who you really run with"
             : "Tell him you’re unaffiliated",
         ),
         response("decline-details", "Keep the details to yourself"),
@@ -100,7 +102,7 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
           `Collect $${a.balance}`,
           quannyCollectionInstruction(s, a.dueDay),
           (state) =>
-            state.day < a.dueDay ? `Return on day ${a.dueDay}.` : null,
+            state.day < a.dueDay ? `He pays on day ${a.dueDay}.` : null,
         ),
         response("leave", "Leave the arrangement in place"),
       ];
@@ -114,14 +116,14 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
       response(
         "terms",
         "Offer Quanny work",
-        "Front real merchandise on consignment",
+        "Front him product now; he pays you later",
         (state) => businessError(state),
       ),
       response(
         "ask-work",
         "Ask Quanny for work · Locked",
-        "“You need a body before we can talk about that.” Splash Gang paid violent work requires an established violent history; unavailable in this introduction.",
-        () => "Future progression opportunity; contracts are not available.",
+        "“You need a body before we can talk about that.”",
+        () => "Quanny isn’t offering you that kind of work.",
       ),
     ];
     if (e.selectedResponses.at(-1)?.id === "terms") {
@@ -131,13 +133,13 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
         response(
           "front",
           `Agree · front ${t?.quantity ?? 0} goods for $${t?.amount ?? 0}`,
-          "No up-front payment · six-day deadline",
+          "He pays nothing now · owes you in six days",
           (state) => businessError(state),
         ),
         response(
           "negotiate",
           `Negotiate $${n?.amount ?? 0}`,
-          "Practiced negotiation (60 social) makes a credible higher offer. Weak proposals damage the relationship.",
+          "Ask for more. You need to be good with people to pull it off, and a weak pitch could sour things.",
           (state) => businessError(state),
         ),
       );
@@ -147,7 +149,7 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
         response(
           "repair",
           "Discuss reopening business",
-          "New credible ties or Blocc Boys progress required",
+          "He’ll want new people vouching for you, or standing with the Blocc Boys",
           (state) => repairError(state),
         ),
       );
@@ -156,27 +158,27 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
         response(
           "reconcile",
           "Seek reconciliation",
-          "Credible social progress can cool a grievance; disputed debts remain.",
+          "Try to squash it. It won’t settle the money.",
         ),
         response(
           "rob",
           "Attempt to rob Quanny",
-          "Extreme danger · experienced Blocc Boys hitter with organizational backing",
+          "Extremely dangerous · a seasoned Blocc Boys hitter with people behind him",
         ),
         response(
           "retaliate",
           "Attempt violent retaliation",
-          "Lethal danger · early players cannot eliminate him through a lucky roll",
+          "Deadly · you won’t take him out on luck",
         ),
         response(
           "fight",
           "Challenge Quanny to a fight",
-          "Extreme danger · experience, skills, support and circumstances matter",
+          "Extremely dangerous · experience and backup matter",
         ),
         response(
           "disrespect",
           "Publicly disrespect Quanny",
-          "Creates lasting conflict memory",
+          "He won’t forget it",
         ),
       );
     responses.push(
@@ -192,10 +194,10 @@ export const QUANNY_ENCOUNTER: EncounterDefinition = {
         r.detail = `1 AP · ${r.detail}`;
         r.requirement = (state) =>
           state.ap < 1
-            ? "Requires 1 AP."
+            ? "You need 1 AP."
             : r.id === "retaliate" &&
                 skillRank(state.characters[state.playerId], "combat") < 2
-              ? "Requires story Combat certification — not yet available in the game."
+              ? "You need Combat certification first."
               : null;
       }
     return responses;

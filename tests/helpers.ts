@@ -175,7 +175,7 @@ export async function storyAction(page: Page, type: string) {
     buyback: /Pay to return the chains/,
     negotiate: /Talk down the demand/,
     settlement: /Bring the dispute to Pablo/,
-    recover: /Attempt property recovery/,
+    recover: /Take the chains back/,
   };
   await page
     .getByRole("dialog", { name: "Character encounter" })

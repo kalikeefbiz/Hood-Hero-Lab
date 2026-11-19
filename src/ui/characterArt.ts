@@ -86,7 +86,7 @@ export const CHARACTER_ART = {
 } satisfies Record<string, Illustration | Record<string, Illustration>>;
 export const CHAIN_EVIDENCE: Illustration = {
   path: "assets/incidents/the-chains/mega-stolen-chain-evidence.webp",
-  alt: "Mega’s diamond pendant — item reference, not its current location",
+  alt: "Cuzzo’s diamond pendant",
   width: 1280,
   height: 961,
 };

@@ -16,7 +16,7 @@ export function syncEncounters(s: GameState) {
     record(
       s,
       "system",
-      `Your run ended: ${s.end}. Your history remains available.`,
+      `${({ arrested: "Your story ended in a cell.", killed: "Your life in Stixx City is over.", "legitimate-exit": "You walked away from the streets." } as Record<string, string>)[s.end] ?? "You rose to the top."} Your story is still here to look back on.`,
       [s.playerId],
       [s.playerId],
       { importance: "critical", title: `Run ended: ${s.end}` },

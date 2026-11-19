@@ -104,9 +104,9 @@ export function CityMap({
           >
             <desc id={`${mapId}-${id}-description`}>
               {z.controller
-                ? `Controlled by ${s.factions[z.controller].name}.`
-                : "No single controller."}
-              {presence ? ` Faction presence: ${presence}.` : " Unclaimed."}
+                ? `Run by ${s.factions[z.controller].name}.`
+                : "Nobody runs it."}
+              {presence ? ` Sets here: ${presence}.` : " Unclaimed."}
             </desc>
             <rect
               className={`zone-base ${s.strategic.territories[id].contested ? "zone-contested" : ""}`}

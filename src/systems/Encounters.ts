@@ -30,12 +30,12 @@ export function responseError(
   e: EncounterInstance,
   r: EncounterResponse,
 ): string | null {
-  if (s.end) return "This run has ended";
+  if (s.end) return "Your story has ended";
   if (hospitalStay(s))
-    return "Recover in hospital before taking part in conversations.";
+    return "You’re still in the hospital.";
   if (!encounterDefinition(e).eligible(s, e))
-    return "This conversation is no longer available";
-  if (e.status !== "active") return "Open the conversation first";
+    return "That moment has passed";
+  if (e.status !== "active") return "Start the conversation first";
   if (r.effect.type === "action") return validateAction(s, r.effect.action);
   return r.requirement?.(s, e) ?? null;
 }
@@ -51,7 +51,7 @@ export function respondEncounter(
       .responses(state, original)
       .find((r) => r.id === responseId);
   if (!original || !response)
-    return { state, error: "This response is no longer available" };
+    return { state, error: "You can’t say that now" };
   const error = responseError(state, original, response);
   if (error) return { state, error };
   const startEvent = state.events.length;
@@ -123,7 +123,7 @@ export function respondEncounter(
       record(
         s,
         "crew",
-        `${s.characters[o.member].name}: “All good. I'll get on with my own plans.” You declined without a friendship penalty.`,
+        `${s.characters[o.member].name}: “All good. I’ll get on with my own plans.” No hard feelings.`,
         [o.member, s.playerId],
         undefined,
         { importance: "routine" },
@@ -164,7 +164,7 @@ export function respondEncounter(
       record(
         s,
         "social",
-        "You told Cuzzo you would not get involved. No promise was made.",
+        "You told Cuzzo you’re staying out of it.",
         [s.playerId, "mega"],
         undefined,
         { incidentId: e.incidentId },
@@ -175,7 +175,7 @@ export function respondEncounter(
       record(
         s,
         "social",
-        "You asked Cuzzo for time to think. You made no promise; the dispute continues.",
+        "You asked Cuzzo for time to think it over.",
         [s.playerId, "mega"],
         undefined,
         { incidentId: e.incidentId },

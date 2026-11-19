@@ -23,7 +23,7 @@ export function plugStatus(s: GameState, id: string) {
     );
     return `You owe $${debts.reduce((n, a) => n + a.balance, 0)}${debts.length > 1 ? ` across ${debts.length} packs` : ""} · due day ${Math.min(...debts.map((a) => a.dueDay))}`;
   }
-  if (!player(s).connections.includes(id)) return "Not connected yet";
+  if (!player(s).connections.includes(id)) return "You haven’t met yet";
   const reasons = [
     supplierError(s, id, "cash"),
     supplierError(s, id, "consignment"),
@@ -67,7 +67,7 @@ export function PlugEntry({
       <strong>
         {debt
           ? `Outstanding: $${balance}${debts.length > 1 ? ` across ${debts.length} packs` : ""} · due day ${Math.min(...debts.map((a) => a.dueDay))}`
-          : "Pink Magic · limited lot"}
+          : "Pink Magic · limited supply"}
       </strong>
       {!debt && (
         <p>

@@ -280,12 +280,12 @@ export function App() {
   useEffect(() => {
     try {
       if (adoptPreviewSaves(localStorage))
-        setNotice("Your bigger-city campaign is now the official game.");
+        setNotice("The Stixx has grown. Your saved game carries over.");
       setHasSave(
         !!(localStorage.getItem(SAVE_KEY) || localStorage.getItem(AUTO_KEY)),
       );
     } catch {
-      setNotice("Local storage is unavailable. This tab can still run a game.");
+      setNotice("This browser can’t save your game, but you can still play.");
     }
   }, []);
   useEffect(() => {
@@ -359,7 +359,7 @@ export function App() {
       try {
         saveGame(localStorage, s);
         setHasSave(true);
-        setNotice(`Saved day ${s.day}. Load restores this checkpoint.`);
+        setNotice(`Game saved on day ${s.day}.`);
       } catch (e) {
         setNotice((e as Error).message);
       }
@@ -439,40 +439,40 @@ export function App() {
       );
       const reply = lifeResponse
         ? (latestPlayerEvent(result.state, s.events.length)?.text ??
-          "Your encounter is recorded.")
+          "Done.")
         : quannyResponse
           ? (result.state.events
               .slice(s.events.length)
               .filter((e) => e.observedBy.includes(s.playerId))
-              .at(-1)?.text ?? "Your conversation with Quanny continues.")
+              .at(-1)?.text ?? "Quanny’s still talking.")
           : dangerResponse
             ? (result.state.danger.scenes.find(
                 (x) => x.id === sourceEncounter.dangerSceneId,
-              )?.outcome ?? "The conversation ended.")
+              )?.outcome ?? "You went your separate ways.")
             : actionResponse
-              ? (actionResult?.text ?? "Action completed.")
+              ? (actionResult?.text ?? "Done.")
               : streetResponse
                 ? (latestPlayerEvent(result.state, s.events.length)?.text ??
                   (response === "terms"
-                    ? "Supplier terms clarified; no goods or debt accepted."
-                    : "Supplier conversation concluded."))
+                    ? "You heard how it works. Nothing changed hands."
+                    : "You went your separate ways."))
                 : crewResponse
                   ? (latestPlayerEvent(result.state, s.events.length)?.text ??
                     (response === "details"
                       ? "They shared more about their plans."
-                      : "Conversation concluded."))
+                      : "You said your goodbyes."))
                   : response === "promise"
-                    ? "Cuzzo: ‘I’m counting on you.’ Your promise is recorded. Return through City → Storylines."
+                    ? "Cuzzo: ‘I’m counting on you.’"
                     : response === "decline"
-                      ? "Cuzzo: ‘Alright. I heard you. I’ll figure out what I can do.’ No promise was made."
+                      ? "Cuzzo: ‘Alright. I heard you. I’ll figure out what I can do.’"
                       : response === "delay"
-                        ? "You asked for time to think. The situation continues; resume the conversation from City."
+                        ? "You asked Cuzzo for time to think it over. He’ll be around."
                         : response === "acknowledge"
-                          ? "Outcome acknowledged. The city moves on; the history remains."
+                          ? "Life in the Stixx goes on."
                           : s.encounters.find((e) => e.id === id)
                                 ?.definitionId === "workplace"
                             ? (latestPlayerEvent(result.state, s.events.length)?.text ??
-                              "Workplace choice recorded.")
+                              "Back to work.")
                             : "Cuzzo explains what happened.";
       const finished = result.state.encounters.find((e) => e.id === id);
       const dealtInCity =
@@ -592,7 +592,7 @@ export function App() {
           ? endStreetSession(
               cur,
               cur.activeSession.id,
-              "Left the spot. Unresolved visitors cancelled.",
+              "You left the spot. Anyone still waiting moved on.",
             )
           : cur,
       );
@@ -641,7 +641,7 @@ export function App() {
           ? endStreetSession(
               cur,
               cur.activeSession.id,
-              "Left the spot. Unresolved visitors cancelled.",
+              "You left the spot. Anyone still waiting moved on.",
             )
           : cur,
       );
@@ -675,7 +675,7 @@ export function App() {
     setDayTransition(next.day);
     pulseDay();
     setNotice(
-      `Day ${next.day}: living costs processed, the city has moved, and AP is restored.`,
+      `Day ${next.day}. Bills are paid, the city kept moving, and you’re rested.`,
     );
   }
   /** Move the board's focus; the City sheet follows it. */
@@ -718,18 +718,18 @@ export function App() {
         <Panel className="ending">
           <h3>
             {s.end === "arrested"
-              ? "Your run ended: arrested"
+              ? "Your story ended in a cell"
               : s.end === "killed"
-                ? "Your run ended: killed"
-                : s.end === "legitimate-exit" ? "Victory: Legitimate Exit" : "Victory: Underlord"}
+                ? "Your story ended"
+                : s.end === "legitimate-exit" ? "You walked away clean" : "You made it to the top"}
           </h3>
           <p>
             {s.strategic.ending
               ? playerText(s, s.events.find((e) => e.id === s.strategic.ending?.eventId && e.observedBy.includes(s.playerId))?.text)
               : ""}{" "}
-            Your history remains available to inspect. Start a new life from the
-            game menu below. Manual Load still restores your chosen checkpoint,
-            including one saved before death.
+            You can still look back through this story. Start a new life from
+            the game menu below, or load a save to pick up from an earlier
+            point.
           </p>
         </Panel>
       )}
@@ -737,10 +737,10 @@ export function App() {
         <Panel>
           <h3>Recovering in hospital</h3>
           <p>
-            Discharge on day {hospitalStay(s)!.releaseDay}. Treatment $
-            {hospitalStay(s)!.bill}; ${hospitalStay(s)!.paid} paid. Any unpaid
-            treatment is included in arrears. Your jobs, debts, relationships
-            and the city continue while you recover.
+            You get out on day {hospitalStay(s)!.releaseDay}. The bill is $
+            {hospitalStay(s)!.bill} and you’ve paid ${hospitalStay(s)!.paid}.
+            Whatever you can’t cover goes on what you owe. Life outside keeps
+            moving while you heal.
           </p>
           <button
             onClick={() => {
@@ -759,10 +759,9 @@ export function App() {
             Release day{" "}
             {s.street.custody.find(
               (r) => r.character === p.id && r.status === "held",
-            )?.releaseDay ?? "not defined"}
-            . Street actions and ordinary work are unavailable. Each day still
-            resolves living costs, employment, supplier obligations, crew and
-            city activity.
+            )?.releaseDay ?? "unknown"}
+            . You can’t work or hit the street from in here. Bills, debts, your
+            job and your Set keep moving on the outside.
           </p>
           <button
             onClick={() => {
@@ -918,10 +917,10 @@ export function App() {
                     <span aria-hidden="true">!</span>
                     <strong>{activeStory.title}</strong>
                     <span className="story-status">
-                      Demand {money(activeStory.demand)} ·{" "}
+                      They want {money(activeStory.demand)} ·{" "}
                       {activeStory.leadershipAware
-                        ? "Leadership is considering its response"
-                        : "Awaiting your help"}
+                        ? "Pablo knows about it"
+                        : "Cuzzo needs your help"}
                     </span>
                   </button>
                 )}
@@ -955,7 +954,7 @@ export function App() {
                           ? "Hear from Flacco about Cuzzo"
                           : e.definitionId === "trio-aftermath"
                             ? "Hear the Chains crew"
-                            : "Resume workplace conversation"}
+                            : "Back to the conversation at work"}
                     </button>
                   ))}
               </div>
@@ -1129,10 +1128,10 @@ export function App() {
                           : s.zones[selected].description}
                       </p>
                       <p className="control-label">
-                        Control:{" "}
+                        Run by:{" "}
                         {s.zones[selected].controller
                           ? s.factions[s.zones[selected].controller!].name
-                          : "No single controller"}
+                          : "nobody in particular"}
                       </p>
                       <NeighborhoodStrategy
                         key={selected}
@@ -1302,10 +1301,10 @@ export function App() {
                         <span className="eyebrow">WORD ON THE BLOCK</span>
                         <strong>{activeStory.title}</strong>
                         <span className="story-status">
-                          Demand {money(activeStory.demand)} ·{" "}
+                          They want {money(activeStory.demand)} ·{" "}
                           {activeStory.leadershipAware
-                            ? "Leadership is considering its response"
-                            : "Awaiting your help"}
+                            ? "Pablo knows about it"
+                            : "Cuzzo needs your help"}
                         </span>
                       </span>
                       <Icon name="arrow" />
@@ -1442,9 +1441,9 @@ export function App() {
                   <p className="muted">
                     {person.status === "active"
                       ? person.availableDay > s.day
-                        ? "Currently committed elsewhere."
-                        : `${accessStatus(s, p.id, person.id)}${contactError(s, p.id, person.id) ? " · " + playerReason(s, contactError(s, p.id, person.id)) : " · Available to contact"}`
-                      : "Currently " + person.status + "."}
+                        ? `Busy until day ${person.availableDay}.`
+                        : `${accessStatus(s, p.id, person.id)}${contactError(s, p.id, person.id) ? " · " + playerReason(s, contactError(s, p.id, person.id)) : " · You can reach them"}`
+                      : ({ arrested: "Locked up.", dead: "Gone.", "laying-low": "Laying low." } as Record<string, string>)[person.status] ?? "Not around."}
                   </p>
                   {p.connections.includes(person.id) && (
                     <>
@@ -1513,13 +1512,13 @@ export function App() {
                     </span>
                   </div>
                   <p>
-                    Your Set is a circle of up to five trusted people, distinct
-                    from the city’s five organizations. Influence expands
-                    capacity at 5, 15, 30 and 50.
+                    Your Set is your own circle of people you trust. It’s
+                    separate from the big organizations. The more influence you
+                    have, the more people you can bring in.
                   </p>
                   <p className="muted">
-                    Current influence: {Math.floor(p.influence)}. Members keep
-                    their own affiliations, resources and memories.
+                    Everyone in your Set still has their own life, loyalties and
+                    money.
                   </p>
                 </Panel>
                 <div className="action-grid">
@@ -1547,7 +1546,7 @@ export function App() {
                         <p className="muted">{knownCapabilities(c)}</p>
                         <MemberGear s={s} id={id} />
                         <p>
-                          {availability(s, c) ?? "Available to discuss plans"}
+                          {availability(s, c) ?? "Free to talk"}
                         </p>
                         <button
                           className="secondary"
@@ -1601,13 +1600,13 @@ export function App() {
                     .map((a) => (
                       <p key={a.id}>
                         {s.characters[a.member].name} · {a.objective} ·{" "}
-                        {a.status} · day {a.dueDay}
+                        {a.status === "active" ? "underway" : "agreed"} · day {a.dueDay}
                         {a.status === "accepted" && (
                           <button
                             className="secondary"
                             onClick={() => interact(a.member)}
                           >
-                            Meet for scheduled activity
+                            Meet up
                           </button>
                         )}
                       </p>
@@ -1724,11 +1723,11 @@ export function App() {
                       <strong>{money(BALANCE.livingCost)}</strong>
                     </span>
                   </div>
-                  <p>Living expenses are charged as you advance each day.</p>
+                  <p>Rent and living costs come out at the end of each day.</p>
                   <p className="muted">
-                    Clean and illicit funds keep separate provenance. Purchases
-                    use clean money first. Running short increases stress; it
-                    never locks you out of work.
+                    Clean money and street money are kept apart. You spend clean
+                    money first. Coming up short stresses you out, but you can
+                    always still work.
                   </p>
                 </Panel>
                 <InventoryWallet
@@ -1816,25 +1815,25 @@ export function App() {
                       <div key={i.id}>
                         <h3>
                           {i.title}{" "}
-                          <span className="status-chip">{i.status}</span>
+                          <span className="status-chip">{i.status === "active" ? "ongoing" : "over"}</span>
                         </h3>
                         <p>
                           {i.status === "active"
-                            ? `Demand ${money(i.demand)} · ${i.leadershipAware ? "Leadership is considering its response" : "No leadership intervention yet"}`
-                            : `${i.resolution}. Life in The Stixx continues.`}
+                            ? `They want ${money(i.demand)} · ${i.leadershipAware ? "Pablo knows about it" : "Pablo hasn’t heard yet"}`
+                            : `${({ sold: "They sold the chains", buyback: "Cuzzo bought them back", settlement: "The leadership worked out a deal", recovered: "The chains came back" } as Record<string, string>)[i.resolution ?? ""] ?? "It’s over"}. Life in the Stixx goes on.`}
                         </p>
                         <p>
                           {s.commitments.find(
                             (c) =>
                               c.kind === "recover-property" &&
                               c.incidentId === i.id,
-                          )?.status ??
+                          )?.status === "fulfilled" ? "You kept your word" : s.commitments.some((c) => c.kind === "recover-property" && c.incidentId === i.id && ["broken", "failed"].includes(c.status)) ? "You didn’t come through" : s.commitments.some((c) => c.kind === "recover-property" && c.incidentId === i.id) ? "You made Cuzzo a promise" :
                             (i.interventions.some((x) => x.actor === p.id)
-                              ? "Resolved without a promise"
-                              : "Resolved without your involvement")}
+                              ? "You helped without making promises"
+                              : "It worked out without you")}
                         </p>
                         <details>
-                          <summary>Incident record</summary>
+                          <summary>What happened</summary>
                           {visibleEvents(s)
                             .filter(
                               (e) =>
@@ -1912,21 +1911,19 @@ export function App() {
             <details className="game-menu">
               <summary>Game & save information</summary>
               <p>
-                Automatic progress saves after each move. Save creates a manual
-                checkpoint. Load restores that checkpoint, then falls back to
-                autosave. Resume opens your latest automatic progress, including
-                acknowledged outcomes. Saves stay in this browser on this
-                device.
+                Your progress saves after every move. Save keeps a copy you can
+                come back to with Load. Resume picks up wherever you left off.
+                Saves stay in this browser on this device.
               </p>
               <p>
-                Version 0.1 · No maximum campaign length.
+                Version 0.1
               </p>
               <button
                 className="secondary"
                 onClick={() => {
                   setState(null);
                   setNotice(
-                    "Choose a name and home for a new game, or resume your saved checkpoint.",
+                    "Start a new story, or pick up where you left off.",
                   );
                 }}
               >

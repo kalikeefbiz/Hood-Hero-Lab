@@ -64,7 +64,7 @@ test("actual local investment, contested map, autonomous decisions and persisted
     .getByRole("button", { name: "Select The Nawf", exact: true })
     .click();
   await expect(page.locator(".strategy-neighborhood")).toContainText(
-    "Contested neighborhood",
+    "Up for grabs",
   );
   await shot(page, ".city-layout", "02-contested-neighborhood");
   await page.getByRole("button", { name: "End day" }).click();
@@ -106,9 +106,9 @@ test("simulation-resolved control change and council succession progression", as
   await shot(page, ".city-layout", "03-control-change");
   await nav(page, "Set");
   await expect(page.locator(".organization-panel")).toContainText(
-    "4/4 stabilized",
+    "hold 4 of 4 neighborhoods",
   );
-  await page.getByText("Successor eligibility", { exact: true }).click();
+  await page.getByText("Who could take your place", { exact: true }).click();
   await expect(page.locator(".organization-panel")).toContainText(
     "Eligible to accept",
   );
@@ -132,13 +132,13 @@ test("earned affiliation authority restriction and advancement use existing spon
   await seed(page, s);
   await nav(page, "Set");
   await page
-    .getByRole("button", { name: "Request advancement · 1 AP" })
+    .getByRole("button", { name: "Ask to move up · 1 AP" })
     .click();
   await expect(page.locator(".organization-panel")).toContainText(
     "Contributor",
   );
   await expect(page.locator(".organization-panel")).toContainText(
-    "Authority 25",
+    "You’ve put in $",
   );
   await shot(page, ".organization-panel", "04-organization-progression");
 });
@@ -150,17 +150,17 @@ test("business acquisition, real operating income, sale, and voluntary retiremen
   s.characters.player.legitimacy = 30; // controlled financial setup, production acquisition and daily operation
   await seed(page, s);
   await nav(page, "Wallet");
-  await page.getByRole("button", { name: /Acquire Southside repair/ }).click();
-  await expect(page.locator(".business-panel")).toContainText("Funding: clean");
+  await page.getByRole("button", { name: /Buy Southside repair/ }).click();
+  await expect(page.locator(".business-panel")).toContainText("Clean money");
   await page.getByRole("button", { name: "End day" }).click();
   await dismissEncounter(page);
   await nav(page, "Wallet");
-  await expect(page.locator(".business-panel")).toContainText("Latest net");
-  await page.getByText("Operating history", { exact: true }).click();
+  await expect(page.locator(".business-panel")).toContainText("Yesterday");
+  await page.getByText("Last week", { exact: true }).click();
   await shot(page, ".business-panel", "06-business-income");
   await shot(page, ".retirement-panel", "08-legitimate-progress");
   await page.getByRole("button", { name: /Sell .*repair counter/ }).click();
-  await expect(page.locator(".business-panel")).toContainText("sold");
+  await expect(page.locator(".business-panel")).toContainText("Sold");
   // Distant clean-wealth fixture; sustainable income comes from actual operating business history.
   s = newGame("Test(7) Retirement", "south");
   s.characters.player.wallet.clean = 120000;
@@ -170,10 +170,10 @@ test("business acquisition, real operating income, sale, and voluntary retiremen
   await seed(page, s);
   await nav(page, "Wallet");
   await expect(
-    page.getByRole("button", { name: "Retire voluntarily" }),
+    page.getByRole("button", { name: "Walk away" }),
   ).toBeEnabled();
-  await page.getByRole("button", { name: "Retire voluntarily" }).click();
-  await expect(page.locator(".ending")).toContainText("legitimate-exit");
+  await page.getByRole("button", { name: "Walk away" }).click();
+  await expect(page.locator(".ending")).toContainText("You walked away clean");
 });
 for (const width of [320, 375, 390, 430])
   test(`strategy, organization and businesses fit ${width}px`, async ({

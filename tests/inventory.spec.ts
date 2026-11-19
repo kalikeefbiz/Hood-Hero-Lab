@@ -154,14 +154,14 @@ test("City residence and member cards enforce slot/load rules and real equipment
   const gear2Arp = gear2.getByRole("group", { name: "You" }).getByRole("button", { name: /^ARP ×1/ });
   await tapUntil(page, gear2Arp, async () => (await gear2Arp.getAttribute("aria-pressed")) === "true");
   await expect(gear2.getByRole("button", { name: /^Give .* 1$/ })).toBeDisabled();
-  await expect(gear2.getByText("Need 6 more load capacity.")).toBeVisible();
+  await expect(gear2.getByText("You can’t carry that much.")).toBeVisible();
   expect(serialize(await state(page))).toBe(before);
   await place(page, residence.id);
   const home2 = page.getByRole("region", { name: "Your residence" });
   const home2Arp = home2.getByRole("group", { name: "On you" }).getByRole("button", { name: /^ARP ×1/ });
   await tapUntil(page, home2Arp, async () => (await home2Arp.getAttribute("aria-pressed")) === "true");
   await expect(home2.getByRole("button", { name: "Put in safe 1" })).toBeDisabled();
-  await expect(home2.getByText("Need 6 more load capacity.")).toBeVisible();
+  await expect(home2.getByText("You can’t carry that much.")).toBeVisible();
   await page.screenshot({ path: test.info().outputPath("safe-full.png") });
   expect(
     inventoryOf(await state(page)).slots.some((x) => x.itemId === "arp"),

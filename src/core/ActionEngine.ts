@@ -67,175 +67,175 @@ export const ACTIONS = {
     ap: 0,
     risk: "Social",
     description:
-      "Meet Quanny at his location to discuss business, collection or your shared history.",
-    outcomes: ["A persistent conversation"],
+      "Find Quanny outside Lil Jay’s and talk business.",
+    outcomes: ["A conversation he’ll remember"],
   },
   apply: {
     label: "Apply for work",
     ap: 1,
     risk: "None",
     description:
-      "Meet the hiring contact. Review the offer before accepting; no wages for applying.",
-    outcomes: ["Job offer if eligible"],
+      "Talk to whoever does the hiring. Applying is unpaid; you can look over any offer before you take it.",
+    outcomes: ["A job offer, if they’ll have you"],
   },
   acceptJob: {
-    label: "Accept employment",
+    label: "Take the job",
     ap: 0,
     risk: "None",
     description:
-      "Commit to the repeating schedule. First shift is after today.",
-    outcomes: ["Persistent employment and scheduled shifts"],
+      "Take the job and its weekly schedule. Your first shift is after today.",
+    outcomes: ["A steady job with regular shifts"],
   },
   timeOff: {
-    label: "Request unpaid time off",
+    label: "Ask for a day off",
     ap: 0,
     risk: "None",
     description:
-      "Ask to be excused from today's shift. One approved leave per seven days.",
-    outcomes: ["No absence, no wages"],
+      "Ask to skip today’s shift without pay. You can do this once a week.",
+    outcomes: ["Excused, unpaid"],
   },
   resign: {
-    label: "Resign from work",
+    label: "Quit",
     ap: 0,
     risk: "None",
     description:
-      "End employment and future obligations. Applications pause for three days; same workplace for seven.",
-    outcomes: ["Employment ends; employer trust falls"],
+      "Quit this job. You can apply elsewhere after three days, and here again after seven.",
+    outcomes: ["The job ends; your boss won’t forget it"],
   },
   contact: {
     label: "Reach out",
     ap: 1,
     risk: "None",
-    description: "Make contact and establish a little trust.",
-    outcomes: ["Trust and shared memories"],
+    description: "Introduce yourself and start building trust.",
+    outcomes: ["A little trust"],
   },
   inquire: {
     label: "Ask around",
     ap: 1,
     risk: "None",
-    description: "Learn about people and the property dispute.",
-    outcomes: ["Information and new contacts"],
+    description: "Ask what they know about who’s who and what happened to Cuzzo’s chains.",
+    outcomes: ["What they know, and maybe new names"],
   },
   introduce: {
     label: "Ask for an introduction",
     ap: 1,
     risk: "None",
-    description: "Meet the people this contact knows.",
-    outcomes: ["New known contacts"],
+    description: "Ask them to put you in touch with people they know.",
+    outcomes: ["New people to meet"],
   },
   socialize: {
     label: "Spend time together",
     ap: 1,
     risk: "None",
-    description: "Build trust, shaped by their values.",
-    outcomes: ["Trust, respect and stress relief"],
+    description: "Hang out. What builds trust depends on what they care about.",
+    outcomes: ["Trust, respect and a lighter mood"],
   },
   favor: {
-    label: "Request help",
+    label: "Ask for help",
     ap: 1,
     risk: "Social",
-    description: "Ask a trusted person to support the dispute.",
-    outcomes: ["Support from a trusted contact"],
+    description: "Ask someone who trusts you to back you up over the chains.",
+    outcomes: ["Someone in your corner"],
   },
   offer: {
     label: "Offer support · $20",
     ap: 1,
     risk: "None",
-    description: "Give financial support. Its provenance stays with the money.",
-    outcomes: ["Money transferred and trust built"],
+    description: "Help them out with some money. Where it came from goes with it.",
+    outcomes: ["$20 given; trust built"],
   },
   transfer: {
-    label: "Transfer $25",
+    label: "Give $25",
     ap: 1,
     risk: "None",
-    description: "Send $25 to this person.",
-    outcomes: ["Money transferred"],
+    description: "Give them $25.",
+    outcomes: ["$25 given"],
   },
   negotiate: {
     label: "Negotiate buyback",
     ap: 1,
     risk: "Social",
-    description: "Try to lower the group’s demand, once per dispute.",
-    outcomes: ["Lower demand or refusal"],
+    description: "Try to talk their price down. You only get one shot.",
+    outcomes: ["A lower price, or a flat no"],
   },
   settlement: {
     label: "Discuss settlement",
     ap: 1,
     risk: "Social",
-    description: "Tell active leadership about the unauthorized incident.",
-    outcomes: ["Leadership may intervene on a later day"],
+    description: "Let the people running things know their young members acted on their own.",
+    outcomes: ["Leadership may step in, in their own time"],
   },
   buyback: {
     label: "Pay for the chains",
     ap: 1,
     risk: "None",
     description:
-      "Meet the current demand and return the property to its owner.",
-    outcomes: ["Property returned; cash paid to the group"],
+      "Pay what they’re asking and get Cuzzo’s chains back to him.",
+    outcomes: ["The chains come home; they keep the cash"],
   },
   recover: {
-    label: "Attempt property recovery",
+    label: "Take the chains back",
     ap: 2,
     risk: "High",
     description:
-      "An abstract, uncertain operation. Failure raises exposure and conflict.",
-    outcomes: ["Property returned or police and rival pressure"],
+      "Take the chains back yourself. It might not go your way, and failing brings police and trouble with the crew.",
+    outcomes: ["The chains back, or police and rival heat"],
   },
   work: {
     label: "Work a full shift",
     ap: 2,
     risk: "None",
     description:
-      "Attend your scheduled shift. Build work skills and legitimacy. Requires an active job and today’s obligation.",
-    outcomes: ["$96 clean income; +8 stress"],
+      "Clock in for today’s scheduled shift. Steady work builds your skills and your name.",
+    outcomes: ["$96 honest pay · tiring"],
   },
   gig: {
     label: "Take a local gig",
     ap: 1,
     risk: "None",
     description:
-      "Earn $38 helping a local business in your neighborhood. One ordinary gig per day; no recurring obligation.",
-    outcomes: ["$38 clean income; +3 stress"],
+      "Earn $38 helping out a local business. One gig a day, no strings attached.",
+    outcomes: ["$38 honest pay · a little tiring"],
   },
   crime: {
-    label: "Street work transaction",
+    label: "Work the street",
     ap: 1,
     risk: "High",
     description:
-      "Distribute merchandise you actually hold through a limited local market. Supplier balances remain owed.",
+      "Move the product you’re carrying. Whatever you owe your supplier is still owed.",
     outcomes: [
-      "Actual sales or loss; inventory, supplier debt and exposure persist",
+      "Sales or losses; your debt and the attention stay with you",
     ],
   },
   buy: {
     label: "Buy item",
     ap: 1,
     risk: "None",
-    description: "Buy a personal item and reduce stress.",
+    description: "Treat yourself and take the edge off.",
     outcomes: ["Cash spent; stress relieved"],
   },
   recruit: {
     label: "Invite to your Set",
     ap: 1,
     risk: "Social",
-    description: "Requires free capacity, trust and willingness.",
-    outcomes: ["Persistent crew membership"],
+    description: "Ask them to roll with you. They need room in your Set, trust in you, and to want it.",
+    outcomes: ["A new member of your Set"],
   },
   remove: {
     label: "Remove from Set",
     ap: 1,
     risk: "Social",
-    description: "Part ways. Identity and relationship history remain.",
-    outcomes: ["Member leaves; trust falls"],
+    description: "Cut ties with them. They’ll remember how it ended.",
+    outcomes: ["They leave; trust falls"],
   },
   assign: {
     label: "Assign a paid errand",
     ap: 1,
     risk: "Low",
     description:
-      "Reserve an available member for a lawful errand due next day.",
+      "Send a free member on an honest errand, done by tomorrow.",
     outcomes: [
-      "$24 clean income and member experience, or a failed obligation",
+      "$24 clean and experience for them, or a job left undone",
     ],
   },
   standing: {
@@ -243,22 +243,22 @@ export const ACTIONS = {
     ap: 1,
     risk: "None",
     description:
-      "Help a member’s neighborhood. Build personal and organizational standing.",
-    outcomes: ["Standing, influence and legitimacy"],
+      "Help out in a member’s neighborhood. People notice who shows up.",
+    outcomes: ["Standing for you and the organization"],
   },
   affiliate: {
-    label: "Request affiliation",
+    label: "Ask to get put on",
     ap: 1,
     risk: "Social",
-    description: "A trusted member sponsors you when standing is sufficient.",
-    outcomes: ["Membership in one established organization"],
+    description: "Ask a member who trusts you to vouch for you.",
+    outcomes: ["Membership, if they vouch for you"],
   },
   rest: {
     label: "Take a quiet afternoon",
     ap: 1,
     risk: "None",
-    description: "Relieve stress without spending money.",
-    outcomes: ["−14 stress"],
+    description: "Slow down for a few hours. Costs nothing.",
+    outcomes: ["Takes the edge off"],
   },
 } as const;
 export type ActionType = keyof typeof ACTIONS;
@@ -283,40 +283,40 @@ export function validateAction(s: GameState, a: Action): string | null {
     s.activeRobbery &&
     s.activeRobbery.status !== "ended"
   )
-    return "Finish the robbery session first.";
-  if (s.end) return "This run has ended";
+    return "Finish the job you’re on first.";
+  if (s.end) return "This story has ended";
   if (c.id === s.playerId && hospitalStay(s))
-    return "You are recovering in hospital.";
+    return "You’re still in the hospital.";
   if (c.id === s.playerId && (streetConversation(s) || quannyConversation(s)))
-    return "Finish the street encounter before taking another action.";
+    return "Finish this conversation first.";
   if (c.status !== "active") return "Actor is not active";
   if (
     c.id === s.playerId
       ? s.ap < ACTIONS[a.type].ap
       : c.availableDay > s.day || c.lastActionDay >= s.day
   )
-    return "Not enough AP or availability";
+    return c.id === s.playerId ? "Not enough AP left today" : "They’re busy right now";
   if (["apply", "acceptJob"].includes(a.type)) {
     const error = jobError(s, a.actor, a.jobId);
     if (error) return error;
     const search = searchState(s, a.actor);
     if (a.type === "apply" && search.lastApplicationDay === s.day)
-      return "One formal application per day. Review your offer.";
+      return "You’ve already applied somewhere today. Look over your offer.";
     if (a.type === "acceptJob" && search.offeredJob !== a.jobId)
-      return "Apply and receive an offer first";
+      return "Apply here first";
   }
   if (
     a.type === "work" &&
     (!currentEmployment(s, a.actor) || !shiftToday(s, a.actor))
   )
-    return "No unfulfilled scheduled shift today. Formal employment is required.";
+    return "You don’t have a shift to work today.";
   if (["resign", "timeOff"].includes(a.type) && !currentEmployment(s, a.actor))
-    return "You are not employed";
+    return "You don’t have a job";
   if (a.type === "timeOff") {
-    if (!shiftToday(s, a.actor)) return "No scheduled shift to excuse today";
+    if (!shiftToday(s, a.actor)) return "You aren’t scheduled today";
     const last = currentEmployment(s, a.actor)!.timeOffDays.at(-1);
     if (last !== undefined && s.day - last < BALANCE.employment.timeOffInterval)
-      return `Unpaid leave available again on day ${last + BALANCE.employment.timeOffInterval}`;
+      return `You can ask for time off again on day ${last + BALANCE.employment.timeOffInterval}`;
   }
   if (
     a.partner &&
@@ -329,9 +329,9 @@ export function validateAction(s: GameState, a: Action): string | null {
           x.activity === (a.type === "crime" ? "partner-crime" : "partner-gig"),
       ))
   )
-    return "Partner participation requires an active shared assignment";
+    return "You haven’t agreed on this with them";
   if (a.type === "gig" && searchState(s, a.actor).lastGigDay === s.day)
-    return "Today's local gig is complete. More opportunities tomorrow.";
+    return "You’ve already done a gig today. Come back tomorrow.";
   if (a.type === "quanny")
     return a.actor === s.playerId && a.target === "quanny"
       ? quannyError(s)
@@ -367,16 +367,16 @@ export function validateAction(s: GameState, a: Action): string | null {
         (t.relationships[c.id]?.trust ?? 0) < 15 &&
         (t.relationships[c.id]?.affection ?? 0) < 15
       )
-        return "Build a connection before inviting them to spend time together.";
+        return "Get to know them a little first.";
       if (
         a.type === "introduce" &&
         !introductionCandidates(s, c.id, t.id).length
       )
-        return "No appropriate new introduction is available through this contact.";
+        return "They don’t have anyone new to introduce you to.";
     }
-    if (!c.known.includes(t.id)) return "You need an introduction";
+    if (!c.known.includes(t.id)) return "Someone needs to introduce you first";
     if (t.status !== "active" && a.type !== "remove")
-      return "This person is unavailable";
+      return "They’re not around";
   }
   const incidentActions: ActionType[] = [
     "negotiate",
@@ -386,32 +386,32 @@ export function validateAction(s: GameState, a: Action): string | null {
     "favor",
   ];
   if (incidentActions.includes(a.type) && (!i || i.status !== "active"))
-    return "No active property dispute";
+    return "There’s nothing to settle right now";
   if (
     ["negotiate", "buyback", "recover", "settlement", "favor"].includes(
       a.type,
     ) &&
     !i?.informed
   )
-    return "Speak to the victim or ask around first";
+    return "Hear what happened from Cuzzo, or ask around first";
   if (a.type === "negotiate" && i?.negotiated)
-    return "This demand has already been negotiated";
+    return "You already tried to talk them down";
   if (
     a.type === "settlement" &&
     (!t?.affiliation ||
       t.affiliation !== i?.organization ||
       !s.factions[t.affiliation].leaders.includes(t.id))
   )
-    return "Speak to active leadership of the organization";
+    return "Bring this to someone who runs things";
   if (a.type === "settlement" && i?.leadershipAware)
-    return "Leadership is already considering the dispute";
+    return "Leadership already knows";
   if (
     a.type === "favor" &&
     (i?.helpRequested || (t?.relationships[c.id]?.trust ?? 0) < 45)
   )
-    return "Help requires trust and can only be requested once";
+    return "They need to trust you more, and you can only ask once";
   if (a.type === "buyback" && cash(c) < (i?.demand ?? Infinity))
-    return "Insufficient cash for the current demand";
+    return "You don’t have enough cash";
   if (
     (a.type === "offer" || a.type === "transfer") &&
     cash(c) < (a.type === "offer" ? 20 : 25)
@@ -432,13 +432,13 @@ export function validateAction(s: GameState, a: Action): string | null {
     if (capacity) return capacity;
   }
   if (a.type === "crime" && a.actor === s.playerId)
-    return "Visit a City street spot and start a trapping session.";
+    return "Go to a spot in the City and start trapping there.";
   if (
     a.actor === s.playerId &&
     s.activeSession &&
     s.activeSession.status !== "ended"
   )
-    return "End your trapping session before another action.";
+    return "Wrap up trapping first.";
   if (a.type === "crime") {
     if (a.market && !s.zones[a.market]) return "Unknown market";
     return transactionError(s, a.actor, a.market);
@@ -447,30 +447,30 @@ export function validateAction(s: GameState, a: Action): string | null {
     ["recruit", "remove", "assign", "affiliate"].includes(a.type) &&
     c.id !== s.playerId
   )
-    return "Player Set action only";
+    return "Only you can manage your Set";
   if (a.type === "assign")
-    return "Use the member conversation to request cooperation";
+    return "Talk to them in person to ask for help";
   if (a.type === "recruit") {
     if (s.crew.members.includes(t!.id)) return "Already in your Set";
     if (s.crew.members.length >= s.crew.capacity)
-      return "Your Set is at capacity";
+      return "Your Set is full";
     if (
       t!.availableDay > s.day ||
       (t!.relationships[c.id]?.trust ?? 0) < BALANCE.recruitTrust ||
       t!.traits.loyalty < 35
     )
-      return "Requires an available person with at least 42 trust";
+      return "They don’t trust you enough to join, or they’re busy";
     if (
       t!.affiliation &&
       c.affiliation &&
       s.factions[t!.affiliation].enemies.includes(c.affiliation)
     )
-      return "Conflicting organizational loyalty prevents recruitment";
+      return "Their people and yours don’t mix";
   }
   if (["remove", "assign"].includes(a.type) && !s.crew.members.includes(t!.id))
-    return "Not a member of your Set";
+    return "They’re not in your Set";
   if (a.type === "standing" && !t?.affiliation)
-    return "Choose an organization member";
+    return "They aren’t with an organization";
   if (a.type === "affiliate") {
     if (c.affiliation) return "Already affiliated";
     if (!t?.affiliation) return "A member must sponsor you";
@@ -478,7 +478,7 @@ export function validateAction(s: GameState, a: Action): string | null {
       c.organizationStanding[t.affiliation] < BALANCE.affiliationStanding ||
       (t.relationships[c.id]?.trust ?? 0) < BALANCE.affiliationTrust
     )
-      return "Requires 35 organizational standing and 35 sponsor trust";
+      return "Requires 35 organizational standing and a sponsor willing to vouch for you";
   }
   return null;
 }
@@ -575,7 +575,7 @@ export function resolveAction(s: GameState, a: Action) {
       c.skills.social = clamp(c.skills.social + 1);
       c.influence += 1;
       if (i && t!.id === i.victim) i.informed = true;
-      text = `${c.name} spent time with ${t!.alias ?? t!.name}. Trust grew${values ? " — they value your legitimate work" : ""}.`;
+      text = `${c.name} spent time with ${t!.alias ?? t!.name}. ${values ? "They respect that you earn an honest living." : "You’re getting closer."}`;
       break;
     }
     case "inquire":
@@ -588,13 +588,13 @@ export function resolveAction(s: GameState, a: Action) {
       );
       if (i) i.informed = true;
       change(t!, c.id, { trust: 4 });
-      text = `${t!.name} ${a.type === "introduce" ? "made an appropriate introduction" : "shared what they know"}${i ? " and confirmed that the robbery was unauthorized. The property is held by the group, not a known individual" : ""}.`;
+      text = `${t!.name} ${a.type === "introduce" ? "put you in touch with some people" : "told you what they know"}${i ? ". Nobody signed off on taking Cuzzo’s chains, and the crew is holding them as a group" : ""}.`;
       break;
     }
     case "favor":
       i!.helpRequested = true;
       change(t!, c.id, { trust: 3 });
-      text = `${t!.name} agreed to back your request for a peaceful settlement. Leadership still has to hear about it.`;
+      text = `${t!.name} will back you on settling this peacefully. Leadership still has to hear about it.`;
       break;
     case "offer":
     case "transfer": {
@@ -622,7 +622,7 @@ export function resolveAction(s: GameState, a: Action) {
     case "settlement":
       i!.leadershipAware = true;
       change(t!, c.id, { respect: 4 });
-      text = `${t!.name} learned of the unauthorized robbery. A leadership decision may follow as time passes.`;
+      text = `${t!.name} now knows the robbery wasn’t sanctioned. Leadership will decide what to do in its own time.`;
       category = "incident";
       break;
     case "buyback": {
@@ -656,12 +656,12 @@ export function resolveAction(s: GameState, a: Action) {
       c.rivalThreat = clamp(c.rivalThreat + 16);
       if (random(s) < successChance!) {
         resolveIncident(s, i!, "recovered", c.id);
-        text = "The recovery succeeded. The exposure and resentment remain.";
+        text = "You got the chains back. People saw, and the crew won’t forget it.";
       } else {
         i!.escalation = clamp(i!.escalation + 18);
         change(s.characters[i!.victim], c.id, { respect: 3 });
         text =
-          "The recovery failed. Police attention and rival pressure increased; the dispute remains open.";
+          "It went wrong. The police are paying more attention, the crew is on edge, and the chains are still gone.";
       }
       category = "risk";
       break;
@@ -681,7 +681,7 @@ export function resolveAction(s: GameState, a: Action) {
         c.neighborhoodStanding[c.home] + 1,
       );
       if (c.id === s.playerId) s.progression.jobs++;
-      text = `${c.name} earned $${amount} in lawful pay from today's local gig.`;
+      text = `${c.name} earned $${amount} from a local gig.`;
       category = "money";
       break;
     }
@@ -697,7 +697,7 @@ export function resolveAction(s: GameState, a: Action) {
     case "recruit":
       s.crew.members.push(t!.id);
       change(t!, c.id, { trust: 4, affection: 4 });
-      text = `${t!.name} joined your personal Set. Their own loyalties and history remain.`;
+      text = `${t!.name} joined your Set. They still have their own people and their own past.`;
       category = "crew";
       break;
     case "remove": {
@@ -711,7 +711,7 @@ export function resolveAction(s: GameState, a: Action) {
         trust: -(10 + Math.round(closeness / 10) + (promised ? 6 : 0)),
         grievance: 4 + Math.round(closeness / 10) + (promised ? 4 : 0),
       });
-      text = `${t!.name} left your Set. ${closeness >= 50 ? "Being cut out by someone close hurt; reconciliation can take time." : "There is distance between you now."} ${promised ? "Existing promises and their consequences remain." : "Your shared history remains."}`;
+      text = `${t!.name} left your Set. ${closeness >= 50 ? "Being cut out by someone close hurt them. It may take time to mend." : "There’s distance between you now."}${promised ? " What you promised each other still stands." : ""}`;
       category = "crew";
       break;
     }
@@ -734,11 +734,11 @@ export function resolveAction(s: GameState, a: Action) {
       c.authority = 10;
       if (c.id === s.playerId) s.strategic.membershipDay = s.day;
       change(t!, c.id, { respect: 5 });
-      text = `${t!.name} sponsored ${c.name} into ${s.factions[c.affiliation].name}. Your Set remains a personal crew.`;
+      text = `${t!.name} vouched for ${c.name}, and ${s.factions[c.affiliation].name} took you in. Your Set is still your own crew.`;
       break;
     case "rest":
       c.stress = clamp(c.stress - 14);
-      text = `${c.name} took a quiet afternoon. Stress eased.`;
+      text = `${c.name} took a quiet afternoon and let some stress go.`;
       break;
   }
   if (
@@ -759,7 +759,7 @@ export function resolveAction(s: GameState, a: Action) {
             ? "support"
             : "community",
       magnitude: a.type === "standing" ? 1.5 : 0.3,
-      cause: `${c.name}'s ${a.type} activity supported local ${faction ? "organizational ties" : "civilian life"}.`,
+      cause: `${c.name} ${({ standing: "helped out in the neighborhood", offer: "helped someone with money", socialize: "spent time with a neighbor", gig: "worked a local gig", work: "worked an honest shift" } as Record<string, string>)[a.type] ?? "was out in the neighborhood"}, and people noticed${faction ? " who you run with" : ""}.`,
     });
     if (c.id === s.playerId && faction && c.affiliation === faction)
       s.strategic.contributions[faction] += 2;
@@ -825,7 +825,7 @@ export function resolveAction(s: GameState, a: Action) {
         ? "Removed me from the Set."
         : a.type === "offer"
           ? "Helped with money."
-          : `We shared a ${a.type} interaction.`,
+          : ({ contact: "Introduced themselves.", inquire: "Asked me what I knew.", introduce: "Asked me for an introduction.", socialize: "We spent time together.", favor: "Asked me for help.", transfer: "Gave me some money.", standing: "Helped out around my neighborhood.", recruit: "Asked me to join their Set.", affiliate: "Asked me to vouch for them." } as Record<string, string>)[a.type] ?? "We crossed paths.",
       a.type === "remove" ? -18 : 5,
     );
     remember(s, c.id, t.id, e.id, text, 5);
@@ -876,7 +876,7 @@ export function performAction(
       record(
         next,
         "city",
-        `Your local connections opened street work in ${z.name}. Check Actions for merchandise requirements, terms and risk.`,
+        `People you know in ${z.name} will let you work the street there now.`,
         [next.playerId],
         [next.playerId],
         { importance: "personal", title: "New market access" },
@@ -973,6 +973,6 @@ export function performActionAt(state: GameState, a: Action, location: string) {
   if (error) return { state, error };
   const arrived = moveTo(state, location);
   if (presenceOf(arrived).location !== location)
-    return { state: arrived, error: "You cannot travel right now." };
+    return { state: arrived, error: "You can’t get there right now." };
   return performAction(arrived, a);
 }

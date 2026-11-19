@@ -77,43 +77,43 @@ export function politicalError(
   const p = player(s),
     a = POLITICAL_ACTIONS[type];
   if (s.end || p.status !== "active")
-    return "Requires an active campaign and player";
-  if (s.ap < 1) return "Requires 1 AP";
+    return "You can’t do that right now";
+  if (s.ap < 1) return "You need 1 AP";
   if (
     s.strategic.lastActionDay &&
     s.day - s.strategic.lastActionDay < B.actionCooldown
   )
-    return `Next neighborhood investment on day ${s.strategic.lastActionDay + B.actionCooldown}`;
-  if (p.wallet.clean + p.wallet.illicit < a.cost) return `Requires $${a.cost}`;
+    return `You can put money into a neighborhood again on day ${s.strategic.lastActionDay + B.actionCooldown}`;
+  if (p.wallet.clean + p.wallet.illicit < a.cost) return `You need $${a.cost}`;
   if (type === "community")
     return p.neighborhoodStanding[zone] >= 5 || p.home === zone
       ? null
-      : "Build a local relationship first";
+      : "You need some standing in this neighborhood first";
   if (!p.affiliation)
-    return "Join an established organization through a trusted sponsor first";
+    return "You need to be part of an organization first";
   if (p.authority < a.authority)
-    return `Requires ${a.authority} organizational authority`;
+    return `You need more say in your organization for this (${AUTHORITY_STAGES.find((x) => x.authority >= a.authority)?.name ?? "a higher"} rank)`;
   const c = target ? s.characters[target] : undefined;
   if (!c || c.affiliation !== p.affiliation)
-    return "Requires an accessible member of your organization";
+    return "Work through someone from your organization";
   const error = contactError(s, p.id, c.id);
   if (error) return error;
   if (c.home !== zone && p.authority < 45)
-    return "Your authority currently covers local operations through this contact";
+    return "Right now you can only act in this person’s own neighborhood";
   if ((c.relationships[p.id]?.trust ?? 0) < 35)
-    return "Requires 35 representative trust";
+    return "They don’t trust you enough to act for you yet";
   if (
     type === "challenge" &&
     !s.factions[p.affiliation].enemies.some(
       (id) => s.strategic.territories[zone].factions[id].presence >= 20,
     )
   )
-    return "No established rival presence to challenge here";
+    return "No rival has a real foothold here";
   if (
     type === "priority" &&
     s.strategic.strategies[p.affiliation].priorityUntil >= s.day
   )
-    return "An agreed priority is still active";
+    return "Your organization is already focused somewhere";
   return null;
 }
 export function politicalAction(
@@ -138,7 +138,7 @@ export function politicalAction(
     zone,
     kind: a.kind,
     magnitude: a.magnitude,
-    cause: `${p.name}: ${a.label.toLowerCase()} in ${s.zones[zone].name} ($${a.cost}, 1 AP).`,
+    cause: `${p.name} spent $${a.cost} to ${a.label.toLowerCase()} in ${s.zones[zone].name}.`,
   });
   p.neighborhoodStanding[zone] = clamp(p.neighborhoodStanding[zone] + 4);
   if (type === "community") {
@@ -154,7 +154,7 @@ export function politicalAction(
       zone,
       kind: "community",
       magnitude: type === "cooperate" ? 8 : 4,
-      cause: `${p.name}'s work through local contacts strengthened ${s.factions[faction].name}'s neighborhood relationships.`,
+      cause: `${p.name}’s work through local contacts brought ${s.factions[faction].name} closer to the neighborhood.`,
     });
     s.factions[faction].resources = clamp(
       s.factions[faction].resources + a.cost * 0.4,
@@ -176,7 +176,7 @@ export function politicalAction(
         zone,
         kind: "disruption",
         magnitude: 7,
-        cause: `A backed neighborhood challenge weakened ${s.factions[rival].name}'s economic position.`,
+        cause: `Pushing back in the neighborhood hurt ${s.factions[rival].name}’s business.`,
       });
       p.rivalThreat = clamp(p.rivalThreat + 5);
       s.factions[faction].instability = clamp(
@@ -207,13 +207,13 @@ export function promotionRequirements(s: GameState) {
   if (!f || !stage)
     return {
       stage,
-      missing: [f ? "Highest authority stage reached" : "Membership required"],
+      missing: [f ? "You’re as high as you can go" : "You need to join an organization"],
     };
   if (p.organizationStanding[f.id] < stage.standing)
     missing.push(`${stage.standing} organizational standing`);
   if (s.strategic.contributions[f.id] < stage.contribution)
     missing.push(
-      `$${stage.contribution} credited organizational contributions`,
+      `$${stage.contribution} contributed to the organization`,
     );
   if (
     s.strategic.membershipDay === null ||
@@ -221,7 +221,7 @@ export function promotionRequirements(s: GameState) {
   )
     missing.push(`${stage.days} days of membership`);
   if (s.day - s.strategic.lastPromotionDay < 7)
-    missing.push("7 days between advancements");
+    missing.push("A week since your last step up");
   const contacts = p.connections
     .map((id) => s.characters[id])
     .filter(
@@ -244,10 +244,10 @@ export function promotionRequirements(s: GameState) {
     )
   )
     missing.push(
-      `${stage.trust} trust with accessible ${leader.length ? "active leadership" : "organizational sponsor"}`,
+      `The trust of ${leader.length ? "the people running things" : "whoever vouched for you"}`,
     );
   if (f.instability > 65)
-    missing.push("Internal opposition must fall to 65 or below");
+    missing.push("Less infighting inside the organization");
   if (
     p.notoriety > 70 ||
     s.commitments.some(
@@ -257,7 +257,7 @@ export function promotionRequirements(s: GameState) {
         s.day - c.dueDay < 14,
     )
   )
-    missing.push("Reliable recent record and notoriety below 71");
+    missing.push("A reliable record lately, and less heat on your name");
   if (
     stage.authority >= 45 &&
     (!s.commitments.some(
@@ -265,7 +265,7 @@ export function promotionRequirements(s: GameState) {
     ) ||
       p.influence < 15)
   )
-    missing.push("A fulfilled commitment and 15 personal influence");
+    missing.push("A promise you’ve kept, and more influence of your own");
   return { stage, missing };
 }
 export function promote(state: GameState) {
@@ -279,7 +279,7 @@ export function promote(state: GameState) {
   )
     return {
       state,
-      error: r.missing.join("; ") || "Requires 1 AP and availability",
+      error: r.missing.join("; ") || "You need 1 AP and to be free",
     };
   const s = structuredClone(state);
   s.ap--;
@@ -288,12 +288,12 @@ export function promote(state: GameState) {
   record(
     s,
     "city",
-    `${player(s).name} earned ${r.stage.name} authority. ${r.stage.permission}. Established leadership retains its position.`,
+    `${player(s).name} stepped up to ${r.stage.name}. You can now: ${r.stage.permission.charAt(0).toLowerCase() + r.stage.permission.slice(1)}. The leadership is still in charge.`,
     [s.playerId],
     [s.playerId],
     {
       importance: "major",
-      title: "Organizational advancement",
+      title: "Moving up",
       factionId: player(s).affiliation!,
     },
   );
@@ -303,31 +303,31 @@ export function successorError(s: GameState, id: string): string | null {
   const p = player(s),
     c = s.characters[id];
   if (!p.affiliation || p.authority < 70)
-    return "Succession council authority and membership required";
+    return "Only the succession council can name a successor";
   if (!c || !s.crew.members.includes(id) || c.id === p.id)
-    return "Must be a real member of your Set";
+    return "They need to be in your Set";
   if (c.affiliation !== p.affiliation)
-    return "Successor must share your organization";
+    return "They need to be in your organization";
   if (c.status !== "active" || c.availableDay > s.day || availability(s, c))
-    return "Successor must be active and available";
+    return "They need to be around and free";
   const r = c.relationships[p.id];
   if (!r || r.trust < 60 || r.grievance >= 30 || c.traits.loyalty < 60)
-    return "Requires 60 trust, 60 loyalty and no serious grievance";
+    return "They need to be fully loyal to you, with no bad blood";
   if (contactError(s, p.id, id))
-    return "Requires an established, willing contact";
+    return "They need to know you well and be willing";
   return null;
 }
 export function appointSuccessor(state: GameState, id: string) {
   const error = successorError(state, id);
   if (error || state.end || state.ap < 1 || player(state).status !== "active")
-    return { state, error: error ?? "Requires 1 AP and availability" };
+    return { state, error: error ?? "You need 1 AP and to be free" };
   const s = structuredClone(state);
   s.ap--;
   s.crew.successor = id;
   record(
     s,
     "crew",
-    `${s.characters[id].name} accepted succession planning for your position within ${s.factions[player(s).affiliation!].name}.`,
+    `${s.characters[id].name} agreed to take your place in ${s.factions[player(s).affiliation!].name} when the time comes.`,
     [s.playerId, id],
     [s.playerId, id],
     {

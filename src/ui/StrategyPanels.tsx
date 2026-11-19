@@ -60,16 +60,15 @@ export function NeighborhoodStrategy({
       className="strategy-neighborhood"
       aria-label="Neighborhood strategy"
     >
-      <h4>{t.contested ? "Contested neighborhood" : "Neighborhood balance"}</h4>
+      <h4>{t.contested ? "Up for grabs" : "Who runs it"}</h4>
       <p>
         {t.controller
-          ? `Recognized control since day ${t.controlSince}: ${s.factions[t.controller].name}.`
-          : "No organization has established recognized dominance."}{" "}
+          ? `${s.factions[t.controller].name} have run it since day ${t.controlSince}.`
+          : "Nobody runs this neighborhood."}{" "}
       </p>
       <p className="muted">
-        {t.contested ? "Rival groups are competing for influence. Local trade feels unsettled." : "Local trade faces ordinary competition."}
+        {rivalryView(s, zone)}
       </p>
-      <p className="muted">{rivalryView(s, zone)}</p>
       {meaningful.map(([id, q]) => (
         <div
           className="foothold"
@@ -84,8 +83,7 @@ export function NeighborhoodStrategy({
       ))}
       {!meaningful.length && (
         <p>
-          No substantial faction foothold. Commerce alone does not establish
-          territorial control.
+          No set has a real foothold here.
         </p>
       )}
       {t.changes.slice(-2).map((c) => (
@@ -93,17 +91,17 @@ export function NeighborhoodStrategy({
           Day {c.day}:{" "}
           {c.to
             ? s.factions[c.to].name + " gained control"
-            : "Recognized control lost"}
+            : "Nobody runs it anymore"}
           .
         </p>
       ))}
       <details className="strategic-actions">
         <summary>Influence this neighborhood</summary>
         <p className="muted">
-          One investment every {B.actionCooldown} days.{" "}
+          You can do this once every {B.actionCooldown} days.{" "}
           {contact
-            ? `Work through ${s.characters[contact].name}.`
-            : "Organizational actions require an accessible, trusted representative."}
+            ? `You’d work through ${s.characters[contact].name}.`
+            : "You need someone from your organization here who trusts you."}
         </p>
         {(Object.keys(POLITICAL_ACTIONS) as PoliticalAction[]).map((type) => {
           const a = POLITICAL_ACTIONS[type],
@@ -140,16 +138,16 @@ export function OrganizationPanel({ s, onChange }: Props) {
       <h3>{f ? f.name : "Unaffiliated"}</h3>
       <p>
         {f
-          ? `${stage?.name ?? "Member"} · Authority ${p.authority} · Standing ${Math.round(p.organizationStanding[f.id])} · Credited contributions $${Math.floor(s.strategic.contributions[f.id])}`
-          : "A personal Set does not own territory. Build trust with connected members and earn sponsorship in Connects."}
+          ? `${stage?.name ?? "Member"} · You’ve put in $${Math.floor(s.strategic.contributions[f.id])}`
+          : "Your Set is your own people. Joining an organization takes someone inside who trusts you enough to vouch for you."}
       </p>
       {f && (
         <>
           <p>
             {stage?.permission}.{" "}
             {f.leaders.length
-              ? `Established leadership: ${f.leaders.map((id) => s.characters[id].name + " (" + s.characters[id].status + ")").join(", ")}.`
-              : "The organization retains its existing authority structure."}
+              ? `Running things: ${f.leaders.map((id) => s.characters[id].name + (s.characters[id].status === "active" ? "" : s.characters[id].status === "arrested" ? " (locked up)" : s.characters[id].status === "dead" ? " (gone)" : " (laying low)")).join(", ")}.`
+              : "The same people are still running things."}
           </p>
           {next.stage && (
             <>
@@ -168,32 +166,32 @@ export function OrganizationPanel({ s, onChange }: Props) {
                 }
                 onClick={() => r.apply(promote(s))}
               >
-                Request advancement · 1 AP
+                Ask to move up · 1 AP
               </button>
             </>
           )}
           <p>
-            Underlord: {stabilizedControl(s, f.id)}/4 stabilized neighborhoods ·{" "}
-            {Math.min(70, p.authority)}/70 authority ·{" "}
+            To run it all: hold {stabilizedControl(s, f.id)} of 4 neighborhoods ·{" "}
+            {p.authority >= 70 ? "top rank reached" : "reach the top rank"} ·{" "}
             {s.crew.successor
-              ? `Appointed: ${s.characters[s.crew.successor].name}`
-              : "Successor not appointed"}
+              ? `${s.characters[s.crew.successor].name} will take your place`
+              : "no one named to take your place"}
             .
           </p>
         </>
       )}
       <details>
-        <summary>Successor eligibility</summary>
+        <summary>Who could take your place</summary>
         <p>
-          Requires council authority, shared affiliation, availability, and
-          someone willing to take on the responsibility.
+          You need to be on the succession council, and they need to be in
+          your organization, around, and willing.
         </p>
         {s.crew.members.map((id) => {
           const error = successorError(s, id);
           return (
             <div className="strategy-action" key={id}>
               <strong>{s.characters[id].name}</strong>
-              <small>{playerReason(s, error) ?? "Ready to discuss succession"}</small>
+              <small>{playerReason(s, error) ?? "Ready to talk about it"}</small>
               <button
                 disabled={
                   !!error || s.ap < 1 || !!s.end || p.status !== "active"
@@ -220,9 +218,9 @@ export function BusinessPanel({ s, onChange }: Props) {
       <p className="eyebrow">OWN A PIECE OF THE CITY</p>
       <h3>Business opportunities</h3>
       <p className="muted">
-        Acquisition uses actual cash, clean first. Any illicit funding makes the
-        asset, all income and resale illicit. Net income fluctuates; maintenance
-        costs $120. Sale value replaces the asset and never counts twice.
+        You pay cash, clean money first. If any street money goes in, the
+        business and everything it earns stays dirty. Earnings go up and down,
+        and upkeep costs $120.
       </p>
       {BUSINESSES.map((d) => {
         const b = s.strategic.businesses.find((b) => b.definition === d.id),
@@ -237,17 +235,17 @@ export function BusinessPanel({ s, onChange }: Props) {
             <h4>{d.name}</h4>
             <p>
               {s.zones[d.zone].name} ·{" "}
-              {b ? b.status : `Available · $${d.cost.toLocaleString()}`}
+              {b ? (b.status === "struggling" ? "Losing money" : b.status === "profitable" ? "Making money" : b.status === "sold" ? "Sold" : b.status === "closed" ? "Closed" : "Just opened") : `For sale · $${d.cost.toLocaleString()}`}
             </p>
             <p className="muted">
-              {d.description} Base daily revenue ${d.revenue}, expenses $
-              {d.expenses}; actual results depend on conditions.
+              {d.description} Usually takes in about ${d.revenue} a day and
+              spends about ${d.expenses}.
             </p>
             {b && (
               <p>
-                Funding: {b.provenance} · Condition {Math.round(b.condition)}% ·
-                Latest net ${b.lastNet} · Lifetime net ${b.totalNet} · Asset
-                value ${a?.value ?? 0} · Proven recurring net $
+                {b.provenance === "clean" ? "Clean money" : "Street money"} ·
+                Condition {Math.round(b.condition)}% · Yesterday ${b.lastNet} ·
+                All time ${b.totalNet} · Worth ${a?.value ?? 0} · Steady income $
                 {a?.recurringIncome ?? 0}/day
               </p>
             )}
@@ -260,7 +258,7 @@ export function BusinessPanel({ s, onChange }: Props) {
                     onClick={() => r.apply(businessAction(s, d.id, action))}
                   >
                     {action === "buy"
-                      ? "Acquire"
+                      ? "Buy"
                       : action === "maintain"
                         ? "Maintain · $120"
                         : action === "sell"
@@ -274,14 +272,14 @@ export function BusinessPanel({ s, onChange }: Props) {
             })}
             {b && (
               <details>
-                <summary>Operating history</summary>
+                <summary>Last week</summary>
                 {b.history
                   .slice(-7)
                   .reverse()
                   .map((h, i) => (
                     <p key={i}>
-                      Day {h.day} · ${h.revenue} revenue − ${h.expenses}{" "}
-                      expenses = ${h.net}
+                      Day {h.day} · took in ${h.revenue}, spent ${h.expenses}{" "}
+                      · ${h.net}
                     </p>
                   ))}
               </details>
@@ -302,7 +300,7 @@ export function RetirementPanel({ s, onChange }: Props) {
       aria-label="Legitimate Exit progress"
     >
       <p className="eyebrow">A LIFE OF YOUR OWN</p>
-      <h3>Legitimate Exit</h3>
+      <h3>Walk away clean</h3>
       {s.street.arrears > 0 && (
         <button
           disabled={
@@ -312,25 +310,25 @@ export function RetirementPanel({ s, onChange }: Props) {
           }
           onClick={() => r.apply(payArrears(s))}
         >
-          Clear arrears · ${s.street.arrears}
+          Pay what you’re behind on · ${s.street.arrears}
         </button>
       )}
       <p>
-        Qualifying net wealth ${Math.floor(v.wealth).toLocaleString()} /
-        $100,000 · Proven recurring net ${v.income}/day / $24 · Sustainable days{" "}
-        {s.strategic.lawfulStreak}/{B.lawfulSustainDays}
+        Clean savings ${Math.floor(v.wealth).toLocaleString()} of $100,000 ·
+        Honest income ${v.income} of $24 a day · Days living straight{" "}
+        {s.strategic.lawfulStreak} of {B.lawfulSustainDays}
       </p>
       <ul>
         {v.missing.map((m) => (
           <li key={playerText(s, m)}>{playerText(s, m)}</li>
         ))}
       </ul>
-      {!v.missing.length && <p>You qualify. Retirement is your decision.</p>}
+      {!v.missing.length && <p>You could walk away now. It’s your call.</p>}
       <button
         disabled={!!s.end || !!v.missing.length}
         onClick={() => r.apply(retire(s))}
       >
-        Retire voluntarily
+        Walk away
       </button>
       {r.message && <p role="status">{playerText(s, r.message)}</p>}
     </section>

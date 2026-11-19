@@ -130,7 +130,7 @@ for (const width of [390, 360])
     );
     await tapUntil(
       page,
-      region.getByRole("button", { name: "Pause robbery", exact: true }),
+      region.getByRole("button", { name: "Step away for now", exact: true }),
       async () => (await state(page)).activeRobbery!.status === "paused",
     );
     const goods = (await state(page)).activeRobbery!.career!.goods;
@@ -140,7 +140,7 @@ for (const width of [390, 360])
     await navigate(page, "City");
     await tapUntil(
       page,
-      region.getByRole("button", { name: "Continue robbery session" }),
+      region.getByRole("button", { name: "Get back to the job" }),
       async () => (await state(page)).activeRobbery!.status === "active",
     );
     expect((await state(page)).activeRobbery!.career!.goods).toEqual(goods);

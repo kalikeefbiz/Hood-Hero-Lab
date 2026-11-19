@@ -182,7 +182,7 @@ export type RobberySession = z.infer<typeof robberySessionSchema>;
 export function robberySourceError(s: GameState, id: string) {
   if (lessonError(s)) return lessonError(s);
   if (!atPerson(s, id))
-    return "Speak to this contact at their physical City location.";
+    return "Find them in the City first.";
   if (
     s.end ||
     player(s).status !== "active" ||
@@ -190,27 +190,27 @@ export function robberySourceError(s: GameState, id: string) {
     streetConversation(s) ||
     currentEncounter(s)
   )
-    return "Return safely to the City first.";
+    return "Get somewhere safe first.";
   if (
     (s.activeRobbery && s.activeRobbery.status !== "ended") ||
     (s.activeSession && s.activeSession.status !== "ended")
   )
-    return "Finish your active session first.";
+    return "Finish what you’re doing first.";
   if (
     personalBeef(s, id) ||
     (TRIO.includes(id) && TRIO.some((member) => personalBeef(s, member)))
   )
-    return "Resolve your personal beef before asking for a job.";
+    return "Squash your beef with them before you ask for work.";
   const trust = s.characters[id]?.relationships[s.playerId]?.trust ?? 0;
   if (TRIO.includes(id))
     return trust >= 35
       ? null
-      : "Earn 35 trust toward you from a crew member first.";
+      : "They don’t trust you enough to put you on yet.";
   if (id === "quanny")
     return s.quanny.business === "open" && trust >= 45
       ? null
-      : "Quanny requires open business and 45 earned trust. His existing repair conditions still apply.";
-  return "This person has no robbery introduction.";
+      : "Quanny doesn’t trust you enough to put you on.";
+  return "They don’t have work like that for you.";
 }
 export function robberyOfferError(s: GameState, id: string) {
   const access = robberySourceError(s, id);
@@ -221,7 +221,7 @@ export function robberyOfferError(s: GameState, id: string) {
       (j.status === "offered" && j.expiresDay >= s.day),
   );
   if (active)
-    return `You already have ${active.id}. Prepare and visit ${locationById(active.location)?.name}.`;
+    return `You already have a job lined up at ${locationById(active.location)?.name}.`;
   return null;
 }
 export function offerRobbery(state: GameState, source: string) {
@@ -260,11 +260,11 @@ export function offerRobbery(state: GameState, source: string) {
     s,
     "social",
     home
-      ? "“Three real jobs behind you. There’s a home-invasion opportunity at the Boarded house. Certified Combat, Home Invasion rank, equipped Law-19 and four preparation items. The colored pattern is a fictional game, not a real access system.”"
-      : "“There’s a courier carrying a street payment at the Rio courtyard. This is a strong-arm job. Gloves and mask, no firearm required. Someone can get hurt or arrested. You can keep living lawful; nobody is making you do this.”",
+      ? "“You got three real jobs behind you now. There’s a house I been watching, the boarded one. You gotta know what you’re doing for this: combat certified, some home-invasion work under your belt, a Law-19 on you, and your prep together.”"
+      : "“There’s a courier carrying a street payment through the Rio courtyard. Strong-arm, quick. Gloves and a mask, no strap needed. Somebody could get hurt or locked up, so it’s your call.”",
     [source, s.playerId],
     undefined,
-    { title: "Optional street operation", importance: "personal" },
+    { title: "A job offer", importance: "personal" },
   );
   return s;
 }
@@ -276,9 +276,9 @@ export function purchasePrepError(
 ) {
   const d = PREPARATION[item];
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > 5)
-    return "Choose 1–5 units.";
+    return "Pick between 1 and 5.";
   if (!d || d.location !== location || presenceOf(s).location !== location)
-    return "Visit the actual shop for this item.";
+    return "Go to the shop that sells it.";
   if (
     s.end ||
     player(s).status !== "active" ||
@@ -286,14 +286,14 @@ export function purchasePrepError(
     streetConversation(s) ||
     currentEncounter(s)
   )
-    return "Finish the current encounter first.";
+    return "Finish this conversation first.";
   if (
     (s.activeSession && s.activeSession.status !== "ended") ||
     (s.activeRobbery && s.activeRobbery.status !== "ended")
   )
-    return "Finish your current session first.";
-  if (s.ap < 1) return "Requires 1 AP to shop.";
-  if (cash(player(s)) < d.price * quantity) return `Requires $${d.price * quantity}.`;
+    return "Finish what you’re doing first.";
+  if (s.ap < 1) return "You need 1 AP.";
+  if (cash(player(s)) < d.price * quantity) return `You need $${d.price * quantity}.`;
   return gainError(s, s.playerId, gain(item, quantity));
 }
 export function purchasePrep(
@@ -313,7 +313,7 @@ export function purchasePrep(
   const e = record(
     s,
     "money",
-    `Bought ${d.name} ×${quantity} for $${d.price * quantity} at ${locationById(location)?.name} · 1 AP. Used on a robbery attempt, including failure.`,
+    `Bought ${d.name} ×${quantity} for $${d.price * quantity} at ${locationById(location)?.name}. It gets used up on a job, whether it goes right or not.`,
     [s.playerId],
   );
   r.purchases.push({
@@ -338,10 +338,10 @@ export function robberyStartError(s: GameState, jobId: string) {
   if (intro) return intro;
   const j = s.robberies?.jobs.find((j) => j.id === jobId);
   if (!j || j.status !== "offered" || j.expiresDay < s.day)
-    return "This opportunity is unavailable, resolved or expired.";
+    return "That job isn’t on the table anymore.";
   const d = ROBBERY_TYPES[j.kind];
   if (j.kind === "bank" || (j.kind === "store" && !j.targetId))
-    return "Future tier: no authored opportunity is available.";
+    return "You haven’t heard of anything like that yet.";
   if (
     s.end ||
     player(s).status !== "active" ||
@@ -349,20 +349,20 @@ export function robberyStartError(s: GameState, jobId: string) {
     streetConversation(s) ||
     currentEncounter(s)
   )
-    return "Finish your encounter and return safely to the City.";
+    return "Finish this and get somewhere safe first.";
   if (
     (s.activeRobbery && s.activeRobbery.status !== "ended") ||
     (s.activeSession && s.activeSession.status !== "ended")
   )
-    return "Finish or leave your active session first.";
+    return "Finish what you’re doing first.";
   if (presenceOf(s).location !== j.location)
-    return "Stand at the specified City location first.";
-  if (s.ap < 1) return "Requires 1 AP.";
+    return "Go to the spot first.";
+  if (s.ap < 1) return "You need 1 AP.";
   if (
     skillRank(player(s), "combat") < d.combat ||
     skillRank(player(s), "robbery") < d.robbery
   )
-    return `Requires Combat rank ${d.combat} and Robbery rank ${d.robbery}.`;
+    return "You don’t have the experience for a job like this yet.";
   const carriedWeapon = equipmentOf(player(s)).equipped;
   if (
     d.weapon &&
@@ -370,7 +370,7 @@ export function robberyStartError(s: GameState, jobId: string) {
       (!j.targetId && carriedWeapon !== d.weapon) ||
       equipError(player(s), carriedWeapon))
   )
-    return `Requires equipped ${d.weapon}. Seek equipment through a trusted contact after certification.`;
+    return `You need a ${d.weapon} on you. Someone you trust can get you one once you’re certified.`;
   if (j.targetId) {
     const error = careerStartError(s, jobId);
     if (error) return error;
@@ -383,7 +383,7 @@ export function robberyStartError(s: GameState, jobId: string) {
         : d.prep
   ).filter((id) => !inventoryOf(s).slots.some((x) => x.itemId === id));
   if (missing.length)
-    return `Prepare in the City: ${missing.map((id) => PREPARATION[id as PrepId].name).join(", ")}.`;
+    return `You still need: ${missing.map((id) => PREPARATION[id as PrepId].name).join(", ")}.`;
   return null;
 }
 export function startRobbery(state: GameState, jobId: string) {
@@ -424,8 +424,8 @@ export function startRobbery(state: GameState, jobId: string) {
     answers: [],
     text:
       j.kind === "home"
-        ? "An occupant crosses the yard. Watch the board and choose how to handle the pressure. You may withdraw; preparation and AP stay spent."
-        : "The courier approaches. Watch the board. Choose how to handle the pressure. You may withdraw; preparation and AP stay spent.",
+        ? "Someone’s crossing the yard. Decide how you play it. You can still back out, but what you spent is gone."
+        : "The courier’s coming. Decide how you play it. You can still back out, but what you spent is gone.",
     loot: 0,
     score: 0,
   };
@@ -433,7 +433,7 @@ export function startRobbery(state: GameState, jobId: string) {
   record(
     s,
     "risk",
-    `Started ${ROBBERY_TYPES[j.kind].name} at ${locationById(j.location)?.name}. 1 AP and required preparation consumed.`,
+    `You started the ${ROBBERY_TYPES[j.kind].name.toLowerCase()} at ${locationById(j.location)?.name}.`,
     [s.playerId, j.source],
   );
   return { state: s, error: null };
@@ -482,18 +482,18 @@ export function robberyInput(
   if (cursor === 0) {
     a.score = answer === "patient" ? 1 : answer === "rush" ? -1 : 0;
     a.text =
-      "A witness turns toward the scene. Repeat the three colored symbols shown, in order. This abstract memory challenge affects the escape, not a real lock or alarm.";
+      "A witness turns your way. Keep your head: repeat the three symbols in order to get out clean.";
   }
   if (cursor === 1) {
     a.score += answer === a.pattern.join(",") ? 2 : -2;
     a.text =
       answer === a.pattern.join(",")
-        ? "You held your focus. A route back into the City opens. Leave now or push for the full payment?"
-        : "You lost the pattern. The witness raises an alert. Leave now or risk pushing on?";
+        ? "You kept your head and found a way out. Leave now, or push for the whole payment?"
+        : "You lost your nerve, and the witness is shouting. Leave now, or risk pushing on?";
   }
   if (answer === "withdraw") {
     a.status = "ended";
-    a.text = "You withdrew before participation. No loot or XP.";
+    a.text = "You backed out before anything happened.";
     j.status = "failed";
     return s;
   }
@@ -527,10 +527,10 @@ export function robberyInput(
   const e = record(
     s,
     "risk",
-    `${d.name}: ${success ? (partial ? "partial proceeds; you left early" : "payment taken") : "failed; no loot"}. $${loot} illicit cash. Witnesses remember the operation. The scene ended without a killing.`,
+    `${d.name}: ${success ? (partial ? "you left early with part of it" : "you got the payment") : "it went wrong and you got nothing"}${loot ? `, $${loot} in dirty cash` : ""}. People saw you.`,
     [s.playerId, j.source],
     undefined,
-    { importance: "major", title: "Robbery outcome" },
+    { importance: "major", title: "How the job went" },
   );
   s.robberies!.history.push({
     id: a.id,
@@ -579,8 +579,8 @@ export function robberyInput(
     s.playerId,
     e.id,
     success
-      ? "Completed the optional operation I introduced."
-      : "Failed the optional operation I introduced.",
+      ? "Pulled off the job I put them on."
+      : "Messed up the job I put them on.",
     12,
   );
   remember(
@@ -588,7 +588,7 @@ export function robberyInput(
     witness,
     s.playerId,
     e.id,
-    `Witnessed a ${d.name.toLowerCase()}; remembers the player and reported the scene.`,
+    `Saw a ${d.name.toLowerCase()} go down and told the police.`,
     18,
   );
   change(s.characters[witness], s.playerId, {
@@ -604,13 +604,13 @@ export function robberyInput(
     e.text +
     (firstCertification
       ? " You earned Certified Combat."
-      : " Your skills reflect the outcome.");
+      : "");
   if (!success && risk < d.risk) {
     arrest(s, s.playerId, "witness report after robbery", 1);
-    a.text += " Police intervened.";
+    a.text += " The police showed up.";
   } else if (!success && risk < d.risk + 0.18) {
     hospitalize(s, "assault", e.id);
-    a.text += " Injured during the failed attempt.";
+    a.text += " You got hurt.";
   }
   return s;
 }
@@ -629,7 +629,7 @@ export function leaveRobbery(state: GameState, id: string) {
   if (s.activeRobbery!.career) return settleCareer(s, false, true);
   s.activeRobbery!.status = "ended";
   s.activeRobbery!.text =
-    "Attempt abandoned. No loot; spent AP and preparation remain spent.";
+    "You called it off. Nothing gained, and what you spent is gone.";
   const j = s.robberies?.jobs.find((j) => j.id === s.activeRobbery!.jobId);
   if (j) j.status = "failed";
   return s;
@@ -637,21 +637,21 @@ export function leaveRobbery(state: GameState, id: string) {
 export function equipmentContactError(s: GameState, id: string) {
   if (robberySourceError(s, id)) return robberySourceError(s, id);
   if (skillRank(player(s), "combat") < 2)
-    return "Complete an optional violent-operation introduction for Certified Combat first.";
+    return "You need Combat certification first.";
   if (equipmentOf(player(s)).owned.includes("law-19"))
     return "You already own a Law-19.";
-  if (cash(player(s)) < 75 || s.ap < 1) return "Requires $75 and 1 AP.";
+  if (cash(player(s)) < 75 || s.ap < 1) return "You need $75 and 1 AP.";
   return gainError(s, s.playerId, gain("law-19"));
 }
 export function obtainContactEquipment(state: GameState, id: string) {
   if (equipmentContactError(state, id)) return state;
   const s = structuredClone(state);
   s.ap--;
-  expense(s, player(s), 75, "Contact equipment · Law-19");
+  expense(s, player(s), 75, "Law-19");
   const e = record(
     s,
     "money",
-    `${s.characters[id].name} arranged a Law-19 for $75 after your certification. Equip it in Wallet; carrying it does not grant skill.`,
+    `${s.characters[id].name} got you a Law-19 for $75. Equip it from your Wallet. Carrying it won’t make you any better with it.`,
     [s.playerId, id],
   );
   grantEquipment(s, s.playerId, "law-19", e.id);

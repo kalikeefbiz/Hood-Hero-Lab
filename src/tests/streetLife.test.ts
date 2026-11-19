@@ -94,11 +94,11 @@ describe("GOAL 011 opening and durable access", () => {
   for (const decision of ["promise", "decline", "delay"] as const)
     it(`${decision}: meaningful decision, physical work and no criminal bypass`, () => {
       let s = newGame("Test", "south");
-      expect(supplierError(s, "mega", "consignment")).toMatch(/Chains/);
+      expect(supplierError(s, "mega", "consignment")).toMatch(/his chains/);
       s = choose(s, decision);
       expect(s.streetLife!.decision).toBe(decision);
       expect(validateStartStreetSession(s, "south.the-lot")).toMatch(
-        /application/,
+        /honest work/,
       );
       const invalid = performAction(s, {
         actor: s.playerId,
@@ -131,7 +131,7 @@ describe("GOAL 011 opening and durable access", () => {
     expect(cash(player(s))).toBe(163);
     expect(s.streetLife!.workEvent).toBeTruthy();
     expect(performAction(s, { actor: s.playerId, type: "gig" }).error).toMatch(
-      /complete/,
+      /already done a gig today/,
     );
   });
   it("Day 3 promise gift queues behind custody and conversations, exactly six, no cost/debt", () => {
@@ -161,7 +161,7 @@ describe("GOAL 011 opening and durable access", () => {
     syncEncounters(s);
     expect(s.street.lots).toHaveLength(1);
     expect(validateStartStreetSession(s, "south.the-lot")).toMatch(
-      /application/,
+      /honest work/,
     );
   });
   it("decline is permanently cash-only; six real units and one genuine AP lesson", () => {
@@ -175,7 +175,7 @@ describe("GOAL 011 opening and durable access", () => {
     s.characters.mega.relationships.player.trust = 100;
     s.ap = 2;
     person(s, "mega");
-    expect(supplierError(s, "mega", "consignment")).toMatch(/CASH/);
+    expect(supplierError(s, "mega", "consignment")).toMatch(/cash only/);
     openingDecision(s, "promise");
     s.day = 3;
     giveFlaccoStock(s);
@@ -272,7 +272,7 @@ describe("collective aftermath and Rio permission", () => {
     introduceRio(s, "dizzy");
     expect(s.streetLife!.rioContact).toBe("contact-angels");
     player(s).neighborhoodStanding.rio = 100;
-    expect(marketAccess(s, "player", "rio")).toMatch(/prepaid/);
+    expect(marketAccess(s, "player", "rio")).toMatch(/pay the Angels/);
     person(s, "contact-angels");
     expect(tributeError(s)).toBeNull();
     const before = cash(player(s));
@@ -282,7 +282,7 @@ describe("collective aftermath and Rio permission", () => {
     expect(cash(player(s))).toBe(before - 12);
     expect(marketAccess(s, "player", "rio")).toBeNull();
     s.day += 3;
-    expect(marketAccess(s, "player", "rio")).toMatch(/prepaid/);
+    expect(marketAccess(s, "player", "rio")).toMatch(/pay the Angels/);
   });
 });
 describe("multi-lot transactions and compatibility", () => {
@@ -301,7 +301,7 @@ describe("multi-lot transactions and compatibility", () => {
     connect(s, "player", "contact-angels");
     s.characters["contact-angels"].relationships.player.trust = 50;
     person(s, "contact-angels");
-    expect(supplierError(s, "contact-angels", "consignment")).toContain("load");
+    expect(supplierError(s, "contact-angels", "consignment")).toContain("carry that much");
     const reduced = discardItem(
       s,
       inventoryOf(s).slots[0].id,
@@ -381,7 +381,7 @@ describe("real City robbery sessions", () => {
   it("requires actual opportunity, physical target and prep; charges exactly once and persists challenge", () => {
     let s = prepared(123),
       job = s.robberies!.jobs[0];
-    expect(robberyStartError(s, job.id)).toMatch(/Stand/);
+    expect(robberyStartError(s, job.id)).toMatch(/Go to the spot/);
     at(s, job.location);
     const r = startRobbery(s, job.id);
     expect(r.error).toBeNull();
@@ -553,7 +553,7 @@ it("Mega ignores generic distrust and repeated debt but refuses an actual enemy"
     updatedDay: s.day,
     history: [],
   });
-  expect(supplierError(s, "mega", "consignment")).toMatch(/actual enemies/);
+  expect(supplierError(s, "mega", "consignment")).toMatch(/bad blood/);
 });
 
 it("an offer accepted at its real workplace completes the introduction; a remote offer does not", () => {
@@ -650,7 +650,7 @@ it("the no-commitment starter is CASH only as well as the explicit refusal start
     jobId: "retail-south",
   }).state;
   person(s, "mega");
-  expect(supplierError(s, "mega", "consignment")).toMatch(/CASH/);
+  expect(supplierError(s, "mega", "consignment")).toMatch(/cash only/);
   expect(supplierError(s, "mega", "cash")).toBeNull();
   acquire(s, "mega", "cash");
   expect(s.street.lots[0]).toMatchObject({ received: 6, cost: 90, owed: 0 });

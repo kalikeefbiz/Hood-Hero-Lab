@@ -63,7 +63,7 @@ export function canonicalCharacters(): Character[] {
       "Quanny",
       "reservoir",
       "blocks",
-      "18. Certified Blocc Boys hitter from the Reservoir, Westside. His personal set is Splash Gang, entirely Blocc Boys. Hotheaded, calculating, unforgiving, ambitious and money-motivated. Knows Mega and Panic (Rick/Ricky) by reputation: cordial, not close or intimidated. Panic is incarcerated for murder.",
+      "18. A certified Blocc Boys hitter from the Reservoir, Westside. His own set, Splash Gang, is all Blocc Boys. Hotheaded, calculating, unforgiving, ambitious and about his money. Knows Cuzzo and Panic (Rick/Ricky) by reputation: cordial, not close, not intimidated. Panic is locked up for murder.",
       {
         traits: { loyalty: 90, ambition: 90, risk: 92, lawful: 8 },
         skills: { social: 65, work: 45, recovery: 92 },
@@ -105,7 +105,7 @@ export function canonicalCharacters(): Character[] {
       "Cristian Santiago",
       "rio",
       "angels",
-      "Recognized leader. Incarcerated, but his influence remains.",
+      "The Angels’ leader. He’s locked up, but his word still carries.",
       {
         alias: "Loco",
         status: "arrested",
@@ -119,7 +119,7 @@ export function canonicalCharacters(): Character[] {
       "Pablo",
       "rio",
       "angels",
-      "Active leadership. Cold, vindictive; loyalty and respect come first.",
+      "Runs things for the Angels on the outside. Cold and vindictive; loyalty and respect come first.",
       {
         authority: 80,
         influence: 80,
@@ -133,7 +133,7 @@ export function canonicalCharacters(): Character[] {
         name,
         "rio",
         "angels",
-        "Young Angels member. Participated in the unauthorized robbery of Mega.",
+        "Young Angels member. One of the crew that took Cuzzo’s chains.",
         {
           traits: {
             loyalty: 50 + i * 7,
@@ -166,7 +166,7 @@ export function canonicalCharacters(): Character[] {
       "Mega",
       "south",
       "backstreet",
-      "Your cousin, Cuzzo. Formidable reputation; his chains were taken while out with his girlfriend.",
+      "Your cousin, Cuzzo. People know his name. His chains got taken while he was out with his girl.",
       {
         alias: "Cuzzo",
         notoriety: 65,
@@ -181,7 +181,7 @@ export function canonicalCharacters(): Character[] {
       "Flacco",
       "south",
       null,
-      "Your childhood best friend. Inexperienced, with room to grow.",
+      "Your best friend since you were kids. Still green, but he’s learning.",
       {
         skills: { social: 35, work: 30, recovery: 20 },
         goals: ["loyalty", "income"],
@@ -200,7 +200,7 @@ export function residents(): Character[] {
       ["Alex", "Sam", "Robin", "Drew", "Taylor"][i],
       zone,
       null,
-      "Local resident looking for steady work and reliable people.",
+      "Lives around here. Looking for steady work and people they can count on.",
       {
         skills: { social: 45, work: 60, recovery: 15 },
         traits: { loyalty: 65, ambition: 35, risk: 20, lawful: 80 },
@@ -216,7 +216,7 @@ export function residents(): Character[] {
             `${f === "angels" ? "Angels street" : f === "blocks" ? "Block Boys" : f === "blips" ? "Blips" : "Mudgang"} contact`,
             zone,
             f,
-            "An ordinary member who can sponsor a membership request.",
+            "A regular member. Could vouch for you if you want in.",
             { goals: ["loyalty", "income"] },
           ),
         )

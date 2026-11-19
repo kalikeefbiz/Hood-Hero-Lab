@@ -126,7 +126,7 @@ describe("GOAL 012 dual capacity and physical inventory", () => {
       maxLoad: 20,
     });
     expect(gainError(s, s.playerId, gain("mask"))).toBe(
-      "Need 1 more load capacity.",
+      "You can’t carry that much.",
     );
     expect(carriedLotQuantity(s, s.playerId, l.id)).toBe(20);
     expect(receivePhysical(s, "flacco", gain("smokes", 15))).toBeNull();
@@ -135,14 +135,14 @@ describe("GOAL 012 dual capacity and physical inventory", () => {
       maxLoad: 15,
       usedLoad: 15,
     });
-    expect(gainError(s, "flacco", gain("mask"))).toContain("load");
+    expect(gainError(s, "flacco", gain("mask"))).toContain("carry that much");
     const fullSlots = {
       slots: Array.from({ length: 12 }, (_, i) => ({
         ...gain("mask", 1, `p${i}`),
         id: `x${i}`,
       })),
     } as ReturnType<typeof inventoryOf>;
-    expect(canFit(fullSlots, gain("mask"))).toBe("No free slots.");
+    expect(canFit(fullSlots, gain("mask"))).toBe("You don’t have room for that.");
     const safe = {
       slots: Array.from({ length: 4 }, (_, i) => ({
         ...gain("nightgoods", 10, "l", "l"),
@@ -153,8 +153,8 @@ describe("GOAL 012 dual capacity and physical inventory", () => {
       remainingSlots: 20,
       usedLoad: 40,
     });
-    expect(canFit(safe, gain("mask"), "safe")).toContain("load");
-    expect(canFit({ slots: [] }, gain("arp", 4))).toContain("4 more load");
+    expect(canFit(safe, gain("mask"), "safe")).toContain("carry that much");
+    expect(canFit({ slots: [] }, gain("arp", 4))).toContain("carry that much");
   });
   it("splits, merges, swaps and preserves lot and provenance without mutating rejected operations", () => {
     let s = base();
@@ -183,17 +183,17 @@ describe("GOAL 012 dual capacity and physical inventory", () => {
     const before = serialize(s);
     expect(
       validateAction(s, { actor: s.playerId, type: "buy", item: "smokes" }),
-    ).toContain("load");
+    ).toContain("carry that much");
     expect(
       performAction(s, { actor: s.playerId, type: "buy", item: "smokes" })
         .state,
     ).toBe(s);
     const connected = serialize(s);
-    expect(supplierError(s, "mega", "consignment")).toContain("load");
+    expect(supplierError(s, "mega", "consignment")).toContain("carry that much");
     acquire(s, "mega", "consignment");
     expect(serialize(s)).toBe(connected);
     at(s, "south.food-mart");
-    expect(purchasePrepError(s, "gloves", "south.food-mart")).toContain("load");
+    expect(purchasePrepError(s, "gloves", "south.food-mart")).toContain("carry that much");
     expect(purchasePrep(s, "gloves", "south.food-mart")).toBe(s);
   });
   it("checks City co-presence and receiver capacity before giving, then applies carried member equipment once", () => {
@@ -208,7 +208,7 @@ describe("GOAL 012 dual capacity and physical inventory", () => {
     receivePhysical(s, "flacco", gain("smokes", 15));
     const before = serialize(s);
     expect(giveItem(s, "flacco", inventoryOf(s).slots[0].id, 1)).toContain(
-      "3 more load",
+      "carry that much",
     );
     expect(serialize(s)).toBe(before);
     s.characters.flacco.inventory = { slots: [] };
@@ -274,7 +274,7 @@ describe("GOAL 012 dual capacity and physical inventory", () => {
       s = ok(deposit(s, a.id, x.id, x.quantity));
     expect(capacityOf(s.residences![a.id].safe, "safe").usedLoad).toBe(40);
     receivePhysical(s, s.playerId, gain("mask"));
-    expect(deposit(s, a.id, inventoryOf(s).slots[0].id, 1)).toContain("load");
+    expect(deposit(s, a.id, inventoryOf(s).slots[0].id, 1)).toContain("carry that much");
     expect(releaseProperty(s, a.id)).toContain("Empty");
     at(s, b.id);
     s = ok(buyProperty(s, b.id));
@@ -445,7 +445,7 @@ describe("long-running capacity tradeoffs", () => {
       }
       const before = serialize(s),
         error = supplierError(s, "mega", "cash");
-      if (error?.includes("capacity") || error?.includes("slots")) {
+      if (error?.includes("carry that much") || error?.includes("room for that")) {
         acquire(s, "mega", "cash");
         expect(serialize(s)).toBe(before);
         rejected++;
@@ -492,7 +492,7 @@ describe("gain retries and robbery preparation", () => {
     const e = record(s, "system", "Authored gear fixture", [s.playerId]);
     const before = serialize(s);
     expect(grantEquipmentError(s, s.playerId, "law-19", e.id)).toContain(
-      "load",
+      "carry that much",
     );
     expect(grantEquipment(s, s.playerId, "law-19", e.id)).toBe(false);
     expect(serialize(s)).toBe(before);
@@ -558,7 +558,7 @@ describe("gain retries and robbery preparation", () => {
     const before = serialize(n);
     expect(
       claimOverflow(n, n.playerId, n.inventory!.overflow.player[0].id, 1),
-    ).toBe("No free slots.");
+    ).toBe("You don’t have room for that.");
     expect(serialize(n)).toBe(before);
   });
 });
@@ -576,7 +576,7 @@ describe("slot boundaries and compatibility projections", () => {
         })),
       } as ReturnType<typeof inventoryOf>;
       expect(capacityOf(inv, type).remainingLoad).toBeGreaterThan(0);
-      expect(canFit(inv, gain("smokes"), type)).toBe("No free slots.");
+      expect(canFit(inv, gain("smokes"), type)).toBe("You don’t have room for that.");
     }
   });
   it("round-trips possessions after splitting, merging and swapping", () => {
@@ -629,7 +629,7 @@ describe("stored equipment and migrated prep", () => {
       (x) => x.itemId === "gloves",
     )!;
     expect(prep.quantity).toBe(1);
-    expect(claimOverflow(s, s.playerId, prep.id, 1)).toContain("load");
+    expect(claimOverflow(s, s.playerId, prep.id, 1)).toContain("carry that much");
     s = ok(
       discardItem(s, inventoryOf(s).slots[0].id, 1, presenceOf(s).location),
     );

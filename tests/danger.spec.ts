@@ -184,7 +184,7 @@ test("terminal conflict death ends activity and manual load can restore the earl
   expect(dead?.end).toBe("killed");
   await seed(page, dead!);
   await expect(
-    page.getByRole("heading", { name: "Your run ended: killed" }),
+    page.getByRole("heading", { name: "Your story ended" }),
   ).toBeVisible();
   const manual = newGame("Earlier Morgan", "south");
   await page.evaluate(({ key, raw }) => localStorage.setItem(key, raw), {
@@ -193,7 +193,7 @@ test("terminal conflict death ends activity and manual load can restore the earl
   });
   await page.getByRole("button", { name: "Load game", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Your run ended: killed" }),
+    page.getByRole("heading", { name: "Your story ended" }),
   ).toHaveCount(0);
   expect((await snapshot(page)).end).toBeNull();
 });
@@ -234,6 +234,6 @@ test("a meaningful City purchase opens a contextual street conversation on the C
   );
   const after = await snapshot(page);
   expect(after.ap).toBe(chosen!.ap - 1);
-  expect(after.danger.scenes[0].outcome).toContain("peacefully");
+  expect(after.danger.scenes[0].outcome).toContain("parted on good terms");
   expect(after.danger.conflicts).toHaveLength(0);
 });

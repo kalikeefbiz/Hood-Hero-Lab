@@ -112,7 +112,7 @@ test("Actions separate Streets, Honest and Connects; completed reach-out returns
   await shot(page, ".person-card", "03-connects");
   await clickAction(page, "contact");
   expect((await state(page)).ap).toBe(1);
-  await expect(page.locator(".action-feedback")).toContainText("Trust grew");
+  await expect(page.locator(".action-feedback")).toContainText(/getting closer|honest living/);
   await connects(page, "mega");
   await clickAction(page, "contact");
   await connects(page, "mega");
@@ -121,9 +121,9 @@ test("Actions separate Streets, Honest and Connects; completed reach-out returns
   const modal = page.getByRole("dialog", { name: "Character encounter" });
   await expect(modal.locator(".disabled-reason")).toHaveCount(1);
   await expect(
-    modal.getByRole("button", { name: /Accept consignment/ }),
+    modal.getByRole("button", { name: /Take it on a front/ }),
   ).toBeDisabled();
-  await modal.getByRole("button", { name: "Leave without a new arrangement." }).click();
+  await modal.getByRole("button", { name: "Not today." }).click();
   await expect(
     page.getByRole("button", { name: "Streets", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
@@ -145,7 +145,7 @@ test("known suspects and leaders need real introductions; access and inventory s
   ).toBeDisabled();
   await connects(page);
   await page
-    .getByText("Known of · introductions needed", { exact: true })
+    .getByText("Heard of · need an introduction", { exact: true })
     .click();
   await expect(page.locator(".known-contacts")).toContainText("Pablo");
   await connects(page, "resident-rio");
@@ -184,7 +184,7 @@ test("known suspects and leaders need real introductions; access and inventory s
   await shot(page, ".encounter-scene", "05-supplier-terms");
   await page
     .getByRole("dialog", { name: "Character encounter" })
-    .getByRole("button", { name: /Accept consignment/ })
+    .getByRole("button", { name: /Take it on a front/ })
     .click();
   await expect(
     page.getByRole("button", { name: "Streets", exact: true }),
@@ -235,7 +235,7 @@ test("active Chains lives in City; fulfillment leaves only completed history", a
   ).toHaveCount(0);
   await openJournal(page);
   await page.getByText("Completed storylines", { exact: true }).click();
-  await expect(page.locator(".situation-history")).toContainText("fulfilled");
+  await expect(page.locator(".situation-history")).toContainText("You kept your word");
   await shot(page, ".situation-history", "07-storyline-history");
   await nav(page, "Actions");
   await expect(page.locator(".commitment-summary")).toHaveCount(0);
@@ -267,7 +267,7 @@ for (const width of [320, 375, 390, 430])
     );
     await tapUntil(
       page,
-      modal.getByRole("button", { name: /Accept consignment/ }),
+      modal.getByRole("button", { name: /Take it on a front/ }),
       async () => (await state(page)).street.lots.length > 0,
     );
     await nav(page, "Wallet");

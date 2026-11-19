@@ -81,7 +81,7 @@ test("City centers the five state-backed neighborhoods and keeps actions in Acti
   await page.keyboard.press("Enter");
   await expect(nawf).toHaveAttribute("aria-pressed", "true");
   await expect(nawf).toHaveAccessibleDescription(
-    /No single controller.*The Blips.*Mudgang/,
+    /Nobody runs it.*The Blips.*Mudgang/,
   );
   // Shared presence: the chip carries both organizations' colors.
   expect(
@@ -93,7 +93,7 @@ test("City centers the five state-backed neighborhoods and keeps actions in Acti
   ).toHaveLength(2);
   void THEMES;
   await expect(page.locator(".zone-details")).toContainText(
-    "No single controller",
+    "nobody in particular",
   );
   const downtown = map.getByRole("button", {
     name: "Select Downtown",
@@ -103,7 +103,7 @@ test("City centers the five state-backed neighborhoods and keeps actions in Acti
   await page.keyboard.press(" ");
   await expect(downtown).toHaveAttribute("aria-pressed", "true");
   await expect(downtown).toHaveAccessibleDescription(
-    /No single controller.*Unclaimed/,
+    /Nobody runs it.*Unclaimed/,
   );
   await expect(page.locator(".zone-details .tags")).toHaveText("Unclaimed");
   const saved = await page.evaluate(
@@ -169,8 +169,8 @@ test("storyline uses the active demand and opens its existing City conversation"
     name: "Open The Chains storyline",
     exact: true,
   });
-  await expect(alert).toContainText("Demand $105");
-  await expect(alert).toContainText("Leadership is considering its response");
+  await expect(alert).toContainText("They want $105");
+  await expect(alert).toContainText("Pablo knows about it");
   await alert.click();
   await expect(
     page.getByRole("dialog", { name: "Character encounter" }),
@@ -193,7 +193,7 @@ test("storyline uses the active demand and opens its existing City conversation"
     if (status !== "missing") {
       await nav(page, "Journal");
       await page.getByText("Completed storylines", { exact: true }).click();
-      await expect(page.locator(".situation-history")).toContainText(status);
+      await expect(page.locator(".situation-history")).toContainText("over");
       await expect(page.locator(".situation-history")).toContainText("sold");
     }
   }

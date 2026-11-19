@@ -45,13 +45,13 @@ export function StreetSessionStart({
           value={selected}
           onChange={(e) => setSelected(e.target.value)}
         >
-          <option value="">Earliest deadline (automatic)</option>
+          <option value="">Whichever is due first</option>
           {s.street.lots
             .filter((l) => l.owner === s.playerId && l.remaining > 0)
             .map((l) => (
               <option key={l.id} value={l.id}>
-                Received day {l.acquiredDay} · {s.characters[l.supplier].name} · {l.remaining} held ·
-                ${l.owed} owed · day {l.dueDay}
+                From {s.characters[l.supplier].alias ?? s.characters[l.supplier].name} · {l.remaining} left ·
+                {l.owed > 0 ? `$${l.owed} due day ${l.dueDay}` : "paid off"}
               </option>
             ))}
         </select>
@@ -60,9 +60,9 @@ export function StreetSessionStart({
         {s.street.lots
           .filter((l) => l.owner === s.playerId)
           .reduce((n, l) => n + l.remaining, 0)}{" "}
-        total units across your lots.
+        on you in total.
       </p>
-      <p>Spend some time on the block · about 30–45 seconds · visitors and sales are uncertain.</p>
+      <p>Work the block for a bit. You never know who’ll come by.</p>
       <button
         disabled={busy || !!reason}
         onClick={() => {
@@ -131,23 +131,23 @@ export function StreetSessionPlayback({
       <strong>
         {locationById(a.location)?.name} ·{" "}
         {a.status === "ended"
-          ? "Session ended"
-          : `On the block · ${a.cursor} visitors met`}
+          ? "Done for now"
+          : `On the block · ${a.cursor} ${a.cursor === 1 ? "person" : "people"} came by`}
       </strong>
       <p role="status">{playerText(s, a.lastText)}</p>
       <p>
         {a.totals.sold} sold · {a.totals.lost} lost · $
         {a.totals.gross - a.totals.loss} cash · +
-        {(a.totals.xp / 100).toFixed(2)} XP · police attention may rise
+        {(a.totals.xp / 100).toFixed(2)} XP
       </p>
       <details>
-        <summary>Stock, obligations and AP</summary>
+        <summary>Your stock and what you owe</summary>
         <p>
-          {saleLot(s)?.remaining ?? 0} held · $
+          {saleLot(s)?.remaining ?? 0} on you · $
           {s.street.agreements
             .filter((x) => x.debtor === s.playerId)
             .reduce((n, x) => n + x.balance, 0)}{" "}
-          supplier balance · {s.ap} AP left
+          owed to suppliers · {s.ap} AP left
         </p>
       </details>
       {a.status === "ended" ? (
@@ -201,7 +201,7 @@ export function StreetSessionPlayback({
         </div>
       )}
       {player(s).status !== "active" && (
-        <p>Your activity stopped. Follow the custody or recovery controls.</p>
+        <p>You had to stop.</p>
       )}
     </section>
   );

@@ -88,7 +88,7 @@ describe("place interactions route into existing systems", () => {
     const apply = placeActions(s, findPlace("south.food-mart")).find((a) => a.type === "apply")!;
     const r = performAction(s, apply);
     expect(r.error).toBeNull();
-    expect(placeFacts(r.state, findPlace("south.auto-repair"))[0]).toMatch(/Available/);
+    expect(placeFacts(r.state, findPlace("south.auto-repair"))[0]).toMatch(/For sale/);
   });
   it("lists district residents at gathering places", () => {
     const s = newGame("Morgan", "south");

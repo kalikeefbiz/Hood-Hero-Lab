@@ -32,38 +32,38 @@ export function SkillsView({ character }: { character: Character }) {
             <p>{def.ranks.join(" → ")}</p>
             <p>
               {rank < 4
-                ? `Next: ${def.ranks[rank]} · ${(def.gates[rank] / 100).toFixed(2)} cumulative XP (${(Math.max(0, def.gates[rank] - progress.xp[id]) / 100).toFixed(2)} remaining)`
+                ? `Next rank: ${def.ranks[rank]} · ${(Math.max(0, def.gates[rank] - progress.xp[id]) / 100).toFixed(2)} XP to go`
                 : "Top rank reached."}
             </p>
             {missing.map((m) => (
-              <p key={m}>Required: {publicRequirement(m)}</p>
+              <p key={m}>Still need: {publicRequirement(m)}</p>
             ))}
             {id === "trapper" && (
               <p>
-                Current margin +${(rank - 1) * 2}/unit · up to{" "}
-                {1 + Math.floor((rank - 1) / 2)} units per committed buyer,
-                limited by stock and demand.
+                You make an extra ${(rank - 1) * 2} on each sale, and a buyer
+                may take up to {1 + Math.floor((rank - 1) / 2)} at once if you
+                have the stock.
               </p>
             )}
             {id === "leadership" && (
               <p>
-                Coordination improves Set outcome checks; faction authority
-                remains independent.
+                Your Set does better when you lead it well. Your rank in an
+                organization is a separate thing.
               </p>
             )}
             <p className="muted">
               {id === "trapper"
-                ? "Ranks improve margins, volume and future supply access. Buyer decisions depend on the block."
+                ? "Moving up means better money, bigger sales and better suppliers. Whether someone buys still depends on the block."
                 : id === "combat" || id === "robbery"
-                  ? "Learn about further opportunities by talking to trusted contacts."
-                  : "Experience comes from completed, meaningful outcomes."}
+                  ? "People you trust can point you toward bigger opportunities."
+                  : "You get better by doing things that matter."}
             </p>
           </details>
         );
       })}
       {character.id === "player" && (
         <details>
-          <summary>Recent XP records</summary>
+          <summary>Recent progress</summary>
           {progress.awards
             .slice(-16)
             .reverse()

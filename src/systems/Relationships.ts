@@ -128,8 +128,8 @@ export function connect(s: GameState, actor: string, target: string) {
 export function accessStatus(s: GameState, actor: string, target: string) {
   const c = s.characters[actor],
     n = s.characters[target];
-  if (!c?.known.includes(target)) return "Unknown";
-  if (!c.connections.includes(target)) return "Known of";
+  if (!c?.known.includes(target)) return "Stranger";
+  if (!c.connections.includes(target)) return "Heard of";
   return (n?.relationships[actor]?.trust ?? 0) >= 35 &&
     (n?.relationships[actor]?.grievance ?? 0) < 40
     ? "Trusted"
@@ -146,15 +146,15 @@ export function contactError(
   if (!n || !c?.known.includes(target))
     return "You need to learn who this person is first.";
   if (!c.connections.includes(target))
-    return "Known of, not connected. Ask an established contact for an introduction.";
-  if (n.status !== "active") return `This person is unavailable (${n.status}).`;
+    return "You’ve heard of them, but you’ve never met. Ask someone you know to introduce you.";
+  if (n.status !== "active") return ({ arrested: "They’re locked up.", dead: "They’re gone.", "laying-low": "They’re laying low." } as Record<string, string>)[n.status] ?? "They’re not around.";
   if (n.availableDay > s.day)
-    return `Committed until day ${n.availableDay}. Use the member conversation to review commitments.`;
+    return `They’re busy until day ${n.availableDay}.`;
   if (
     (n.relationships[actor]?.trust ?? 0) < -10 ||
     (n.relationships[actor]?.grievance ?? 0) > 55
   )
-    return "They aren't willing to talk. Your relationship needs repair.";
+    return "They don’t want to talk to you right now.";
   return null;
 }
 export function introductionCandidates(

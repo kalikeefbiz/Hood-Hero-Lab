@@ -60,5 +60,5 @@ export function quannyAddress(s: GameState) {
   return `${location.name}, ${s.zones[location.zone].name}`;
 }
 export function quannyCollectionInstruction(s: GameState, dueDay: number) {
-  return `Collect from Quanny — ${quannyAddress(s)}. Due Day ${dueDay}.`;
+  return `Collect from Quanny at ${quannyAddress(s)} · due day ${dueDay}`;
 }

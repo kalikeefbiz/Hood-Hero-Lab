@@ -171,8 +171,8 @@ test("action art loads near the viewport, and failed art preserves layout and ga
   await honest(page, "work");
   await expect(work.getByRole("button")).toBeDisabled();
   await expect(
-    work.getByText("Not enough AP or availability", { exact: true }),
-  ).toHaveText("Not enough AP or availability");
+    work.getByText("Not enough AP left today", { exact: true }),
+  ).toHaveText("Not enough AP left today");
   expect((await work.boundingBox())!.width).toBe(size!.width);
 });
 

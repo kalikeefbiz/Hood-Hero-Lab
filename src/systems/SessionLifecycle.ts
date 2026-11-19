@@ -15,7 +15,7 @@ export function finishSessionPartner(s: GameState) {
   if (!a) return;
   a.status = "resolved";
   a.success = session.totals.sold > 0;
-  a.outcome = `Shared street transaction · City session: ${session.totals.sold} sold; actual shares paid per buyer.`;
+  a.outcome = `You worked the block together and sold ${session.totals.sold}. Everyone got their share.`;
   const e = record(s, "crew", a.outcome, a.participants);
   a.eventIds.push(e.id);
   const promise = s.commitments.find((c) => c.id === a.commitmentId);

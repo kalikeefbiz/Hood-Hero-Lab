@@ -12,11 +12,11 @@ export function arrest(s: GameState, id: string, cause: string, severity = 1) {
     B.minSentence + Math.min(2, prior) + Math.max(0, severity - 1),
   );
   c.status = "arrested";
-  if (id === s.playerId) interruptSession(s, "Arrested. Unresolved visitors cancelled.");
+  if (id === s.playerId) interruptSession(s, "You were arrested. Anyone still waiting moved on.");
   const e = record(
     s,
     "risk",
-    `${c.name} was arrested: ${cause}. Release scheduled for day ${s.day + length}. Debts and daily costs continue.`,
+    `${c.name} was arrested: ${cause}. Release is set for day ${s.day + length}. Debts and daily costs keep running.`,
     [id],
     id === s.playerId || s.crew.members.includes(id) ? [s.playerId, id] : [id],
     { importance: "critical", title: `${c.name} in custody` },
@@ -31,7 +31,7 @@ export function arrest(s: GameState, id: string, cause: string, severity = 1) {
     prior,
     releaseDay: s.day + length,
     status: "held",
-    conditions: "Residual police scrutiny; all outstanding obligations remain.",
+    conditions: "The police are still watching, and everything you owed is still owed.",
     eventId: e.id,
   });
 }
@@ -48,7 +48,7 @@ export function releaseEligible(s: GameState) {
     record(
       s,
       "risk",
-      `${c.name} was released. Unpaid balances, missed work and arrest history remain.`,
+      `${c.name} was released. Unpaid debts and missed work are waiting, and the arrest is on record.`,
       [c.id],
       c.id === s.playerId || s.crew.members.includes(c.id)
         ? [s.playerId, c.id]

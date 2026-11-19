@@ -31,7 +31,7 @@ export function megaDialogue(s: GameState, e: EncounterInstance): string {
   if (e.selectedResponses.at(-1)?.id === "decline")
     return "Alright. I wanted your help, but I heard you. I’ll figure out what I can do.";
   if (e.selectedResponses.some((r) => r.id === "clarify"))
-    return `Dizzy, Baby Canon, Joker. Three of them, trying to get a name. They want $${i.demand}. Loco’s locked up; Pablo runs things out here. This wasn’t authorized. I wasn’t badly hurt. I want my property back, not more trouble.`;
+    return `Dizzy, Baby Canon, Joker. Three of them, trying to get a name. They want $${i.demand}. Loco’s locked up; Pablo runs things out here. Nobody put them up to it. I wasn’t badly hurt. I just want my chain back, not more trouble.`;
   return `Cuzzo, three young Angels took my diamond chain while I was out with my girl. I’m alright. They want $${i.demand} to give it back. ${i.leadershipAware ? "Pablo’s heard about it, but nothing’s settled. " : ""}Can you help me get it home?`;
 }
 function requestResponses(
@@ -43,7 +43,7 @@ function requestResponses(
     return [
       {
         id: "acknowledge",
-        label: "I hear you. Return to the city.",
+        label: "I hear you.",
         effect: { type: "acknowledge" },
       },
     ];
@@ -77,7 +77,7 @@ function requestResponses(
       ["negotiate", "negotiate", "Talk down the demand", undefined],
       ["buyback", "buyback", "Pay to return the chains", undefined],
       ["settlement", "settlement", "Bring the dispute to Pablo", "pablo"],
-      ["recover", "recover", "Attempt property recovery", undefined],
+      ["recover", "recover", "Take the chains back", undefined],
     ] as const) {
       if (
         (type === "negotiate" && i.negotiated) ||
@@ -144,7 +144,7 @@ export const ENCOUNTERS: EncounterDefinition[] = [
     responses: () => [
       {
         id: "acknowledge",
-        label: "I hear you. Return to the city.",
+        label: "I hear you.",
         effect: { type: "acknowledge" },
       },
     ],

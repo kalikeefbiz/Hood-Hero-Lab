@@ -355,7 +355,7 @@ describe("directional consignment, collection and persistent relationships", () 
     const rs = choices(s);
     expect(
       rs.find((r) => r.id === "terms")!.requirement!(s, currentEncounter(s)!),
-    ).toMatch(/real Pink Magic/);
+    ).toMatch(/Pink Magic on you/);
     expect(
       rs.find((r) => r.id === "ask-work")!.requirement!(
         s,
@@ -582,7 +582,7 @@ describe("Quanny business boundaries", () => {
     syncEncounters(s);
     expect(
       respondEncounter(s, currentEncounter(s)!.id, "collect").error,
-    ).toMatch(/Return on day/);
+    ).toMatch(/pays on day/);
     s = respond(s, "leave");
     s = collection(s);
     const raw = structuredClone(s);

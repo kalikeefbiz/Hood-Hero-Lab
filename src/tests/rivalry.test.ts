@@ -32,21 +32,21 @@ describe("living rivalry consequences", () => {
       (e) => e.title === "The Reservoir: Rival pressure",
     )!;
     expect(warning).toBeTruthy();
-    expect(eventView(s, warning)?.text).toContain("local traders");
+    expect(eventView(s, warning)?.text).toContain("is organizing and pushing back");
     expect(marketAccess(s, s.playerId, "reservoir")).toBeNull();
     resolveDays(s, 6);
     expect(s.zones.reservoir.controller).toBe("angels");
     expect(s.factions.blocks.resources).toBe(funds - 60);
     expect(s.factions.blocks.instability).toBe(26);
     expect(s.strategic.territories.reservoir.changes).toHaveLength(1);
-    expect(marketAccess(s, s.playerId, "reservoir")).toContain("Rival control");
-    expect(rivalryView(s, "reservoir")).toContain("loses customers");
+    expect(marketAccess(s, s.playerId, "reservoir")).toContain("rival set runs");
+    expect(rivalryView(s, "reservoir")).toContain("losing customers");
     expect(s.end).toBeNull();
     s = deserialize(serialize(s));
     const before = serialize(s);
     resolveTerritories(s);
     expect(serialize(s)).toBe(before); // No replayed penalties on load or same-day calls.
-    expect(marketAccess(s, s.playerId, "reservoir")).toContain("Rival control");
+    expect(marketAccess(s, s.playerId, "reservoir")).toContain("rival set runs");
     const neutral = structuredClone(s);
     player(neutral).affiliation = null;
     s.day++;
@@ -93,7 +93,7 @@ describe("living rivalry consequences", () => {
     expect(marketAccess(s, s.playerId, "reservoir")).toBeNull();
     const reloaded = deserialize(serialize(s));
     expect(rivalControl(reloaded, "reservoir", player(reloaded))).toBe(false);
-    expect(rivalryView(reloaded, "reservoir")).not.toContain("loses customers");
+    expect(rivalryView(reloaded, "reservoir")).not.toContain("losing customers");
   });
 
   it("support, operations, cooperation and priorities influence independent faction choices", () => {
@@ -129,7 +129,7 @@ describe("living rivalry consequences", () => {
     expect(politicalError(s, "community", "reservoir")).toBeNull();
     expect(businessAction(s, "laundry", "buy").error).toBeNull();
     expect(rivalryView(s, "reservoir")).not.toContain(
-      "A rival organization controls",
+      "Your rivals run",
     );
     player(s).affiliation = "muds"; // Angels' actual ally.
     expect(rivalControl(s, "reservoir", player(s))).toBe(false);

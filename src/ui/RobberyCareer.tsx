@@ -36,7 +36,7 @@ type Props = { s: GameState; change: (s: GameState) => void };
 const KIND: Record<CareerKind, string> = {
   home: "House · crew job",
   liquor: "Liquor store",
-  store: "Commercial · crew job",
+  store: "Store · crew job",
   "strong-arm": "Street",
 };
 const nameOf = (s: GameState, id: string) =>
@@ -224,7 +224,7 @@ export function CareerPerson({ s, id, change }: Props & { id: string }) {
           </div>
         </div>
         <p className="disabled-reason">
-          Selling stolen goods back can make the conflict personal and draw attention.
+          Selling someone their own stuff back makes it personal, and people talk.
         </p>
         <button disabled={!!e} onClick={() => run(sellProperty(s, x.id, id))}>
           Sell {D[x.itemId].name} back · ${back}
@@ -238,10 +238,10 @@ export function CareerPerson({ s, id, change }: Props & { id: string }) {
     parts.push(
       <div key={c.id} className="claim-card">
         <span>
-          You owe {who} their goods share · due day {c.dueDay}
+          You owe {who} their cut · due day {c.dueDay}
         </span>
         <button onClick={() => run(payCrewClaim(s, c.id))}>
-          Pay agreed goods share ${c.amount - c.paid} · due {c.dueDay}
+          Pay their cut · ${c.amount - c.paid}
         </button>
       </div>,
     );
@@ -251,12 +251,12 @@ export function CareerPerson({ s, id, change }: Props & { id: string }) {
     parts.push(
       <article key={d.id} className="return-card">
         <strong>
-          {who} witnessed your job · wants ${d.amount}
+          {who} saw what you did · wants ${d.amount} to stay quiet
         </strong>
         <div className="slot-actions">
-          <button onClick={() => run(answerExtortion(s, d.id, true))}>Pay personal cut</button>
+          <button onClick={() => run(answerExtortion(s, d.id, true))}>Pay them off</button>
           <button className="secondary" onClick={() => run(answerExtortion(s, d.id, false))}>
-            Refuse · personal conflict
+            Refuse · they won’t forget it
           </button>
         </div>
       </article>,
@@ -363,7 +363,7 @@ export function CareerControls({ s, change, input }: Props & { input: (a: string
       )}
       {c.kind === "home" && safeHere && !c.dial.open && c.dial.tries < 3 && (
         <fieldset className="dial">
-          <legend>Safe dial · optional, no timer</legend>
+          <legend>Crack the safe · take your time</legend>
           <p role="status">
             {c.dial.feedback || "Turn it and listen."} · {3 - c.dial.tries} tries left
           </p>
@@ -379,7 +379,7 @@ export function CareerControls({ s, change, input }: Props & { input: (a: string
               Dial +10
             </button>
           </div>
-          <button onClick={() => run(tryDial(s, a.id, a.cursor, dial))}>Try dial · adds pressure</button>
+          <button onClick={() => run(tryDial(s, a.id, a.cursor, dial))}>Try it · makes noise</button>
         </fieldset>
       )}
       <div className="robbery-actions">
@@ -391,7 +391,7 @@ export function CareerControls({ s, change, input }: Props & { input: (a: string
           )
         ) : c.kind === "store" && a.cursor === 1 ? (
           <button className="choice" onClick={() => input("coordinate")}>
-            Coordinate partner collection
+            Have your partner grab it
           </button>
         ) : (
           <>

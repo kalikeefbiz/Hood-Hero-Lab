@@ -70,12 +70,12 @@ export const sessionRunning = (s: GameState) =>
   !!s.activeSession && s.activeSession.status !== "ended";
 function interruption(s: GameState) {
   if (s.end || player(s).status !== "active" || hospitalStay(s))
-    return "Session interrupted by confinement or injury.";
+    return "Your session got cut short.";
   if (streetConversation(s) || quannyConversation(s) || currentEncounter(s))
-    return "Session interrupted by an encounter.";
+    return "Someone interrupted your session.";
   const a = s.activeSession;
   if (a && (a.startDay !== s.day || presenceOf(s).location !== a.location))
-    return "You left the session.";
+    return "You left the spot.";
   return null;
 }
 export function validateStartStreetSession(s: GameState, location: string) {
@@ -84,7 +84,7 @@ export function validateStartStreetSession(s: GameState, location: string) {
   const work = workIntroError(s);
   if (work) return work;
   if (s.activeRobbery && s.activeRobbery.status !== "ended")
-    return "Finish the robbery session first.";
+    return "Finish the job you’re on first.";
   if (
     s.streetLife?.lesson === "waiting" &&
     (location !== "south.the-lot" ||
@@ -96,20 +96,20 @@ export function validateStartStreetSession(s: GameState, location: string) {
   )
     return lessonError(s);
   if (!l || l.status !== "live" || !l.links.street)
-    return "This is not an active street-work spot.";
+    return "Nobody buys here.";
   if (presenceOf(s).location !== location || presenceOf(s).zone !== l.zone)
-    return "Go here on the City board first. You must physically stand at this spot.";
-  if (sessionRunning(s)) return "Finish or leave your current session first.";
+    return "Walk over to this spot first.";
+  if (sessionRunning(s)) return "You’re already working a spot.";
   // Ignore an old ended session when checking the new location/day.
   const error = interruption({ ...s, activeSession: undefined });
   if (error) return error;
-  if (s.ap < 1) return "Requires 1 AP.";
+  if (s.ap < 1) return "You need 1 AP.";
   if (
     l.faction &&
     p.affiliation &&
     s.factions[l.faction].enemies.includes(p.affiliation)
   )
-    return "Rival territory blocks street work here.";
+    return "This is rival turf. You can’t work here.";
   return buyerError(s, s.playerId, l.zone);
 }
 export function startStreetSession(
@@ -169,7 +169,7 @@ export function startStreetSession(
     record(
       s,
       "social",
-      `Mega: “${s.streetLife.initialDecision === "promise" ? "You gave your word about my chain." : "I heard your choice. You’re still my cousin."} Carry yourself like a boss and make me proud. Watch the buyers; nobody owes you a sale.”`,
+      `Cuzzo: “${s.streetLife.initialDecision === "promise" ? "You gave your word about my chain." : "I heard your choice. You’re still my cousin."} Carry yourself like a boss and make me proud. Watch the buyers; nobody owes you a sale.”`,
       ["mega", s.playerId],
     );
   }
@@ -197,7 +197,7 @@ export function startStreetSession(
     totals: { gross: 0, loss: 0, sold: 0, lost: 0, xp: 0, heat: 0 },
     lastText: "Working the block. A visitor is approaching.",
   };
-  record(s, "city", `Started trapping at ${l.name} · 1 AP paid.`, [s.playerId]);
+  record(s, "city", `You started trapping at ${l.name}.`, [s.playerId]);
   return { state: s, error: null };
 }
 export function advanceStreetSession(
@@ -228,7 +228,7 @@ export function advanceStreetSession(
     )
   ) {
     session.status = "ended";
-    session.reason = "Session stock is no longer available.";
+    session.reason = "You ran out of product.";
     finishSessionPartner(s);
     return s;
   }
@@ -250,25 +250,25 @@ export function advanceStreetSession(
       session.totals.sold += t.sold;
       session.totals.lost += t.lost;
       session.lastText = t.sold
-        ? `Buyer purchased ${t.sold} Pink Magic · $${t.gross}.`
-        : `Buyer walked away · ${t.lost ? `${t.lost} stock lost` : t.loss ? `$${t.loss} lost` : "no purchase; exposure increased"}.`;
-    } else session.lastText = "No offer: stock or local demand is exhausted.";
+        ? `A buyer took ${t.sold} Pink Magic for $${t.gross}.`
+        : `The buyer walked${t.lost ? ` and you lost ${t.lost}` : t.loss ? ` and you lost $${t.loss}` : ", and people noticed"}.`;
+    } else session.lastText = "Nobody’s buying right now.";
   } else if (beat.kind === "witness") {
     addExposure(s, s.playerId, session.zone, 4, true);
     session.lastText =
-      "Word’s getting around that you’re working this block. Local exposure increased.";
+      "Word’s getting around that you’re working this block.";
     record(s, "risk", session.lastText, [s.playerId]);
   } else if (beat.kind === "patrol") {
     session.lastText =
-      "A police patrol arrives. Current exposure determines intervention.";
+      "A police patrol rolls up.";
     record(s, "risk", session.lastText, [s.playerId]);
     if (random(s) < transactionArrestChance(s, s.playerId, session.zone))
       arrest(s, s.playerId, "police patrol during street work", 1);
   } else if (beat.kind === "rival") {
     expose(s, session.location, "activity", key);
     session.lastText =
-      "Someone is watching the block. Your local history determines their response.";
-  } else session.lastText = "A passer-by walks on. No offer, no XP.";
+      "Someone’s watching the block.";
+  } else session.lastText = "Somebody walks by without stopping.";
   s.rng = rng;
   session.totals.xp += skillsOf(player(s)).xp.trapper - xp;
   session.totals.heat += Math.max(0, player(s).police - heat);
@@ -280,12 +280,12 @@ export function advanceStreetSession(
   const reason = interruption(s);
   if (reason || session.cursor === session.beats.length || !saleLot(s)) {
     session.status = "ended";
-    session.reason = reason ?? "Session complete.";
+    session.reason = reason ?? "That’s it for this session.";
     finishSessionPartner(s);
     record(
       s,
       "city",
-      `${session.reason} ${session.totals.sold} sold, ${session.totals.lost} lost, $${session.totals.gross - session.totals.loss} net cash, +${(session.totals.xp / 100).toFixed(2)} Trapper XP.`,
+      `${session.reason} Sold ${session.totals.sold}${session.totals.lost ? `, lost ${session.totals.lost}` : ""}, cleared $${session.totals.gross - session.totals.loss}${session.totals.xp ? ` · +${(session.totals.xp / 100).toFixed(2)} Trapper XP` : ""}.`,
       [s.playerId],
     );
   }
@@ -294,7 +294,7 @@ export function advanceStreetSession(
 export function endStreetSession(
   state: GameState,
   id: string,
-  reason = "Left early. Spent AP is not refunded.",
+  reason = "You left early. The AP is spent.",
 ) {
   if (state.activeSession?.id !== id || !sessionRunning(state)) return state;
   const s = structuredClone(state);

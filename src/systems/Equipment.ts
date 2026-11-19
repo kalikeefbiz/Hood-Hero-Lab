@@ -44,9 +44,9 @@ export function equipError(c: Character, id: EquipmentId | null) {
       ? c.inventory.slots.some((x) => x.kind === "equipment" && x.itemId === id)
       : equipmentOf(c).owned.includes(id))
   )
-    return "Item is not owned.";
+    return "You don’t have that.";
   if (skillRank(c, "combat") < EQUIPMENT[id].rank)
-    return `Requires Combat rank ${EQUIPMENT[id].rank}.`;
+    return "You need more fighting experience to use this.";
   return null;
 }
 export function equip(c: Character, id: EquipmentId | null) {
@@ -71,15 +71,15 @@ export function grantEquipmentError(
     !EQUIPMENT[id] ||
     !s.events.some((e) => e.id === sourceEventId && e.actors.includes(actor))
   )
-    return "A real authored equipment reward is required.";
+    return "That isn’t yours to take.";
   if (
     s.inventory?.operations.includes(
       `equipment:${actor}:${id}:${sourceEventId}`,
     )
   )
-    return "Equipment reward already claimed.";
+    return "You already got this.";
   if (equipmentOf(s.characters[actor]).owned.includes(id))
-    return "Equipment already carried.";
+    return "You already have this on you.";
   return gainError(s, actor, gain(id, 1, sourceEventId));
 }
 /** Integration hook for an authored story/contact outcome; never a store purchase. */

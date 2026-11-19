@@ -87,19 +87,19 @@ export function canFit(
     def.kind !== item.kind ||
     (item.kind === "merchandise" && !item.lotId)
   )
-    return "Unknown item or missing lot identity.";
+    return "That item isn’t here.";
   if (!Number.isSafeInteger(item.quantity) || item.quantity <= 0)
-    return "Choose a positive whole quantity.";
+    return "Pick how many.";
   const c = capacityOf(inv, type),
     needLoad = item.quantity * def.load - c.remainingLoad;
-  if (needLoad > 0) return `Need ${needLoad} more load capacity.`;
+  if (needLoad > 0) return "You can’t carry that much.";
   const room = inv.slots
     .filter((x) => matching(x, item))
     .reduce((n, x) => n + def.stack - x.quantity, 0);
   if (
     Math.ceil(Math.max(0, item.quantity - room) / def.stack) > c.remainingSlots
   )
-    return "No free slots.";
+    return "You don’t have room for that.";
   return null;
 }
 export const gainError = (s: GameState, actor: string, item: ItemGain) =>
@@ -194,12 +194,12 @@ export function consumeLot(
 }
 export function physicalActionError(s: GameState, conversationWith?: string) {
   if (s.end || player(s).status !== "active")
-    return "Return safely to the City first.";
+    return "Get back to the City first.";
   if (
     (s.activeSession && s.activeSession.status !== "ended") ||
     (s.activeRobbery && s.activeRobbery.status !== "ended")
   )
-    return "Finish your current session first.";
+    return "Wrap up trapping first.";
   const encounter = currentEncounter(s);
   if (
     hospitalStay(s) ||
@@ -207,7 +207,7 @@ export function physicalActionError(s: GameState, conversationWith?: string) {
     (encounter &&
       (!conversationWith || !encounter.participants.includes(conversationWith)))
   )
-    return "Finish your current encounter first.";
+    return "Finish this conversation first.";
   return null;
 }
 export function quantityError(
@@ -239,7 +239,7 @@ export function logInventory(
       ...[from, to].filter((x) => !!s.characters[x] && x !== s.playerId),
     ],
     undefined,
-    { title: "Inventory exchange" },
+    { title: "Items moved" },
   );
   (s.inventory ??= newInventoryState()).history.push({
     id: `inventory-${s.nextId++}`,

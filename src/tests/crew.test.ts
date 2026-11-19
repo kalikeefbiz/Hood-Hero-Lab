@@ -136,7 +136,7 @@ describe("personal Set agency", () => {
       c = s.characters.flacco;
     expect(cooperation(s, c, "work").accepted).toBe(true);
     c.relationships.player.trust = 15;
-    expect(cooperation(s, c, "work").reason).toContain("rebuild trust");
+    expect(cooperation(s, c, "work").reason).toContain("fix things between us");
     c.relationships.player.trust = 80;
     c.traits.risk = 80;
     c.traits.lawful = 10;
@@ -169,7 +169,7 @@ describe("personal Set agency", () => {
     requestActivity(s, c.id, "information");
     expect(player(s).known).toEqual(known);
     expect(s.incidents["the-chains"].informed).toBe(false);
-    expect(s.assignments[0].outcome).toMatch(/Nothing new|couldn't confirm/);
+    expect(s.assignments[0].outcome).toMatch(/Nothing solid|Nobody knows/);
   });
   it("reserves obligations and blocks duplicates, AP, funds and legacy errands", () => {
     const s = fresh();
@@ -182,7 +182,7 @@ describe("personal Set agency", () => {
     expect(
       performAction(s, { actor: "player", target: "flacco", type: "assign" })
         .error,
-    ).toContain("conversation");
+    ).toContain("busy until day");
     s.ap = 0;
     expect(requestError(s, "flacco", "social")).toContain("AP");
     const broke = fresh();
@@ -201,7 +201,7 @@ describe("personal Set agency", () => {
       expect(cooperation(s, s.characters.flacco, "work").accepted).toBe(false);
       s = advanceDay(s);
       generateShifts(s);
-      expect(availability(s, s.characters.flacco)).toContain("scheduled shift");
+      expect(availability(s, s.characters.flacco)).toContain("got a shift that day");
       expect(
         s.employment[0].attendance.some(
           (a) => a.day === s.day && a.status === "worked",
@@ -384,7 +384,7 @@ describe("assignment boundaries and personal consequences", () => {
     expect(s.characters[o.member].relationships.player.trust).toBe(trust - 4);
     expect(
       s.characters[o.member].memories.some((m) =>
-        m.meaning.includes("didn't show up"),
+        m.meaning.includes("show up"),
       ),
     ).toBe(true);
   });
@@ -398,7 +398,7 @@ describe("assignment boundaries and personal consequences", () => {
     acceptJob(s, o.member, "retail-south");
     s.employment[0].workdays = [0, 1, 2, 3, 4, 5, 6];
     s = advanceDay(s);
-    expect(attendError(s, a.id)).toContain("scheduled shift");
+    expect(attendError(s, a.id)).toContain("got a shift that day");
     const before = cash(player(s));
     attendCrewActivity(s, a.id);
     expect(cash(player(s))).toBe(before);
@@ -409,7 +409,7 @@ describe("assignment boundaries and personal consequences", () => {
     expect(
       performAction(s, { actor: "player", type: "crime", partner: "mega" })
         .error,
-    ).toContain("active shared assignment");
+    ).toContain("haven’t agreed on this");
     requestActivity(s, "flacco", "work");
     const bad = structuredClone(s);
     bad.assignments[0].member = "missing";

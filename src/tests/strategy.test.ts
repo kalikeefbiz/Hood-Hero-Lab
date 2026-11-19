@@ -135,7 +135,7 @@ describe("condition-driven factions and player politics", () => {
     expect(r.state.ap).toBe(1);
     expect(r.state.zones.south.support).toBeGreaterThan(s.zones.south.support);
     expect(politicalError(r.state, "community", "south")).toContain("day");
-    expect(politicalError(s, "support", "south")).toContain("Join");
+    expect(politicalError(s, "support", "south")).toContain("part of an organization");
     expect(s.zones.south.controller).toBe("backstreet");
   });
   it("requires contact access and authority; contributions change persistent organizational state", () => {
@@ -145,7 +145,7 @@ describe("condition-driven factions and player politics", () => {
     p.authority = 25;
     p.wallet.clean = 500;
     expect(politicalError(s, "operation", "south", "justice")).toContain(
-      "Known of",
+      "never met",
     );
     connect(s, "player", "justice");
     s.characters.justice.relationships.player.trust = 60;
@@ -157,7 +157,7 @@ describe("condition-driven factions and player politics", () => {
     ).toBeGreaterThan(
       s.strategic.territories.south.factions.backstreet.economy,
     );
-    expect(politicalError(s, "challenge", "south", "justice")).toContain("45");
+    expect(politicalError(s, "challenge", "south", "justice")).toContain("Organizer");
   });
   it("advancement considers time, resources, standing, leadership and political opposition", () => {
     const s = fresh(),

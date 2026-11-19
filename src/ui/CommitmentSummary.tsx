@@ -9,15 +9,15 @@ export function CommitmentSummary({ s }: { s: GameState }) {
       <h3>Your word</h3>
       {promises.map((c) => (
         <div key={c.id}>
-          <strong>Help Cuzzo recover his chains · {c.status}</strong>
+          <strong>Help Cuzzo get his chains back</strong>
           <p>
             {c.status === "pending"
-              ? `${Math.max(0, c.dueDay - s.day)} days remaining · Before day ${c.dueDay} begins. The situation may end sooner.`
+              ? `${Math.max(0, c.dueDay - s.day)} days left · until day ${c.dueDay}, unless things move on without you`
               : c.status === "fulfilled"
-                ? "Your contribution is recorded. Cuzzo remembers."
+                ? "You came through, and Cuzzo knows it."
                 : c.status === "broken"
                   ? "Cuzzo remembers the promise you broke."
-                  : "Events overtook your promise. No accomplishment credit or betrayal penalty."}
+                  : "It got settled before you could act. No harm done."}
           </p>
         </div>
       ))}

@@ -102,34 +102,34 @@ export function missingMilestones(
     missing: string[] = [];
   if (skill === "combat") {
     if (rank >= 2 && !m.certified)
-      missing.push("Complete an optional authored violent-operation introduction");
+      missing.push("Complete training with an experienced contact");
     const need = rank === 4 ? 12 : rank === 3 ? 3 : 0;
     if ((m.violentSuccess ?? 0) < need)
       missing.push(
-        `${m.violentSuccess ?? 0}/${need} successful violent operations`,
+        `More fights won (${m.violentSuccess ?? 0} of ${need})`,
       );
   }
   if (skill === "robbery" && rank >= 2) {
     const need = [0, 0, 3, 9, 18][rank];
     if ((m.robberySuccess ?? 0) < need)
-      missing.push(`${m.robberySuccess ?? 0}/${need} successful robberies`);
+      missing.push(`More successful jobs (${m.robberySuccess ?? 0} of ${need})`);
     if (skillRank(c, "combat") < (rank === 4 ? 4 : 2))
-      missing.push(rank === 4 ? "Gravedigger Combat" : "Certified Combat");
+      missing.push(rank === 4 ? "Gravedigger rank in Combat" : "Combat certification");
     if (!m[`robberyAccess${rank}`])
       missing.push(
-        "Earn an appropriate operation invitation through a trusted contact",
+        "Get invited onto a bigger job by someone you trust",
       );
   }
   if (skill === "trapper" && rank >= 3) {
-    if (!m.supplierCredible) missing.push("Credible supplier relationship");
-    if (!m.supplierPaid) missing.push("Completed supplier obligation");
+    if (!m.supplierCredible) missing.push("A supplier who takes you seriously");
+    if (!m.supplierPaid) missing.push("A supplier you’ve paid in full");
     if (rank === 4) {
       if ((m.supplyHistory ?? 0) < 12)
         missing.push(
-          `${m.supplyHistory ?? 0}/12 meaningful completed supply lots`,
+          `More packs moved (${m.supplyHistory ?? 0} of 12)`,
         );
       if ((m.commercialZones ?? 0) < 2)
-        missing.push("Successful commerce in at least two zones");
+        missing.push("Sales in at least two neighborhoods");
     }
   }
   return missing;
@@ -191,7 +191,7 @@ export function awardSkill(
   record(
     s,
     "system",
-    `${c.name}: +${(amount / 100).toFixed(2)} ${SKILLS[skill].name} XP · ${SKILLS[skill].ranks[skillRank(c, skill) - 1]}.`,
+    `${c.id === s.playerId ? "You" : c.name} got better at ${SKILLS[skill].name} (${SKILLS[skill].ranks[skillRank(c, skill) - 1]}).`,
     [actor],
     [actor],
   );

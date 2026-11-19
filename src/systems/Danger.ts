@@ -196,7 +196,7 @@ export function violence(
     [p.id, npc.id],
     {
       importance: "critical",
-      title: fatal ? "Fatal encounter" : "Hospitalized",
+      title: fatal ? "Killed" : "In the hospital",
     },
   );
   const conflict =
@@ -205,7 +205,7 @@ export function violence(
       s,
       npc.id,
       p.id,
-      war ? "Direct encounter in an active faction war" : "Physical assault",
+      war ? "You crossed paths while your sets are at war" : "There was a fight",
       e.id,
       shooting ? 85 : 45,
       shooting || war,
@@ -239,7 +239,7 @@ export function hospitalize(
   eventId: string,
 ) {
   if (s.end || hospitalStay(s)) return;
-  interruptSession(s, "Hospitalized. Unresolved visitors cancelled.");
+  interruptSession(s, "You were taken to the hospital. Anyone still waiting moved on.");
   const p = player(s),
     days = kind === "shooting" ? 5 : 2,
     bill = kind === "shooting" ? 480 : 180;
@@ -272,7 +272,7 @@ export function hospitalize(
   record(
     s,
     "money",
-    `${days} days of inpatient recovery. Treatment $${bill}; $${paid} paid, $${bill - paid} added to arrears. Work and street activity are unavailable; the city continues.`,
+    `You’ll be in the hospital for ${days} days. The bill is $${bill}: you paid $${paid}${bill - paid > 0 ? `, and $${bill - paid} goes on what you owe` : ""}. You can’t work until you’re out, and the city won’t wait.`,
     [p.id],
     [p.id],
     { importance: "major", title: "Recovery and treatment" },
@@ -288,7 +288,7 @@ export function dischargePatient(s: GameState) {
     record(
       s,
       "risk",
-      "You were discharged from hospital. Treatment, missed obligations and city history remain.",
+      "You’re out of the hospital. Whatever you missed while you were in is still waiting.",
       [s.playerId],
     );
   }
@@ -308,7 +308,7 @@ function makeScene(
     `${name(npc)} approaches you at ${locationById(location)!.name}.`,
     [npc.id, s.playerId],
     undefined,
-    { title: "A familiar city, individual lives" },
+    { title: "Someone approaches" },
   );
   witnessIdentity(s, npc.id, s.playerId, e.id, location, "witness");
   witnessIdentity(s, s.playerId, npc.id, e.id, location, "witness", true);
@@ -356,15 +356,15 @@ export function sceneDialogue(s: GameState, scene: StreetScene) {
         : "What brings you around here?";
     case "debt":
       return s.street.agreements.some(a => a.debtor === s.playerId && a.supplier === scene.npc && a.balance > 0)
-        ? "You still owe me. Come talk payments. I haven’t forgotten what we agreed."
-        : "There’s no balance left between us. What brings you by?";
+        ? "You still owe me. Don’t act like you forgot."
+        : "We’re square now. What brings you by?";
     case "corner":
       return `I saw you working this neighborhood. People live here too. Are you going to keep things quiet around here?`;
     case "family":
       return `You're Mega's cousin, right? I know him. How's he holding up with everything going on?`;
     default:
       if (s.characters[scene.npc].connections.includes(s.playerId))
-        return "Good seeing you again. How’s work treating you? We could catch up while things are quiet.";
+        return "Good seeing you again. How you been? We could catch up while things are quiet.";
       return s.characters[scene.npc].traits.lawful >= 65
         ? `You looking for steady work around here? I live nearby. Could always use another reliable neighbor.`
         : `I see you around. Where are you from? Just getting to know who's in the neighborhood.`;
@@ -401,13 +401,13 @@ export function resolveStreetScene(
   const war = warRecognized(s, npc);
   let text: string;
   if (response === "disrespect") {
-    text = `You dismissed ${name(npc)} disrespectfully. No agreement was made.`;
+    text = `You brushed ${name(npc)} off. They didn’t take it well.`;
     const e = record(s, "social", text, [p.id, npc.id]);
     c = addGrievance(
       s,
       npc.id,
       p.id,
-      `Disrespect during a conversation about ${scene.motive}`,
+      `They felt disrespected ${({ introduction: "the first time you met", family: "when they asked about your family", corner: "over who works the corner", debt: "over money owed", history: "when they tried to talk things out", war: "while your sets are at war" } as Record<string, string>)[scene.motive] ?? "in conversation"}`,
       e.id,
       28,
     );
@@ -422,7 +422,7 @@ export function resolveStreetScene(
       record(s, "social", text, [p.id, npc.id]);
     }
   } else if (response === "leave") {
-    text = `You left the conversation with ${name(npc)}. No agreement was made.`;
+    text = `You walked away from ${name(npc)}.`;
     const e = record(s, "social", text, [p.id, npc.id]);
     if (c) {
       conflictOutcome(s, c, e.id, "Left without agreement");
@@ -451,8 +451,8 @@ export function resolveStreetScene(
         ) /
           100;
     text = resolved
-      ? `${name(npc)} heard you out. The conversation ended peacefully.`
-      : `${name(npc)} heard you out but made no promises. You parted without resolving the disagreement.`;
+      ? `${name(npc)} heard you out. You parted on good terms.`
+      : `${name(npc)} heard you out, but it isn’t settled between you.`;
     const e = record(s, "social", text, [p.id, npc.id]);
     if (resolved && c) awardSkill(s, p.id, "social", 200, `mediation:${c.id}`);
     connect(s, p.id, npc.id);
@@ -524,7 +524,7 @@ export function expose(
       record(
         s,
         "risk",
-        `An exceptional stray shot at ${l.name} ended your life. You were not a target.`,
+        `A stray bullet at ${l.name} ended your life. It wasn’t meant for you.`,
         [p.id],
         [p.id],
         { importance: "critical", title: "Wrong place, wrong time" },
@@ -632,7 +632,7 @@ export function advanceConflicts(s: GameState) {
   for (const scene of s.danger.scenes)
     if (scene.status === "open" && scene.day < s.day) {
       scene.status = "left";
-      scene.outcome = "The moment passed. No agreement was made.";
+      scene.outcome = "The moment passed.";
     }
   for (const c of s.danger.conflicts.filter(active)) {
     const npc =
@@ -664,7 +664,7 @@ export function advanceConflicts(s: GameState) {
     const e = record(
       s,
       "social",
-      `${name(npc)} reconsidered a dispute: ${c.state}.`,
+      `${name(npc)} has been thinking about your disagreement.`,
       [npc.id],
       [npc.id],
     );
@@ -697,7 +697,7 @@ export function advanceConflicts(s: GameState) {
         const word = record(
           s,
           "social",
-          `${name(npc)} told ${name(associate)} about ${c.cause.toLowerCase()}.`,
+          `${name(npc)} told ${name(associate)} about the trouble with you.`,
           [npc.id, associate.id],
           [npc.id, associate.id],
         );
@@ -706,10 +706,10 @@ export function advanceConflicts(s: GameState) {
           associate.id,
           other,
           word.id,
-          "Heard one side of a personal dispute.",
+          "Heard their side of a falling-out.",
           3,
         );
-        conflictOutcome(s, c, word.id, "Discussed with an associate");
+        conflictOutcome(s, c, word.id, "Talked it over with a friend");
         // Hearsay carries only existing membership evidence, never alliance-wide telepathy.
         const evidence = s.danger.recognition.find(
           (r) => r.observer === npc.id && r.subject === other,
@@ -768,7 +768,7 @@ export function advanceConflicts(s: GameState) {
         s,
         a.id,
         b.id,
-        war ? "Local faction confrontation" : "Existing personal grievance",
+        war ? "Their sets clashed nearby" : "There was old bad blood",
         e.id,
         war ? 65 : 25,
         war,
@@ -904,14 +904,14 @@ export function initiateConflict(
   const e = record(
     s,
     "risk",
-    `${p.name} chose to ${approach === "retaliate" ? "attempt violent retaliation against" : approach === "disrespect" ? "publicly disrespect" : approach === "fight" ? "challenge" : "attempt to rob"} ${name(npc)}.`,
+    `${p.name} ${approach === "retaliate" ? "went after" : approach === "disrespect" ? "disrespected" : approach === "fight" ? "squared up with" : "tried to rob"} ${name(npc)}.`,
     [p.id, npc.id],
   );
   const c = addGrievance(
     s,
     npc.id,
     p.id,
-    `Player-initiated ${approach}`,
+    ({ rob: "You tried to rob them", retaliate: "You came at them", fight: "You picked a fight", disrespect: "You disrespected them in public" } as Record<string, string>)[approach] ?? "You started trouble",
     e.id,
     approach === "disrespect" ? 35 : 80,
     approach === "rob" || approach === "retaliate",
@@ -962,7 +962,7 @@ export function initiateConflict(
     record(
       s,
       "risk",
-      `${name(npc)} lost $${amount} in the robbery. The debt and retaliation risk remain.`,
+      `You took $${amount} off ${name(npc)}. They won’t let it go.`,
       [p.id, npc.id],
     );
   } else if (capable) {
@@ -981,7 +981,7 @@ export function initiateConflict(
   } else {
     awardCombat(s, p.id, e.id, "defense");
     awardSkill(s, p.id, "survival", 50, `escape:${c.id}`);
-    record(s, "risk", `You broke free of ${name(npc)}. He is still standing.`, [
+    record(s, "risk", `You broke free of ${name(npc)}, but he’s still standing.`, [
       p.id,
       npc.id,
     ]);

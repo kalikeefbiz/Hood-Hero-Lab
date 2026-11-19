@@ -39,7 +39,7 @@ export function ActionCard({
   const job = a.jobId ? jobDefinition(a.jobId) : undefined;
   const employmentCopy =
     a.type === "work"
-      ? `${employment ? `$${employment.wage} clean · ${jobDefinition(employment.jobId).name}` : "Employment required"}. Scheduled full shift · +8 stress.`
+      ? `${employment ? `$${employment.wage} · ${jobDefinition(employment.jobId).name}` : "You need a job first"}. A full shift. Tiring.`
       : job
         ? `${job.description} $${job.wage} / shift · 2 AP · ${job.workdays.map((d) => WEEKDAYS[d]).join(" / ")} · ${s.zones[job.location].name}.`
         : null;
@@ -168,7 +168,7 @@ export function ActionCard({
         {a.type === "buy"
           ? `−${ITEMS[a.item!].relief} stress`
           : a.type === "work"
-            ? "Scheduled wages; +1 work skill, +3 legitimacy, +8 stress"
+            ? "Get paid · builds your work history · tiring"
             : view.outcomes}
       </small>
       <button

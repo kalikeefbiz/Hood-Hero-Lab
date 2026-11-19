@@ -58,7 +58,7 @@ export function targetForJob(
       location: j.location,
       name: `${c.name} · high-risk`,
       circumstance:
-        "They know your face. Theft can close business and start personal retaliation.",
+        "They know your face. Rob them and you lose them as a contact, and they’ll want payback.",
       risk: B.criminalRisk,
       pool: [],
       lead: false,
@@ -91,13 +91,13 @@ export function criminalTargetError(s: GameState, id: string) {
       id !== "quanny" &&
       !s.street.lots.some((l) => l.owner === id && l.remaining > 0)) ||
     c.traits.lawful >= 65
-    ? "No recognized criminal opportunity."
+    ? "You don’t know of anything worth taking here."
     : (pabloError(s, id) ??
         (id === "quanny" && s.quanny.business !== "open"
-          ? "Quanny’s authored business conditions still apply."
+          ? "Quanny isn’t doing business with you."
           : null) ??
         (!atPerson(s, id) || c.status !== "active"
-          ? "Meet the target physically in the City."
+          ? "Find them in the City first."
           : null));
 }
 export function opportunityError(
@@ -134,10 +134,10 @@ export function opportunityError(
         j.expiresDay >= s.day,
     );
   if (presenceOf(s).location !== t.location && !legacyHomeHere)
-    return "Visit the target’s actual City location.";
+    return "Go there first.";
   const cd = cooldownFor(s, t as RobberyTarget, victim);
   if (cd && s.day < cd.nextDay)
-    return `Neighborhood/target cooldown: day ${cd.nextDay}; started day ${cd.day} by ${cd.jobId}.`;
+    return `People here are still on edge after the last job. Give it until day ${cd.nextDay}.`;
   if (
     t.lead &&
     !s.robberies?.jobs.some(
@@ -147,7 +147,7 @@ export function opportunityError(
         j.expiresDay >= s.day,
     )
   )
-    return "Earn a house/commercial lead from a trusted robbery contact.";
+    return "You need someone you trust to tip you off about this one.";
   return null;
 }
 export function offerTarget(
@@ -190,13 +190,13 @@ export function offerCareerLead(
   const t = robberyTarget(targetId);
   const error = robberySourceError(s, source);
   if (error) return error;
-  if (!t?.lead) return "This is a local opportunity, not a contact lead.";
+  if (!t?.lead) return "Nobody needs to tip you off about this one.";
   const p = skillsOf(player(s));
   if ((p.milestones.robberySuccess ?? 0) < (t.kind === "store" ? 9 : 3))
-    return "Complete more genuine robberies before this introduction.";
+    return "You need more jobs under your belt before they’ll point you here.";
   const cd = cooldownFor(s, t);
   if (cd && cd.nextDay > s.day)
-    return `Next home opportunity day ${cd.nextDay} (${cd.jobId}).`;
+    return `The houses around here are still on edge. Give it until day ${cd.nextDay}.`;
   const n = structuredClone(s);
   skillsOf(player(n)).milestones[
     t.kind === "store" ? "robberyAccess3" : "robberyAccess2"
@@ -224,7 +224,7 @@ export function offerCareerLead(
   record(
     n,
     "social",
-    `${n.characters[source].name} shared ${t.name}. ${t.circumstance} A willing equipped partner takes 25% cash and a disclosed goods buyout.`,
+    `${n.characters[source].name} told you about ${t.name}. ${t.circumstance} You’ll need a partner with their own gear: they take 25% of the cash and a cut of the goods.`,
     [n.playerId, source],
   );
   return n;
@@ -238,22 +238,22 @@ export function partnerError(
   const t = targetForJob(s, jobId),
     c = s.characters[member];
   if (!t || !["home", "store"].includes(t.kind))
-    return "This job does not need a crew.";
+    return "You don’t need a partner for this.";
   if (
     !c ||
     member === s.playerId ||
     (!s.crew.members.includes(member) &&
       !["mega", "quanny", ...TRIO].includes(member))
   )
-    return "Recruit a Set member or earn a criminal contact’s cooperation.";
+    return "Bring in someone from your Set, or a contact who’ll ride with you.";
   if (personalBeef(s, member) || (c.relationships[s.playerId]?.trust ?? 0) < 45)
-    return "Requires 45 earned trust and no personal beef.";
+    return "They need to trust you more, and there can’t be beef between you.";
   if (member === "quanny" && s.quanny.business !== "open")
-    return "Quanny’s business must be open.";
+    return "Quanny isn’t doing business with you.";
   const busy = availability(s, c);
   if (busy) return busy;
   if (!cooperation(s, c, "partner-crime", 0).accepted)
-    return "Partner refuses this risk with you.";
+    return "They don’t want to take that risk with you.";
   // Contacts use the same physical equipment/rank checks as Set members.
   const ready = heistReadiness(
     {
@@ -269,7 +269,7 @@ export function partnerError(
   );
   if (ready) return ready;
   if (inviting && !atPerson(s, member))
-    return "Invite them in person with their own carried equipment.";
+    return "Ask them in person, and they need their own gear on them.";
   return null;
 }
 export function inviteRobbery(
@@ -281,7 +281,7 @@ export function inviteRobbery(
   const error =
     physicalActionError(s) ??
     (j?.status !== "offered" || j.expiresDay < s.day
-      ? "Lead expired or unavailable."
+      ? "That tip went cold."
       : null) ??
     partnerError(s, member, jobId, true);
   if (error) return error;
@@ -290,7 +290,7 @@ export function inviteRobbery(
       (i) => i.jobId === jobId && i.status === "accepted",
     )
   )
-    return "One partner already accepted; 25% total share.";
+    return "You already have a partner for this.";
   const n = structuredClone(s);
   ledger(n).invitations.push({
     jobId,
@@ -303,7 +303,7 @@ export function inviteRobbery(
   record(
     n,
     "crew",
-    `${n.characters[member].name} accepted ${jobId}: travel together from this meeting; 25% cash, plus 25% of the base pawn quote of carried goods due within five days.`,
+    `${n.characters[member].name} is in for ${targetForJob(n, jobId)?.name ?? "the job"}. You go together from here. They take 25% of the cash, and you owe them 25% of what the goods would pawn for within five days.`,
     [n.playerId, member],
   );
   return n;
@@ -315,15 +315,15 @@ export function careerStartError(s: GameState, jobId: string) {
   const error = opportunityError(s, t.id, j.victim);
   if (error) return error;
   if (j.victim && j.location !== presenceOf(s).location)
-    return "Target moved; meet them at the recorded place.";
+    return "They’ve moved. Find them where they are now.";
   const cd = cooldownFor(s, t, j.victim);
-  if (cd && s.day < cd.nextDay) return `Next attempt day ${cd.nextDay}.`;
+  if (cd && s.day < cd.nextDay) return `Too soon. Give it until day ${cd.nextDay}.`;
   if (["home", "store"].includes(t.kind)) {
     const i = s.robberyCareer?.invitations.find(
       (i) => i.jobId === jobId && i.status === "accepted",
     );
     if (!i)
-      return "Requires an accepted in-person invitation from a willing equipped partner (25% share).";
+      return "You need a partner with their own gear who’s agreed to do it with you.";
     const e = partnerError(s, i.member, jobId);
     if (e) return e;
     // Accepted partner travels with player from their physical invitation. No inventory teleport.
@@ -335,7 +335,7 @@ export function careerStartError(s: GameState, jobId: string) {
             boardPeople(s).find((p) => p.id === i.member)?.placeId),
     );
     if (!atPerson(s, i.member) && !met)
-      return "Meet your accepted partner before travelling to the target.";
+      return "Meet up with your partner first.";
   }
   return null;
 }
@@ -398,7 +398,7 @@ export function initializeCareer(s: GameState, jobId: string) {
       tries: 0,
       open: false,
       feedback:
-        "Optional fictional dial; three untimed tries. Ordinary loot needs no lock.",
+        "There’s a safe. You can try the dial three times, or leave it.",
     },
   };
   const add = (
@@ -453,7 +453,7 @@ export function initializeCareer(s: GameState, jobId: string) {
   if (t.kind === "strong-arm" && !j.victim)
     c.visitor = `visitor:${t.zone}:${s.day}`;
   a.career = c;
-  a.text = `${t.name}: ${t.circumstance} ${j.victim ? "Personal retaliation likely. " : ""}Choose your approach or leave.`;
+  a.text = `${t.name}: ${t.circumstance} ${j.victim ? "They’ll know it was you. " : ""}How do you want to play it?`;
   const key =
     t.kind === "home"
       ? `home:${t.zone}`
@@ -483,7 +483,7 @@ export function initializeCareer(s: GameState, jobId: string) {
     const e = record(
       s,
       "risk",
-      `${c.visitor}: a distinct street visitor remembers the attempted robbery.`,
+      `Someone on the street saw what you tried to do, and they’ll remember your face.`,
       [s.playerId],
     );
     r.visitors[c.visitor] = { lastDay: s.day, eventId: e.id, targetId: t.id };
@@ -492,14 +492,14 @@ export function initializeCareer(s: GameState, jobId: string) {
     const e = record(
       s,
       "risk",
-      `${s.characters[j.victim].name} recognized the attempted strong-arm. Supply and introductions may close.`,
+      `${s.characters[j.victim].name} knows it was you. Don’t expect any more business or introductions from them.`,
       [s.playerId, j.victim],
     );
     addGrievance(
       s,
       j.victim,
       s.playerId,
-      "Recognized robbery attempt",
+      "You tried to rob them",
       e.id,
       40,
     );
@@ -542,7 +542,7 @@ function activeError(s: GameState, id: string, cursor: number) {
     presenceOf(s).location !== a.location ||
     a.career.participants.some((p) => s.characters[p.id].status !== "active")
   )
-    return "Session interrupted; leave to resolve.";
+    return "Something interrupted the job. Get out.";
   return null;
 }
 export function careerInput(
@@ -574,10 +574,10 @@ export function careerInput(
     c.pressure = answer === "rush" ? 1 : 0;
     a.text =
       c.kind === "home"
-        ? "First room revealed. Take only what fits; each search adds pressure. Leave with your current take."
+        ? "You’re inside. Take what you can carry. Every room you search makes it riskier."
         : c.kind === "store"
-          ? "Partner is ready. Coordinate collection or abandon the collection."
-          : "The target hesitates; a witness watches. De-escalate, press for cash, or leave.";
+          ? "Your partner’s in position. Give the signal, or call it off."
+          : "They hesitate, and somebody’s watching. Calm it down, push for the cash, or leave."
     return s;
   }
   if (answer === "search") {
@@ -591,7 +591,7 @@ export function careerInput(
       B.searchHeat,
       true,
     );
-    a.text = `Search ${c.revealed}/3: pressure ${c.pressure}. Leaving now keeps your selected goods if the exit succeeds.`;
+    a.text = `Room ${c.revealed} of 3. ${c.pressure >= 4 ? "It’s getting too hot in here." : c.pressure >= 2 ? "You’re pushing your luck." : "Still quiet."} If you get out clean, you keep what you took.`;
     return s;
   }
   if (c.kind === "store" && cursor === 1 && answer === "leave")
@@ -605,7 +605,7 @@ export function careerInput(
     if (answer === "rush") c.pressure++;
     c.revealed = 3;
     a.text =
-      "The partner completed collection. Press to commit or leave with a smaller cash take.";
+      "Your partner grabbed it. Push for more, or leave with what you’ve got.";
     return s;
   }
   if (answer === "press") c.pressure++;
@@ -623,11 +623,11 @@ export function takeLoot(
   const c = s.activeRobbery!.career!,
     x = c.goods.find((x) => x.id === lootId);
   if (!x || x.takenBy || x.beat > c.revealed || (x.locked && !c.dial.open))
-    return "Loot is hidden, locked or already taken.";
+    return "That’s hidden, locked up, or already gone.";
   if (actor !== s.playerId && !s.crew.members.includes(actor))
-    return "Only Set members may carry player loot; contacts carry their own gear.";
+    return "Only someone from your Set will carry that for you.";
   if (actor !== s.playerId && !c.participants.some((p) => p.id === actor))
-    return "Only participating carriers may take loot.";
+    return "They aren’t on this job.";
   const item = gain(
     x.itemId,
     x.quantity,
@@ -684,7 +684,7 @@ export function takeLoot(
   const e = record(
     n,
     "risk",
-    `${n.characters[actor].name} carried ${D[g.itemId].name} ×${g.quantity}; physical property, not cash.`,
+    `${actor === n.playerId ? "You took" : `${n.characters[actor].name} took`} ${D[g.itemId].name} ×${g.quantity}. You’ll have to sell it to turn it into cash.`,
     [n.playerId, actor],
   );
   r.property[g.id] = {
@@ -714,9 +714,9 @@ export function tryDial(
     c.dial.tries >= 3 ||
     c.dial.open
   )
-    return "No optional lock available.";
+    return "There’s no safe here.";
   if (!Number.isInteger(position) || position < 0 || position > 100)
-    return "Choose 0–100.";
+    return "Pick a number from 0 to 100.";
   const n = structuredClone(s),
     a = n.activeRobbery!,
     d = a.career!.dial,
@@ -760,7 +760,7 @@ export function settleCareer(
   const e = record(
     s,
     "risk",
-    `${t.name}: ${outcome}. $${amount} illicit cash, ${success ? goods.length : 0} selected physical finds.`,
+    `${t.name}: ${success ? (full ? "you pulled it off" : "you got out with part of it") : "it went wrong"}${amount ? `, $${amount} in dirty cash` : ""}${success && goods.length ? ` and ${goods.length} item${goods.length > 1 ? "s" : ""}` : ""}.`,
     [
       s.playerId,
       ...c.participants.map((p) => p.id),
@@ -944,23 +944,23 @@ export function dispositionError(s: GameState, slotId: string, owner?: string) {
   const error = physicalActionError(s);
   if (error) return error;
   const q = pawnQuote(s, slotId);
-  if (!q) return "No eligible physical stolen valuable.";
+  if (!q) return "You don’t have anything to sell here.";
   if (owner) {
     if (q.owner !== owner || !s.characters[owner])
-      return "Only its exact original owner can buy this property back.";
+      return "Only the person it was taken from would buy this back.";
     if (!atPerson(s, owner) || s.characters[owner].status !== "active")
-      return "Meet the original owner physically.";
+      return "Find them in person.";
     const x = inventoryOf(s).slots.find((x) => x.id === slotId)!;
     const fit = gainError(
       s,
       owner,
       gain(x.itemId, x.quantity, `returned:${x.provenance}`),
     );
-    if (fit) return `Owner cannot receive property: ${fit}`;
+    if (fit) return `They can’t take it right now: ${fit}`;
     if (cash(s.characters[owner]) < Math.floor(q.value * B.sellBackRatio))
-      return "Owner refuses: insufficient available funds.";
+      return "They can’t afford it.";
   } else if (presenceOf(s).location !== PAWN_LOCATION)
-    return "Visit the Reservoir Pawn Shop with the item on you.";
+    return "Bring it to the Reservoir Pawn Shop.";
   return null;
 }
 export function sellProperty(
@@ -1001,7 +1001,7 @@ export function sellProperty(
   const e = record(
     n,
     "money",
-    `${owner ? n.characters[owner].name : "Pawn Shop"} paid $${amount} for ${D[x.itemId].name}.${owner ? " Guaranteed active personal beef; +8 notoriety." : ""}`,
+    `${owner ? n.characters[owner].name : "Pawn Shop"} paid $${amount} for ${D[x.itemId].name}.${owner ? " They know it was you, and it’s personal now. Word gets around." : ""}`,
     [n.playerId, ...(owner ? [owner] : [])],
   );
   n.streetLife?.exchanges.push({
@@ -1016,7 +1016,7 @@ export function sellProperty(
       n,
       owner,
       n.playerId,
-      "Sold their stolen property back for payment",
+      "You sold them back their own stolen property",
       e.id,
       65,
     );
@@ -1036,7 +1036,7 @@ export function payCrewClaim(s: GameState, id: string): GameState | string {
       : !atPerson(s, claim.member)
         ? "Pay your partner in person."
         : cash(player(s)) < claim.amount - claim.paid
-          ? "Insufficient cash for agreed share."
+          ? "You don’t have enough cash to pay their share."
           : null);
   if (error) return error;
   const n = structuredClone(s),
@@ -1120,7 +1120,7 @@ export function tickRobberyCareer(s: GameState) {
       record(
         s,
         "crew",
-        `${s.characters[member].name} shared a local tip about ${target.name}. Optional home lead; you still need an in-person agreement with a willing equipped partner. Ignoring this creates no obligation.`,
+        `${s.characters[member].name} tipped you off about ${target.name}. If you want it, you’ll need a partner with their own gear.`,
         [s.playerId, member],
       );
     }
@@ -1131,10 +1131,10 @@ export function tickRobberyCareer(s: GameState) {
       const e = record(
         s,
         "crew",
-        "The agreed robbery goods share is overdue.",
+        "Never paid me my cut from the job.",
         [s.playerId, c.member],
       );
-      addGrievance(s, c.member, s.playerId, "Unpaid robbery share", e.id, 25);
+      addGrievance(s, c.member, s.playerId, "You never paid their cut from a job", e.id, 25);
     }
   for (const rumor of r.rumors) {
     if (
@@ -1156,7 +1156,7 @@ export function tickRobberyCareer(s: GameState) {
     const e = record(
       s,
       "social",
-      `${npc.name} witnessed ${rumor.jobId} and requests a personal $${amount} cut. Meet them to pay or refuse; this is not a faction toll.`,
+      `${npc.name} saw what you did at ${targetForJob(s, rumor.jobId)?.name ?? "that job"} and wants $${amount} to keep quiet. Find them to pay or refuse.`,
       [s.playerId, npc.id],
     );
     r.extortions.push({
@@ -1180,7 +1180,7 @@ export function answerExtortion(
     (!demand || demand.status !== "pending"
       ? "No pending demand."
       : !atPerson(s, demand.npc)
-        ? "Meet this person physically."
+        ? "Find them in person."
         : pay && cash(player(s)) < demand.amount
           ? "Insufficient funds."
           : null);
@@ -1199,7 +1199,7 @@ export function answerExtortion(
     "social",
     pay
       ? `Paid ${n.characters[d.npc].name} $${d.amount}.`
-      : `Refused ${n.characters[d.npc].name}: personal grievance, not faction war.`,
+      : `You told ${n.characters[d.npc].name} no. They’re taking it personally.`,
     [n.playerId, d.npc],
   );
   if (pay)
@@ -1214,7 +1214,7 @@ export function answerExtortion(
       n,
       d.npc,
       n.playerId,
-      "Refused personal robbery demand",
+      "You refused to pay them to keep quiet",
       e.id,
       30,
     );

@@ -11,12 +11,12 @@ export function propertyPromiseOutcome(status: CommitmentStatus) {
         : "The Chains — settled without you";
   const text =
     status === "released"
-      ? "Cuzzo released you from the promise. No betrayal penalty applies."
+      ? "Cuzzo let you off the hook. No hard feelings."
       : fulfilled
-        ? "Your contribution helped return Mega’s chains. Cuzzo remembers that you kept your word. Trust +8 · Respect +5."
+        ? "You helped get Cuzzo’s chains back. He won’t forget that you kept your word."
         : broken
-          ? "The chains are beyond reach. You promised to help and did not deliver. Cuzzo’s trust fell by 18, respect by 8; grievance rose by 14."
-          : "The situation ended outside your involvement. Your promise is superseded; no accomplishment credit or broken-promise penalty.";
+          ? "The chains are gone for good. You gave Cuzzo your word and didn’t come through, and he’s taking it hard."
+          : "It got settled before you could do anything. Nobody holds it against you, but you can’t take credit either.";
 
   return {
     title,

@@ -250,7 +250,7 @@ test("workplace scene consequence, skip, close and no replay across tabs or relo
   await seed(page, s);
   await nav(page, "City");
   await page
-    .getByRole("button", { name: "Resume workplace conversation" })
+    .getByRole("button", { name: "Back to the conversation at work" })
     .click();
   await expect(modal(page)).toBeVisible();
   await capture(page, "08-workplace-choice");

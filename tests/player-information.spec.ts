@@ -110,7 +110,7 @@ for (const width of [390, 320])
     );
     await tapUntil(
       page,
-      session.getByRole("button", { name: "Pause robbery", exact: true }),
+      session.getByRole("button", { name: "Step away for now", exact: true }),
       async () => (await state(page)).activeRobbery!.status === "paused",
     );
     const saved = await state(page);

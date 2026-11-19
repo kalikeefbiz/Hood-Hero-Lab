@@ -88,7 +88,7 @@ export function EncounterScene({
               <p className="encounter-fact">
                 {knownCapabilities(c)}
                 <br />
-                {availability(s, c) ?? "Available to discuss plans"} · {relationshipView(s, c.id)}
+                {availability(s, c) ?? "Free to talk"} · {relationshipView(s, c.id)}
               </p>
             )}
             {quannyOutcome ? (
@@ -107,12 +107,11 @@ export function EncounterScene({
             )}
             {promise && (
               <p className="promise-status">
-                <strong>Your word · {promise.status}</strong>
+                <strong>Your word · {promise.status === "pending" ? "given" : promise.status === "fulfilled" ? "kept" : "broken"}</strong>
                 {promise.status === "pending" && (
                   <span>
-                    {Math.max(0, promise.dueDay - s.day)} days remaining ·
-                    Before day {promise.dueDay} begins. The dispute can end
-                    sooner.
+                    {Math.max(0, promise.dueDay - s.day)} days left · it has to
+                    happen before day {promise.dueDay}.
                   </span>
                 )}
               </p>
@@ -158,8 +157,8 @@ export function EncounterScene({
                     (action
                       ? `${ACTIONS[action.type].ap} AP${action.type === "buyback" ? ` · ${money(s.incidents[action.incidentId!].demand)}` : ""} · ${ACTIONS[action.type].risk} risk`
                       : r.effect.type === "crew"
-                        ? "Personal request · costs and conditions above; refusal costs no AP"
-                        : "Conversation · No AP")}
+                        ? "Saying no costs no AP"
+                        : "No AP")}
                 </small>
                 {reason && (counts.get(reason) ?? 0) < 2 && (
                   <small className="disabled-reason">{reason}</small>
@@ -171,10 +170,10 @@ export function EncounterScene({
       </div>
       <p className="encounter-footer">
         {historical
-          ? "A recorded outcome. Viewing it changes no relationships or obligations."
+          ? "Looking back on what happened."
           : d.id === "workplace"
-            ? `Shift wages and attendance are recorded. Closing leaves this decision pending. ${source?.title === "Difficult shift" ? "Ending the day flags the count for the next shift, with the same reliability and respect consequences." : "Ending the day passes on the task; regular pay stays unchanged."}`
-            : "Closing makes no new promise. Unfinished conversations can be resumed from City."}
+            ? `You can step away and decide later. ${source?.title === "Difficult shift" ? "If the day ends first, the count gets flagged and your boss will remember." : "If the day ends first, you just pass on it. Your pay stays the same."}`
+            : "You can step away. This will still be here."}
       </p>
     </section>
   );
