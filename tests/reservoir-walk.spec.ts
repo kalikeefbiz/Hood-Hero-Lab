@@ -162,6 +162,7 @@ for (const outcome of ["escalate", "retreat"] as const) {
     expect(restored.events.map((e) => e.id)).toEqual(after.events.map((e) => e.id));
     expect(restored.presence?.location).toBe(MARKET);
     expect(await stick.count()).toBe(0);
-    await info.attach("board camera", { body: JSON.stringify(await camera(page)), contentType: "application/json" }).catch(() => {});
+    await expect(page.locator(".board-canvas")).toBeVisible({ timeout: 30000 });
+    await info.attach("board camera", { body: JSON.stringify(await camera(page)), contentType: "application/json" });
   });
 }

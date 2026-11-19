@@ -4,6 +4,10 @@ Experimental branch `codex/immersive-city-prototype`, based on Lab main `db33c6a
 
 ## Play
 
+[Owner-private playtest preview](https://hood-hero-reservoir-playtest.ghostframestudio.chatgpt.site)
+
+Sites deployment succeeded on November 19, 2026. The preview uses the same gameplay source as this branch. Its hosting project is `appgprj_6afe8f17e29881919b74229fb459ccdf`. The official Lab deployment and Pages workflow are untouched.
+
 Run `npm ci`, `npm run dev`, then open the local URL. The prototype uses its own manual and autosave slots by default.
 
 Start a Southside character, close Cuzzo's opening conversation, select The Reservoir on City, then choose **Walk the Reservoir**. If a campaign already has an active conversation or street session, finish or defer it first.
@@ -50,11 +54,13 @@ More neighborhoods need authored circulation and collision, consistent character
 - `npm test` passed 445 existing tests across 29 files after the save default change.
 - `npx vitest run src/tests/reservoirWalk.test.ts src/tests/previewSaves.test.ts` passed 5 tests. These cover staging guards, persistent injury consequences, serialization, blocked lots and save isolation.
 - `npm run build` passed. Existing large-chunk and dependency annotation warnings remain.
-- Mobile Chromium passed the complete escalation sequence with native touch drag, collision, NPC dialogue, exact AP/cash/event consequences, confrontation and reload.
+- Mobile Chromium passed both escalation and retreat sequences with native touch drag, collision, NPC dialogue, exact AP/cash/event consequences, confrontation and reload.
 - Mobile WebKit passed both escalation and retreat sequences at iPhone 13 size. Touch taps and keyboard movement were exercised. Chromium additionally exercised a native touch drag. Playwright WebKit lacks Chromium's touch-drag protocol.
-- The browser checks include camera-follow and control-position assertions. They collect a 30-frame timing sample in software rendering. These are cloud browser checks. Physical iPhone thermal behavior and sustained hardware frame rate remain unverified.
+- The browser checks include camera-follow and control-position assertions. A 30-frame Chromium sample at the confrontation averaged 16.58 ms between animation callbacks, about 60 callbacks per second. This short stationary software-rendering sample does not establish sustained movement frame rate. Physical iPhone thermal behavior, hardware frame rate and full-quality rendering remain unverified.
 
 The local WebKit bundle required additional shared libraries. They were extracted under /tmp and its local launcher was adjusted to preserve LD_LIBRARY_PATH. Host requirement detection was skipped after supplying those libraries. Repository browser configuration was preserved.
+
+A Chromium retreat rerun passed after correcting a diagnostic that read the lazy renderer before loading finished. An earlier parallel run lost its shared preview server when the other suite exited. Final cases ran with an available server.
 
 The full browser regression suite has not been run. The focused acceptance checks and existing engine suite are the validation scope.
 
