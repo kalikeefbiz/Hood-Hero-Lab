@@ -53,14 +53,14 @@ export function InventoryWallet({
         <p className="eyebrow">ON HAND</p>
         <h3>Inventory</h3>
         <CarriedPanel s={s} change={change} />
-        <h4>Preparation supplies</h4>
+        <h4>Supplies</h4>
         {Object.entries(PREPARATION).map(([id, d]) => (
           <p key={id}>
             {d.name}: {s.robberies?.items[id as keyof typeof PREPARATION] ?? 0}{" "}
             · buy at {placeName(s, d.location)}
           </p>
         ))}
-        <h4>Robbery opportunities</h4>
+        <h4>Jobs</h4>
         {s.robberies?.jobs
           .filter((j) => j.status === "offered")
           .map((j) => (
@@ -78,7 +78,7 @@ export function InventoryWallet({
               <summary>
                 <strong>Pink Magic</strong>
                 <b>×{l.remaining}</b>
-                <small>View lot details</small>
+                <small>Details</small>
               </summary>
               {detail(l)}
             </details>
@@ -87,17 +87,17 @@ export function InventoryWallet({
         </details>
         <h4>Equipment</h4>
         <p>
-          Only an equipped, rank-eligible weapon grants bonuses. Tap it in your
-          slots to equip. Story and contact rewards grant equipment; stores
-          don't sell it.
+          A weapon only helps if you’re carrying it and know how to use it. Tap
+          it to equip. You won’t find these in stores; they come from people
+          you know.
         </p>
 
       </section>
       <section
         className="panel obligations-panel"
-        aria-label="Outstanding obligations"
+        aria-label="What you owe"
       >
-        <h3>Outstanding obligations</h3>
+        <h3>What you owe</h3>
         {debts.map((a) => (
           <div className="obligation-row" key={a.id}>
             <strong>
@@ -118,14 +118,14 @@ export function InventoryWallet({
             </button>
           </div>
         ))}
-        {!debts.length && <p>No outstanding supplier balance.</p>}
+        {!debts.length && <p>You don’t owe any suppliers.</p>}
         <p className="muted">
           Unmet living expenses: {money(s.street.arrears)}
         </p>
       </section>
       {s.street.agreements.some((a) => a.supplier === p.id) && (
-        <section className="panel" aria-label="Merchandise fronted to others">
-          <h3>Merchandise fronted to others</h3>
+        <section className="panel" aria-label="Packs you fronted">
+          <h3>Packs you fronted</h3>
           {s.street.agreements
             .filter((a) => a.supplier === p.id)
             .map((a) => (
@@ -140,7 +140,7 @@ export function InventoryWallet({
                 <p>
                   {a.debtor === "quanny"
                     ? quannyCollectionInstruction(s, a.dueDay)
-                    : `Collection day ${a.dueDay}.`}
+                    : `Collect on day ${a.dueDay}.`}
                 </p>
                 {a.collections?.map((c) => (
                   <p key={c.eventId}>
@@ -153,9 +153,9 @@ export function InventoryWallet({
       )}
       <section
         className="panel transaction-history"
-        aria-label="Transaction history"
+        aria-label="Money in and out"
       >
-        <h3>Transaction history</h3>
+        <h3>Money in and out</h3>
         {s.street.transactions
           .filter((t) => t.actor === p.id)
           .slice(-20)
@@ -171,7 +171,7 @@ export function InventoryWallet({
           <p>No street transactions yet.</p>
         )}
         <details>
-          <summary>Supplier and lot records</summary>
+          <summary>Packs from suppliers</summary>
           {lots.map((l) => (
             <details key={l.id}>
               <summary>
@@ -190,7 +190,7 @@ export function InventoryWallet({
             ))}
         </details>
         <details>
-          <summary>Custody history</summary>
+          <summary>Where your stuff went</summary>
           {s.street.custody
             .filter((r) => r.character === p.id)
             .map((r) => (

@@ -51,7 +51,7 @@ export function buyPropertyError(s: GameState, propertyId: string) {
         : presenceOf(s).location !== d.location
           ? "Stand at this residence in the City first."
           : cash(player(s)) < d.price
-            ? `Requires $${d.price}.`
+            ? `You need $${d.price}.`
             : null)
   );
 }
@@ -69,7 +69,7 @@ export function buyProperty(
   const e = record(
     n,
     "money",
-    `Bought ${d.name} for $${d.price}. Its safe holds 24 slots and 40 load.`,
+    `Bought ${d.name} for $${d.price}. There’s a safe inside to keep your things.`,
     [n.playerId],
   );
   (n.residences ??= {})[propertyId] = {
@@ -197,7 +197,7 @@ export function releaseProperty(
   if (error) return error;
   const n = structuredClone(s);
   delete n.residences![propertyId];
-  record(n, "city", `Released residence ${propertyId}; no refund.`, [
+  record(n, "city", `You gave up ${RESIDENCES.find((d) => d.id === propertyId)?.name ?? "your place"}. No money back.`, [
     n.playerId,
   ]);
   return n;

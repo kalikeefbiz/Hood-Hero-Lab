@@ -78,9 +78,9 @@ for (const width of [390, 320])
       tower.getByRole("button", { name: /Read The Reservoir politics/ }),
       () => neighborhood.isVisible(),
     );
-    await expect(neighborhood).toContainText(
-      "Your business here loses customers",
-    );
+    await expect(neighborhood).toContainText("Your rivals run this neighborhood");
+    // No business is owned here, so the panel must not claim one is suffering.
+    await expect(neighborhood).not.toContainText("Your business here");
     await expect(neighborhood).toContainText("Gabriel’s Angels gained control");
     await neighborhood.screenshot({
       path: info.outputPath("rivalry-city.png"),

@@ -5,6 +5,7 @@
  * No rolls, awards, save fields or inferred discoveries belong here.
  */
 import { rivalControl } from "../systems/Territory";
+import { BUSINESSES } from "../content/strategy";
 import type { GameState, GameEvent, ZoneId } from "../core/GameState";
 import { LOCATIONS, locationById } from "../board/locations";
 import { ROBBERY_TARGETS, type CareerKind } from "../content/robberyCareer";
@@ -48,7 +49,7 @@ export function relationshipView(s: GameState, id: string) {
       ? "They seem guarded around you."
       : (r?.trust ?? 0) < 45
         ? "You're getting acquainted."
-        : "You seem to be on good terms. Their cooperation is still their choice.";
+        : "You seem to be on good terms.";
 }
 
 export function attentionView(value: number) {
@@ -287,9 +288,12 @@ export function robberyDiscoveryView(s: GameState) {
 /** Public neighborhood conditions and personal consequences, never AI intentions/scores. */
 export function rivalryView(s: GameState, zone: ZoneId) {
   const t = s.strategic.territories[zone], p = s.characters[s.playerId];
+  const ownsHere = s.strategic.businesses.some(
+    (b) => BUSINESSES.find((d) => d.id === b.definition)?.zone === zone,
+  );
   if (rivalControl(s, zone, p))
-    return "A rival organization controls the local network. Your business here loses customers; street trade requires established neighborhood ties. Build local relationships, work through your representative, or pursue lawful work elsewhere. Jobs remain open.";
+    return `Your rivals run this neighborhood.${ownsHere ? " Your business here is losing customers." : ""} You’ll need people around here who know you before you can work the street. Regular jobs are still open.`;
   if (t.contested)
-    return "Local traders report competing organizations building their networks. Business takings are unsettled. Backing local interests or negotiating cooperation through a trusted representative can strengthen your organization's foothold. Independent and lawful work remain available.";
-  return "Local businesses answer to the current neighborhood balance. Lawful jobs and independent trade remain open; organization membership is optional.";
+    return `Sets are fighting over this neighborhood, and business on the street is shaky.${ownsHere ? " Your business here may feel it." : ""}`;
+  return "Things are steady here for now.";
 }

@@ -49,7 +49,7 @@ export function promiseHelp(s: GameState, i: Incident, origin: string) {
   const e = record(
     s,
     "social",
-    `You promised Cuzzo you would help recover his chains before day ${c.dueDay}. Words alone earn no credit.`,
+    `You promised Cuzzo you’d help get his chains back before day ${c.dueDay}. Now you have to follow through.`,
     [s.playerId, i.victim],
     [s.playerId, i.victim],
     { commitmentId: c.id, incidentId: i.id },
@@ -159,7 +159,7 @@ export function evaluatePromises(s: GameState, includeDeadlines = true) {
       record(
         s,
         "social",
-        `Cuzzo is still waiting. Your promise expires when day ${c.dueDay} begins; ${c.dueDay - s.day} days remain. The situation may end sooner.`,
+        `Cuzzo is still waiting. You have ${c.dueDay - s.day} days left to keep your word, maybe less if things move on without you.`,
         [c.requester, c.actor],
         [c.requester, c.actor],
         {

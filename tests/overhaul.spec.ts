@@ -220,7 +220,7 @@ test("Actions update cash/AP, explain disabled prerequisites, and autosave", asy
   await expect(page.locator(".ap b")).toHaveText("1/2");
   await expect(card.getByRole("button")).toBeDisabled();
   await expect(card.locator(".disabled-reason")).toContainText(
-    "Today's local gig is complete",
+    "already done a gig today",
   );
   await expect(card.getByRole("button")).toHaveAttribute(
     "aria-describedby",
@@ -300,7 +300,7 @@ test("negotiated demand comes from state; ended and damaged saves remain inspect
   s.end = "arrested";
   await seed(page, s);
   await expect(
-    page.getByRole("heading", { name: "Your run ended: arrested" }),
+    page.getByRole("heading", { name: "Your story ended in a cell" }),
   ).toBeVisible();
   await expect(page.getByRole("button", { name: "End day" })).toBeDisabled();
   await page.evaluate((key) => localStorage.setItem(key, "corrupt"), SAVE_KEY);

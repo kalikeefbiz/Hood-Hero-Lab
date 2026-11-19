@@ -37,10 +37,10 @@ describe("006.1 believable access and limited story access", () => {
       expect(contactError(s, "player", "mega")).toBeNull();
       expect(contactError(s, "player", "flacco")).toBeNull();
       for (const id of ["dizzy", "babycanon", "joker", "pablo"]) {
-        expect(accessStatus(s, "player", id)).toBe("Known of");
+        expect(accessStatus(s, "player", id)).toBe("Heard of");
         expect(
           validateAction(s, { type: "contact", actor: "player", target: id }),
-        ).toContain(id === "pablo" ? "Big Dog" : "not connected");
+        ).toContain(id === "pablo" ? "Big Dog" : "never met");
         expect(openSupplier(s, id)).toBe(s);
       }
       s = action(s, "contact", "mega");

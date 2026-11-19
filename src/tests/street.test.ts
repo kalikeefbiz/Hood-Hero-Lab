@@ -130,7 +130,7 @@ describe("complete inventory economy", () => {
       "broken",
     );
     expect(
-      s.events.filter((e) => e.title === "Mega is still owed"),
+      s.events.filter((e) => e.title === "Cuzzo is still owed"),
     ).toHaveLength(1);
     // Existing lawful gig supplies actual money for repair.
     while (cash(player(s)) < 102) {
@@ -165,7 +165,7 @@ describe("complete inventory economy", () => {
           s = act(s, "introduce", "resident-rio");
           s = act(s, "contact", "dizzy");
         } else s = act(s, "contact", local[0].id);
-        if(home==='rio') expect(marketAccess(s,'player',home)).toContain('prepaid');
+        if(home==='rio') expect(marketAccess(s,'player',home)).toContain('pay the Angels');
         else expect(marketAccess(s, "player", home)).toBeNull();
       }
       expect(marketAccess(s, "player", "downtown")).not.toBeNull();
@@ -176,7 +176,7 @@ describe("complete inventory economy", () => {
   it("blocks old money shortcut, fabricated partners, duplicate goods and counterfeit saves", () => {
     let s = newGame("No exploit", "south");
     expect(validateAction(s, { actor: "player", type: "crime" })).toContain(
-      "City street spot",
+      "start trapping there",
     );
     s = accept(s);
     s.ap=0;

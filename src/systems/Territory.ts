@@ -146,7 +146,7 @@ export function applyInfluence(s: GameState, effect: InfluenceEffect) {
     [s.playerId],
     {
       factionId: effect.faction ?? undefined,
-      title: "Neighborhood influence",
+      title: "Around the neighborhood",
       importance: "routine",
     },
   );
@@ -223,7 +223,7 @@ function changeControl(s: GameState, zone: ZoneId, to: FactionId | null) {
   const e = record(
     s,
     "city",
-    `${s.zones[zone].name}: ${to ? s.factions[to].name + " established sustained neighborhood control" : (from ? s.factions[from].name : "The former controller") + " lost recognized dominance"}. ${from ? s.factions[from].name + " lost local operating funds and its network is unsettled. " : ""}${to ? s.factions[to].name + " now backs the local commercial network. Rival-affiliated businesses lose customers, and rival street traders need established neighborhood ties. " : "Local trade no longer answers to a single organization. "}Lawful jobs and independent businesses remain open.`,
+    `${to ? s.factions[to].name + " runs " + s.zones[zone].name + " now" : (from ? s.factions[from].name : "Nobody") + " doesn’t run " + s.zones[zone].name + " anymore"}.${from ? " " + s.factions[from].name + " took a hit and its people are shaken." : ""}${to ? " Anyone tied to their rivals will find business harder here, and outsiders need people who know them to work the street." : " Nobody’s in charge of the street trade here right now."} Regular jobs and independent shops are open like always.`,
     [],
     [s.playerId],
     {
@@ -309,7 +309,7 @@ export function resolveTerritories(s: GameState) {
       record(
         s,
         "city",
-        `${z.name}: local traders report ${s.factions[challenger].name} organizing and challenging established interests. Trade is unsettled. Neighborhood ties, backing local operations, or an agreed organizational priority can help protect a foothold; lawful work remains available.`,
+        `Word in ${z.name} is that ${s.factions[challenger].name} is organizing and pushing back. Business on the street is shaky. People who have ties around here will hold on better.`,
         [],
         [s.playerId],
         {

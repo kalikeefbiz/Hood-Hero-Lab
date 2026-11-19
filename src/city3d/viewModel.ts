@@ -104,5 +104,5 @@ export function deriveCityView(s: GameState): CityView {
 export function zoneDescription(s: GameState, id: ZoneId) {
   const z = s.zones[id];
   const presence = z.organizations.map((f) => s.factions[f].name).join(" / ");
-  return `${z.controller ? `Controlled by ${s.factions[z.controller].name}.` : "No single controller."}${presence ? ` Faction presence: ${presence}.` : " Unclaimed."}`;
+  return `${z.controller ? `Run by ${s.factions[z.controller].name}.` : "Nobody runs it."}${presence ? ` Sets here: ${presence}.` : " Unclaimed."}`;
 }

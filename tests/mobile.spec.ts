@@ -68,7 +68,7 @@ test("phone gameplay: contact, lawful income, days, save and load", async ({
   await nav(page, "Actions");
 
   await action(page, "Reach out");
-  await expect(page.getByRole("status")).toContainText("Trust grew");
+  await expect(page.getByRole("status")).toContainText(/getting closer|honest living/);
   await nav(page, "Actions");
   await page.getByRole("button", { name: "Honest", exact: true }).click();
   await action(page, "Pick up a gig");
@@ -76,7 +76,7 @@ test("phone gameplay: contact, lawful income, days, save and load", async ({
   await endDay(page);
   await expect(page.locator(".day")).toHaveText("DAY 02");
   await page.getByLabel("Save game", { exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("Saved day 2");
+  await expect(page.getByRole("status")).toContainText("Game saved on day 2");
   await action(page, "Pick up a gig");
   await endDay(page);
   await expect(page.locator(".day")).toHaveText("DAY 03");
@@ -151,7 +151,7 @@ test("buyback resolves the incident and the ordinary loop remains playable", asy
   await nav(page, "City");
   await openJournal(page);
   await page.getByText("Completed storylines", { exact: true }).click();
-  await expect(page.locator(".situation-history")).toContainText("resolved");
+  await expect(page.locator(".situation-history")).toContainText("over");
   await page.getByLabel("Save game", { exact: true }).click();
   await page.reload();
   await page.getByRole("button", { name: "Resume saved game" }).click();
@@ -178,7 +178,7 @@ test("buyback resolves the incident and the ordinary loop remains playable", asy
   await nav(page, "Set");
   await expect(page.locator("main")).toContainText("Paid local work");
   await nav(page, "Wallet");
-  await expect(page.locator("main")).toContainText("Reserved compensation");
+  await expect(page.locator("main")).toContainText("Money set aside for");
   await noOverflow(page);
 });
 test("mobile city and new game remain readable at narrow widths", async ({

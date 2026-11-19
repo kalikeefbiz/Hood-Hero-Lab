@@ -83,8 +83,8 @@ export function ActionsHub({
         ))}
       </div>
       <p className="city-hint">
-        Everything here happens in the city. Find the place or person on the
-        map to act.
+        Head out into the city to make a move. Find the place or person on
+        the map.
       </p>
       {category === "Streets" && (
         <>
@@ -92,7 +92,7 @@ export function ActionsHub({
           <section className="panel find-list" aria-label="Where to work the street">
             <p className="eyebrow">Street spots</p>
             {where((l) => !!l.links.street).map((l) =>
-              placeRow(l.id, l.name, "Start a session here"),
+              placeRow(l.id, l.name, "Work the street here"),
             )}
             <p className="eyebrow">Rest</p>
             {where((l) => !!l.links.rest && l.zone === p.home).map((l) =>
@@ -184,7 +184,7 @@ export function ActionsHub({
             )}
           </section>
           <details className="panel known-contacts">
-            <summary>Known of · introductions needed</summary>
+            <summary>Heard of · need an introduction</summary>
             {p.known
               .filter(
                 (id) =>
@@ -197,9 +197,9 @@ export function ActionsHub({
                   <strong>
                     {s.characters[id].alias ?? s.characters[id].name}
                   </strong>
-                  <span>{s.zones[s.characters[id].home].name} · Known of</span>
+                  <span>{s.zones[s.characters[id].home].name} · Heard of</span>
                   <small>
-                    Ask an established connection for an introduction.
+                    Ask someone you know to introduce you.
                     {id === "pablo" &&
                     s.incidents["the-chains"]?.status === "active"
                       ? " The Chains can be brought to him through City."

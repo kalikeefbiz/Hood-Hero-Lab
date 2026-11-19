@@ -39,12 +39,12 @@ export const WORKPLACE_ENCOUNTER: EncounterDefinition = {
             response(
               "push",
               "Fix it before I leave.",
-              "+6 stress; better performance; full wages retained",
+              "More stress · your boss will notice · full pay",
             ),
             response(
               "flag",
               "Flag it for the next shift.",
-              "−3 reliability; employer respect decreases; keep wages",
+              "Your boss won’t be impressed · full pay",
             ),
           ]
         : title === "Coworker request"
@@ -52,18 +52,18 @@ export const WORKPLACE_ENCOUNTER: EncounterDefinition = {
               response(
                 "help",
                 "Help Flacco clear the station.",
-                "+4 stress; build trust",
+                "More stress · Flacco will appreciate it",
               ),
             ]
-          : [response("extra", "Take the task.", "+$18; +10 stress")]),
+          : [response("extra", "Take the task.", "+$18 · a tiring finish")]),
       response(
         "skip",
         title === "Difficult shift"
           ? "Leave the count for the next shift."
           : "Pass. I’m done for today.",
         title === "Difficult shift"
-          ? "Flags the problem: −3 reliability; employer respect decreases; keep wages"
-          : "Keep regular pay; no extra stress or reward",
+          ? "Your boss won’t be impressed · full pay"
+          : "Regular pay, nothing extra",
       ),
     ];
   },

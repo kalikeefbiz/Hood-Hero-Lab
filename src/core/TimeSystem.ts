@@ -32,7 +32,7 @@ import { settleWorkplaceScenes } from "../systems/Workplace";
 export function advanceDay(state: GameState): GameState {
   if (state.end) return state;
   const s = structuredClone(state);
-  interruptSession(s, "Day ended. Unresolved visitors cancelled.");
+  interruptSession(s, "The day ended. Anyone still waiting moved on.");
   settleWorkplaceScenes(s);
   settleAttendance(s);
   s.day++;
@@ -84,14 +84,14 @@ export function advanceDay(state: GameState): GameState {
     record(
       s,
       "money",
-      `You could cover only $${paid} of today’s $${BALANCE.livingCost} living costs. Stress increased; work remains available.`,
+      `You could only cover $${paid} of today’s $${BALANCE.livingCost} living costs. Money worries are weighing on you.`,
       [p.id],
     );
   } else
     record(
       s,
       "money",
-      `$${paid} covered today’s basic living costs.`,
+      `You paid $${paid} for today’s living costs.`,
       [p.id],
       [p.id],
       { importance: "routine" },
@@ -115,7 +115,7 @@ export function advanceDay(state: GameState): GameState {
   record(
     s,
     "system",
-    `Day ${s.day}. ${hospitalStay(s) ? "Inpatient recovery continues." : s.end ? "This life has ended." : `${s.ap} action points available.`}`,
+    `Day ${s.day}. ${hospitalStay(s) ? "You’re still recovering in the hospital." : s.end ? "This life has ended." : `${s.ap} AP to spend.`}`,
     [p.id],
     [p.id],
     { importance: "routine" },

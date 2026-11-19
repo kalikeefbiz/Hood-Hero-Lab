@@ -56,7 +56,7 @@ test("find a plug in the city, take a pack, pay him back: each exchange shows", 
   await openPlugFromCity(page);
   await page.screenshot({ path: "test-results/plug-card.png" });
   await page.getByRole("button", { name: "Talk terms with Cuzzo" }).click();
-  await page.getByRole("button", { name: /Accept consignment/ }).click();
+  await page.getByRole("button", { name: /Take it on a front/ }).click();
 
   const pack = page.locator(".exchange-card").filter({ hasText: /Received from/ });
   await expect(pack).toBeVisible({ timeout: 15000 });
@@ -68,7 +68,7 @@ test("find a plug in the city, take a pack, pay him back: each exchange shows", 
   expect(packText).toContain(`$${lot.owed} OWED BY DAY ${lot.dueDay}`.toUpperCase());
   await page.screenshot({ path: "test-results/plug-pack.png" });
   // A deal made in the city keeps you in the city.
-  const back = page.getByRole("button", { name: /Return to City|Acknowledge/ });
+  const back = page.getByRole("button", { name: /^I hear you\.$|Return to City|Acknowledge/ });
   if (await back.count()) await back.first().click();
   await expect(page.getByRole("navigation").getByRole("button", { name: "City", exact: true })).toHaveAttribute("aria-current", "page");
 
@@ -79,7 +79,7 @@ test("find a plug in the city, take a pack, pay him back: each exchange shows", 
   await page.getByRole("button", { name: "Talk to Cuzzo" }).click();
   await expect(page.locator('[aria-label="Plug"]')).toBeVisible();
   await page.getByRole("button", { name: "Talk repayment with Cuzzo" }).click();
-  await page.getByRole("button", { name: /Make partial payment/ }).click();
+  await page.getByRole("button", { name: /Pay part of it/ }).click();
   const paid = page.locator(".exchange-card").filter({ hasText: /Paid to Cuzzo/ });
   await expect(paid).toBeVisible({ timeout: 15000 });
   s = await state(page);

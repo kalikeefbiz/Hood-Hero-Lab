@@ -37,24 +37,24 @@ export function EmploymentSummary({ s }: { s: GameState }) {
             {upcoming
               .map(
                 (d) =>
-                  `Day ${d}${e.timeOffDays.includes(d) ? " (unpaid leave)" : ""}`,
+                  `Day ${d}${e.timeOffDays.includes(d) ? " (day off)" : ""}`,
               )
               .join(" · ")}
           </p>
           <p>
-            Formal warnings {e.warnings} · {relationshipView(s, e.employer)}
+            Warnings {e.warnings} · {relationshipView(s, e.employer)}
           </p>
           <p className="muted">
-            Three absences in the last five scheduled shifts end the job. One
-            unpaid leave per seven days. Six reliable shifts can earn an $8
-            raise.
+            Miss three of your last five shifts and you’re out. You can take
+            one unpaid day off a week. Show up for six shifts straight and you
+            could get an $8 raise.
           </p>
         </>
       ) : (
         <p>
           {s.day < search.eligibleDay
-            ? `Formal applications reopen on day ${search.eligibleDay}. Local gigs remain available.`
-            : "Visit a workplace in the City, then review and accept an offer. Every neighborhood has a local route; warehouse applications are citywide."}
+            ? `You can apply for jobs again on day ${search.eligibleDay}. You can still pick up gigs.`
+            : "Go to a workplace in the City to apply. Every neighborhood has somewhere hiring, and the warehouse takes people from all over."}
         </p>
       )}
       <p>

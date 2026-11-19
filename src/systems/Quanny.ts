@@ -100,14 +100,14 @@ export function openQuanny(s: GameState, sourceEventId?: string) {
   });
 }
 export function quannyError(s: GameState) {
-  if (!s.quanny.met) return "Meet Quanny in the Reservoir first.";
+  if (!s.quanny.met) return "You haven’t met Quanny yet.";
   if (
     s.characters.quanny.status !== "active" ||
     s.characters.quanny.availableDay > s.day
   )
-    return "Quanny is unavailable; his history and debts remain.";
+    return "Quanny isn’t around right now.";
   if (presenceOf(s).location !== QUANNY_HOME)
-    return "Meet Quanny outside Lil Jay’s Market in the Reservoir.";
+    return "Quanny’s outside Lil Jay’s Market in the Reservoir.";
   return null;
 }
 export function businessError(s: GameState) {
@@ -116,9 +116,9 @@ export function businessError(s: GameState) {
     p = player(s),
     r = q.relationships[p.id];
   if (s.quanny.business !== "open")
-    return "Quanny isn't accepting business. Credible connections or organizational progress may change that.";
+    return "Quanny isn’t doing business with you. That could change if the right people vouch for you.";
   if (p.affiliation && s.factions.blocks.enemies.includes(p.affiliation))
-    return "Your organizations are direct enemies.";
+    return "Your people and his are enemies.";
   if (
     (r?.grievance ?? 0) > 55 ||
     (r?.trust ?? 0) < -10 ||
@@ -130,27 +130,27 @@ export function businessError(s: GameState) {
         c.lethal,
     )
   )
-    return "Unresolved personal hostility blocks business.";
-  if (receivable(s, q.id)) return "Collect the existing agreement first.";
+    return "There’s bad blood between you.";
+  if (receivable(s, q.id)) return "Collect what he owes you first.";
   if (!s.crew.members.includes(q.id) && consignmentTerms(s) && cash(q) < consignmentTerms(s, true)!.amount)
-    return "Quanny has his operating money tied up. Try again after he earns more.";
+    return "Quanny’s money is tied up right now. Try again later.";
   if (!consignmentTerms(s))
-    return "Requires real Pink Magic in your available inventory.";
+    return "You need Pink Magic on you.";
   return gainError(s, q.id, gain("nightgoods", consignmentTerms(s)!.quantity, "consignment", "pending-lot"));
 }
 export function repairError(s: GameState) {
   if (s.quanny.business !== "blocked")
-    return "No business connection needs reopening.";
+    return "Business with Quanny is already open.";
   if (
     s.quanny.blockedDay === s.day ||
     evidenceScore(s) < s.quanny.repairBaseline + 30
   )
-    return "Build meaningful new ties with people he respects, earn Blocc Boys standing or legitimately join them.";
+    return "Quanny needs a reason to trust you: people he respects vouching for you, or standing with the Blocc Boys.";
   if (
     player(s).affiliation &&
     s.factions.blocks.enemies.includes(player(s).affiliation!)
   )
-    return "An active faction rivalry still blocks business.";
+    return "Your people and his are still at odds.";
   return null;
 }
 function revealQuannyLocation(s: GameState) {
@@ -208,7 +208,7 @@ export function resolveQuanny(
         s,
         q.id,
         p.id,
-        "Blocc Boys impersonation",
+        "You claimed to be Blocc Boys",
         secret.id,
         85,
         true,
@@ -238,7 +238,7 @@ export function resolveQuanny(
         s,
         q.id,
         p.id,
-        "Claimed Gabriel’s Angels during first contact",
+        "You claimed the Angels when you first met",
         event.id,
         90,
         true,
@@ -271,8 +271,8 @@ export function resolveQuanny(
         sponsor
           ? `You name ${s.characters[sponsor.observer].name}, who sponsored you.`
           : p.affiliation
-            ? `You truthfully explain your membership in ${s.factions[p.affiliation].name}; you don't invent a sponsor.`
-            : "You explain that you’re unaffiliated; you don’t invent a sponsor.",
+            ? `You tell him straight that you’re with ${s.factions[p.affiliation].name}.`
+            : "You tell him straight: you don’t run with anybody.",
       );
     } else
       note(
@@ -299,7 +299,7 @@ export function resolveQuanny(
         s,
         p.id,
         q.id,
-        "Quanny denied the consignment debt",
+        "Quanny wouldn’t pay what he owed you",
         result.eventId,
         40,
       );
@@ -330,7 +330,7 @@ export function resolveQuanny(
       choice as "rob" | "retaliate" | "fight" | "disrespect",
     );
   } else if (choice === "reconcile") {
-    const event = note("You seek a mediated conversation about the dispute.");
+    const event = note("You try to squash things with Quanny.");
     state.repairHistory.push(event.id);
     if (!repairError(s)) {
       for (const c of s.danger.conflicts.filter(
@@ -343,7 +343,7 @@ export function resolveQuanny(
         c.history.push({
           eventId: event.id,
           day: s.day,
-          outcome: "Credible mediation; grievances remain",
+          outcome: "Things cooled off a little, but it isn’t forgotten",
         });
       }
     }

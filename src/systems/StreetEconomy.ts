@@ -100,18 +100,18 @@ export function marketAccess(
     c.affiliation !== "angels" &&
     !s.streetLife?.tribute.some((t) => t.day <= s.day && t.throughDay >= s.day)
   )
-    return "Outsiders need an introduction and prepaid Angels territory permission: $12 for three days. Speak with the Rio street contact.";
+    return "This is Angels turf. Outsiders need an introduction and have to pay the Angels’ street contact $12 for three days.";
   if (
     actor === s.playerId &&
     zone === "rio" &&
     ["dizzy", "babycanon", "joker"].some((id) => personalBeef(s, id))
   )
-    return "The crew’s unresolved personal beef blocks local business. Resolve it through actual encounters.";
+    return "You still have beef with the crew here. Squash it with them first.";
   if (
     rivalControl(s, zone, c) &&
     c.neighborhoodStanding[zone] < 25
   )
-    return "Rival control restricts market access; requires 25 local standing";
+    return "A rival set runs this neighborhood. You need people around here who know you before you can work it.";
   const local = suppliers(s, actor).some(
     (n) =>
       n.home === zone &&
@@ -149,7 +149,7 @@ export function marketAccess(
       c.connections.some((id) => s.characters[id]?.home === zone) &&
       c.skills.social >= 50
       ? null
-      : "Downtown needs 15 local standing, a local contact and practiced connections (50 social).";
+      : "To work Downtown you need a name there, someone local who knows you, and real people skills.";
   return local ||
     connectedCrew ||
     c.neighborhoodStanding[zone] >= 10 ||
@@ -157,7 +157,7 @@ export function marketAccess(
       s.zones[zone].organizations.includes(c.affiliation) &&
       c.organizationStanding[c.affiliation] >= 15)
     ? null
-    : "Build trust with a local street contact or standing here. An unrelated contact does not open this market.";
+    : "You need someone local in your corner, or standing in this neighborhood.";
 }
 export function supplierError(
   s: GameState,
@@ -165,7 +165,7 @@ export function supplierError(
   arrangement: "cash" | "consignment",
 ) {
   if (s.activeRobbery && s.activeRobbery.status !== "ended")
-    return "Finish the robbery session first.";
+    return "Finish the job first.";
   const intro = workIntroError(s);
   if (intro) return intro;
   if (pabloError(s, supplier)) return pabloError(s, supplier);
@@ -181,27 +181,27 @@ export function supplierError(
       life.lesson === "waiting" &&
       (supplier !== "mega" || (!firstPaidPack && !replacementNeeded))
     )
-      return "Complete Mega’s Lot lesson with your starter stock before seeking other supply.";
+      return "Finish your first lesson with Cuzzo at the Lot before you look for other plugs.";
     if (
       boardPeople(s).find((n) => n.id === supplier)?.placeId !==
       presenceOf(s).location
     )
-      return "Meet this supplier physically in the City.";
+      return "Go see them in person.";
   }
   if (s.activeSession && s.activeSession.status !== "ended")
-    return "End your trapping session before arranging supply.";
+    return "Wrap up trapping first.";
   const p = player(s),
     n = s.characters[supplier];
   if (s.end || p.status !== "active")
-    return "Street work is unavailable while in custody or after the run ends.";
-  if (s.ap < 1) return "Requires 1 AP to accept merchandise.";
+    return "You can’t do that right now.";
+  if (s.ap < 1) return "You need 1 AP.";
   if (
     !n ||
     !suppliers(s).some((c) => c.id === supplier) ||
     !p.connections.includes(supplier)
   )
-    return "Meet an eligible supplier first.";
-  if (n.availableDay > s.day) return "Supplier is committed elsewhere today.";
+    return "You don’t have a plug here.";
+  if (n.availableDay > s.day) return "They’re busy today.";
   const mega = supplier === "mega",
     trust = n.relationships[p.id]?.trust ?? 0;
   const actualEnemy = s.danger.conflicts.some(
@@ -218,7 +218,7 @@ export function supplierError(
         (n.relationships[p.id]?.grievance ?? 0) > 55 ||
         trust < -10
   )
-    return "Repair this supplier relationship; actual enemies cannot arrange supply.";
+    return "There’s bad blood between you. Fix that first.";
   const cashIntro =
     s.streetLife &&
     !s.streetLife.legacy &&
@@ -230,17 +230,17 @@ export function supplierError(
     (s.streetLife?.initialDecision === "decline" || cashIntro)
   )
     return s.streetLife?.initialDecision === "decline"
-      ? "Mega remembers the refusal. Family can still buy, but CASH terms only."
-      : "No commitment was made. Your first six from Mega are on CASH terms only.";
+      ? "Cuzzo remembers you turned him down. He’ll still sell to family, but cash only."
+      : "Your first pack from Cuzzo is cash only."
   if (!mega) {
     if (trust < B.trust)
-      return "Supplier requires at least 20 trust. Spend time together first.";
+      return "They don’t know you well enough yet. Spend some time with them first.";
     if (
       p.affiliation &&
       n.affiliation &&
       s.factions[n.affiliation].enemies.includes(p.affiliation)
     )
-      return "Conflicting affiliations close this arrangement.";
+      return "Your people and theirs don’t mix.";
     const debts = s.street.agreements.filter(
       (a) => a.debtor === p.id && a.supplier === supplier && a.balance > 0,
     );
@@ -260,28 +260,28 @@ export function supplierError(
         debts.some((a) => a.status === "overdue") ||
         balance > (trust + (paidRecently ? 25 : 0) + n.traits.risk / 4) * 3)
     )
-      return "Come back when you pay me what you owe. This plug assesses only their own unpaid agreements.";
+      return "“Come back when you pay me what you owe.”";
     const today = s.street.lots.filter(
       (l) =>
         l.owner === p.id && l.supplier === supplier && l.acquiredDay === s.day,
     ).length;
     if (today >= 2)
-      return "This supplier has allocated today’s available packs. Return tomorrow.";
+      return "They’re out for today. Come back tomorrow.";
     if (
       exposureScore(s, p.id, n.home) > B.supplierExposure ||
       n.police > B.supplierExposure
     )
-      return "Too much scrutiny. Supplier is keeping their distance.";
+      return "Too many eyes on you. They’re keeping their distance.";
     if (arrangement === "consignment" && trust < 30)
-      return "Consignment requires 30 supplier trust; cash terms start at 20.";
+      return "They aren’t ready to front you a pack. Cash only for now.";
   }
   if (
     n.affiliation &&
     s.factions[n.affiliation].resources < MERCHANDISE.nightgoods.wholesale
   )
-    return "Supplier's organization has no stock budget today.";
+    return "They don’t have product to move today.";
   if (arrangement === "cash" && cash(p) < MERCHANDISE.nightgoods.wholesale)
-    return "Requires $90 up front.";
+    return "You need $90 cash.";
   return gainError(
     s,
     s.playerId,
@@ -306,7 +306,7 @@ export function acquire(
   s.ap--;
   const paid =
     arrangement === "cash"
-      ? expense(s, p, cost, `Pink Magic purchase · ${n.name}`)
+      ? expense(s, p, cost, `Pink Magic purchase · ${n.alias ?? n.name}`)
       : null;
   if (paid) {
     n.wallet.clean += paid.clean;
@@ -346,12 +346,12 @@ export function acquire(
   const e = record(
     s,
     "money",
-    `${n.name} supplied ${def.quantity} Pink Magic. ${arrangement === "cash" ? `$${cost} paid up front.` : `$${cost} owed by the end of day ${lot.dueDay}.`} Expected gross $${lot.expectedGross} is an estimate, not income.`,
+    `${n.alias ?? n.name} supplied ${def.quantity} Pink Magic. ${arrangement === "cash" ? `You paid $${cost} cash.` : `You owe $${cost} by the end of day ${lot.dueDay}.`} If it all sells, it could bring in about $${lot.expectedGross}.`,
     [p.id, n.id],
     [p.id, n.id],
     {
       importance: "major",
-      title: "Supplier arrangement",
+      title: "New pack",
       factionId: n.affiliation ?? undefined,
     },
   );
@@ -395,7 +395,7 @@ export function acquire(
       },
     });
   }
-  remember(s, n.id, p.id, e.id, "Entrusted with a limited merchandise lot.", 0);
+  remember(s, n.id, p.id, e.id, "Trusted me with a pack.", 0);
 }
 export function unitPrice(s: GameState, zone: ZoneId) {
   const m = s.street.markets[zone];
@@ -436,22 +436,22 @@ export function transactionError(
 ) {
   const c = s.characters[actor];
   if (actor === s.playerId)
-    return "Visit a City street spot and start a trapping session.";
+    return "Go to a spot in the City and start trapping there.";
   if (!c || c.status !== "active")
-    return "Street actions require an active character.";
-  if (actor === s.playerId && s.ap < 1) return "Requires 1 AP.";
+    return "You can’t do that right now.";
+  if (actor === s.playerId && s.ap < 1) return "You need 1 AP.";
   if (!saleLot(s, actor))
-    return "No merchandise held. Arrange a limited lot with a supplier.";
+    return "You don’t have any product. Get a pack from a plug first.";
   const access = marketAccess(s, actor, zone);
   if (access) return access;
   const m = s.street.markets[zone];
   if (m.usedDay === s.day && m.used >= B.marketDailyCapacity)
-    return "Today's local demand is filled. Wait for another day.";
+    return "Nobody else around here is buying today.";
   if (
     s.street.transactions.filter((t) => t.actor === actor && t.day === s.day)
       .length >= B.transactionLimit
   )
-    return "Today's opportunities are exhausted. Return tomorrow.";
+    return "That’s all for today. Come back tomorrow.";
   return null;
 }
 export function transactionChance(
@@ -572,7 +572,7 @@ function resolveTransaction(
   if (crewLoss)
     expense(s, s.characters[partner!], crewLoss, "Shared street loss");
   if (share) {
-    const paid = expense(s, c, share, "Crew share of actual proceeds")!;
+    const paid = expense(s, c, share, "Your Set’s cut")!;
     const member = s.characters[partner!];
     member.wallet.clean += paid.clean;
     member.wallet.illicit += paid.illicit;
@@ -628,7 +628,7 @@ function resolveTransaction(
     n.stress = clamp(n.stress + (buyer ? 2 : 7));
     n.rivalThreat = clamp(n.rivalThreat + 3);
   }
-  const text = `${c.name} · ${s.zones[zone].name}: ${sold ? `${outcome === "partial" ? "Partial sale" : "Successful sale"}, ${sold} Pink Magic for $${gross}.` : `Failed transaction. No proceeds.${lost ? ` ${lost} goods lost; supplier debt remains.` : loss ? ` $${loss} lost.` : " No buyer committed."}`} ${l.remaining} held.${partner ? ` ${s.characters[partner].name} participated; $${share} share from actual proceeds.` : ""}`;
+  const text = `${c.name} · ${s.zones[zone].name}: ${sold ? `${outcome === "partial" ? "Partly sold" : "Sold"} ${sold} Pink Magic for $${gross}.` : `No sale.${lost ? ` You lost ${lost}, and you still owe for them.` : loss ? ` You lost $${loss}.` : " Nobody bit."}`} ${l.remaining} left on you.${partner ? ` ${s.characters[partner].name} worked it with you and took $${share}.` : ""}`;
   const e = record(
     s,
     "money",
@@ -644,7 +644,7 @@ function resolveTransaction(
     s.street.agreements.find((a) => a.id === l.agreementId)!.history.push(e.id);
   if (!l.remaining && l.arrangement === "cash") {
     change(s.characters[l.supplier], actor, { trust: 2 });
-    remember(s, l.supplier, actor, e.id, "Finished a cash-purchased lot.", 2);
+    remember(s, l.supplier, actor, e.id, "Moved a whole pack they sold me.", 2);
   }
   s.street.transactions.push({
     id: `transaction-${s.nextId++}`,
@@ -707,9 +707,9 @@ export function transact(
 }
 export function buyerError(s: GameState, actor: string, zone: ZoneId) {
   if (s.end || s.characters[actor]?.status !== "active")
-    return "Requires an active character.";
+    return "You can’t do that right now.";
   if (actor === s.playerId && workIntroError(s)) return workIntroError(s);
-  if (!saleLot(s, actor)) return "No Pink Magic on hand.";
+  if (!saleLot(s, actor)) return "You don’t have any Pink Magic on you.";
   const access = marketAccess(s, actor, zone);
   if (access) return access;
   const m = s.street.markets[zone];
@@ -751,20 +751,20 @@ export function paymentError(
     boardPeople(s).find((n) => n.id === a.supplier)?.placeId !==
       presenceOf(s).location
   )
-    return "Meet this supplier physically to repay this agreement.";
+    return "Go see them in person to pay.";
   if (s.end || player(s).status !== "active")
-    return "Repayment is unavailable in custody.";
+    return "You can’t pay from a cell.";
   if (!a || a.debtor !== s.playerId || a.balance <= 0)
-    return "No outstanding balance.";
+    return "You don’t owe them anything.";
   if (!s.characters[a.supplier] || s.characters[a.supplier].status !== "active")
-    return "Supplier unavailable; the balance remains.";
+    return "They aren’t around. You still owe it.";
   if (
     !Number.isInteger(amount) ||
     amount <= 0 ||
     amount > a.balance ||
     cash(player(s)) < amount
   )
-    return "Choose an affordable payment within the outstanding balance.";
+    return "Pick an amount you can cover, no more than you owe.";
   return null;
 }
 export function repay(s: GameState, agreementId: string, amount: number) {
@@ -772,7 +772,7 @@ export function repay(s: GameState, agreementId: string, amount: number) {
   const a = s.street.agreements.find((a) => a.id === agreementId)!,
     l = s.street.lots.find((l) => l.id === a.lotId)!,
     n = s.characters[a.supplier];
-  const paid = expense(s, player(s), amount, `Supplier repayment · ${n.name}`)!;
+  const paid = expense(s, player(s), amount, `Supplier repayment · ${n.alias ?? n.name}`)!;
   n.wallet.clean += paid.clean;
   n.wallet.illicit += paid.illicit;
   a.repaid += amount;
@@ -782,7 +782,7 @@ export function repay(s: GameState, agreementId: string, amount: number) {
   const e = record(
     s,
     "money",
-    `Paid ${n.name} $${amount}. $${a.balance} supplier balance remains.`,
+    `Paid ${n.alias ?? n.name} $${amount}. You still owe $${a.balance}.`,
     [s.playerId, n.id],
     undefined,
     { importance: "personal", commitmentId: a.commitmentId },
@@ -799,14 +799,14 @@ export function repay(s: GameState, agreementId: string, amount: number) {
         n.id,
         s.playerId,
         e.id,
-        "Repaid late; the broken word is remembered.",
+        "Paid me back, but late.",
         3,
       );
     } else
       finishCommitment(s, promise, "fulfilled", a.history, {
         title: "Supplier paid",
-        text: `${n.name}: “We're square. You kept your word.”`,
-        memory: "Paid the merchandise balance on time.",
+        text: `${n.alias ?? n.name}: “We're square. You kept your word.”`,
+        memory: "Paid me back on time.",
         weight: 7,
       });
     if (!l.remaining) l.status = "settled";
@@ -836,9 +836,9 @@ export function advanceStreet(s: GameState) {
       "broken",
       a.history,
       {
-        title: `${n.name} is still owed`,
-        text: `${n.name}: “Day ${a.dueDay} came and went. You still owe me $${a.balance}. Bring what you can. ${n.id === "mega" ? "You’re still family; every pack keeps its own deadline." : "We need this straight before more credit."}”`,
-        memory: "Missed supplier repayment; debt remains collectible.",
+        title: `${n.alias ?? n.name} is still owed`,
+        text: `${n.alias ?? n.name}: “Day ${a.dueDay} came and went. You still owe me $${a.balance}. Bring what you can. ${n.id === "mega" ? "You’re still family, but a deadline is a deadline." : "Get this straight before you ask me for anything else."}”`,
+        memory: "Didn’t pay me back on time.",
         weight: -12,
       },
     );
@@ -883,7 +883,7 @@ export function advanceStreet(s: GameState) {
         record(
           s,
           "city",
-          `${active.name}'s local trade raised competition in ${s.zones[m.zone].name}. Demand is now ${m.demand}; formal neighborhood control is unchanged.`,
+          `${active.name} has been selling in ${s.zones[m.zone].name}. There’s more competition for buyers now.`,
           [active.id],
           [s.playerId],
           {

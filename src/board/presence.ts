@@ -140,7 +140,7 @@ export function moveTo(s: GameState, location: string): GameState {
       ].slice(-12),
     },
   };
-  interruptSession(next, "Left the spot. Unresolved visitors cancelled.");
+  interruptSession(next, "You left the spot. Anyone still waiting moved on.");
   expose(next, location, "arrival");
   syncEncounters(next);
   const risk = assessRisk(next, location);
@@ -202,7 +202,7 @@ export function assessRisk(s: GameState, location: string): Risk {
   if (heat > 12)
     reasons.push({
       w: heat * 0.6,
-      text: `Heavy police presence and your heat (${Math.round(p.police)}) don't mix.`,
+      text: "Heavy police presence, and they already know your face.",
     });
   else if (police >= 70)
     reasons.push({ w: 6, text: "Police are everywhere here." });

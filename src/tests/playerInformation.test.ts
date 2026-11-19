@@ -325,7 +325,7 @@ describe("player information boundary", () => {
         /(?:trust|loyalty) \d|\d+ (?:trust|loyalty)|seed:|next eligible|candidateDays|\d+% (?:success|reliability)|Demand \d+ · competition/,
       );
     expect(text(pages[1])).toContain("$90 cash / $102 consignment");
-    expect(text(pages[2])).toContain("maintenance costs $120");
+    expect(text(pages[2])).toContain("upkeep costs $120");
   });
 });
 

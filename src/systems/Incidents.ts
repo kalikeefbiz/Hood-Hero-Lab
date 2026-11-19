@@ -30,8 +30,8 @@ export function resolveIncident(
     s,
     "incident",
     resolution === "sold"
-      ? `${i.title}: the group sold the property. The dispute has faded; the city moves on.`
-      : `${i.title}: ${resolution === "buyback" ? "payment accepted" : resolution === "settlement" ? "leadership arranged a settlement" : "the property was recovered"}. ${s.characters[i.victim].name} has it back.`,
+      ? `${i.title}: they sold the chains. They’re gone for good.`
+      : `${i.title}: ${resolution === "buyback" ? "they took the money" : resolution === "settlement" ? "the leadership worked out a deal" : "you got them back"}. ${s.characters[i.victim].alias ?? s.characters[i.victim].name} has his chains again.`,
     [actor, i.victim, ...i.participants],
     ["player", actor, i.victim, ...i.participants],
     {
@@ -128,7 +128,7 @@ export function advanceIncidents(s: GameState) {
         record(
           s,
           "incident",
-          `${i.title}: the group raised its demand to $${i.demand}. Mega’s patience is wearing thin.`,
+          `${i.title}: they raised their price to $${i.demand}. Cuzzo’s patience is wearing thin.`,
           i.participants,
           ["player", i.victim, ...i.participants],
         );
@@ -139,7 +139,7 @@ export function advanceIncidents(s: GameState) {
         record(
           s,
           "incident",
-          "Word of the unauthorized robbery reached Pablo. He is weighing loyalty against neighborhood stability.",
+          "Pablo heard about the robbery. He didn’t sign off on it, and now he has to decide what it means for the neighborhood.",
           ["pablo", ...i.participants],
           ["player", "pablo", i.victim],
           {

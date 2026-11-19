@@ -59,9 +59,9 @@ test("Flacco cooperation, paid work, refusal, natural second recruitment and sav
   await modal.getByRole("button", { name: /^Paid local work/ }).click();
   await expect(modal).toHaveCount(0);
   await nav(page, "Set");
-  await expect(page.locator("main")).toContainText("active");
+  await expect(page.locator("main")).toContainText("underway");
   await page
-    .getByText(/Flacco · Paid local work · active/)
+    .getByText(/Flacco · Paid local work · underway/)
     .scrollIntoViewIfNeeded();
   await snap(page, "03-accepted-assignment");
   const accepted = await state(page);
@@ -70,9 +70,9 @@ test("Flacco cooperation, paid work, refusal, natural second recruitment and sav
   await interact(page);
   await modal.getByRole("button", { name: /^Spend time together/ }).click();
   await nav(page, "Set");
-  await expect(page.locator("main")).toContainText("No new obligation");
+  await expect(page.locator("main")).toContainText("Flacco: “");
   await page
-    .getByText(/No new obligation/)
+    .getByText(/Flacco: “/)
     .last()
     .scrollIntoViewIfNeeded();
   await snap(page, "04-refused-request");

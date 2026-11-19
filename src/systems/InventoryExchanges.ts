@@ -274,7 +274,7 @@ export function collectSetConsignment(
   const e = record(
     n,
     "money",
-    `Collected $${amount} from ${n.characters[a.debtor].name}.`,
+    `Collected $${amount} from ${n.characters[a.debtor].alias ?? n.characters[a.debtor].name}.`,
     [n.playerId, a.debtor],
   );
   a.history.push(e.id);
@@ -299,7 +299,7 @@ export function discardItemError(
   return (
     physicalActionError(s) ??
     (location !== presenceOf(s).location
-      ? "Discard from your physical City presence only."
+      ? "You can only drop things where you’re standing."
       : null) ??
     quantityError(inventoryOf(s), slotId, quantity)
   );
@@ -459,24 +459,24 @@ export function heistReadiness(
   member: string,
   requirement: HeistRequirement,
 ): string | null {
-  if (!s.crew.members.includes(member)) return "Not in your Set.";
+  if (!s.crew.members.includes(member)) return "They’re not in your Set.";
   const c = s.characters[member];
-  if (c.status !== "active") return "Member unavailable.";
+  if (c.status !== "active") return "They’re not around right now.";
   if (skillRank(c, "combat") < (requirement.combatRank ?? 1))
-    return `Requires Combat rank ${requirement.combatRank}.`;
+    return `They need to be more experienced in a fight.`;
   if (
     requirement.equipped &&
     (c.equipment?.equipped !== requirement.equipped ||
       equipError(c, requirement.equipped))
   )
-    return `Requires equipped ${D[requirement.equipped].name}.`;
+    return `They need to have a ${D[requirement.equipped].name} on them.`;
   for (const [id, quantity] of Object.entries(requirement.items ?? {}))
     if (
       inventoryOf(s, member)
         .slots.filter((x) => x.itemId === id)
         .reduce((n, x) => n + x.quantity, 0) < quantity!
     )
-      return `Member must carry ${quantity} ${D[id as keyof typeof D].name}.`;
+      return `They need to bring ${quantity} ${D[id as keyof typeof D].name}.`;
   return null;
 }
 export const inviteHeistError = (
@@ -497,7 +497,7 @@ export function inviteHeist(
   record(
     n,
     "crew",
-    `${n.characters[member].name} accepted your in-person heist invitation with their own equipment. Readiness must be checked again at start.`,
+    `${n.characters[member].name} is in, bringing their own gear.`,
     [n.playerId, member],
   );
   if (operationId)

@@ -143,7 +143,7 @@ describe("eight canonical persistent skill tracks", () => {
     expect(skillRank(c, "robbery")).toBe(1);
     expect(skillRank(c, "trapper")).toBe(2);
     expect(missingMilestones(c, "combat", 2).join(" ")).toContain(
-      "optional authored",
+      "training with an experienced contact",
     );
     receivePhysical(s, c.id, gain("arp"));
     expect(equip(c, "arp")).toBeTruthy();
@@ -297,7 +297,7 @@ describe("physical and transactional City sessions", () => {
   it("rejects off-site, non-street, rival, no stock, zero AP, occupied, and exhausted markets", () => {
     const s = ready();
     expect(validateStartStreetSession(s, "rio.angels-mural")).toContain(
-      "physically",
+      "Walk over to this spot",
     );
     expect(validateStartStreetSession(s, "south.rowhouses")).toBeTruthy();
     s.ap = 0;
@@ -306,7 +306,7 @@ describe("physical and transactional City sessions", () => {
     const physical = inventoryOf(s).slots;
     player(s).inventory = {slots: []};
     s.street.lots[0].remaining = 0;
-    expect(validateStartStreetSession(s, "south.the-lot")).toContain("on hand");
+    expect(validateStartStreetSession(s, "south.the-lot")).toContain("any Pink Magic on you");
     s.street.lots[0].remaining = 6;
     player(s).inventory = {slots: physical};
     s.street.markets.south.usedDay = s.day;
@@ -319,7 +319,7 @@ describe("physical and transactional City sessions", () => {
       expect(validateStartStreetSession(s, l.id)).toContain("Rival");
     player(s).affiliation = null;
     expect(startStreetSession(started(), "south.the-lot").error).toContain(
-      "current session",
+      "already working a spot",
     );
   });
   it("blocks both legacy player sale routes while NPC trading still uses real lots", () => {
@@ -492,7 +492,7 @@ describe("physical and transactional City sessions", () => {
     player(s).neighborhoodStanding.rio = 25;
     s = moveTo(s, "rio.angels-mural");
     for (const e of s.encounters) e.status = "closed";
-    expect(startStreetSession(s, "rio.angels-mural").error).toContain('prepaid');
+    expect(startStreetSession(s, "rio.angels-mural").error).toContain('pay the Angels');
     player(s).affiliation='angels';
     expect(startStreetSession(s, "rio.angels-mural").error).toBeNull();
   });

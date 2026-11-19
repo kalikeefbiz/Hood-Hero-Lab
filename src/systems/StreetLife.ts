@@ -38,7 +38,7 @@ export function openingDecision(
   record(
     s,
     "system",
-    "First steps: visit a City workplace and submit a valid application, or finish a local gig at the docks, Street market or Lil Jay’s. An application is unpaid; accepted jobs require scheduled shifts. Gigs pay now.",
+    "Start with honest work: apply for a job, or pick up a gig at the docks, the Street market or Lil Jay’s. Jobs pay by the shift once you’re hired; gigs pay the same day.",
     [s.playerId],
     undefined,
     { title: "Honest work first", importance: "personal" },
@@ -68,11 +68,11 @@ export function completeWorkIntro(
     s,
     "social",
     t.initialDecision === "promise"
-      ? "Mega: “Get your work straight. Flacco heard you had my back. When you have stock, meet me at the Lot.”"
-      : "Mega: “I’m disappointed, but family is family. Come see me on Southside. Six Pink Magic is $90 cash. Then we’ll work the Lot.”",
+      ? "Cuzzo: “Get your work straight. Flacco heard you had my back. When you have stock, meet me at the Lot.”"
+      : "Cuzzo: “I’m disappointed, but family is family. Come see me on Southside. Six Pink Magic is $90 cash. Then we’ll work the Lot.”",
     ["mega", s.playerId],
     undefined,
-    { title: "Meet Mega at the Lot", importance: "personal" },
+    { title: "Meet Cuzzo at the Lot", importance: "personal" },
   );
 }
 export function giveFlaccoStock(s: GameState) {
@@ -115,7 +115,7 @@ export function giveFlaccoStock(s: GameState) {
   record(
     s,
     "money",
-    "Flacco: “You know I got you, right? Don’t ask where I got it. Just use that to help Cuz, then come holla at me.” Six Pink Magic received free. No debt or supplier cost.",
+    "Flacco: “You know I got you, right? Don’t ask where I got it. Just use that to help Cuz, then come holla at me.” Six Pink Magic, free and clear.",
     ["flacco", s.playerId],
     undefined,
     { title: "Flacco has your back", importance: "major" },
@@ -145,13 +145,13 @@ export function trioOutcome(
 }
 export const aftermathLines = {
   hostile:
-    "Dizzy: “You took that chain back? You challenged all three of us.” Baby Canon steps in beside Joker. This is personal beef with the crew, not a war with every Angel.",
+    "Dizzy: “You took that chain back? You challenged all three of us.” Baby Canon steps in beside Joker. This is between you and the three of them now.",
   discount:
-    "Joker: “We gave you that discount because the chain was too much drama. Next thing we take, it costs a whole lot more to get back.” The others nod. They work as one crew.",
+    "Joker: “We gave you that discount because the chain was too much drama. Next thing we take, it costs a whole lot more to get back.” The others nod. They move as one.",
   buster:
-    "Baby Canon: “Cuz paid what we asked. Buster did what was best for him.” Dizzy shrugs. They leave room for ordinary business.",
+    "Baby Canon: “Cuz paid what we asked. Buster did what was best for him.” Dizzy shrugs. Nobody’s looking for trouble.",
   nonfactor:
-    "Dizzy: “Aye dick, ain’t this that foo Megas perro?” Baby Canon and Joker laugh. To this crew you were a nonfactor in the Chains drama.",
+    "Dizzy: “Aye dick, ain’t this that foo Megas perro?” Baby Canon and Joker laugh. To them, you were never part of it.",
 };
 export function settleAftermath(s: GameState) {
   const t = s.streetLife;
@@ -179,7 +179,7 @@ export function settleAftermath(s: GameState) {
         s,
         id,
         s.playerId,
-        "Challenged the Chains crew",
+        "You challenged the crew over the chains",
         e.id,
         38,
         false,
@@ -189,15 +189,15 @@ export function settleAftermath(s: GameState) {
 export const RIO_TRIBUTE = 12;
 export function rioIntroductionError(s: GameState, id: string) {
   if (!TRIO.includes(id) || !atPerson(s, id))
-    return "Meet a member of the crew physically in Rio Gabriel.";
+    return "Find one of them in Rio Gabriel.";
   if (!safeStory(s)) return "Finish your current activity first.";
   if (TRIO.some((member) => personalBeef(s, member)))
-    return "Resolve your personal beef through an actual conversation first.";
+    return "Squash your beef with them first.";
   if ((s.characters[id].relationships[s.playerId]?.trust ?? 0) < 35)
-    return "Requires 35 trust toward you from this member.";
+    return "They don’t trust you enough for that yet.";
   if (s.streetLife?.rioContact)
-    return "You already know the Rio street contact.";
-  if (s.ap < 1) return "Requires 1 AP.";
+    return "You already know their street contact.";
+  if (s.ap < 1) return "You need 1 AP.";
   return null;
 }
 export function introduceRio(s: GameState, id: string) {
@@ -209,25 +209,25 @@ export function introduceRio(s: GameState, id: string) {
   record(
     s,
     "social",
-    `${s.characters[id].name}: “I can introduce you to our street contact. Knowing them isn’t permission to work our turf. Ask about the price first.”`,
+    `${s.characters[id].name}: “I can put you on with our street contact. Knowing him don’t mean you can work our turf, though. Ask him what it costs.”`,
     [s.playerId, id, "contact-angels"],
   );
 }
 export function tributeError(s: GameState) {
   if (!s.streetLife?.rioContact || !atPerson(s, "contact-angels"))
-    return "Meet the introduced Rio street contact.";
+    return "Find the street contact you were introduced to.";
   if (!safeStory(s)) return "Finish your current activity first.";
   if (TRIO.some((id) => personalBeef(s, id)))
-    return "The crew’s unresolved personal beef blocks this territory agreement.";
+    return "You still have beef with the crew here.";
   if (
     player(s).affiliation &&
     s.factions.angels.enemies.includes(player(s).affiliation!)
   )
-    return "Rival affiliation prevents permission.";
+    return "They won’t deal with someone from a rival set.";
   if (s.streetLife.tribute.some((t) => t.throughDay >= s.day))
-    return "Your territory permission is already paid.";
+    return "You’re already paid up.";
   if (cash(player(s)) < RIO_TRIBUTE)
-    return "Requires $12. No permission or bill without payment.";
+    return "It’s $12, cash.";
   return null;
 }
 export function payTribute(s: GameState) {
@@ -236,14 +236,14 @@ export function payTribute(s: GameState) {
     s,
     player(s),
     RIO_TRIBUTE,
-    "Angels territory permission · Rio street contact",
+    "Paid the Angels to work Rio Gabriel",
   )!;
   s.characters["contact-angels"].wallet.clean += paid.clean;
   s.characters["contact-angels"].wallet.illicit += paid.illicit;
   const e = record(
     s,
     "money",
-    `Agreed and paid $12 to the Angels street contact for Rio Gabriel trapping permission through day ${s.day + 2}. Product costs are separate. Renew before working again.`,
+    `You paid the Angels’ street contact $12 to work Rio Gabriel through day ${s.day + 2}.`,
     [s.playerId, "contact-angels"],
   );
   s.streetLife!.tribute.push({
@@ -270,7 +270,7 @@ export function lawfulLewis(s: GameState) {
   )
     return;
   s.ap--;
-  earn(s, player(s), 38, "clean", "Mr. Lewis community delivery gig");
+  earn(s, player(s), 38, "clean", "Delivery gig for Mr. Lewis");
   const e = record(
     s,
     "money",

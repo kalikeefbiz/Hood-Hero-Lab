@@ -168,7 +168,7 @@ for (const zone of ["rio", "south"] as const)
     location: `${zone}.liquor`,
     name: zone === "rio" ? "Rio Gabriel Liquor" : "Back Street Liquor",
     circumstance:
-      "The clerk and customers can identify you. Leave before the confrontation grows.",
+      "The clerk and customers will see your face. Get out before it gets ugly.",
     risk: 0.1,
     pool: ["smokes", "booze"],
     lead: false,
@@ -178,9 +178,9 @@ ROBBERY_TARGETS.push({
   kind: "store",
   zone: "downtown",
   location: "downtown.designer-drop",
-  name: "Designer Drop stock collection",
+  name: "Designer Drop",
   circumstance:
-    "Your partner handles the collection while you coordinate the exit. Police patrol the commercial strip.",
+    "Your partner grabs the stock while you handle the getaway. Police patrol the strip.",
   risk: 0.15,
   pool: ["jewelry", "console", "high-chain"],
   lead: true,

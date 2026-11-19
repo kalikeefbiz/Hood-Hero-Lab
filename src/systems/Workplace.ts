@@ -27,14 +27,14 @@ export function resolveWorkplace(
       p.stress = clamp(p.stress + 6);
       if (e) e.performance++;
       text =
-        "You fixed the delivery count. +6 stress, performance improved; full wages retained.";
+        "You stayed and fixed the count. It wore on you, but your boss noticed.";
     } else {
       if (e) {
         e.reliability = clamp(e.reliability - 3);
         change(s.characters[e.employer], p.id, { respect: -2 });
       }
       text =
-        "You flagged the problem for the next shift. Reliability −3; wages retained, no extra stress.";
+        "You left the count for the next shift. You got paid, but your boss wasn’t impressed.";
     }
   } else if (source.title === "Coworker request") {
     const coworker = s.characters["flacco"];
@@ -42,16 +42,16 @@ export function resolveWorkplace(
       change(coworker, p.id, { trust: 4, respect: 2 });
       change(p, coworker.id, { trust: 2 });
       p.stress = clamp(p.stress + 4);
-      text = `${coworker.name} appreciated the help with a local delivery. +4 stress; trust grew.`;
+      text = `${coworker.name} appreciated the help. It was more work, but you got closer.`;
     } else
-      text = "You kept to your own station. No additional stress or reward.";
+      text = "You stuck to your own station.";
   } else {
     if (choice === "extra") {
       earn(s, p, 18, "clean", "Extra shift task");
       p.stress = clamp(p.stress + 10);
-      text = "You finished the extra task. +$18 lawful pay, +10 stress.";
+      text = "You finished the extra task and earned another $18. Long day.";
     } else
-      text = "You passed on the extra task and kept your regular shift pay.";
+      text = "You passed on the extra task and went home with your regular pay.";
   }
   const coworker = source.title === "Coworker request" ? "flacco" : null;
   const event = record(

@@ -136,7 +136,7 @@ test("intentional board visit introduces Quanny once, fronts physical stock and 
   const nav = page.getByRole("navigation", { name: "Main navigation" });
   await nav.getByRole("button", { name: "Wallet", exact: true }).click();
   await expect(
-    page.getByRole("region", { name: "Merchandise fronted to others" }),
+    page.getByRole("region", { name: "Packs you fronted" }),
   ).toContainText(
     quannyCollectionInstruction(after, after.street.agreements[0].dueDay),
   );

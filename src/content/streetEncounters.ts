@@ -26,7 +26,7 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
       (a) => a.supplier === n.id && a.debtor === s.playerId && a.balance > 0,
     );
     const obligation = debts.length
-      ? `You still owe me $${debts.reduce((v, a) => v + a.balance, 0)}. We haven’t changed those terms. `
+      ? `You still owe me $${debts.reduce((v, a) => v + a.balance, 0)}. `
       : "";
     const cashOnly =
       n.id === "mega" &&
@@ -39,8 +39,8 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
       n.id === "mega"
         ? cashOnly
           ? s.streetLife?.initialDecision === "decline"
-            ? "You said you couldn’t help with the chain. I’m disappointed, but you’re family. I’ll supply you on CASH terms only, no fronts."
-            : "You never committed, but you’re still family. The first six for this lesson are CASH only, no fronts."
+            ? "You said you couldn’t help with the chain. I’m disappointed, but you’re family. I’ll still sell to you. Cash only, no fronts."
+            : "You never said you’d help, but you’re still family. First pack is cash, no fronts."
           : "Cuzzo, you’re family. But we still need to be clear about what you’re taking and what you owe."
         : n.id === "pablo"
           ? "You give your word, you keep it. I remember who does."
@@ -57,7 +57,7 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
       .flatMap((a) => [
         {
           id: `full:${a.id}`,
-          label: `Repay ${a.id} · $${a.balance} · due day ${a.dueDay}`,
+          label: `Pay off pack ${s.street.agreements.indexOf(a) + 1} · $${a.balance} · due day ${a.dueDay}`,
           effect: {
             type: "street" as const,
             choice: "repay",
@@ -68,7 +68,7 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
         },
         {
           id: `partial:${a.id}`,
-          label: `Part-pay ${a.id} · $${Math.min(25, a.balance)}`,
+          label: `Pay $${Math.min(25, a.balance)} toward pack ${s.street.agreements.indexOf(a) + 1}`,
           effect: {
             type: "street" as const,
             choice: "repay",
@@ -85,7 +85,7 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
           ? [
               {
                 id: "full",
-                label: `Repay full balance · $${a.balance}`,
+                label: `Pay it all off · $${a.balance}`,
                 effect: {
                   type: "street" as const,
                   choice: "repay",
@@ -96,7 +96,7 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
               },
               {
                 id: "partial",
-                label: `Make partial payment · $${Math.min(25, a.balance)}`,
+                label: `Pay part of it · $${Math.min(25, a.balance)}`,
                 effect: {
                   type: "street" as const,
                   choice: "repay",
@@ -125,8 +125,8 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
       ...repayments,
       {
         id: "cash",
-        label: "Accept cash purchase · $90 · 1 AP",
-        detail: `6 units · ownership transfers; no supplier debt · possible gross $${6 * unitPrice(s, s.characters[supplier].home)} if all sell, before costs, losses and partner share; buyers not guaranteed`,
+        label: "Buy the pack · $90 cash · 1 AP",
+        detail: `6 Pink Magic, yours outright · could bring in about $${6 * unitPrice(s, s.characters[supplier].home)} if every one sells, which isn’t guaranteed`,
         effect: {
           type: "street",
           choice: "acquire",
@@ -137,8 +137,8 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
       },
       {
         id: "consignment",
-        label: `Accept consignment · $102 due day ${s.day + B.deadline} · 1 AP`,
-        detail: `6 units · personal repayment obligation, including losses · possible gross $${6 * unitPrice(s, s.characters[supplier].home)} if all sell, before costs, losses and partner share; buyers not guaranteed`,
+        label: `Take it on a front · owe $102 by day ${s.day + B.deadline} · 1 AP`,
+        detail: `6 Pink Magic · you owe the $102 even if you lose them · could bring in about $${6 * unitPrice(s, s.characters[supplier].home)} if every one sells, which isn’t guaranteed`,
         effect: {
           type: "street",
           choice: "acquire",
@@ -151,15 +151,15 @@ export const SUPPLIER_ENCOUNTER: EncounterDefinition = {
         ? [
             {
               id: "terms",
-              label: "Explain the terms and risk.",
+              label: "How does this work?",
               effect: { type: "street" as const, choice: "terms" },
             },
           ]
         : []),
       {
         id: "leave",
-        label: "Leave without a new arrangement.",
-        detail: "Existing debts and agreements remain in place.",
+        label: "Not today.",
+        detail: "What you already owe still stands.",
         effect: { type: "street", choice: "leave" },
       },
     ];
@@ -224,11 +224,11 @@ export const SUPPLIER_REACTION: EncounterDefinition = {
     !["closed", "acknowledged"].includes(e.status),
   dialogue: (s, e) =>
     s.events.find((x) => x.id === e.sourceEventId)?.text ??
-    "Your supplier remembers the arrangement.",
+    "“Don’t forget what we agreed.”",
   responses: () => [
     {
       id: "acknowledge",
-      label: "I hear you. Return to City.",
+      label: "I hear you.",
       effect: { type: "acknowledge" },
     },
   ],

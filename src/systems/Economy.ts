@@ -53,7 +53,7 @@ export function payArrears(state: GameState) {
     return {
       state,
       error:
-        "Requires available cash to clear all living and operating arrears",
+        "You don’t have enough cash to pay off everything you’re behind on",
     };
   const s = structuredClone(state);
   expense(s, s.characters[s.playerId], amount, "Arrears repaid");

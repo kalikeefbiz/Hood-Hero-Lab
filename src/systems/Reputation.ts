@@ -27,13 +27,13 @@ export function advancePressure(s: GameState) {
       record(
         s,
         "risk",
-        `${c.name} was killed in an active rival conflict.`,
+        `${c.name} was killed in the fighting with a rival set.`,
         [c.id],
         ["player", c.id],
         s.crew.members.includes(c.id)
           ? {
               importance: "critical",
-              title: `Set member ${c.status}: ${c.name}`,
+              title: `${c.name} is gone`,
             }
           : {},
       );

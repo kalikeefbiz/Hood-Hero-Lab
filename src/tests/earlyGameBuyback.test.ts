@@ -37,7 +37,7 @@ it.each([
       expect(s.employmentSearch.player.lastGigDay).toBe(day);
       const saved = serialize(s);
       const duplicate = performActionAt(s, gig, "nawf.street-market");
-      expect(duplicate.error).toMatch(/complete/);
+      expect(duplicate.error).toMatch(/already done a gig today/);
       expect(serialize(duplicate.state)).toBe(saved);
       s = advanceDay(deserialize(saved));
       expect(s.ap).toBe(2);
@@ -53,7 +53,7 @@ it.each([
     const noAP = { ...s, ap: 0 };
     expect(performActionAt(noAP, buyback, "south.towers")).toEqual({
       state: noAP,
-      error: "Not enough AP or availability",
+      error: "Not enough AP left today",
     });
     const paid = performActionAt(s, buyback, "south.towers");
     expect(paid.error).toBeNull();

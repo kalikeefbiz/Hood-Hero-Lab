@@ -37,27 +37,27 @@ export function jobError(
   const c = s.characters[actor],
     j = JOBS.find((j) => j.id === jobId);
   if (currentEmployment(s, actor))
-    return "Already employed. Resign before applying elsewhere.";
+    return "You already have a job. Quit it before applying somewhere else.";
   const search = searchState(s, actor);
   if (s.day < search.eligibleDay)
-    return `Formal applications reopen on day ${search.eligibleDay}. Local gigs remain available.`;
-  if (!j) return "Choose a job opportunity";
+    return `You can apply for jobs again on day ${search.eligibleDay}. Local gigs are still open.`;
+  if (!j) return "Pick a job";
   if (
     s.employment.some(
       (e) => e.actor === actor && e.jobId === j.id && s.day < e.rehireDay,
     )
   )
-    return "This workplace is not ready to rehire you yet";
+    return "They aren’t ready to take you back yet";
   if (proficiency(c, "work") < j.minWork || proficiency(c, "social") < j.minSocial)
-    return `Requires work ${j.minWork} and social ${j.minSocial}`;
+    return "You need more work experience or people skills for this job";
   if (
     j.id.startsWith("retail") &&
     c.home !== j.location &&
     !c.connections.includes(j.employer)
   )
-    return "A local contact or local address is required";
+    return "They only hire people from the neighborhood, or someone they know";
   if (s.characters[j.employer].status !== "active")
-    return "Hiring contact is unavailable";
+    return "Whoever does the hiring isn’t around";
   return null;
 }
 export const jobOpportunities = (s: GameState, actor = s.playerId) =>
@@ -124,7 +124,7 @@ export function acceptJob(s: GameState, actor: string, jobId: string) {
     e.employer,
     actor,
     event.id,
-    "Accepted a regular work schedule.",
+    "Took the job.",
     4,
   );
   return event;
@@ -204,10 +204,10 @@ function attendance(
     e.actor,
     event.id,
     status === "worked"
-      ? "Kept a scheduled shift."
+      ? "Showed up for their shift."
       : status === "missed"
-        ? "Missed a scheduled shift without leave."
-        : "Agreed to unpaid leave.",
+        ? "Missed a shift without asking."
+        : "Took a day off.",
     status === "worked" ? 3 : status === "missed" ? -8 : 0,
   );
   return event;
@@ -228,7 +228,7 @@ export function workShift(s: GameState, actor: string) {
     zone: e.location,
     kind: "economic",
     magnitude: 0.5,
-    cause: `${c.name} supported lawful trade through scheduled employment.`,
+    cause: `${c.name}’s steady work helped the local economy.`,
   });
   c.stress = clamp(c.stress + 8);
   c.skills.work = clamp(c.skills.work + 1);
@@ -244,7 +244,7 @@ export function workShift(s: GameState, actor: string) {
     s,
     e,
     "worked",
-    `${c.name} worked a scheduled shift and earned $${e.wage} in lawful pay. +2.00 Work XP, +8 stress.`,
+    `${c.name} worked a shift and earned $${e.wage}. Tiring, but honest.`,
   )!;
   awardSkill(s, actor, "work", 200, `shift:${e.id}:${s.day}`);
   if (
@@ -282,10 +282,10 @@ export function workShift(s: GameState, actor: string) {
         s,
         "social",
         title === "Difficult shift"
-          ? "A delivery count is wrong. Your supervisor asks how you want to handle the extra pressure."
+          ? "A delivery count is off, and your supervisor wants to know how you’ll handle it."
           : title === "Coworker request"
             ? "A coworker asks for a hand finishing their station before closing."
-            : "Your reliable work brought an offer: finish an extra task for $18, with more stress. It fits within today's shift.",
+            : "You’ve been reliable, so your boss offers $18 to finish one more task before you leave.",
         [actor, e.employer],
         undefined,
         { title, importance: "personal" },
@@ -316,8 +316,8 @@ export function endEmployment(s: GameState, e: Employment, fired: boolean) {
     s,
     "social",
     fired
-      ? `${s.characters[e.employer].name}: “Three absences in your last five scheduled shifts. We can't keep covering your place. We're letting you go.” Formal applications reopen on day ${search.eligibleDay}; local gigs remain available.`
-      : `${s.characters[e.employer].name}: “I've recorded your resignation. We'll cover the remaining shifts.” Formal applications reopen on day ${search.eligibleDay}; this workplace will reconsider on day ${e.rehireDay}.`,
+      ? `${s.characters[e.employer].name}: “You’ve missed three of your last five shifts. We can’t keep covering for you. We’re letting you go.” You can apply elsewhere from day ${search.eligibleDay}; local gigs remain available.`
+      : `${s.characters[e.employer].name}: “Alright. We’ll cover your shifts.” You can apply elsewhere from day ${search.eligibleDay}, and here again from day ${e.rehireDay}.`,
     [e.actor, e.employer],
     undefined,
     {
@@ -332,8 +332,8 @@ export function endEmployment(s: GameState, e: Employment, fired: boolean) {
     e.actor,
     event.id,
     fired
-      ? "Terminated after repeated absences."
-      : "Resigned from the schedule.",
+      ? "Let go for missing too many shifts."
+      : "Quit.",
     fired ? -20 : -3,
   );
   return event;
@@ -346,7 +346,7 @@ export function settleAttendance(s: GameState) {
       s,
       e,
       "missed",
-      `Missed scheduled shift · ${jobDefinition(e.jobId).name}. Reliability fell to ${e.reliability}. No wages earned.`,
+      `You missed your shift at ${jobDefinition(e.jobId).name}. No pay, and your boss noticed.`,
     );
     const misses = e.attendance
       .slice(-B.attendanceWindow)
@@ -372,7 +372,7 @@ export function requestTimeOff(s: GameState, actor: string) {
     s,
     e,
     "excused",
-    `${s.characters[e.employer].name} approved unpaid time off for today's shift. No absence and no wages.`,
+    `${s.characters[e.employer].name} gave you today off, unpaid.`,
   )!;
 }
 export function absenceWarning(s: GameState) {
@@ -382,5 +382,5 @@ export function absenceWarning(s: GameState) {
     e.attendance
       .slice(-(B.attendanceWindow - 1))
       .filter((a) => a.status === "missed").length + 1;
-  return `Today's shift is unfinished. Ending the day forfeits $${e.wage}, reduces reliability by ${B.reliabilityLoss}${misses >= B.terminationMisses ? ", and will terminate your employment" : misses >= B.warningMisses ? ", and brings a formal warning" : ". Repeated absences can cost you the job"}.`;
+  return `You haven’t worked today’s shift. If you end the day now you lose $${e.wage}${misses >= B.terminationMisses ? " and you’ll be fired" : misses >= B.warningMisses ? " and get a formal warning" : ", and your boss will notice. Too many missed shifts can cost you the job"}.`;
 }

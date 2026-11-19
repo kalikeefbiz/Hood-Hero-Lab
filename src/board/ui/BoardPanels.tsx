@@ -176,7 +176,7 @@ export function DistrictChips({
             onClick={() => setFocus({ zone: id, block: null, place: null })}
           >
             <span id={`chip-desc-${id}`} hidden>
-              {`${z.controller ? `Controlled by ${s.factions[z.controller].name}.` : "No single controller."}${presence ? ` Faction presence: ${presence}.` : " Unclaimed."}`}
+              {`${z.controller ? `Run by ${s.factions[z.controller].name}.` : "Nobody runs it."}${presence ? ` Sets here: ${presence}.` : " Unclaimed."}`}
             </span>
             <span className="chip-colors" aria-hidden="true">
               {colors.map((c) => (
@@ -850,8 +850,7 @@ export function AppearancePanel({
         </button>
       </div>
       <p className="muted">
-        How you show up on the streets. A full character creator will replace
-        this.
+        How you show up on the streets.
       </p>
       {swatches("Skin", SKIN_TONES, "skin")}
       {options("Hair", HAIR, "hair")}

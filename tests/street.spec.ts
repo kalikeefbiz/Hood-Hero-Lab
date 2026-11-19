@@ -179,14 +179,14 @@ test("supplier to inventory to multiple real sales and repayment through normal 
   await expect(modal).toContainText("$102");
   await tapUntil(
     page,
-    modal.getByRole("button", { name: "Explain the terms and risk." }),
+    modal.getByRole("button", { name: "How does this work?" }),
     async () => (await modal.textContent())!.includes("before supplier cost"),
   );
   await expect(modal).toContainText("before supplier cost");
   await snap(page, "01-supplier-terms");
   await tapUntil(
     page,
-    modal.getByRole("button", { name: /Accept consignment/ }),
+    modal.getByRole("button", { name: /Take it on a front/ }),
     async () => (await state(page)).street.lots.length > 0,
   );
   expect((await state(page)).street.lots[0].remaining).toBe(6);
@@ -282,14 +282,14 @@ test("supplier to inventory to multiple real sales and repayment through normal 
   await snap(page, "05-outstanding-balance");
   await page.getByRole("button", { name: "Find Cuzzo on map →" }).click();
   await page.getByRole("button", { name: "Talk repayment with Cuzzo" }).click();
-  await modal.getByRole("button", { name: /Repay full balance/ }).click();
+  await modal.getByRole("button", { name: /Pay it all off/ }).click();
   await dismissEncounter(page);
   expect((await state(page)).street.agreements[0].balance).toBe(0);
   await nav(page, "Wallet");
   await page
     .getByRole("heading", { name: "Inventory", exact: true })
     .scrollIntoViewIfNeeded();
-  await page.getByText("Supplier and lot records", { exact: true }).click();
+  await page.getByText("Packs from suppliers", { exact: true }).click();
   await snap(page, "06-repaid");
   const saved = await state(page);
   console.log(
@@ -360,7 +360,7 @@ test("seeded real-play arrest serves every day and releases into continued gamep
   await expect.poll(async () => (await state(page)).ap, { timeout: 20000 }).toBe(1);
   await dismissEncounter(page);
   await nav(page, "Wallet");
-  await page.getByText("Custody history", { exact: true }).click();
+  await page.getByText("Where your stuff went", { exact: true }).click();
   await expect(page.locator(".transaction-history")).toContainText(
     "Custody record · released",
   );
@@ -404,7 +404,7 @@ test("crew-assisted street work uses an earned willing partner and actual invent
   await snap(page, "10-crew-assisted");
   expect((await state(page)).street.transactions.at(-1).partner).toBe("flacco");
   await nav(page, "Set");
-  await expect(page.locator("main")).toContainText("Shared street transaction");
+  await expect(page.locator("main")).toContainText("worked the block together");
 });
 for (const width of [320, 375, 390, 430])
   test(`street inventory and supplier modal fit ${width}px`, async ({
@@ -420,6 +420,6 @@ for (const width of [320, 375, 390, 430])
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBeLessThanOrEqual(width);
     await expect(
-      page.getByRole("button", { name: /Accept consignment/ }),
+      page.getByRole("button", { name: /Take it on a front/ }),
     ).toBeVisible();
   });

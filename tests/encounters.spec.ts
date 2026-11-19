@@ -98,7 +98,7 @@ test("true City modal, sequential questions, promise closure, queued fulfillment
   }
   await capture(page, "01-modal-over-city");
   await reply(page, "Tell me what happened").click();
-  await expect(modal(page)).toContainText("This wasn’t authorized");
+  await expect(modal(page)).toContainText("Nobody put them up to it");
   await expect(modal(page).locator("img")).toHaveAttribute(
     "src",
     /confident-no-chain.webp$/,
@@ -107,13 +107,13 @@ test("true City modal, sequential questions, promise closure, queued fulfillment
   await capture(page, "02-contextual-exchange");
   await page.reload();
   await page.getByRole("button", { name: "Resume saved game" }).click();
-  await expect(modal(page)).toContainText("This wasn’t authorized");
+  await expect(modal(page)).toContainText("Nobody put them up to it");
   await reply(page, "I’ll help you").click();
   await expect(modal(page)).toHaveCount(0);
   await openJournal(page);
   await expect(
     page.getByRole("region", { name: "Your promises" }),
-  ).toContainText("8 days remaining");
+  ).toContainText("8 days left");
   expect(incidentPromise(await saved(page), "the-chains")?.status).toBe(
     "pending",
   );
@@ -201,7 +201,7 @@ test("refusing, postponing, Escape and backdrop leave no accidental obligation o
   await reply(page, "I can’t get involved").click();
   await expect(modal(page)).toHaveCount(0);
   expect((await saved(page)).commitments).toHaveLength(0);
-  await expect(page.getByRole("status")).toContainText("No promise");
+  await expect(page.getByRole("status")).toContainText(/staying out of it|figure out what I can do/);
   await endDay(page);
   await declineCrewOffer(page);
   await expect(modal(page)).toHaveCount(0);

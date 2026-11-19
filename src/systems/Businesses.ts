@@ -15,32 +15,32 @@ export function businessError(
   const p = player(s),
     d = BUSINESSES.find((d) => d.id === id),
     b = s.strategic.businesses.find((b) => b.definition === id);
-  if (s.activeSession && s.activeSession.status !== "ended") return "End your trapping session before managing a business.";
-  if (!d) return "Unknown business opportunity";
+  if (s.activeSession && s.activeSession.status !== "ended") return "Wrap up trapping first.";
+  if (!d) return "That business isn’t available";
   if (s.end || p.status !== "active" || s.ap < 1)
-    return "Requires an active player and 1 AP";
+    return "You need 1 AP";
   if (action === "buy") {
-    if (b) return "This opportunity has already been acquired";
+    if (b) return "You already own this";
     if (p.legitimacy < d.legitimacy)
-      return `Requires ${d.legitimacy} legitimacy`;
+      return "You need a more legitimate reputation to buy this";
     if (p.wallet.clean + p.wallet.illicit < d.cost)
-      return `Requires $${d.cost}`;
+      return `You need $${d.cost}`;
     if (
       s.street.arrears ||
       s.street.agreements.some((a) => a.balance > 0 && a.dueDay < s.day)
     )
-      return "Resolve arrears and overdue obligations first";
+      return "Pay off what you owe first";
   } else {
-    if (!b || !operating(b.status)) return "Requires an operating business";
+    if (!b || !operating(b.status)) return "This business isn’t running";
     if (action === "maintain" && p.wallet[b.provenance] < 120)
-      return `Requires $120 ${b.provenance} funds`;
+      return `You need $120 in ${b.provenance === "clean" ? "clean" : "street"} money`;
     if (
       action === "maintain" &&
       b.history.some(
         (h) => h.day === s.day && h.revenue === 0 && h.expenses === 120,
       )
     )
-      return "Already maintained today";
+      return "You already took care of it today";
   }
   return null;
 }
@@ -82,7 +82,7 @@ export function businessAction(
     record(
       s,
       "money",
-      `Acquired ${d.name} for $${d.cost}. ${provenance === "clean" ? "Clean-funded asset; income must prove sustainable." : "Some funding was illicit: the entire asset, its proceeds and resale remain illicit and cannot qualify for retirement."}`,
+      `You bought ${d.name} for $${d.cost}. ${provenance === "clean" ? "Bought with clean money. Now it has to pay for itself." : "Some of that was street money, so this place and everything it earns stays dirty. It won’t count toward walking away clean."}`,
       [p.id],
       [p.id],
       { title: "Business acquired", importance: "major" },
@@ -115,7 +115,7 @@ export function businessAction(
     record(
       s,
       "money",
-      `${d.name}: ${action === "maintain" ? "maintenance paid ($120)" : action === "sell" ? "sold; operating income ended" : "closed; operating income ended"}.`,
+      `${d.name}: ${action === "maintain" ? "you paid $120 to keep it in shape" : action === "sell" ? "sold. It won’t bring in money anymore" : "closed. It won’t bring in money anymore"}.`,
       [p.id],
     );
   }
@@ -176,7 +176,7 @@ export function advanceBusinesses(s: GameState) {
         zone: d.zone,
         kind: "economic",
         magnitude: Math.min(2, net / 30),
-        cause: `${d.name} supported lawful local trade.`,
+        cause: `${d.name} kept honest money moving in the neighborhood.`,
       });
       p.neighborhoodStanding[d.zone] = clamp(
         p.neighborhoodStanding[d.zone] + 0.15,
@@ -187,7 +187,7 @@ export function advanceBusinesses(s: GameState) {
       record(
         s,
         "money",
-        `${d.name}: $${revenue} revenue, $${expenses} expenses, ${net >= 0 ? "+" : ""}$${net} net today. Condition ${Math.round(b.condition)}%.`,
+        `${d.name} took in $${revenue} and spent $${expenses} today (${net >= 0 ? "+" : "−"}$${Math.abs(net)}). ${b.condition >= 70 ? "The place is in good shape." : b.condition >= 40 ? "The place could use some work." : "The place is falling apart."}`,
         [p.id],
       );
   }

@@ -5,21 +5,21 @@ export function pabloError(s: GameState, id: string) {
   return id === "pablo" &&
     player(s).affiliation !== "angels" &&
     skillRank(player(s), "trapper") < 4
-    ? "Pablo only receives Angels members or Big Dog trappers. The Chains can still reach him through the dispute intermediary."
+    ? "Pablo only sits down with Angels or trappers who’ve made Big Dog. You can still get word to him about the chains through someone he trusts."
     : null;
 }
 export function workIntroError(s: GameState) {
   const t = s.streetLife;
   if (!t || t.legacy || t.workEvent) return null;
   return t.decision === "unasked"
-    ? "Speak with Mega about the Chains first, then visit a City workplace or gig."
-    : "First submit a valid application at a City workplace or complete a local gig. Applications offer scheduled shifts; gigs pay immediately.";
+    ? "Talk to Cuzzo about his chains first, then find some honest work."
+    : "Find some honest work first: apply for a job or take a local gig.";
 }
 export function lessonError(s: GameState) {
   return (
     workIntroError(s) ??
     (s.streetLife && s.streetLife.lesson === "waiting"
-      ? "Meet Mega at the Southside Lot with starter stock for your first trapping lesson."
+      ? "Meet Cuzzo at the Southside Lot with your pack for your first lesson."
       : null)
   );
 }

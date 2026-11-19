@@ -82,7 +82,7 @@ describe("GOAL013 City robberies", () => {
       expect(s.robberies!.history[0].loot).toBeGreaterThanOrEqual(25);
       expect(s.robberies!.history[0].loot).toBeLessThanOrEqual(75);
       expect(s.ap).toBe(ap);
-      expect(opportunityError(s, t.id)).toMatch(/cooldown/);
+      expect(opportunityError(s, t.id)).toMatch(/still on edge/);
       expect(deserialize(serialize(s)).robberies).toEqual(s.robberies);
       expect(s.robberies!.items.gloves).toBe(0);
       expect(input(s, "press")).toBe(s);
@@ -90,7 +90,7 @@ describe("GOAL013 City robberies", () => {
   );
   it("off-board APIs, stale taps, pause, hidden/interrupted session, trapping exclusion and partial loot", () => {
     let s = shop(base());
-    expect(offerTarget(s, "street.rio")).toMatch(/actual/);
+    expect(offerTarget(s, "street.rio")).toMatch(/Go there first/);
     at(s, "rio.courtyard");
     s = begin(s);
     const a = s.activeRobbery!;
@@ -107,7 +107,7 @@ describe("GOAL013 City robberies", () => {
     let other = shop(base());
     other.activeSession = { status: "active" } as GameState["activeSession"];
     at(other, "rio.courtyard");
-    expect(offerTarget(other, "street.rio")).toMatch(/session/);
+    expect(offerTarget(other, "street.rio")).toMatch(/Wrap up trapping/);
   });
   it("all twelve homes use four district locks; D+5 unlock, failure/reload/abandon cannot bypass, legacy remains readable", () => {
     expect(ROBBERY_TARGETS.filter((t) => t.kind === "home")).toHaveLength(12);
@@ -128,10 +128,10 @@ describe("GOAL013 City robberies", () => {
     const day = s.day;
     for (let d = day; d < day + 5; d++) {
       s.day = d;
-      expect(opportunityError(s, "home.rio.2")).toMatch(/cooldown/);
+      expect(opportunityError(s, "home.rio.2")).toMatch(/still on edge/);
     }
     s.day = day + 5;
-    expect(opportunityError(s, "home.rio.2")).toMatch(/lead/);
+    expect(opportunityError(s, "home.rio.2")).toMatch(/tip you/);
     expect(s.robberyCareer!.cooldowns["home:rio"].nextDay).toBe(day + 5);
     expect(s.robberyCareer!.cooldowns["home:south"]).toBeUndefined();
   });
@@ -214,7 +214,7 @@ describe("GOAL013 City robberies", () => {
       kind: "bank",
       status: "offered",
     });
-    expect(robberyStartError(s, "bank-test")).toMatch(/Future/);
+    expect(robberyStartError(s, "bank-test")).toMatch(/haven’t heard of anything like that/);
   });
   it("named victim stock/cash finite, real provenance/debt; original-owner sell-back creates active PERSONAL beef and cannot repeat", () => {
     let s = base(19);
@@ -253,7 +253,7 @@ describe("GOAL013 City robberies", () => {
     expect(
       s.danger.conflicts.find((c) => c.participants.includes("mega")),
     ).toMatchObject({ state: "worsening", intent: "seek", scope: "personal" });
-    expect(sellProperty(s, slot.id, "mega")).toMatch(/No eligible/);
+    expect(sellProperty(s, slot.id, "mega")).toMatch(/anything to sell here/);
     expect(deserialize(serialize(s)).robberyCareer).toEqual(s.robberyCareer);
   });
   it("pawn uses one value ratio, physically removes property, same item cannot pawn/return twice", () => {
@@ -439,7 +439,7 @@ it("optional house dial is persisted, limited, and never required to take ordina
     expect(s.activeRobbery!.career!.dial.target).toBe(seed);
   }
   expect(tryDial(s, a.id, s.activeRobbery!.cursor, seed)).toMatch(
-    /No optional/,
+    /no safe here/,
   );
   s = ok(takeLoot(s, a.id, s.activeRobbery!.cursor, c.goods[0].id));
   s = input(s, "leave");
@@ -680,10 +680,10 @@ it("targeting Quanny uses his authored business-block baseline; old earned evide
   expect(s.quanny.business).toBe("blocked");
   expect(s.quanny.blockedDay).toBe(s.day);
   expect(s.quanny.repairBaseline).toBeGreaterThan(0);
-  expect(repairError(s)).toMatch(/meaningful/);
+  expect(repairError(s)).toMatch(/reason to trust you/);
   s = leaveRobbery(s, s.activeRobbery!.id);
   s.day++;
-  expect(repairError(s)).toMatch(/meaningful/);
+  expect(repairError(s)).toMatch(/reason to trust you/);
   expect(deserialize(serialize(s)).quanny.repairBaseline).toBe(
     s.quanny.repairBaseline,
   );

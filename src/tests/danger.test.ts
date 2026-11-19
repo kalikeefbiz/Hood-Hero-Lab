@@ -84,7 +84,7 @@ describe("contextual street life", () => {
     s = respondEncounter(s, e.id, "listen").state;
     expect(s.danger.conflicts).toHaveLength(0);
     expect(player(s).connections).toContain("resident-nawf");
-    expect(s.danger.scenes[0].outcome).toMatch(/peacefully/);
+    expect(s.danger.scenes[0].outcome).toMatch(/parted on good terms/);
     expect(respondEncounter(s, e.id, "disrespect").state).toBe(s);
   });
   it("persists disrespect as personal beef, permits later encounters and reconciliation", () => {
@@ -144,11 +144,11 @@ describe("contextual street life", () => {
     const s = moveTo(world(), "nawf.deli");
     expect(moveTo(s, "rio.market")).toBe(s);
     expect(performAction(s, { type: "rest", actor: s.playerId }).error).toMatch(
-      /encounter/,
+      /Finish this conversation/,
     );
     const next = dismissEncounter(s, currentEncounter(s)!.id);
     expect(next.danger.scenes[0].status).toBe("resolved");
-    expect(next.danger.scenes[0].outcome).toMatch(/left/);
+    expect(next.danger.scenes[0].outcome).toMatch(/walked away/);
     expect(next.danger.conflicts).toHaveLength(0);
   });
 });
@@ -389,7 +389,7 @@ describe("hospital recovery and persistence", () => {
       { actor: s.playerId, type: "buy", item: "booze" },
       "nawf.deli",
     );
-    expect(result.error).toMatch(/encounter/);
+    expect(result.error).toMatch(/Finish this conversation/);
     expect(result.state.presence?.location).toBe("nawf.deli");
     expect(result.state.ap).toBe(s.ap);
     expect(player(result.state).wallet).toEqual(player(s).wallet);

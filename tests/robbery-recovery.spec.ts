@@ -32,7 +32,7 @@ test("career encounter survives a freeze, hidden board, reduced motion and reloa
   if ((await state(page)).activeRobbery!.status === "paused")
     await tapUntil(
       page,
-      region.getByRole("button", { name: "Continue robbery session" }),
+      region.getByRole("button", { name: "Get back to the job" }),
       async () => (await state(page)).activeRobbery!.status === "active",
     );
   const checkpoint = await state(page);
@@ -63,7 +63,7 @@ test("career encounter survives a freeze, hidden board, reduced motion and reloa
   await navigate(page, "City");
   await tapUntil(
     page,
-    region.getByRole("button", { name: "Continue robbery session" }),
+    region.getByRole("button", { name: "Get back to the job" }),
     async () => (await state(page)).activeRobbery!.status === "active",
   );
   expect((await state(page)).activeRobbery!.career).toEqual(

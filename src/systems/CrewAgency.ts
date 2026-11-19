@@ -49,8 +49,9 @@ export function availability(
   c: Character,
   day = s.day,
 ): string | null {
-  if (c.status !== "active") return `I'm ${c.status}; I can't help right now.`;
-  if (c.availableDay > day) return `I'm committed until day ${c.availableDay}.`;
+  if (c.status !== "active")
+    return c.status === "arrested" ? "I’m locked up. I can’t help right now." : "I’m laying low. I can’t help right now.";
+  if (c.availableDay > day) return `I’m tied up until day ${c.availableDay}.`;
   const job = currentEmployment(s, c.id);
   if (
     job &&
@@ -58,7 +59,7 @@ export function availability(
     job.workdays.includes(weekday(day)) &&
     !job.timeOffDays.includes(day)
   )
-    return "I've got a scheduled shift. I won't double-book it.";
+    return "I’ve got a shift that day. I can’t miss it.";
   if (
     s.assignments.some(
       (a) =>
@@ -67,9 +68,9 @@ export function availability(
         a.dueDay >= day,
     )
   )
-    return "I've already given my word on another activity.";
+    return "I already told somebody else I’d be there.";
   if (c.agency.lastAssignmentDay === day)
-    return "I've already done my part today. Ask me tomorrow.";
+    return "I already did my part today. Ask me tomorrow.";
   return null;
 }
 export const knownCapabilities = (c: Character) =>
@@ -93,7 +94,7 @@ export function cooperation(
   if ((r?.trust ?? 0) < 25 || (r?.grievance ?? 0) > 55)
     return {
       accepted: false,
-      reason: "We need to rebuild trust before I put my word behind this.",
+      reason: "We need to fix things between us before I put my word on this.",
       negotiate: false,
     };
   const risky = activity === "partner-crime";
@@ -130,7 +131,7 @@ export function cooperation(
   )
     return {
       accepted: false,
-      reason: "I need $18 for my time. Can you cover that before I commit?",
+      reason: "I need $18 for my time. Can you cover that?",
       negotiate: true,
     };
   const skill =
@@ -154,7 +155,7 @@ export function cooperation(
     negotiate: false,
     reason:
       score >= (risky ? 38 : 30)
-        ? "Alright, that works for me. Let's keep our word to each other."
+        ? "Alright, I’m with it. Let’s both keep our word."
         : "I don't feel ready for that with you. Let's build some trust first.",
   };
 }
@@ -187,12 +188,12 @@ export function requestError(
   activity: CrewActivity,
   compensation = CREW_BALANCE.compensation,
 ): string | null {
-  if (s.activeSession && s.activeSession.status !== "ended") return "End your trapping session before another commitment.";
-  if (s.end) return "This run has ended";
+  if (s.activeSession && s.activeSession.status !== "ended") return "Wrap up trapping first.";
+  if (s.end) return "Your story has ended";
   if (player(s).status !== "active")
-    return "You are unavailable while in custody.";
-  if (!s.crew.members.includes(member)) return "Not in your Set";
-  if (s.ap < 1) return "Requires 1 AP";
+    return "You can’t do that from a cell.";
+  if (!s.crew.members.includes(member)) return "They’re not in your Set";
+  if (s.ap < 1) return "You need 1 AP";
   if (
     s.assignments.some(
       (a) =>
@@ -203,9 +204,9 @@ export function requestError(
         (activity !== "work" || a.compensation === compensation),
     )
   )
-    return "You already discussed this request today. Give them some space.";
+    return "You already asked them today. Give them some space.";
   if (activity === "work" && cash(player(s)) < compensation)
-    return `Requires $${compensation} compensation held until completion`;
+    return `You need $${compensation} to cover their time`;
   if (activity === "partner-crime") return lessonError(s) ?? (saleLot(s) ? null : "No Pink Magic on hand.");
   if (activity === "partner-gig")
     return validateAction(s, {
@@ -338,14 +339,14 @@ export function requestActivity(
   if (!decision.accepted) {
     a.status = "refused";
     a.relationshipEffect =
-      "Refusal creates no obligation or automatic friendship penalty.";
+      "Saying no doesn’t cost you anything.";
     // Refusals are free. Repeating an unreasonable request once per later day erodes trust gradually.
     const repeated =
       c.agency.lastRequestDay < s.day && c.agency.unreasonableRequests >= 2;
     if (c.agency.lastRequestDay !== s.day) c.agency.unreasonableRequests++;
     if (repeated) change(c, s.playerId, { trust: -2, grievance: 2 });
     c.agency.lastRequestDay = s.day;
-    a.outcome = `${c.name}: “${decision.reason}”${repeated ? " Repeated pressure strained your relationship." : " No new obligation."}`;
+    a.outcome = `${c.name}: “${decision.reason}”${repeated ? " Pushing them again put a strain on things." : ""}`;
     logAssignment(s, a, a.outcome, repeated ? -2 : 0);
     return;
   }
@@ -357,7 +358,7 @@ export function requestActivity(
   );
   a.status = "active";
   if (activity === "work") {
-    expense(s, player(s), compensation, `Reserved compensation · ${c.name}`);
+    expense(s, player(s), compensation, `Money set aside for ${c.name}`);
     a.dueDay = s.day + 1;
     c.availableDay = s.day + 2;
   }
@@ -365,7 +366,7 @@ export function requestActivity(
   logAssignment(
     s,
     a,
-    `${c.name} accepted ${a.objective.toLowerCase()}. ${activity === "work" ? `$${compensation} reserved for their time; possible $${a.expectedBenefit} on day ${a.dueDay}. No earnings yet.` : activity === "partner-crime" ? "Ready to accompany your next City trapping session; its 1 AP is charged there." : "1 AP committed; both of you participate."}`,
+    `${c.name} is in: ${a.objective.toLowerCase()}. ${activity === "work" ? `You set aside $${compensation} for their time. It could bring in $${a.expectedBenefit} on day ${a.dueDay}.` : activity === "partner-crime" ? "They’ll come with you next time you trap; that costs 1 AP when you start." : "It’ll take 1 AP when you meet up."}`,
   );
   if (!["work", "partner-crime"].includes(activity)) resolveAssignment(s, a);
 }
@@ -376,7 +377,7 @@ function shareInformation(s: GameState, a: CrewAssignment) {
   if (contact) {
     connect(s, p.id, contact);
     change(s.characters[contact], p.id, { trust: 2 });
-    return `${c.name} introduced you to ${s.characters[contact].name}, someone they actually know.`;
+    return `${c.name} introduced you to ${s.characters[contact].name}.`;
   }
   const i = s.incidents["the-chains"];
   if (
@@ -386,16 +387,16 @@ function shareInformation(s: GameState, a: CrewAssignment) {
       c.known.some((id) => i.participants.includes(id)))
   ) {
     i.informed = true;
-    return `${c.name}: “Mega says the group is holding his chain and asking $${i.demand}. I don't know who has it personally.”`;
+    return `${c.name}: “Word is that crew is holding Mega’s chain and asking $${i.demand}. I don’t know who’s actually got it.”`;
   }
-  return `${c.name}: “I checked my own contacts. Nothing new I can verify. Don't mistake that for the whole picture.”`;
+  return `${c.name}: “I asked around. Nobody knows anything I can back up. Doesn’t mean there’s nothing to know.”`;
 }
 export function resolveAssignment(s: GameState, a: CrewAssignment) {
   if (a.status !== "active" || a.dueDay > s.day) return;
   if (a.activity === "partner-crime") {
     // Session resolver owns sales. An unattended invitation expires without invented proceeds.
     if (a.createdDay >= s.day) return;
-    a.status = "resolved"; a.success = false; a.outcome = "No City session attended.";
+    a.status = "resolved"; a.success = false; a.outcome = "You never made it out to the block together.";
     const promise = s.commitments.find(c => c.id === a.commitmentId);
     if (promise) promise.status = "released";
     return;
@@ -413,11 +414,11 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
   if (a.activity === "work") {
     c.wallet.clean += a.compensation;
     if (a.success)
-      earn(s, p, a.expectedBenefit, "clean", `Completed crew work · ${c.name}`);
+      earn(s, p, a.expectedBenefit, "clean", `Errand with ${c.name}`);
     c.stress = clamp(c.stress + (a.success ? 5 : 9));
     outcome = a.success
-      ? `$${a.expectedBenefit} clean pay produced; ${c.name} received the reserved $${a.compensation}.`
-      : `The work fell through. No pay for you; ${c.name} received $${a.compensation} for their time.`;
+      ? `The errand brought in $${a.expectedBenefit}. ${c.name} got the $${a.compensation} you set aside.`
+      : `The work fell through. Nothing for you, but ${c.name} still got $${a.compensation} for their time.`;
   } else if (a.activity === "partner-gig") {
     const type = "gig" as const;
     const error = validateAction({ ...s, ap: s.ap + 1 }, { actor: p.id, type });
@@ -425,7 +426,7 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
     if (c.status !== "active" || error) {
       a.success = false;
       outcome =
-        "The shared opportunity is no longer eligible. No proceeds or exposure were created.";
+        "The plan fell apart before it started. Nothing gained, nothing lost.";
     } else {
       s.ap++;
       const before = cash(p);
@@ -435,7 +436,7 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
       earn(s, p, bonus, 'clean', "Partner's work contribution");
       c.wallet.clean += 16;
       c.stress = clamp(c.stress + 5);
-      outcome = `Shared local gig: you earned $${38 + bonus}; ${c.name} earned $16. Work experience determined the extra pay.`;
+      outcome = `You worked a gig with ${c.name}. You earned $${38 + bonus} and they made $16.`;
     }
   } else if (a.activity === "social") {
     a.success = true;
@@ -445,11 +446,11 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
     change(c, p.id, { trust: 5, affection: 5, grievance: -3 });
     change(p, c.id, { trust: 4, affection: 4 });
     p.influence++;
-    outcome = `You spent time together. Both stress −${relief}; trust and affection grew. ${c.goals.includes("loyalty") ? "Making time for friendship matters to them." : "They appreciated a break from their own responsibilities."}`;
+    outcome = `You spent time with ${c.name} and you both unwound. ${c.goals.includes("loyalty") ? "Making time for them means a lot." : "They needed the break."}`;
   } else
     outcome = a.success
       ? shareInformation(s, a)
-      : `${c.name}: “I asked around, but couldn't confirm anything. I'll keep my eyes open.”`;
+      : `${c.name}: “I asked around. Nothing solid yet. I’ll keep my ears open.”`;
   if (a.success) {
     applyInfluence(s, {
       actor: c.id,
@@ -461,7 +462,7 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
           ? "economic"
           : "community",
       magnitude: 1,
-      cause: `${c.name}'s completed Set commitment supported local ties.`,
+      cause: `${c.name} came through on what you planned, and the neighborhood noticed.`,
     });
     if (p.affiliation && c.affiliation === p.affiliation)
       s.strategic.contributions[p.affiliation] += 5;
@@ -474,8 +475,8 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
   } else change(c, p.id, { respect: -1 });
   a.status = "resolved";
   a.relationshipEffect = a.success
-    ? "Cooperation strengthened trust and respect."
-    : "Failure reduced respect; agreed compensation remains owed.";
+    ? "Working together brought you closer."
+    : "It didn’t work out, and you still owe what you agreed.";
   a.outcome = `${c.name} · ${a.objective}: ${outcome}`;
   c.agency.lastAssignmentDay = s.day;
   const e = logAssignment(s, a, a.outcome, a.success ? 5 : -2);
@@ -515,8 +516,8 @@ export function processCrewActivities(s: GameState) {
     if (a.status === "accepted" && s.day > a.dueDay) {
       a.status = "resolved";
       a.success = false;
-      a.relationshipEffect = "Missed appointment: trust -4, grievance +3.";
-      a.outcome = `${s.characters[a.member].name}: “You didn't show up for what we agreed. I went ahead with my own day.”`;
+      a.relationshipEffect = "Didn’t show up when we agreed.";
+      a.outcome = `${s.characters[a.member].name}: “You didn’t show up. I went on with my day.”`;
       change(s.characters[a.member], s.playerId, { trust: -4, grievance: 3 });
       const e = logAssignment(s, a, a.outcome, -4);
       const p = s.commitments.find((c) => c.id === a.commitmentId);
@@ -580,7 +581,7 @@ export function considerCrewOffer(s: GameState, c: Character) {
   record(
     s,
     "crew",
-    `${c.name} has a personal ${activity === "partner-gig" ? "work opportunity" : activity === "social" ? "invitation" : "introduction"} for day ${o.activityDay}. Reply before day ${o.expiresDay + 1}.`,
+    `${c.name} wants to ${activity === "partner-gig" ? "work a gig with you" : activity === "social" ? "hang out" : "introduce you to someone"} on day ${o.activityDay}. Let them know by day ${o.expiresDay}.`,
     [c.id, s.playerId],
     undefined,
     { importance: "routine" },
@@ -594,8 +595,8 @@ export function offerError(s: GameState, offerId: string): string | null {
     s.day > o.expiresDay ||
     s.day > o.activityDay
   )
-    return "This opportunity has expired";
-  if (!s.crew.members.includes(o.member)) return "They have left your Set";
+    return "That plan has passed";
+  if (!s.crew.members.includes(o.member)) return "They’re not in your Set anymore";
   return (
     availability(s, s.characters[o.member], o.activityDay) ||
     availability(s, player(s), o.activityDay)
@@ -615,13 +616,13 @@ export function acceptCrewOffer(s: GameState, id: string) {
   logAssignment(
     s,
     a,
-    `${s.characters[o.member].name}: “We're on for day ${a.dueDay}. Meet me then.” Scheduled ${a.objective.toLowerCase()} · 1 AP on arrival; no pay yet.`,
+    `${s.characters[o.member].name}: “We’re on for day ${a.dueDay}. Meet me then.” It’ll take 1 AP when you meet up.`,
   );
 }
 export function attendError(s: GameState, id: string) {
   const a = s.assignments.find((a) => a.id === id);
   if (!a || a.status !== "accepted" || a.dueDay !== s.day)
-    return "Return on the scheduled day";
+    return "Meet them on the day you agreed";
   const otherPlans = {
     ...s,
     assignments: s.assignments.filter((x) => x.id !== a.id),

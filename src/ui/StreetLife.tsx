@@ -47,10 +47,10 @@ export function TutorialObjective({
       <strong>First steps</strong>
       <p>
         {t.decision === "unasked"
-          ? "Speak with Mega about the Chains."
+          ? "Talk to Cuzzo about his chains."
           : !t.workEvent
-            ? "Visit a workplace and submit a valid application (unpaid; scheduled shifts after hiring), or finish a paid local gig."
-            : "Bring your starter stock to Mega’s trapping lesson at the Southside Lot."}
+            ? "Find some honest work first: apply for a job, or pick up a quick paid gig."
+            : "Bring your pack to the Southside Lot for your first lesson with Cuzzo."}
       </p>
       {!t.workEvent ? (
         LOCATIONS.filter(
@@ -73,7 +73,7 @@ export function TutorialObjective({
         <p>
           {t.initialDecision === "promise"
             ? "Keep exploring the City and talk to people you meet."
-            : "Meet Mega physically on Southside: six Pink Magic, $90 cash only."}
+            : "Find Cuzzo on Southside if you want a pack: six Pink Magic for $90 cash."}
         </p>
       )}
     </section>
@@ -102,7 +102,7 @@ export function LifePerson({
   return (
     <section aria-label="Street-life encounters">
       <CareerPerson s={s} id={id} change={change} />
-      {!here && <p>Meet this person on their City spot to talk business.</p>}
+      {!here && <p>Find them in the City to talk business.</p>}
       {talks.map((t) => (
         <button
           key={t.key}
@@ -138,7 +138,7 @@ export function LifePerson({
             disabled={!!rioIntroductionError(s, id)}
             onClick={() => apply((n) => introduceRio(n, id))}
           >
-            Ask for a Rio street introduction · 1 AP
+            Ask to be introduced around Rio Gabriel · 1 AP
           </button>
           <p>{playerReason(s, rioIntroductionError(s, id))}</p>
         </>
@@ -146,14 +146,14 @@ export function LifePerson({
       {id === "contact-angels" && (
         <>
           <p>
-            Angels territory permission: $12 paid up front, valid today and the
-            next two days. Product and reputation are separate.
+            The Angels let you work their turf for $12 up front. That covers
+            today and the next two days.
           </p>
           <button
             disabled={!!tributeError(s)}
             onClick={() => apply(payTribute)}
           >
-            Agree and pay $12 territory tribute
+            Pay the Angels $12
           </button>
           <p>{playerReason(s, tributeError(s))}</p>
         </>
@@ -164,14 +164,14 @@ export function LifePerson({
             disabled={!!robberyOfferError(s, id)}
             onClick={() => change(offerRobbery(s, id))}
           >
-            Ask about an optional robbery job
+            Ask if they know about a job
           </button>
           <p>{playerReason(s, robberyOfferError(s, id))}</p>
           <button
             disabled={!!equipmentContactError(s, id)}
             onClick={() => change(obtainContactEquipment(s, id))}
           >
-            Ask contact for Law-19 · $75 · 1 AP
+            Ask about a Law-19 · $75 · 1 AP
           </button>
           <p>{playerReason(s, equipmentContactError(s, id))}</p>
         </>
@@ -314,16 +314,16 @@ export function RobberyPlayback({
       <strong>
         {locationById(a.location)?.name} ·{" "}
         {a.status === "ended"
-          ? "Operation ended"
+          ? "Job’s over"
           : a.career
-            ? "Robbery encounter"
-            : `Beat ${a.cursor + 1}/3`}
+            ? "On the job"
+            : `Step ${a.cursor + 1} of 3`}
       </strong>
       <p role="status">{playerText(s, a.text)}</p>
       {a.status === "ended" ? (
         <>
           <p>
-            ${a.loot} actual loot · {s.ap} AP left
+            ${a.loot} taken · {s.ap} AP left
           </p>
           <button
             onClick={() =>
@@ -343,7 +343,7 @@ export function RobberyPlayback({
             change((cur) => (cur ? pauseRobbery(cur, a.id, false) : cur))
           }
         >
-          Continue robbery session
+          Get back to the job
         </button>
       ) : a.career ? (
         <>
@@ -366,7 +366,7 @@ export function RobberyPlayback({
               change((cur) => (cur ? pauseRobbery(cur, a.id, true) : cur))
             }
           >
-            Pause robbery
+            Step away for now
           </button>
         </>
       ) : (
@@ -425,7 +425,7 @@ export function RobberyPlayback({
               change((cur) => (cur ? pauseRobbery(cur, a.id, true) : cur))
             }
           >
-            Pause robbery
+            Step away for now
           </button>
         </>
       )}

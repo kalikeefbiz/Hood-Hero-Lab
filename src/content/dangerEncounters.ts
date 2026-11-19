@@ -45,7 +45,7 @@ export const DANGER_ENCOUNTER: EncounterDefinition = {
     rows.push([
       "explain",
       scene.motive === "family"
-        ? "Talk about how Mega is doing"
+        ? "Talk about how your cousin is doing"
         : dispute
           ? "Talk it through respectfully"
           : "Tell them what brings you here",
@@ -67,18 +67,18 @@ export const DANGER_ENCOUNTER: EncounterDefinition = {
             )
             .map(
               (a) =>
-                `${a.id}: $${a.balance}, due day ${a.dueDay}. Talking does not make a payment.`,
+                `You owe $${a.balance} on pack ${s.street.agreements.indexOf(a) + 1}, due day ${a.dueDay}. Talking won’t pay it off.`,
             )
         : [];
     const history =
       scene.motive === "history" && conflict
-        ? [`Previous conflict: ${conflict.cause}. Status: ${conflict.state}.`]
+        ? [`${conflict.cause}. ${conflict.state === "cooling" ? "Things have cooled off some." : conflict.state === "settled" ? "You settled it." : conflict.state === "worsening" ? "It’s been getting worse." : "It’s still unsettled."}`]
         : [];
     return rows.map(([choice, label]) => ({
       id: choice,
       label,
       detail: [
-        "Your words and the circumstances matter · No AP",
+        "No AP",
         ...terms,
         ...history,
       ].join(" · "),

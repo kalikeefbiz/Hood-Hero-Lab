@@ -25,7 +25,7 @@ describe("contextual dialogue without rule changes", () => {
     const { s, e, scene } = setup("family");
     const rows = () => DANGER_ENCOUNTER.responses(s, e);
     expect(rows().some((r) => r.id === "apologize")).toBe(false);
-    expect(rows().find((r) => r.id === "explain")?.label).toContain("Mega");
+    expect(rows().find((r) => r.id === "explain")?.label).toContain("your cousin");
     scene.motive = "history";
     expect(rows().some((r) => r.id === "apologize")).toBe(true);
     expect(sceneDialogue(s, scene)).not.toContain("undefined");
@@ -44,7 +44,7 @@ describe("contextual dialogue without rule changes", () => {
     expect(
       DANGER_ENCOUNTER.responses(s, e).some((r) => r.id === "identify"),
     ).toBe(false);
-    expect(sceneDialogue(s, scene)).toContain("no balance left");
+    expect(sceneDialogue(s, scene)).toContain("We’re square");
   });
   it("does not invent membership or an unresolved dispute in Quanny's business menu", () => {
     const { s, e } = setup("introduction");
@@ -64,7 +64,7 @@ describe("contextual dialogue without rule changes", () => {
       "introduction still comes first",
     );
     expect(FLACCO_GIFT.responses(s, e)[0].detail).toContain(
-      "no payment or debt",
+      "You don’t owe him anything",
     );
   });
 });
@@ -83,7 +83,7 @@ it("retains concrete workplace consequences outside player speech", () => {
   e.sourceEventId = event.id;
   const rows = WORKPLACE_ENCOUNTER.responses(s, e);
   expect(rows.map((r) => r.id)).toEqual(["push", "flag", "skip"]);
-  expect(rows.find((r) => r.id === "skip")?.detail).toContain("−3 reliability");
+  expect(rows.find((r) => r.id === "skip")?.detail).toContain("Your boss won’t be impressed");
   event.title = "Coworker request";
   expect(WORKPLACE_ENCOUNTER.responses(s, e).map((r) => r.id)).toEqual([
     "help",
@@ -107,7 +107,7 @@ it("keeps supplier prices accessible without narrating gross calculations", () =
   ).toContain("$102");
   expect(
     SUPPLIER_ENCOUNTER.responses(s, e).find((r) => r.id === "leave")?.detail,
-  ).toContain("remain in place");
+  ).toContain("still stands");
 });
 it("preserves Chains outcomes and the trio's established response to recovery", () => {
   const { s, e } = setup("family");
@@ -123,7 +123,7 @@ it("crew conversation acknowledges an existing commitment", () => {
   const { s, e } = setup("family");
   e.participants = ["flacco"];
   s.characters.flacco.availableDay = s.day + 2;
-  expect(CREW_CONVERSATION.dialogue(s, e)).toContain("committed until");
+  expect(CREW_CONVERSATION.dialogue(s, e)).toContain("tied up until day");
 });
 
 import { addGrievance } from "../systems/Danger";
