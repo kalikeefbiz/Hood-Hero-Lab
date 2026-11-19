@@ -1,3 +1,5 @@
+import { StreetControls } from "./StreetControls";
+import { INTERACTION_RANGE, RETREAT_RANGE, type StreetTarget } from "../reservoirWalk";
 import { useEffect, useRef, useState } from "react";
 import {
   BoardRenderer,
@@ -40,7 +42,16 @@ export default function BoardStage({
   onInteract,
   paused = false,
   sessionVisitor,
+  street,
 }: {
+  street?: {
+    blocked: boolean;
+    targets: StreetTarget[];
+    danger?: StreetTarget;
+    onNearDanger: (near: boolean) => void;
+    onRetreat: () => void;
+    onUse: (id: string) => void;
+  };
   sessionVisitor?: import("../SessionVisitors").SessionVisitor | null;
   view: BoardView;
   focus: Focus;
@@ -68,11 +79,52 @@ export default function BoardStage({
   const pick = useRef(onPick);
   pick.current = onPick;
   const touch = useRef(onInteract);
+  const [available, setAvailable] = useState<StreetTarget>();
+  const streetRef = useRef(street);
+  streetRef.current = street;
+  const lastAvailable = useRef("");
+  const dangerNear = useRef(false);
+  const leftScene = useRef("");
+  const frame = useRef(() => {});
+  frame.current = () => {
+    const r = board.current, mode = streetRef.current;
+    if (!r || !mode || mode.blocked) return;
+    let nearest: StreetTarget | undefined;
+    let distance = INTERACTION_RANGE;
+    for (const target of mode.targets) {
+      const candidate = r.streetDistance(target);
+      if (candidate < distance) {
+        nearest = target;
+        distance = candidate;
+      }
+    }
+    const key = nearest ? nearest.id + nearest.label : "";
+    if (key !== lastAvailable.current) {
+      lastAvailable.current = key;
+      setAvailable(nearest);
+    }
+    if (!mode.danger) {
+      leftScene.current = "";
+      dangerNear.current = false;
+      return;
+    }
+    const near = r.streetDistance(mode.danger) <= INTERACTION_RANGE;
+    if (near !== dangerNear.current) {
+      dangerNear.current = near;
+      mode.onNearDanger(near);
+    }
+    if (leftScene.current !== mode.danger.id &&
+      r.streetDistance(mode.danger, false) >= RETREAT_RANGE) {
+      leftScene.current = mode.danger.id;
+      mode.onRetreat();
+    }
+  };
   touch.current = onInteract;
 
   useEffect(() => {
     const r = BoardRenderer.acquire(host.current!);
     board.current = r;
+    r.onStreetFrame = () => frame.current();
     r.onPick = (f) => pick.current(f);
     r.onInteract = () => touch.current?.();
     r.onLevel = (d) => setDistance(Math.round(d / 10) * 10);
@@ -84,6 +136,8 @@ export default function BoardStage({
     setDistance(r.cameraDistance);
     return () => {
       disconnect();
+      r.setStreet(false, lastLocation.current);
+      r.onStreetFrame = () => {};
       r.detach();
       board.current = null;
     };
@@ -103,6 +157,18 @@ export default function BoardStage({
   );
   useEffect(() => board.current?.setTokenColor(accent), [accent, ready]);
   // The piece is placed once; afterwards it only moves by walking.
+  const streetEnabled = !!street;
+  const lastLocation = useRef(playerAt);
+  lastLocation.current = playerAt;
+  useEffect(() => {
+    board.current?.setStreet(streetEnabled, lastLocation.current);
+    lastAvailable.current = "";
+    setAvailable(undefined);
+  }, [streetEnabled, ready]);
+  useEffect(() => {
+    if (!street) return;
+    frame.current();
+  }, [street, ready]);
   const placed = useRef(false);
   useEffect(() => {
     if (!board.current || placed.current) return;
@@ -141,6 +207,16 @@ export default function BoardStage({
       if (el) r.registerOverlay({ key, element: el, position: at(), ...range });
       else r.unregisterOverlay(key);
     };
+  const useTarget = () => {
+    const mode = streetRef.current;
+    const r = board.current;
+    if (!mode || mode.blocked || !r || !available) return;
+    const target = mode.targets.find((candidate) => candidate.id === available.id);
+    if (target && r.streetDistance(target) <= INTERACTION_RANGE) {
+      r.setStreetInput(0, 0);
+      mode.onUse(target.id);
+    }
+  };
   const pins = LOCATIONS.filter((l) => {
     const st = view.places[l.id];
     return (
@@ -158,7 +234,7 @@ export default function BoardStage({
   return (
     <div className="board-stage city-map" ref={host} data-session-visitor={sessionVisitor?.id}>
       {ready &&
-        ZONE_ORDER.map((id) => {
+        !street && ZONE_ORDER.map((id) => {
           const z = view.zones[id];
           return (
             <div
@@ -189,7 +265,7 @@ export default function BoardStage({
           );
         })}
       {ready &&
-        pins.map((l) => {
+        !street && pins.map((l) => {
           const st = view.places[l.id];
           return (
             <button
@@ -210,7 +286,7 @@ export default function BoardStage({
           );
         })}
       {ready &&
-        nearPeople.map((person) => (
+        !street && nearPeople.map((person) => (
           <button
             key={person.id}
             ref={anchor(
@@ -229,7 +305,7 @@ export default function BoardStage({
             <em>{person.known ? person.name : "Stranger"}</em>
           </button>
         ))}
-      {ready && story && (
+      {ready && !street && story && (
         <button
           ref={anchor(
             "story",
@@ -245,6 +321,26 @@ export default function BoardStage({
         >
           <span aria-hidden="true">!</span>
         </button>
+      )}
+      {ready && street && (
+        <>
+          {people.filter((person) => person.placeId === "reservoir.lil-jays" &&
+            (person.id === "quanny" || person.id === "mr-lewis")).map((person) => (
+            <div key={person.id}
+              ref={anchor(`street-${person.id}`, () => board.current!.personSpot(person.placeId, person.slot), { clearance: 24 })}
+              className="board-person near reservoir-person-label">
+              <em>{person.known ? person.name : "Local"}</em>
+            </div>
+          ))}
+          <StreetControls
+            label={available?.label}
+            prompt={street.danger ? "Back away to leave, or step closer to respond."
+              : available ? "In reach · E or tap to interact" : "Walk up to Lil Jay’s or Quanny"}
+            blocked={street.blocked}
+            move={(x, z) => board.current?.setStreetInput(x, z)}
+            interact={useTarget}
+          />
+        </>
       )}
       {ready &&
         popups.map((p) => (

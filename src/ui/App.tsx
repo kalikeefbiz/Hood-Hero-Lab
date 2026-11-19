@@ -8,7 +8,7 @@ import { ExchangeFeed } from "./ExchangeFeed";
 import { SKILLS, skillRank } from "../systems/Skills";
 import { SkillsView } from "./SkillsView";
 import { KnownCharacterLocation } from "./KnownCharacterLocation";
-import { hospitalStay, streetConversation } from "../systems/Danger";
+import { approachQuannyAtMarket, hospitalStay, streetConversation } from "../systems/Danger";
 import {
   NeighborhoodStrategy,
   OrganizationPanel,
@@ -61,6 +61,7 @@ import {
   dismissEncounter,
   openEncounter,
   respondEncounter,
+  responseError,
 } from "../systems/Encounters";
 import "./encounters.css";
 import {
@@ -77,7 +78,7 @@ import {
   AUTO_KEY,
   adoptPreviewSaves,
 } from "../persistence/SaveSystem";
-import { BoardBackdrop } from "../board/ui/Board";
+import { BoardBackdrop, supportsWebGL } from "../board/ui/Board";
 import {
   AppearancePanel,
   BlockSheet,
@@ -98,6 +99,9 @@ import type { Popup } from "../board/ui/BoardStage";
 import type { Focus, Lens, TimeOfDay } from "../board/BoardRenderer";
 import { locationBlock } from "../city3d/layout";
 import { LOCATIONS, locationById } from "../board/locations";
+import { placeActions } from "../board/interactions";
+import { MARKET, type StreetTarget } from "../board/reservoirWalk";
+import { quannyConversation } from "../systems/QuannyState";
 const LOCATIONS_BY_INCIDENT: Record<string, string> = Object.fromEntries(
   LOCATIONS.filter((l) => l.links.incident).map((l) => [
     l.links.incident!,
@@ -200,6 +204,10 @@ export function App() {
     block: null,
     place: null,
   });
+  const [walking, setWalking] = useState(false);
+  const [walkShop, setWalkShop] = useState(false);
+  const [walkTalk, setWalkTalk] = useState(false);
+  const [nearDanger, setNearDanger] = useState(false);
   const [lens, setLens] = useState<Lens>("streets");
   const [time, setTime] = useState<TimeOfDay>(() => {
     try {
@@ -276,6 +284,7 @@ export function App() {
     personId,
     lookOpen,
     panelOpen,
+    walking,
   ]);
   useEffect(() => {
     try {
@@ -301,7 +310,14 @@ export function App() {
     if (s && (s.end || hospitalStay(s) || player(s).status === "arrested"))
       setPanelOpen(true);
   }, [s]);
+  function leaveWalk() {
+    setWalking(false);
+    setWalkShop(false);
+    setWalkTalk(false);
+    setNearDanger(false);
+  }
   function start() {
+    leaveWalk();
     window.scrollTo(0, 0);
     setActionFeedback(null);
     const next = enterGameplay(newGame(name, home));
@@ -320,6 +336,7 @@ export function App() {
         : loadGame(localStorage) || loadGame(localStorage, AUTO_KEY);
       const next = saved && enterGameplay(saved);
       if (next) {
+        leaveWalk();
         window.scrollTo(0, 0);
         if (next.activeRobbery?.status === "active")
           next.activeRobbery.status = "paused";
@@ -491,7 +508,7 @@ export function App() {
       // The encounter is already completed; closing this view performs no simulation action.
       if (
         finished?.status === "acknowledged" &&
-        sourceEncounter.participants[0] === "quanny"
+        quannyResponse
       ) {
         setHistoryEncounterId(id);
         setScreen("City");
@@ -569,7 +586,69 @@ export function App() {
   const historical = historyEncounterId
     ? s.encounters.find((e) => e.id === historyEncounterId)
     : undefined;
-  const presented = screen === "City" ? (historical ?? encounter) : undefined;
+  const walkMode = walking && screen === "City" && !s.end &&
+    p.status === "active" && !hospitalStay(s);
+  const presented = screen === "City"
+    ? walkMode ? walkTalk ? historical ?? (encounter?.definitionId === "quanny" ? encounter : undefined) : undefined
+      : historical ?? encounter
+    : undefined;
+  const marketQuanny = people.find((person) => person.id === "quanny" && person.placeId === MARKET);
+  const liveThreat = streetConversation(s);
+  const dangerEncounter = encounter?.dangerSceneId && encounter.dangerSceneId === liveThreat?.id
+    ? encounter : undefined;
+  const dangerPerson = liveThreat && people.find((person) =>
+    person.id === liveThreat.npc && person.placeId === MARKET && liveThreat.location === MARKET);
+  const dangerTarget = dangerEncounter && dangerPerson
+    ? { id: dangerEncounter.id, label: dangerPerson.name, placeId: MARKET, slot: dangerPerson.slot }
+    : undefined;
+  const quannyIntro = encounter?.definitionId === "quanny" && marketQuanny;
+  const runInAvailable = marketQuanny && s.quanny.claim && !quannyConversation(s) &&
+    !s.danger.scenes.some((scene) => scene.npc === "quanny" && scene.location === MARKET);
+  const walkTargets: StreetTarget[] = [];
+  if (!liveThreat) {
+    if (quannyIntro || runInAvailable) walkTargets.push({
+      id: "quanny", label: quannyIntro ? "Speak to Quanny" : "Approach Quanny",
+      placeId: MARKET, slot: marketQuanny!.slot,
+    });
+    if (!quannyConversation(s)) walkTargets.push({ id: MARKET, label: "Shop at Lil Jay’s", placeId: MARKET });
+  }
+
+  function enterWalk() {
+    if (!s || busy || s.end || player(s).status !== "active" || hospitalStay(s) ||
+      streetConversation(s) || quannyConversation(s) ||
+      (s.activeSession && s.activeSession.status !== "ended") ||
+      (s.activeRobbery && s.activeRobbery.status !== "ended")) return;
+    if (!supportsWebGL()) {
+      setNotice("Walking the Reservoir requires WebGL. The city board is available.");
+      return;
+    }
+    const next = moveTo(s, MARKET);
+    if (presenceOf(next).location !== MARKET) return;
+    setState(next);
+    setBoard({ zone: "reservoir", block: null, place: null });
+    setSelected("reservoir");
+    setPersonId(null);
+    setHistoryEncounterId(null);
+    setPanelOpen(false);
+    setWalking(true);
+  }
+
+  function useWalkTarget(id: string) {
+    if (!s || !walkMode || liveThreat) return;
+    if (id === MARKET && !quannyConversation(s)) setWalkShop(true);
+    if (id === "quanny" && quannyIntro) setWalkTalk(true);
+    else if (id === "quanny" && runInAvailable) {
+      const next = approachQuannyAtMarket(s);
+      const scene = streetConversation(next);
+      if (next !== s && scene) setState(openEncounter(next, `danger:${scene.id}`));
+    }
+  }
+
+  function closeWalkTalk() {
+    if (historical) setHistoryEncounterId(null);
+    else if (encounter && s) setState(dismissEncounter(s, encounter.id));
+    setWalkTalk(false);
+  }
   const request = s.encounters.find(
     (e) => e.definitionId === "mega-chains-request" && e.status === "pending",
   );
@@ -817,6 +896,14 @@ export function App() {
           insets={insets}
           onInteract={() => screen !== "City" && setScreen("City")}
           paused={screen !== "City"}
+          street={walkMode ? {
+            blocked: walkShop || !!presented,
+            targets: walkTargets,
+            danger: dangerTarget,
+            onNearDanger: setNearDanger,
+            onRetreat: () => { if (dangerEncounter) respond(dangerEncounter.id, "leave"); },
+            onUse: useWalkTarget,
+          } : undefined}
           sessionVisitor={
             screen === "City" && s.activeSession?.status === "active"
               ? {
@@ -867,12 +954,13 @@ export function App() {
             save={save}
             load={() => load(false)}
             onLook={() => {
+              leaveWalk();
               setScreen("City");
               setLookOpen(true);
               setPanelOpen(true);
             }}
           />
-          {screen === "City" && (
+          {screen === "City" && !walkMode && (
             <BoardControls
               s={s}
               busy={busy}
@@ -892,7 +980,21 @@ export function App() {
               }}
             />
           )}
-          {screen === "City" &&
+          {walkMode ? (
+            <div className="reservoir-bar">
+              <strong>THE RESERVOIR · LIL JAY’S</strong>
+              <button onClick={leaveWalk}>Return to board</button>
+            </div>
+          ) : screen === "City" && board.zone === "reservoir" &&
+            !presented && !s.end && !hospitalStay(s) && p.status === "active" &&
+            !quannyConversation(s) && !streetConversation(s) &&
+            (!s.activeSession || s.activeSession.status === "ended") &&
+            (!s.activeRobbery || s.activeRobbery.status === "ended") && (
+            <button className="reservoir-entry" disabled={busy} onClick={enterWalk}>
+              Walk the Reservoir
+            </button>
+          )}
+          {screen === "City" && !walkMode &&
             !board.place &&
             !board.block &&
             !personId &&
@@ -904,7 +1006,7 @@ export function App() {
               {toast}
             </div>
           )}
-          {screen === "City" &&
+          {screen === "City" && !walkMode &&
             !presented &&
             !s.activeSession &&
             !s.activeRobbery && (
@@ -973,7 +1075,7 @@ export function App() {
             moved. Two AP restored.
           </div>
         )}
-        {screen === "City" &&
+        {screen === "City" && !walkMode &&
           !presented &&
           !s.activeSession &&
           !s.activeRobbery && (
@@ -989,12 +1091,44 @@ export function App() {
               />
             </div>
           )}
+        {walkMode && walkShop && (
+          <Modal label="Lil Jay’s Market" onDismiss={() => setWalkShop(false)}>
+            <h2>Lil Jay’s Market</h2>
+            {placeActions(s, locationById(MARKET)!).filter((a) => a.type === "buy").map((a) => (
+              <ActionCard key={a.item} s={s} action={a} onAction={(action) => {
+                if (presenceOf(s).location !== MARKET || liveThreat) return;
+                setWalkShop(false);
+                act(action, MARKET);
+              }} />
+            ))}
+            <button onClick={() => setWalkShop(false)}>Back to street</button>
+          </Modal>
+        )}
+        {walkMode && liveThreat && (
+          <section className="reservoir-danger" aria-label="Street confrontation">
+            <strong>Street confrontation</strong>
+            {dangerTarget && dangerEncounter ? (
+              <>
+                <p>{nearDanger ? encounterDefinition(dangerEncounter).dialogue(s, dangerEncounter)
+                  : "Out of speaking range. Keep moving away to leave."}</p>
+                {nearDanger && encounterDefinition(dangerEncounter).responses(s, dangerEncounter)
+                  .filter((response) => ["explain", "disrespect"].includes(response.id))
+                  .map((response) => (
+                    <button key={response.id} disabled={!!responseError(s, dangerEncounter, response)}
+                      onClick={() => respond(dangerEncounter.id, response.id)}>
+                      {response.label}
+                    </button>
+                  ))}
+              </>
+            ) : <p>Return to the board to resolve this encounter.</p>}
+          </section>
+        )}
         {presented && (
           <Modal
             key={presented.id + (historical ? ":history" : "")}
             label="Character encounter"
             onDismiss={() =>
-              historical
+              walkMode ? closeWalkTalk() : historical
                 ? setHistoryEncounterId(null)
                 : setState(dismissEncounter(s, presented.id))
             }
@@ -1005,7 +1139,7 @@ export function App() {
               historical={!!historical}
               respond={respond}
               dismiss={() =>
-                historical
+                walkMode ? closeWalkTalk() : historical
                   ? setHistoryEncounterId(null)
                   : setState(dismissEncounter(s, presented.id))
               }
@@ -1019,7 +1153,7 @@ export function App() {
           visible={screen === "City"}
         />
         <ExchangeFeed s={s} />
-        {screen === "City" && !panelOpen && (
+        {screen === "City" && !walkMode && !panelOpen && (
           <button
             className="inspector-tab"
             onClick={() => setPanelOpen(true)}
@@ -1028,7 +1162,7 @@ export function App() {
             <span aria-hidden="true">‹</span> Details
           </button>
         )}
-        {screen === "City" && panelOpen && (
+        {screen === "City" && !walkMode && panelOpen && (
           <div className="board-inspector" ref={sheetRef}>
             <TutorialObjective
               s={s}
@@ -1220,6 +1354,7 @@ export function App() {
                 className={screen === item ? "active" : ""}
                 aria-current={screen === item ? "page" : undefined}
                 onClick={() => {
+                  if (item !== "City") leaveWalk();
                   setScreen(item);
                   if (item === "Actions") setGroup("Streets");
                   setHistoryEncounterId(null);
