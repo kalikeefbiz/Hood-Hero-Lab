@@ -3,7 +3,7 @@ import { awardSkill, awardCombat, awardRobbery, proficiency, skillsOf, skillRank
 import { equipmentBonus } from "./Equipment";
 /** Gameplay only. No camera, renderer, wall clock, or UI randomness. */
 import { beginQuanny } from "./Quanny";
-import { quannyConversation } from "./QuannyState";
+import { QUANNY_HOME, quannyConversation } from "./QuannyState";
 import {
   cash,
   clamp,
@@ -988,4 +988,28 @@ export function initiateConflict(
   }
   if (random(s) < s.zones[npc.home].police / 160)
     arrest(s, p.id, "witnessed violence", approach === "retaliate" ? 3 : 1);
+}
+
+/** The walkabout's one staged run-in uses the ordinary scene and response lifecycle. */
+export function approachQuannyAtMarket(state: GameState): GameState {
+  const npc = state.characters.quanny;
+  const location = QUANNY_HOME;
+  if (
+    presenceOf(state).location !== location ||
+    player(state).status !== "active" ||
+    state.end || hospitalStay(state) || streetConversation(state) ||
+    quannyConversation(state) || !state.quanny.claim ||
+    npc?.status !== "active" || npc.availableDay > state.day ||
+    state.danger.scenes.some((scene) => scene.npc === npc.id && scene.location === location)
+  ) return state;
+  const s = structuredClone(state);
+  const conflict = playerConflictFor(s, npc.id);
+  makeScene(
+    s,
+    s.characters[npc.id],
+    location,
+    warRecognized(s, npc) ? "war" : conflict ? "history" : "introduction",
+    conflict,
+  );
+  return s;
 }
