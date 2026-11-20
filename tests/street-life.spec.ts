@@ -218,6 +218,11 @@ test("fresh promise → physical application → queued Day 3 six → real Lot s
   if (!(await gift.isVisible())) {
     await endDay(page);
   }
+  const flacco = page
+    .getByRole("dialog", { name: "Character encounter" })
+    .locator(".character-portrait img");
+  await expect(flacco).toHaveAttribute("src", /flacco-talking\.webp$/);
+  await page.screenshot({ path: "test-results/flacco-gift.png" });
   await click(
     page,
     gift,

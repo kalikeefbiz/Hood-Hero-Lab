@@ -5,6 +5,7 @@ import { encounterDefinition, responseError } from "../systems/Encounters";
 import { incidentPromise } from "../systems/Commitments";
 import { ACTIONS } from "../core/ActionEngine";
 import { quannyExpression } from "./quannyExpression";
+import { flaccoExpression } from "./flaccoExpression";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { money } from "./ActionCard";
 import { themeStyle } from "./theme";
@@ -73,8 +74,15 @@ export function EncounterScene({
             expression={
               c.id === "quanny"
                 ? quannyExpression(s, e)
-                : (d.expression?.(s, e) ??
-                  (concerned ? "concerned" : "confident"))
+                : c.id === "flacco"
+                  ? flaccoExpression(
+                      s,
+                      e,
+                      d.expression?.(s, e) ??
+                        (concerned ? "concerned" : "confident"),
+                    )
+                  : (d.expression?.(s, e) ??
+                    (concerned ? "concerned" : "confident"))
             }
           />
           <div className="encounter-copy">
@@ -82,7 +90,7 @@ export function EncounterScene({
               {c.affiliation ? s.factions[c.affiliation].name : "Resident"}
             </p>
             <h3>
-              {c.name} <small>/ {c.alias ?? ""}</small>
+              {c.name} {c.alias && <small>/ {c.alias}</small>}
             </h3>
             {d.id.startsWith("crew-") && (
               <p className="encounter-fact">
