@@ -1,10 +1,15 @@
 import { useState } from "react";
 import type { GameState } from "../core/GameState";
-import { artURL, characterArt, type Expression } from "./characterArt";
+import {
+  artURL,
+  characterArt,
+  defaultExpression,
+  type Expression,
+} from "./characterArt";
 export function CharacterPortrait({
   s,
   id,
-  expression = id === "quanny" ? "neutral" : "confident",
+  expression = defaultExpression(id),
   className = "",
 }: {
   s: GameState;

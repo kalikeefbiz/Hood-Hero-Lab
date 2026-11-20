@@ -1,6 +1,11 @@
 import type { GameState } from "../core/GameState";
 export type Expression =
-  "neutral" | "concerned" | "confident" | "proposing" | "strategizing";
+  | "neutral"
+  | "concerned"
+  | "confident"
+  | "proposing"
+  | "strategizing"
+  | "skeptical";
 interface Illustration {
   path: string;
   alt: string;
@@ -24,6 +29,12 @@ const quanny = (
   width,
   height,
 });
+const flacco = (name: string, alt: string): Illustration => ({
+  path: `assets/characters/flacco/flacco-${name}.webp`,
+  alt,
+  width: 379,
+  height: 506,
+});
 // Explicit canonical mapping: manifest baby-canon is the simulation's stable babycanon ID.
 export const CHARACTER_ART = {
   quanny: {
@@ -37,6 +48,14 @@ export const CHARACTER_ART = {
       371,
       580,
     ),
+  },
+  flacco: {
+    neutral: flacco("neutral", "Flacco, neutral"),
+    proposing: flacco("talking", "Flacco, talking with his hand out"),
+    confident: flacco("pleased", "Flacco, smirking and pleased"),
+    strategizing: flacco("thinking", "Flacco, hand on his chin, thinking"),
+    concerned: flacco("disappointed", "Flacco, looking down, disappointed"),
+    skeptical: flacco("sideeye", "Flacco, giving a skeptical side-eye"),
   },
   mega: {
     concerned: mega(
@@ -96,13 +115,17 @@ export const ANGELS_TRIO: Illustration = {
   width: 1280,
   height: 853,
 };
+export const defaultExpression = (id: string): Expression =>
+  id === "quanny" || id === "flacco" ? "neutral" : "confident";
 export const artURL = (path: string, base = import.meta.env.BASE_URL) =>
   `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 export function characterArt(
   s: GameState,
   id: string,
-  expression: Expression = id === "quanny" ? "neutral" : "confident",
+  expression: Expression = defaultExpression(id),
 ): Illustration | null {
+  if (id === "flacco") return CHARACTER_ART.flacco[expression];
+  if (expression === "skeptical") expression = "concerned";
   if (id === "quanny") return CHARACTER_ART.quanny[expression];
   if (id === "mega") {
     const pose = expression === "neutral" ? "confident" : expression;

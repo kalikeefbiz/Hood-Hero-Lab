@@ -325,7 +325,8 @@ describe("encounter boundaries and art", () => {
       expect(characterArt(s, id)?.path).toContain(
         id === "babycanon" ? "baby-canon" : id,
       );
-    for (const id of ["flacco", "pablo", "justice", "loco", "player"])
+    expect(characterArt(s, "flacco")?.path).toContain("flacco-neutral");
+    for (const id of ["pablo", "justice", "loco", "player"])
       expect(characterArt(s, id)).toBeNull();
     for (const illustration of Object.values(CHARACTER_ART.mega))
       expect(
