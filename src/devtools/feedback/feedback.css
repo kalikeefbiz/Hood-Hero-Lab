@@ -1,0 +1,208 @@
+/* Lab-only dev feedback tool. Everything is scoped under .devfb. */
+.devfb-fab {
+  position: fixed;
+  left: 10px;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  z-index: 60;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #101215;
+  background: #f0c24b;
+  border: 2px solid #101215;
+  box-shadow: 0 4px 14px #0008;
+  opacity: 0.85;
+  cursor: pointer;
+}
+.devfb-fab:hover,
+.devfb-fab:focus-visible {
+  opacity: 1;
+}
+.devfb-fab svg {
+  width: 22px;
+  height: 22px;
+}
+.devfb-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: #0009;
+}
+.devfb-sheet {
+  width: min(520px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  padding: 14px 14px calc(14px + env(safe-area-inset-bottom));
+  background: var(--panel, #191c20);
+  color: #f2f1ed;
+  border: 1px solid var(--line, #34383f);
+  border-top: 3px solid #f0c24b;
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -10px 30px #0009;
+  font-size: 14px;
+}
+@media (min-width: 700px) {
+  .devfb-scrim {
+    align-items: center;
+  }
+  .devfb-sheet {
+    border-radius: 14px;
+  }
+}
+.devfb-sheet header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-bottom: 10px;
+}
+.devfb-sheet header strong {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.devfb-sheet header small {
+  color: #f0c24b;
+  font-size: 12px;
+}
+.devfb-sheet header nav {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+.devfb-sheet button {
+  font: inherit;
+  min-height: 36px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: #f2f1ed;
+  background: #23272d;
+  border: 1px solid var(--line, #34383f);
+  cursor: pointer;
+}
+.devfb-sheet button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.devfb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.devfb-tags button[aria-pressed="true"] {
+  color: #101215;
+  background: #f0c24b;
+  border-color: #f0c24b;
+  font-weight: 600;
+}
+.devfb-sheet textarea,
+.devfb-sheet input[type="password"] {
+  width: 100%;
+  font: inherit;
+  font-size: 16px; /* no iOS zoom on focus */
+  padding: 8px 10px;
+  color: #f2f1ed;
+  background: #101215;
+  border: 1px solid var(--line, #34383f);
+  border-radius: 8px;
+  resize: vertical;
+}
+.devfb-shot {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0 4px;
+  font-size: 13px;
+}
+.devfb-shot img {
+  width: 120px;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--line, #34383f);
+}
+.devfb-muted {
+  color: var(--muted, #a9adb4);
+  font-size: 12px;
+  margin: 6px 0;
+}
+.devfb-status {
+  margin: 8px 0;
+  color: var(--positive, #9bceb0);
+}
+.devfb-status a {
+  color: inherit;
+}
+.devfb-error {
+  color: var(--danger, #ffab81);
+}
+.devfb-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.devfb-sheet .devfb-primary {
+  flex: 1;
+  color: #101215;
+  background: #f0c24b;
+  border-color: #f0c24b;
+  font-weight: 700;
+}
+.devfb-sheet .devfb-link {
+  margin-top: 8px;
+  padding: 4px 0;
+  min-height: 0;
+  background: none;
+  border: 0;
+  color: var(--accent-secondary, #d9d7d1);
+  text-decoration: underline;
+  font-size: 13px;
+}
+.devfb-notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.devfb-notes li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line, #34383f);
+}
+.devfb-notes a {
+  color: #f2f1ed;
+  overflow-wrap: anywhere;
+}
+.devfb-state {
+  flex: none;
+  font-size: 12px;
+  color: var(--muted, #a9adb4);
+}
+.devfb-open {
+  color: #f0c24b;
+}
+.devfb-in-progress {
+  color: #8fc3ff;
+}
+.devfb-resolved {
+  color: var(--positive, #9bceb0);
+}
+.devfb-setup p {
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+.devfb-shot input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0 8px 0 0;
+  vertical-align: middle;
+  accent-color: #f0c24b;
+}

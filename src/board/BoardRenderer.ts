@@ -452,6 +452,28 @@ export class BoardRenderer {
   private lastLevelDistance = -1;
 
   private static instance: BoardRenderer | null = null;
+  /**
+   * A JPEG of the city as it looks right now, or null when no city is shown.
+   * Renders and reads in the same task, so no preserved drawing buffer is
+   * needed. Used by the Lab's dev feedback tool.
+   */
+  static capture(maxWidth = 960, quality = 0.72): string | null {
+    const r = BoardRenderer.instance;
+    if (!r || r.disposed || !r.renderer.domElement.isConnected) return null;
+    try {
+      r.renderer.render(r.scene, r.camera);
+      const src = r.renderer.domElement;
+      const scale = Math.min(1, maxWidth / Math.max(1, src.width));
+      const out = document.createElement("canvas");
+      out.width = Math.round(src.width * scale);
+      out.height = Math.round(src.height * scale);
+      out.getContext("2d")?.drawImage(src, 0, 0, out.width, out.height);
+      return out.toDataURL("image/jpeg", quality);
+    } catch {
+      return null;
+    }
+  }
+
   /** One city per page; leaving the board detaches it instead of destroying it. */
   static acquire(host: HTMLElement) {
     if (!BoardRenderer.instance || BoardRenderer.instance.disposed)

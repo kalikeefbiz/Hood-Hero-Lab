@@ -30,6 +30,8 @@ jobs:
       - run: npm run build
         env:
           VITE_BASE_PATH: /Hood-Hero-Lab/
+          # Lab-only playtest note button (src/devtools/feedback).
+          VITE_DEV_FEEDBACK: "1"
       - uses: actions/configure-pages@v5
         with:
           enablement: true

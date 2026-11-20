@@ -11,6 +11,9 @@ import "./ui/style.css";
 import "./ui/art-direction.css";
 import "./ui/illustrated-actions.css";
 installInputGuard();
+// Lab-only playtest notes. Builds without the flag drop this import entirely.
+if (import.meta.env.VITE_DEV_FEEDBACK === "1")
+  void import("./devtools/feedback").then((m) => m.mountFeedback());
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />

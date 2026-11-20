@@ -102,6 +102,32 @@ export function StreetSessionPlayback({
     document.addEventListener("visibilitychange", pause);
     return () => document.removeEventListener("visibilitychange", pause);
   }, [change]);
+  // Overlays that freeze play (the Lab's dev feedback tool) send "hh:pause"
+  // and "hh:resume"; only a session they paused is resumed.
+  useEffect(() => {
+    let held = false;
+    const hold = () =>
+      change((cur) => {
+        if (cur?.activeSession?.status !== "active") return cur;
+        held = true;
+        return pauseStreetSession(cur, cur.activeSession.id, true);
+      });
+    const release = () => {
+      if (!held) return;
+      held = false;
+      change((cur) =>
+        cur?.activeSession?.status === "paused"
+          ? pauseStreetSession(cur, cur.activeSession.id, false)
+          : cur,
+      );
+    };
+    window.addEventListener("hh:pause", hold);
+    window.addEventListener("hh:resume", release);
+    return () => {
+      window.removeEventListener("hh:pause", hold);
+      window.removeEventListener("hh:resume", release);
+    };
+  }, [change]);
   useEffect(() => {
     if (!visible && a?.status === "active")
       change((cur) => (cur ? pauseStreetSession(cur, a.id, true) : cur));
