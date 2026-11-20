@@ -71,7 +71,7 @@ describe("character-driven Chains playthroughs", () => {
           respect: before.respect,
         }),
       );
-      expect(incidentPromise(s, "the-chains")?.dueDay).toBe(9);
+      expect(incidentPromise(s, "the-chains")?.dueDay).toBe(7);
       s = act(s, "gig");
       s = answer(s, "buyback");
       const promise = incidentPromise(s, "the-chains")!;
@@ -133,9 +133,9 @@ describe("character-driven Chains playthroughs", () => {
     expect([...outcomes].sort()).toEqual(["failure", "success"]);
   });
   it("B: deadline loss breaks a neglected promise with bounded relationship consequences and a warning", () => {
-    // Seed 13 has no successful autonomous settlement before the sale.
-    let s = answer(fresh(13), "promise");
-    while (s.day < 9) s = advanceDay(s);
+    // Seed 2 has no successful autonomous settlement before the sale.
+    let s = answer(fresh(2), "promise");
+    while (s.day < 7) s = advanceDay(s);
     expect(s.incidents["the-chains"].resolution).toBe("sold");
     expect(incidentPromise(s, "the-chains")?.status).toBe("broken");
     expect(
@@ -153,14 +153,72 @@ describe("character-driven Chains playthroughs", () => {
     expect(characterArt(s, "mega", "concerned")?.path).toContain("no-chain");
     expect(act(s, "gig").end).toBeNull();
   });
+  it("opens on Day 1 and escalates in the city even when the player never answers", () => {
+    let s = fresh(2);
+    const id = "the-chains";
+    const incident = () => s.incidents[id];
+    expect(s.day).toBe(1);
+    expect(incident()).toMatchObject({ startedDay: 1, status: "active" });
+    expect(s.events.find((e) => e.incidentId === id)?.text).toContain("Word around");
+    expect(intro(s).dueDay).toBe(7);
+
+    while (s.day < 3) s = advanceDay(s);
+    expect(incident().demand).toBe(165);
+    expect(incident().leadershipAware).toBe(false);
+
+    while (s.day < 5) s = advanceDay(s);
+    expect(incident().demand).toBe(165);
+    expect(incident().leadershipAware).toBe(true);
+    expect(
+      s.events.find((e) => e.title === "Pablo heard about the robbery")?.day,
+    ).toBe(5);
+
+    while (s.day < 7) s = advanceDay(s);
+    expect(incident().status).not.toBe("active");
+    expect(intro(s).status).toBe("closed");
+    expect(s.commitments).toHaveLength(0);
+    const outcome = s.events.find((e) => e.id === incident().resolvedEventId)!;
+    expect(outcome.day).toBeLessThanOrEqual(7);
+
+    s = advanceDay(deserialize(serialize(s)));
+    expect(s.day).toBe(8);
+    expect(incident().resolvedEventId).toBe(outcome.id);
+    expect(s.events.filter((e) => e.id === outcome.id)).toEqual([outcome]);
+  });
+
+  it("migrates an active legacy save and resolves overdue Chains before resuming", () => {
+    let s = answer(fresh(2), "promise");
+    s.incidents["the-chains"].deadline = 8;
+    incidentPromise(s, "the-chains")!.dueDay = 9;
+    intro(s).dueDay = 9;
+
+    const early = deserialize(serialize(s));
+    expect(incidentDueDay(early.incidents["the-chains"])).toBe(7);
+    expect(incidentPromise(early, "the-chains")?.dueDay).toBe(7);
+    expect(intro(early).dueDay).toBe(9); // The completed conversation is history.
+
+    const unopened = fresh();
+    unopened.incidents["the-chains"].deadline = 8;
+    intro(unopened).dueDay = 9;
+    expect(intro(deserialize(serialize(unopened))).dueDay).toBe(7);
+
+    s.day = 8;
+    const overdue = deserialize(serialize(s));
+    expect(overdue.day).toBe(8);
+    expect(overdue.incidents["the-chains"].resolution).toBe("sold");
+    expect(incidentPromise(overdue, "the-chains")?.status).toBe("broken");
+    expect(intro(overdue).status).toBe("closed");
+    expect(deserialize(serialize(overdue))).toEqual(overdue);
+  });
+
   it("evaluates a final-day autonomous settlement before expiring the promise", () => {
-    let s = answer(fresh(1), "promise");
-    while (s.day < 9) s = advanceDay(s);
+    let s = answer(fresh(5), "promise");
+    while (s.day < 7) s = advanceDay(s);
     expect(s.incidents["the-chains"].resolution).toBe("settlement");
     expect(
       s.events.find((e) => e.id === s.incidents["the-chains"].resolvedEventId)
         ?.day,
-    ).toBe(9);
+    ).toBe(7);
     expect(incidentPromise(s, "the-chains")?.status).toBe("superseded");
     expect(s.events.some((e) => e.title === "You left Cuzzo hanging")).toBe(
       false,
@@ -275,7 +333,7 @@ describe("encounter boundaries and art", () => {
     s.incidents["the-chains"].demand = 165;
     expect(megaDialogue(s, intro(s))).toContain("$165");
     s = answer(s, "promise");
-    expect(incidentPromise(s, "the-chains")?.dueDay).toBe(20);
+    expect(incidentPromise(s, "the-chains")?.dueDay).toBe(18);
   });
   it("dismissal and delay create no obligation and do not freeze the deadline", () => {
     let s = fresh();
@@ -357,7 +415,7 @@ describe("correction: conversations conclude independently of storylines", () =>
     "does not reopen a %s story over 40 further days, including reload",
     (outcome) => {
       let s =
-        outcome === "fulfilled" ? buyback() : answer(fresh(13), "promise");
+        outcome === "fulfilled" ? buyback() : answer(fresh(2), "promise");
       while (s.incidents["the-chains"].status === "active") s = advanceDay(s);
       expect(incidentPromise(s, "the-chains")?.status).toBe(outcome);
       expect(

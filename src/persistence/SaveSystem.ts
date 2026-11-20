@@ -1,3 +1,7 @@
+import { BALANCE } from "../content/balance";
+import { advanceIncident, raiseIncidentDemand } from "../systems/Incidents";
+import { evaluatePromises, incidentDueDay } from "../systems/Commitments";
+import { syncEncounters } from "../systems/EncounterLifecycle";
 import { ROBBERY_BALANCE } from "../content/robberyCareer";
 import { validateRobberyCareer } from "../systems/RobberyCareer";
 import {
@@ -858,6 +862,28 @@ export function deserialize(raw: string): GameState {
   )
     throw new Error("Save contains missing or invalid world references.");
   validateRobberyCareer(s);
+  const chains = s.incidents["the-chains"];
+  if (chains?.status === "active" && chains.deadline > BALANCE.incidentDeadline) {
+    chains.deadline = BALANCE.incidentDeadline;
+    const dueDay = incidentDueDay(chains);
+    for (const commitment of s.commitments)
+      if (commitment.incidentId === chains.id && commitment.status === "pending")
+        commitment.dueDay = dueDay;
+    for (const encounter of s.encounters)
+      if (
+        encounter.incidentId === chains.id &&
+        (encounter.status === "active" || encounter.status === "pending")
+      )
+        encounter.dueDay = dueDay;
+    // Old timelines raised the price on Day 4. A Day 3 save missed the new tick.
+    if (s.day === chains.startedDay + 2 && !chains.leadershipAware)
+      raiseIncidentDemand(s, chains);
+    if (s.day >= dueDay) {
+      advanceIncident(s, chains);
+      evaluatePromises(s, false);
+      syncEncounters(s);
+    }
+  }
   return s;
 }
 export function saveGame(storage: Storage, s: GameState, key = SAVE_KEY) {

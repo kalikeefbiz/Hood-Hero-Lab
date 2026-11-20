@@ -97,60 +97,64 @@ export function resolveIncident(
     });
   }
 }
+export function raiseIncidentDemand(s: GameState, i: Incident) {
+  i.demand += 15;
+  record(
+    s,
+    "incident",
+    `${i.title}: they raised their price to $${i.demand}. Cuzzo’s patience is wearing thin.`,
+    i.participants,
+    [s.playerId, i.victim, ...i.participants],
+    { incidentId: i.id },
+  );
+}
 export function advanceIncidents(s: GameState) {
-  for (const i of Object.values(s.incidents)) {
-    if (i.status !== "active") continue;
-    const age = s.day - i.startedDay;
-    if (i.leadershipAware && (i.helpRequested || age >= 3)) {
-      const leader =
-        s.characters[
-          s.factions[i.organization].leaders.find(
-            (id) => s.characters[id].status === "active",
-          ) ?? ""
-        ];
-      // Leaders with loyalty/stability priorities may discipline an unauthorized act.
-      if (leader && leader.traits.loyalty >= 70 && random(s) < 0.65) {
-        resolveIncident(s, i, "settlement", leader.id);
-        s.factions[i.organization].instability = clamp(
-          s.factions[i.organization].instability - 8,
-        );
-        continue;
-      }
+  for (const incident of Object.values(s.incidents)) advanceIncident(s, incident);
+}
+
+export function advanceIncident(s: GameState, i: Incident) {
+  if (i.status !== "active") return;
+  const age = s.day - i.startedDay;
+  if (i.leadershipAware && (i.helpRequested || age >= 3)) {
+    const leader =
+      s.characters[
+        s.factions[i.organization].leaders.find(
+          (id) => s.characters[id].status === "active",
+        ) ?? ""
+      ];
+    // Leaders with loyalty/stability priorities may discipline an unauthorized act.
+    if (leader && leader.traits.loyalty >= 70 && random(s) < 0.65) {
+      resolveIncident(s, i, "settlement", leader.id);
+      s.factions[i.organization].instability = clamp(
+        s.factions[i.organization].instability - 8,
+      );
+      return;
     }
-    if (age >= i.deadline) {
-      resolveIncident(s, i, "sold", i.participants[0]);
-      continue;
-    }
-    if (age >= 2 && !i.leadershipAware) {
-      i.escalation = clamp(i.escalation + 6);
-      if (age === 3) {
-        i.demand += 15;
-        record(
-          s,
-          "incident",
-          `${i.title}: they raised their price to $${i.demand}. Cuzzo’s patience is wearing thin.`,
-          i.participants,
-          ["player", i.victim, ...i.participants],
-        );
-      }
-      if (age >= 5) {
-        i.leadershipAware = true;
-        s.factions[i.organization].instability += 5;
-        record(
-          s,
-          "incident",
-          "Pablo heard about the robbery. He didn’t sign off on it, and now he has to decide what it means for the neighborhood.",
-          ["pablo", ...i.participants],
-          ["player", "pablo", i.victim],
-          {
-            importance: "major",
-            title: "Pablo heard about the robbery",
-            factionId: i.organization,
-            expiresOnIncidentClose: true,
-            incidentId: i.id,
-          },
-        );
-      }
+  }
+  if (age >= i.deadline) {
+    resolveIncident(s, i, "sold", i.participants[0]);
+    return;
+  }
+  if (age >= 2 && !i.leadershipAware) {
+    i.escalation = clamp(i.escalation + 6);
+    if (age === (i.id === "the-chains" ? 2 : 3)) raiseIncidentDemand(s, i);
+    if (age >= (i.id === "the-chains" ? 4 : 5)) {
+      i.leadershipAware = true;
+      s.factions[i.organization].instability += 5;
+      record(
+        s,
+        "incident",
+        "Pablo heard about the robbery. He didn’t sign off on it, and now he has to decide what it means for the neighborhood.",
+        ["pablo", ...i.participants],
+        ["player", "pablo", i.victim],
+        {
+          importance: "major",
+          title: "Pablo heard about the robbery",
+          factionId: i.organization,
+          expiresOnIncidentClose: true,
+          incidentId: i.id,
+        },
+      );
     }
   }
 }
