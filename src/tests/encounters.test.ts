@@ -207,7 +207,9 @@ describe("character-driven Chains playthroughs", () => {
     expect(overdue.day).toBe(8);
     expect(overdue.incidents["the-chains"].resolution).toBe("sold");
     expect(incidentPromise(overdue, "the-chains")?.status).toBe("broken");
-    expect(intro(overdue).status).toBe("closed");
+    expect(intro(overdue).status).toBe("acknowledged");
+    unopened.day = 8;
+    expect(intro(deserialize(serialize(unopened))).status).toBe("closed");
     expect(deserialize(serialize(overdue))).toEqual(overdue);
   });
 
