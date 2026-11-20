@@ -14,9 +14,17 @@ export const STRIP_ASSETS: Placed[] = [
   { file: H + "house-dark.glb", x: -25.5, z: 20.3, rotY: Math.PI },
   { file: H + "house-dark.glb", x: 22.0, z: 20.3, rotY: Math.PI },
 ];
-export const STRIP_NPCS = [
-  // Quanny is usually outside Lil Jay's.
-  { file: "assets/models/characters/quanny.glb", x: 2.7, z: 1.5, rotY: -0.6, height: 1.8 },
+export interface StripNpc {
+  id: string;
+  file: string;
+  /** Clip file played on a loop (in-place clips share the model's skeleton). */
+  clip?: string;
+  x: number; z: number; rotY: number; height: number;
+}
+const C = "assets/models/characters/";
+export const STRIP_NPCS: StripNpc[] = [
+  // Quanny is usually outside Lil Jay's, posted up and watching the block.
+  { id: "quanny", file: C + "quanny.glb", clip: C + "quanny-idle.glb", x: 2.7, z: 1.5, rotY: 0.35, height: 1.8 },
 ];
 export const STREET_LAMPS: [number, number, number][] = [
   [-38, 6.1, 2.3], [-20.5, 6.1, 2.3], [-5, 6.1, 2.3], [16.5, 6.1, 2.3],

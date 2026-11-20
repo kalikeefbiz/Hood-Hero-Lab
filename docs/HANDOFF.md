@@ -5,7 +5,7 @@ Last updated: 2026-11-20. Update the "Where we are" and "Next" sections at the e
 ## Ground rules
 - Work only in `kalikeefbiz/Hood-Hero-Lab`. Only the bigger map matters (official on Lab `main`; `/next/` is retired). **Never touch production `kalikeefbiz/Hood-Hero`.**
 - Mobile-first. The owner usually works from a phone.
-- Owners: **Claude** = board, 3D, UI, art pipeline, reviews and merges Codex PRs. **Codex** = systems, movement, content. Claude did a cross-owner text pass (PR #29).
+- Owners: **Claude** = board, 3D, UI, art pipeline, **the street strip and its growth into the full city** (owner decision 2026-11-20: the strip is presentation, so Claude stays responsible for it), reviews and merges Codex PRs. **Codex** = systems, movement rules, content; it supplies game data and interaction requests, Claude wires them into the strip. Claude did a cross-owner text pass (PR #29).
 - Mega is "Cuzzo" to the player; everyone else says Mega.
 - Player-facing text: natural Stixx City voice, NPCs never explain mechanics, no internal terms.
 - Owner's PC rules: never change anything on their PC unless they say so; no downloads or wandering through folders; never run delete commands there (stop and report instead).
@@ -15,18 +15,15 @@ Last updated: 2026-11-20. Update the "Where we are" and "Next" sections at the e
 - Dev-only feedback tool: done. Flag `VITE_DEV_FEEDBACK=1`, code in `src/devtools/feedback/` (README there has removal steps). Known bug: the "On screen" excerpt in issues arrives empty.
 - Flacco expression portraits: done (PR #33).
 - Season 1 plan: `docs/design/SEASON_1.md` (Chains Days 1-7, rumor Day 8, substation Day 9, fallout Days 10-20, studio with Cuzzo Day 21 still to confirm, Flacco's push Days 22-28). Days 10-20 content needs an owner decision.
-- **Street strip: done and deployed** (PR #36). Preview: https://kalikeefbiz.github.io/Hood-Hero-Lab/strip.html. Pipeline and budgets: `art/strip/README.md`. Whole strip is ~15k tris, ~13 MB. Not yet tested on a real iPhone.
+- **Street strip: done and deployed** (PR #36). Quanny now stands outside Lil Jay's with a hand-animated street idle (PR after #38). Preview: https://kalikeefbiz.github.io/Hood-Hero-Lab/strip.html. Pipeline and budgets: `art/strip/README.md`. Whole strip is ~15k tris, ~13 MB. Not yet tested on a real iPhone.
 - Codex prototype `codex/immersive-city-prototype` (PR #28): has walkable movement/controls. **Do not merge as-is**: it renames the save slot.
 
-## Next: wire the strip into the walkable prototype (Codex owns this)
-Brief for Codex:
-1. Start from `origin/main`, not from PR #28's branch wholesale. Reuse its movement and controls; leave out the save-slot rename.
-2. Load the strip from `src/strip/layout.ts` (`STRIP_ASSETS`, `START`, `BOUNDS`, `STREET_LAMPS`). Keep the KTX2 + meshopt loaders from `src/strip/main.ts` (transcoder path `basis/`). Do not re-export or recompress the GLBs.
-3. Collision: use the street bounds and simple building footprints; no mesh-accurate collision needed.
-4. Keep Quanny as the NPC at x 2.7, z 1.5. Interaction opens the existing encounter flow; do not add dialogue that explains mechanics.
-5. Keep the Street level / Overview toggle and Dusk / Night modes working.
-6. Performance: hold the budgets above; no extra real-time shadows beyond what the strip preview uses; test with Playwright chromium-mobile.
-7. Open a PR to `main`. Claude reviews (3D and visuals) and merges. Include before/after screenshots.
+## Next: grow the strip into the city (Claude owns this)
+The owner's plan (2026-11-20): build the Reservoir strip up slowly, block by block, until it is a complete city. Same split as before: Claude builds and presents the strip (layout, buildings, characters, camera, movement presentation); Codex owns the rules and content behind it and requests places or people in its PRs.
+1. Characters on the strip come from `STRIP_NPCS` in `src/strip/layout.ts` (`id`, model, looping `clip`). Quanny: `quanny.glb` + `quanny-idle.glb`; walk and run clips are also in `public/assets/models/characters/`.
+2. Walkable movement: reuse the controls from Codex's PR #28 (`codex/immersive-city-prototype`) without its save-slot rename. Claude does the wiring.
+3. Interaction with Quanny opens the existing encounter flow (Codex supplies it as data); no dialogue that explains mechanics.
+4. Next blocks: owner draws front + angled views per building, Claude builds them in Blender (`art/strip/scripts/`). Hold the budgets in `art/strip/README.md`.
 
 ## Workflow reference
 - PR flow: worktree from `origin/main`, branch, `gh api` to open the PR, merge with `merge_method=merge`. Use explicit refspec fetch. I cannot delete branches; the owner deletes old ones (`claude/city-expansion`, `claude/official-city`) on github.com.
@@ -36,6 +33,6 @@ Brief for Codex:
 - Art workflow going forward: owner draws a straight-on front view plus one angled view for each building, Claude builds it in Blender. Meshy is for organic things (characters, trees, trash bags, cars).
 
 ## After the wiring
-1. One rigged, animated character (player or Quanny) so the street has life.
+1. ~~One rigged, animated character so the street has life~~ (Quanny, done).
 2. More strips with the same pipeline.
 3. Optional cleanup: feedback-tool bug, the 18 old browser tests, a scheduled task that turns feedback issues into PRs (no auto-merge).

@@ -11,6 +11,7 @@ pick him up with no code change.
 | `quanny.glb` | Mesh + skeleton, bind pose (T-pose), no clip. 35k triangles, one 1024 KTX2 (ETC1S) base-color texture, meshopt + quantized. | 727 KB |
 | `quanny-walk.glb` | Skeleton + `Walk` clip only | 40 KB |
 | `quanny-run.glb` | Skeleton + `Run` clip only | 36 KB |
+| `quanny-idle.glb` | Skeleton + `Idle` clip only | 42 KB |
 
 Same extensions as every other board model: `EXT_meshopt_compression`,
 `KHR_mesh_quantization`, `KHR_texture_basisu`. Load through the existing
@@ -37,6 +38,7 @@ frame) and are sampled at 30 fps.
 | Clip | Length | Ground speed to move the character at | Feel |
 |---|---|---|---|
 | `Walk` | 1.20 s (36 frames) | **0.92 m/s** at 1.90 m tall (1.10 m per cycle) | Confident street walk: pelvis drop and sway, counter-rotating shoulders, slight bounce, relaxed lagging arm swing, heel-to-toe roll, bandana swing |
+| `Idle` | 8.0 s (240 frames) | none (feet planted) | Posted up: weight on his right leg, right thumb hooked in his pocket, left arm loose, breathing, looks up and down the block, one finger fidget |
 | `Run` | 0.733 s (22 frames) | **2.73 m/s** at 1.90 m tall (2.0 m per cycle) | Easy street run: forward lean, flight phase, back-kick, bent-elbow arm pump |
 
 If the board scales him to `FIGURE_HEIGHT`, scale the speed by the same
@@ -47,13 +49,13 @@ drift.
 ## Sources (this folder)
 
 - `quanny_source.blend`: Blender 5.3 file with mesh, rig, weights and both
-  actions (`Walk`, `Run`), textures packed.
+  actions (`Walk`, `Run`, `Idle`), textures packed.
 - `quanny_master_uncompressed.glb`: uncompressed master (2048 textures incl.
   normal map, no clip) for close-up or offline use.
 - `quanny_walk_preview.gif`, `quanny_run_preview.gif`: rendered previews.
 - `pipeline/`: the scripts that built everything (Blender `bpy` + glTF
   Transform). `animate.py` is fully parameterised; the exact parameters
-  used are in `walk_params.json` / `run_params.json`. New clips (idle,
+  used are in `walk_params.json` / `run_params.json`; the idle is `idle.py`. New clips (idle,
   lean-on-wall, etc.) can be authored the same way on the same rig. Paths
   inside the scripts point at the original scratch folder; adjust before
   re-running.
