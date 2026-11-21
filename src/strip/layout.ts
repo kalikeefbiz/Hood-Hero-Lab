@@ -23,6 +23,20 @@ export const STRIP_ASSETS: Placed[] = [
   { file: R + "reservoir-liquor-deli.glb", x: -14.6, z: 44.8 },
   { file: R + "reservoir-beauty-supply.glb", x: -7.0, z: 44.8 },
   { file: R + "reservoir-pawn.glb", x: 0.5, z: 44.8 },
+  // Big Mouth Boulevard, one block north up Kirkwood St. The Reservoir Water Tower
+  // closes its west end: the westernmost point of the Reservoir and the Stixx.
+  { file: R + "big-mouth-blvd.glb", x: 0, z: 0 },
+  { file: R + "reservoir-water-tower.glb", x: -68, z: -35.9, rotY: Math.PI / 2 },
+  { file: R + "boarded-house.glb", x: -50, z: -48.1 },
+  { file: H + "house-tan.glb", x: -39, z: -48.2 },
+  { file: H + "house-dark.glb", x: -29.5, z: -48.2 },
+  // No Refund Road, one block south of Blocc Boy: the industrial edge. Westside
+  // Warehouse, the Lot Court (its mural is on Auto & Tires' west wall), and
+  // No Refund Auto & Tires on the Kirkwood corner.
+  { file: R + "no-refund-road.glb", x: 0, z: 0 },
+  { file: R + "westside-warehouse.glb", x: -38, z: 88.8 },
+  { file: R + "lot-court.glb", x: -16.98, z: 88.8 },
+  { file: R + "no-refund-auto.glb", x: -0.5, z: 88.8 },
 ];
 export interface StripNpc {
   id: string;
@@ -40,6 +54,8 @@ export const STREET_LAMPS: [number, number, number][] = [
   [-38, 6.1, 2.3], [-20.5, 6.1, 2.3], [-5, 6.1, 2.3], [16.5, 6.1, 2.3],
   // Blocc Boy Blvd
   [-22, 6.1, 49.4], [-6.5, 6.1, 49.4], [-12, 6.3, 56.0],
+  // Big Mouth Blvd and No Refund Road
+  [-34, 6.1, -39.2], [-16, 6.1, -39.2], [-30, 6.1, 93.4], [-14, 6.1, 93.4],
 ];
 export const START = { eye: [12.5, 2.3, 10.5], target: [-1.5, 2.4, 0.5] };
-export const BOUNDS = { x0: -46, x1: 20, z0: -12, z1: 62 };
+export const BOUNDS = { x0: -64, x1: 20, z0: -58, z1: 108 };
