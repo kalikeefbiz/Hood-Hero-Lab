@@ -65,6 +65,17 @@ const sc = sun.shadow.camera as THREE.OrthographicCamera;
 sc.left = -45; sc.right = 45; sc.top = 30; sc.bottom = -30; sc.near = 1; sc.far = 160;
 scene.add(hemi, sun, sun.target);
 
+// The shadow box follows the player around the block, snapped to a 4 m grid so
+// shadows don't shimmer while walking.
+const sunOffset = new THREE.Vector3(-55, 14, -38);
+let sunFollows = new THREE.Vector3(0, 0, 4);   // becomes the camera target once controls exist
+function followSun(force = false) {
+  const t = sunFollows;
+  const x = Math.round(t.x / 4) * 4, z = Math.round(t.z / 4) * 4;
+  if (!force && x === sun.target.position.x && z === sun.target.position.z) return;
+  sun.target.position.set(x, 0, z);
+  sun.position.set(x, 0, z).add(sunOffset);
+}
 const nightLights: THREE.PointLight[] = [];
 const emissiveMats: { m: THREE.MeshStandardMaterial; night: number; dusk: number }[] = [];
 
@@ -75,8 +86,8 @@ function applyMode() {
   skyUniforms.glow.value.set(night ? 0x223355 : 0xffb070);
   const sunPos = night ? new THREE.Vector3(-30, 45, -40) : new THREE.Vector3(-55, 14, -38);
   skyUniforms.sunDir.value.copy(sunPos).normalize();
-  sun.position.copy(sunPos);
-  sun.target.position.set(0, 0, 4);
+  sunOffset.copy(sunPos);
+  followSun(true);
   sun.color.set(night ? 0x8fa6ff : 0xffb27a);
   sun.intensity = night ? 0.22 : 2.6;
   hemi.color.set(night ? 0x2a3555 : 0x9fb6e0);
@@ -183,6 +194,7 @@ windowGlow.position.set(0, 1.6, 1.4); scene.add(windowGlow); nightLights.push(wi
 
 // ---------------------------------------------------------------- controls
 const controls = new OrbitControls(camera, canvas);
+sunFollows = controls.target;
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.maxPolarAngle = Math.PI * 0.495;
@@ -247,6 +259,7 @@ function frame() {
     camera.position.add(step);
   }
   controls.update();
+  followSun();
   if (camera.position.y < 0.4) camera.position.y = 0.4;
   for (const m of mixers) m.update(dt);
   renderer.render(scene, camera);

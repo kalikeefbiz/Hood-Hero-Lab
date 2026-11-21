@@ -4,7 +4,7 @@ Blender coords: property line at y=0, street toward -Y. Road surface z=-0.15,
 sidewalk top z=0. Lil Jay's occupies x -4..4, y 0..10; side street at x>6.6.
 """
 import sys, math, random
-sys.path.insert(0, "/tmp/lj")
+sys.path.insert(0, "/tmp/lj")  # lib3d.py + textures in /tmp/lj/tex
 import bpy
 from lib3d import Builder, material, srgb, reset
 
@@ -97,7 +97,8 @@ ground(-6.0, -4.0, 0.0, 18.0, SZ - 0.01, "gravel", (2, 2))     # alley beside th
 ground(-4.0, 4.0, 10.0, 18.0, SZ - 0.01, "gravel", (2, 2))     # lot behind the store
 ground(-4.0, 4.0, 0.0, 10.0, SZ - 0.004, "walk", (3, 3))        # slab under the store
 ground(X0, X1, 18.0, 40.0, SZ - 0.02, "yard", (4, 4))           # back field
-ground(X0, X1, -40.0, ROAD_B - 3.2, SZ - 0.02, "yard", (4, 4))  # far side lots
+ground(X0, SX0, -40.0, ROAD_B - 3.2, SZ - 0.02, "yard", (4, 4))  # far side lots (Kirkwood St runs south
+ground(SX1, X1, -40.0, ROAD_B - 3.2, SZ - 0.02, "yard", (4, 4))  # between them to Blocc Boy Blvd)
 # walkways from sidewalk to porches
 for cx in (-10.5, -19.5, -28.5):
     ground(cx - 0.6, cx + 0.6, 0.0, 2.2, SZ + 0.003, "walk", (3, 3))
