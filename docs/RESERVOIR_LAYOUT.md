@@ -11,8 +11,18 @@ Source: Vesper's street plans and building shots in `art/reservoir/ref/`, approv
 | Blocc Boy Boulevard | east-west, main boulevard | Commercial row: Barbershop, Liquors, Lil Jay's, Pawn Shop, vacant brick. South: Laundromat, Beauty Supply, parking lot, mixed-use. Houses behind. |
 | Lil Bit Lane | east-west | North: 4 houses then Lil Jay's at the east corner; rear alley. Cross streets labelled **Baylor Ave** (west) and **Kirkwood St** (east). |
 
-## Conflict that must be settled before building
-Lil Jay's Market appears on all five plans in a different spot. It is one building, so it can only be in one place. Proposed: **Lil Jay's on Lil Bit Lane, north side, at the Kirkwood St corner.** That is the only plan with labelled cross streets, and it matches the strip already built (houses to the west, store at the east end). The other plans reuse the store as a landmark for style. The same applies to Reservoir Laundry (Dirty Money Drive and Blocc Boy both show a laundry) and the Pawn Shop. Owner to confirm or move them.
+## Decision (owner, 2026-11-21)
+**Lil Jay's Market stays exactly as already built** (the strip from PR #36 and #39). It is Lil Bit Lane, north side, east corner at Kirkwood St, with its houses to the west and houses across the street. The other plans only reuse the store as a style landmark. Each other location lives on one street only:
+
+| Street | Storefronts and landmarks (one each) | Build order |
+|---|---|---|
+| Lil Bit Lane | Lil Jay's Market (built), houses | 1 (finish what exists) |
+| Blocc Boy Boulevard | Pawn Shop, Reservoir Liquor & Deli, Barbershop, Beauty Supply, vacant brick, parking lot. The main commercial street; most game locations connect here | 2 |
+| No Refund Road | Westside Warehouse, vacant-lot court, No Refund Auto & Tires | 3 |
+| Dirty Money Drive | Reservoir Laundry, houses, street parking, back-lot alleys | 4 |
+| Big Mouth Boulevard | Water tower (westernmost point), boarded house, Reservoir homes | 5 |
+
+The second laundry on Blocc Boy's plan becomes another storefront. North-south order of the streets is not fixed by the art; Claude proposes it when laying the grid.
 
 ## Address numbers seen on the art
 Lil Jay's 1428, Reservoir Laundry 716, Pawn 412, Liquor & Deli 218, No Refund Auto & Tires 318.
