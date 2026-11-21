@@ -32,5 +32,6 @@ Reservoir Liquor & Deli, No Refund Auto & Tires, Barbershop, Liquors, Beauty Sup
 
 ## Art status
 - Have: five street plans, plus angled shots of Liquor & Deli, Auto & Tires, Westside Warehouse, Pawn, Laundry.
-- Still need for each: a straight-on front elevation (the building shots are perspective, which cannot be projected onto a facade). Also the lot court, water tower, house types, props (Batches 2-4).
+- Front elevations received 2026-11-21 (`front-*.png`): Laundry, Westside Warehouse, No Refund Auto & Tires, Pawn & Resale, Liquor & Deli. Front + angled pair is complete for all five.
+- Still need: Barbershop and Beauty Supply (Blocc Boy Blvd), lot court, water tower, house types, props.
 - The plans are concept art, not survey drawings. Claude sets one metric grid when building.
