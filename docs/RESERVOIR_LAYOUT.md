@@ -33,9 +33,10 @@ Reservoir Liquor & Deli, No Refund Auto & Tires, Barbershop, Liquors, Beauty Sup
 ## Art status
 - Have: five street plans, plus angled shots of Liquor & Deli, Auto & Tires, Westside Warehouse, Pawn, Laundry.
 - Front elevations received 2026-11-21 (`front-*.png`): Laundry, Westside Warehouse, No Refund Auto & Tires, Pawn & Resale, Liquor & Deli. Front + angled pair is complete for all five.
-- Still need: Barbershop and Beauty Supply (Blocc Boy Blvd), lot court, water tower, house types, props.
+- Barber Shop and Beauty Supply received 2026-11-21 (fronts are canon; the angled shots differ in details and were used only for side-wall reference).
+- Still need: lot court, water tower, house types, props.
 
 ## Built (2026-11-21)
-- **Blocc Boy Boulevard** (street 2) is one block south of Lil Bit Lane, reached down Kirkwood St. North side, west to east: parking lot, barbershop (placeholder), Reservoir Liquor & Deli, beauty supply (placeholder), Reservoir Pawn & Resale on the Kirkwood corner. South side is fenced empty lots for now. Coordinates in `src/strip/layout.ts`.
+- **Blocc Boy Boulevard** (street 2) is one block south of Lil Bit Lane, reached down Kirkwood St. North side, west to east: parking lot, Reservoir Barber Shop, Reservoir Liquor & Deli, Reservoir Beauty Supply, Reservoir Pawn & Resale on the Kirkwood corner. South side is fenced empty lots for now. Coordinates in `src/strip/layout.ts`.
 - Laundry, Auto & Tires and Westside Warehouse are built and waiting for their streets.
 - The plans are concept art, not survey drawings. Claude sets one metric grid when building.

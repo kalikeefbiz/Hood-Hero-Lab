@@ -128,8 +128,8 @@ for p in s.get("panels", []):
     fbox(x0, x1, -p["out"], 0, z0, z1, side="rust", top="rust")
 for (a, b, t, u) in s.get("sills", []):
     fbox(X(a), X(b), -0.08, 0, Z(u), Z(t), side="concrete", top="concrete")
-if "canopy" in s:
-    c = s["canopy"]; x0, x1, z0, z1 = X(c["r"][0]), X(c["r"][1]), Z(c["r"][3]), Z(c["r"][2])
+for c in ([s["canopy"]] if "canopy" in s else []) + s.get("canopies", []):
+    x0, x1, z0, z1 = X(c["r"][0]), X(c["r"][1]), Z(c["r"][3]), Z(c["r"][2])
     fbox(x0, x1, -c["out"], 0, z0, z1, side="rust", top="rust", bottom="under")
     for xx in (x0 + 0.3, (x0 + x1) / 2, x1 - 0.3):
         B.cyl((xx, -0.02, z0 - 0.35), (xx, -c["out"] + 0.08, z0 - 0.01), 0.025, "metal", 6)
@@ -156,6 +156,20 @@ def gooseneck(px, py):
     B.cyl((x, -0.32, z + 0.28), (x, -0.36, z + 0.08), 0.018, "metal", 6)
     B.cyl((x, -0.36, z + 0.1), (x, -0.36, z - 0.06), 0.04, "galv", 10, r1=0.17)
     B.cyl((x, -0.36, z - 0.05), (x, -0.36, z - 0.07), 0.12, "bulb", 10)
+for bp in s.get("poles", []):
+    # wall-mounted barber pole: a cylinder wrapped with the painted pole from the sign
+    x, zt, zb = X(bp["x"]), Z(bp["y0"]), Z(bp["y1"]); r = 0.09; y = -0.2; seg = 14
+    tx0, tx1, ty0, ty1 = bp["tex"]
+    uv = lambda a, b: ((a - L) / (R - L), 1 - (b - TOP) / (G - TOP))
+    for i in range(seg):
+        a0, a1 = 2 * math.pi * i / seg, 2 * math.pi * (i + 1) / seg
+        p = lambda a, z: (x + r * math.cos(a), y + r * math.sin(a), z)
+        ua = tx0 + (tx1 - tx0) * ((i % (seg // 2)) / (seg // 2))
+        ub = tx0 + (tx1 - tx0) * (((i % (seg // 2)) + 1) / (seg // 2))
+        B.face([p(a0, zb), p(a1, zb), p(a1, zt), p(a0, zt)], "glass", [uv(ua, ty1), uv(ub, ty1), uv(ub, ty0), uv(ua, ty0)])
+    B.cyl((x, y, zt), (x, y, zt + 0.12), 0.11, "galv", 12)
+    B.cyl((x, y, zb - 0.1), (x, y, zb), 0.11, "galv", 12)
+    B.cyl((x, 0, (zt + zb) / 2), (x, y, (zt + zb) / 2), 0.03, "metal", 6)
 for (px, py) in s.get("lamps", []):
     gooseneck(px, py)
 for (px, py) in s.get("floods", []):

@@ -5,7 +5,7 @@ Art for the Reservoir beyond the Lil Jay's strip (`art/strip/`). Layout and stre
 ## Storefronts: one script, one spec per building
 Every storefront comes from `scripts/storefront.py` plus an entry in `buildings.json`. The entry is measured in pixels on the owner's straight-on front view (`ref/front-*.png`):
 - `L`, `R` wall edges, `T` top (or `Tl`/`Tr` for a sloped roofline), `G` ground line, `ppm` pixels per metre (set from the door, about 2.1 m tall), `depth` in metres.
-- `openings` are recessed (`glass` glows at night, `door` doesn't). Optional: `panels` (protruding signs), `sills`, `canopy`, `tarp` awning, `tubes` (fluorescent lights), `lamps` (gooseneck), `floods`, `dock`, `stairs`, `bollards`, `tires`, `roof` gear.
+- `openings` are recessed (`glass` glows at night, `door` doesn't). Optional: `panels` (protruding signs), `sills`, `canopy`, `tarp` awning, `tubes` (fluorescent lights), `lamps` (gooseneck), `poles` (barber pole wrapped with a painted pole from the art), `canopies` (several box awnings), `floods`, `dock`, `stairs`, `bollards`, `tires`, `roof` gear.
 - `side` is a clean vertical strip of the front used to build the side and back walls (its paint bands times `sidedetail` brick/concrete texture).
 
 To add a building: put its front view in `ref/`, open it with a pixel grid, measure, add an entry, run the pipeline.
@@ -18,7 +18,7 @@ To add a building: put its front view in `ref/`, open it with a pixel grid, meas
 5. Pack for phones with glTF Transform + ktx2-encoder: UASTC for the `_atlas` (keeps signs legible), UASTC normals, ETC1S everything else, meshopt geometry.
 6. `scripts/preview.py` renders a 3/4 and a street-level check.
 
-Streets: `scripts/blocc_boy_street.py` (same conventions as `art/strip/scripts/street.py`). `scripts/placeholder_store.py` makes the blank stand-in used until a building's art arrives.
+Streets: `scripts/blocc_boy_street.py` (same conventions as `art/strip/scripts/street.py`). `scripts/placeholder_store.py` makes a blank stand-in for a slot whose art hasn't arrived (not currently used).
 
 ## Shipped (`public/assets/reservoir/`)
 | Asset | Size | Tris | Placed |
@@ -28,7 +28,8 @@ Streets: `scripts/blocc_boy_street.py` (same conventions as `art/strip/scripts/s
 | reservoir-laundry | 7.3 x 12 x 4.2 m, 1.9 MB | ~0.7k | not yet (Dirty Money Drive) |
 | no-refund-auto | 8.7 x 12 x 4.8 m, 1.9 MB | ~1.2k | not yet (No Refund Road) |
 | westside-warehouse | 12.1 x 22 x 6.8 m, 1.9 MB | ~0.7k | not yet (No Refund Road) |
+| reservoir-barber-shop | 6.0 x 10 x 4.3 m | ~0.4k | Blocc Boy Blvd, west end |
+| reservoir-beauty-supply | 6.8 x 11 x 4.7 m, 2.4 MB | ~0.4k | Blocc Boy Blvd |
 | blocc-boy-blvd | street, sidewalks, Kirkwood extension, poles, lot, 3.9 MB | ~2.8k | yes |
-| placeholder-store | blank storefront, 0.9 MB | 72 | barbershop and beauty supply slots |
 
 Known limits: window bars and wall lamps' arms are painted (real lamp heads, sills, signs, canopies and doors have depth); the street GLBs each carry their own copy of the asphalt/sidewalk textures (shared texture files would save about 3 MB).

@@ -16,12 +16,12 @@ export const STRIP_ASSETS: Placed[] = [
   { file: H + "house-dark.glb", x: 22.0, z: 20.3, rotY: Math.PI },
   // Blocc Boy Boulevard, one block south down Kirkwood St. North-side storefronts
   // face the boulevard (+Z) with their fronts on z = 44.8. West to east:
-  // barbershop (art pending), Reservoir Liquor & Deli, beauty supply (art pending),
+  // Reservoir Barber Shop, Reservoir Liquor & Deli, Reservoir Beauty Supply,
   // Reservoir Pawn & Resale on the Kirkwood corner. Parking lot at the west end.
   { file: R + "blocc-boy-blvd.glb", x: 0, z: 0 },
-  { file: R + "placeholder-store.glb", x: -22.6, z: 44.8 },
+  { file: R + "reservoir-barber-shop.glb", x: -22.6, z: 44.8 },
   { file: R + "reservoir-liquor-deli.glb", x: -14.6, z: 44.8 },
-  { file: R + "placeholder-store.glb", x: -7.0, z: 44.8 },
+  { file: R + "reservoir-beauty-supply.glb", x: -7.0, z: 44.8 },
   { file: R + "reservoir-pawn.glb", x: 0.5, z: 44.8 },
 ];
 export interface StripNpc {
