@@ -153,11 +153,16 @@ for (const n of STRIP_NPCS) {
     g.scene.position.set(n.x, 0, n.z);
     g.scene.rotation.y = n.rotY;
     scene.add(g.scene);
-    if (g.animations[0]) {
+    const play = (clip: THREE.AnimationClip | undefined) => {
+      if (!clip) return;
       const mixer = new THREE.AnimationMixer(g.scene);
-      mixer.clipAction(g.animations[0]).play();
+      const action = mixer.clipAction(clip).play();
+      action.time = Math.random() * clip.duration; // NPCs never move in sync
+      mixer.update(0);
       mixers.push(mixer);
-    }
+    };
+    if (n.clip) loader.load(url(n.clip), (c) => play(c.animations[0]));
+    else play(g.animations[0]);
     tick();
   }, undefined, () => tick());
 }

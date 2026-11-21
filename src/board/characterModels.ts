@@ -8,9 +8,10 @@ import { boardGltfLoader } from "./models";
  * listed here replaces the generic capsule figure wherever they stand.
  *
  * Built with Meshy (image-to-image A-pose sheet → image-to-3D Smart Topology →
- * auto-rig). Each rig ships with Meshy's walk and run clips; there is no idle,
- * so a standing character holds the walk cycle's passing pose (feet together,
- * arms down). Future clips (cup, cigar, aiming…) go in `clips` by name.
+ * auto-rig). Each rig ships with Meshy's walk and run clips. A character with
+ * an `idle` clip plays it when standing (Quanny, hand-animated); one without
+ * holds the walk cycle's passing pose with small procedural motions on top.
+ * Future clips (cup, cigar, aiming…) go in `clips` by name.
  *
  * Main characters stand at their spot; they do not wander like crowd figures.
  */
@@ -30,6 +31,7 @@ export const CHARACTER_MODELS: Record<string, CharacterModel> = {
   quanny: {
     model: "assets/models/characters/quanny.glb",
     clips: {
+      idle: "assets/models/characters/quanny-idle.glb",
       walk: "assets/models/characters/quanny-walk.glb",
       run: "assets/models/characters/quanny-run.glb",
     },
@@ -185,14 +187,19 @@ export async function spawnCharacter(
   root.userData.sharedModel = true;
   const mixer = new THREE.AnimationMixer(body);
   let current: THREE.AnimationAction | null = null;
+  const idleClip = t.clips.idle;
   const play = (motion: Motion) => {
-    const clip = motion === "stand" ? t.clips.walk : t.clips[motion];
+    const clip =
+      motion === "stand" ? (idleClip ?? t.clips.walk) : t.clips[motion];
     current?.stop();
     if (!clip) return;
     current = mixer.clipAction(clip).reset().play();
     if (motion === "stand") {
-      current.time = t.standTime;
-      current.paused = true;
+      if (idleClip) current.time = Math.random() * idleClip.duration;
+      else {
+        current.time = t.standTime;
+        current.paused = true;
+      }
     }
     mixer.update(0);
   };
@@ -205,11 +212,11 @@ export async function spawnCharacter(
     play: (motion) => {
       standing = motion === "stand";
       play(motion);
-      if (standing) idle.capture();
+      if (standing && !idleClip) idle.capture();
     },
     update: (dt) => {
       mixer.update(dt);
-      if (standing) idle.step(dt);
+      if (standing && !idleClip) idle.step(dt);
     },
   };
 }
