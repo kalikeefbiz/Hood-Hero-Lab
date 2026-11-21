@@ -16,12 +16,13 @@ Last updated: 2026-11-20. Update the "Where we are" and "Next" sections at the e
 - Flacco expression portraits: done (PR #33).
 - Season 1 plan: `docs/design/SEASON_1.md` (Chains Days 1-7, rumor Day 8, substation Day 9, fallout Days 10-20, studio with Cuzzo Day 21 still to confirm, Flacco's push Days 22-28). Days 10-20 content needs an owner decision.
 - **Street strip: done and deployed** (PR #36). Quanny now stands outside Lil Jay's with a hand-animated street idle (PR after #38). Preview: https://kalikeefbiz.github.io/Hood-Hero-Lab/strip.html. Pipeline and budgets: `art/strip/README.md`. Whole strip is ~15k tris, ~13 MB. Not yet tested on a real iPhone.
-- Codex prototype `codex/immersive-city-prototype` (PR #28): has walkable movement/controls. **Do not merge as-is**: it renames the save slot.
+- Codex prototype `codex/immersive-city-prototype` (PR #28): walkable Reservoir on the OLD board, flow proven. **Do not merge as-is** (renames the save slot, adds street mode into BoardRenderer). Reviewed in `docs/CITY_PLAN.md`: port the flow into a new `src/city/` beside the old board.
 
 ## Next: grow the strip into the city (Claude owns this)
+Plan, architecture and the PR #28 review: **`docs/CITY_PLAN.md`** (new city beside the old board, shared engine, retire old hoods one at a time). Phase 1 = Reservoir vertical slice.
 The owner's plan (2026-11-20): build the Reservoir strip up slowly, block by block, until it is a complete city. Same split as before: Claude builds and presents the strip (layout, buildings, characters, camera, movement presentation); Codex owns the rules and content behind it and requests places or people in its PRs.
 1. Characters on the strip come from `STRIP_NPCS` in `src/strip/layout.ts` (`id`, model, looping `clip`). Quanny: `quanny.glb` + `quanny-idle.glb`; walk and run clips are also in `public/assets/models/characters/`.
-2. Walkable movement: reuse the controls from Codex's PR #28 (`codex/immersive-city-prototype`) without its save-slot rename. Claude does the wiring.
+2. Walkable movement: port the flow from PR #28 into `src/city/` per `docs/CITY_PLAN.md` (no save-slot rename, no street mode in BoardRenderer). Claude does the wiring.
 3. Interaction with Quanny opens the existing encounter flow (Codex supplies it as data); no dialogue that explains mechanics.
 4. Next blocks: owner draws front + angled views per building, Claude builds them in Blender (`art/strip/scripts/`). Hold the budgets in `art/strip/README.md`.
 
