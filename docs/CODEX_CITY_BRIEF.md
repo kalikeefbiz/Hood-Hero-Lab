@@ -1,31 +1,30 @@
-# Codex brief: make the Reservoir playable
+# Codex City brief — current gameplay-only scope (2026-11-22)
 
-Read `AGENTS.md` section 00, then `docs/RESERVOIR_MAP.md` (picture + data). The old board is frozen. The game is played in the walkable Reservoir (`strip.html`, code in `src/strip/`). Claude owns how it looks and where things are. You own making it play. Claude oversees: reviews at the checkpoints below so nothing gets built twice.
+> **Supersedes the previous movement/touch-control/camera/checkpoint brief.** Read `AGENTS.md` sections 00 and 00A and `docs/RESERVOIR_CANON.md` first. The prior plan assigning player movement, walking, input, collision and camera-follow to Codex is **revoked until the owner explicitly assigns those systems**.
 
-## Outcome (what must be true when you're done)
-A player on an iPhone-size screen can: spawn outside Lil Jay's, walk the five streets with a touch pad without passing through buildings or fences, reach each place and use its real engine actions, talk to Quanny, buy at Lil Jay's, trigger the run-in and retreat, case and break into a Reservoir home, save, close, reload and continue. All of it on the existing save slot.
+**Repository:** `kalikeefbiz/Hood-Hero-Lab` only. Never modify the frozen `kalikeefbiz/Hood-Hero` repository or `src/board/**`.
 
-## Contract you read (don't edit)
-`src/strip/cityMap.ts`: `WALLS`, `FENCES`, `WALK_BOUNDS`, `DOORS` (places), `HOUSES` (Reservoir Homes, each has `id`, `targetId`), `STOREFRONTS` (scenery for now), `NPC_SPOTS`, `PLAYER_START`. `window.__strip` gives you `scene`, `camera`, `controls`, `setMode`. Quanny has walk/run/idle clips in `public/assets/models/characters/`.
+## Implemented — PR #51
+Codex's `codex/reservoir-gameplay-wiring` PR #51 connects **all eight existing Reservoir location IDs** in Claude's `src/strip/cityMap.ts` to actual game rules through the headless API in `src/city/LocationInteractions.ts`. Its report `docs/RESERVOIR_GAMEPLAY_WIRING.md` specifies verified actions, limits, remaining map/house assignments, Gemini contract and test results. **Review this PR before giving additional tasks; those files are on its branch until merged.** Don't duplicate this implementation.
 
-## How to get it right once (tips, not orders; keep your creativity)
-1. **Build it data-driven, for five hoods.** Take a map object (`{walls, fences, doors, homes, npcs, bounds, start}`) rather than importing Reservoir constants all over `src/city/`. Southside, Eastside, Northside and Downtown arrive with the same shape, so adding a hood should need no new code in `src/city/`.
-2. **One interaction path.** A single "what's the nearest interactable" function over doors, homes and NPCs feeds one prompt/tap UI. Places and homes both resolve to the engine's existing `placeActions` / robbery system. Don't write a second robbery or shop engine; `src/content/robberyCareer.ts` already has the targets.
-3. **Save ids, not coordinates.** Save position as `{hood, doorId or homeId}`. Claude will move doors and fix walls, and coordinates will change. Home state (cased, hit, cooldown) is keyed by the property `id` in engine state, with a short migration note and a test that an old save still loads. Don't rename the save slot (PR #28 did; don't carry that over).
-4. **Collision:** circle-vs-rectangle with sliding along walls, and segment collision for fences. Test at run speed so the player can't tunnel through a thin fence on a slow frame.
-5. **Frame budget:** no allocation per frame, no React re-render per frame. The HUD updates only when its value changes. Put camera distance/height/lerp in one small constants file so Claude can tune the look without touching your logic.
-6. **Testing without flaky walking:** expose a debug hook such as `window.__city.teleport(doorId)` and use it in most Playwright tests. Keep one real "walk with the pad" test. 390x844, Chromium + WebKit. `npm test` and `npm run build` green.
-7. **Wiring to the strip:** `src/strip/main.ts` gets one import + one call that starts `src/city/`. Ask Claude to change anything else in `src/strip/`.
-8. **Respect section 0:** things happen at places and with people, not in menus.
+## Current integration sequence
+1. **Claude** reviews PR #51 for compatibility. If clean, merges it. Claude then creates a separate presentation PR with physical location anchors and visual display of the **existing** API outputs in `src/strip/**`; no new gameplay mechanics.
+2. **Gemini** continues **independent** NPC simulation experiments; no repo write access yet. Its eventual world host supplies validated NPC co-presence (`peopleHere`) and actions through the existing engine. No parallel economy, relationship truth, save slot, renderer or invented location map.
+3. **Codex** addresses confirmed defects in its gameplay API and future owner-approved gameplay-only assignments in `src/city/**`, `src/systems/**`, `src/content/**` and `src/core/**`. It should not independently start building movement or AI.
 
-## Checkpoints (open each as a draft PR to Lab main, say which is ready for Claude)
-- **A. Move:** spawn, touch pad, collision, follow camera, a text-free test that you can't enter buildings. Claude reviews feel and collision against `?map`.
-- **B. Places and people:** door prompts, real actions, Quanny conversation + `approachQuannyAtMarket`, buying at Lil Jay's, run-in and retreat.
-- **C. Homes and saves:** Reservoir Homes with the three attached targets, save/reload with ids, migration note.
-Earlier review means fewer rewrites. Don't start C before A is reviewed.
+## Map and interaction contract
+Claude owns `src/strip/cityMap.ts`, including `DOORS`, `HOUSES`, `NPC_SPOTS`, `WALLS`, `FENCES` and other spatial data. Codex can read this map but must not edit Claude-owned files. Established IDs include `reservoir.lil-jays`, `reservoir.pawn`, `reservoir.laundry`, `reservoir.warehouse`, `reservoir.lot-court`, `reservoir.boarded-house`, `reservoir.water-tower` and `reservoir.homes`.
 
-## Ask Claude (in the PR, by id) when you need
-A door moved, a wall fixed, a storefront turned into a place (`locationId`), a new NPC spot, another house attached/detached, or a visual change. Don't edit `src/strip/**`, `public/assets/**`, `art/**`, `src/board/**`.
+The production host must pass **verified `peopleHere`** to the API for NPC-specific actions and encounters. Do **not** assume a character is present just because there is a static map spot or an earlier narrative association. Until Gemini integrates, Claude may use **explicit, isolated preview fixtures** for presence and developer-only location selection in throwaway state. Those fixtures are not authoritative world state and cannot silently modify real saves.
 
-## Definition of done
-Outcome above holds on a phone-size browser; tests green with real command output in the PR; save impact stated; "ready for Claude review/merge"; no self-merge.
+A visible building is only a gameplay destination when it maps to an approved `locationId` with real engine-backed actions. Other approved shops remain scenery/NPC destinations until authentic gameplay is implemented. Never add fake menu buttons or rewrite economic rules to make a storefront seem interactive.
+
+## Strict exclusions until owner assignment
+- Player walk/run/sprint movement, joystick/touch controls, collision controller or input.
+- Camera-follow, camera-driven board, zoomed-out playable alternative, `src/city3d/**` revival.
+- NPC schedules, autonomous decisions, pathfinding, locomotion or Three.js/GLB renderer.
+- Unapproved new buildings, dialogue, businesses, player-only save keys or faction models.
+- Edits to `src/strip/**`, `public/assets/**`, `art/**`, frozen `src/board/**`.
+
+## Workflow
+Continue to follow `AGENTS.md` branch, PR, code ownership, save compatibility and test requirements. Present actual command/test results. Do not claim the entire five-street world is playable because the headless location API is complete. Report remaining gaps honestly. **Do not self-merge.** Player movement and controls will receive their own assignment later.
