@@ -29,6 +29,11 @@ export const shiftToday = (s: GameState, actor = s.playerId) =>
       c.dueDay === s.day &&
       c.status === "pending",
   );
+function hasHiringContact(s: GameState, actor: string, job: ReturnType<typeof jobDefinition>) {
+  const c = s.characters[actor];
+  return c.home === job.location || c.connections.includes(job.employer) ||
+    (job.id === "retail-reservoir" && c.connections.includes("resident-reservoir"));
+}
 export function jobError(
   s: GameState,
   actor: string,
@@ -42,6 +47,7 @@ export function jobError(
   if (s.day < search.eligibleDay)
     return `You can apply for jobs again on day ${search.eligibleDay}. Local gigs are still open.`;
   if (!j) return "Pick a job";
+  if (j.employer === actor) return "You already run this workplace.";
   if (
     s.employment.some(
       (e) => e.actor === actor && e.jobId === j.id && s.day < e.rehireDay,
@@ -52,8 +58,7 @@ export function jobError(
     return "You need more work experience or people skills for this job";
   if (
     j.id.startsWith("retail") &&
-    c.home !== j.location &&
-    !c.connections.includes(j.employer)
+    !hasHiringContact(s, actor, j)
   )
     return "They only hire people from the neighborhood, or someone they know";
   if (s.characters[j.employer].status !== "active")
@@ -63,9 +68,8 @@ export function jobError(
 export const jobOpportunities = (s: GameState, actor = s.playerId) =>
   JOBS.filter(
     (j) =>
-      !j.id.startsWith("retail") ||
-      s.characters[actor].home === j.location ||
-      s.characters[actor].connections.includes(j.employer),
+      j.employer !== actor &&
+      (!j.id.startsWith("retail") || hasHiringContact(s, actor, j)),
   );
 export function applyForJob(s: GameState, actor: string, jobId: string) {
   const search = (s.employmentSearch[actor] ??= { eligibleDay: 1 });

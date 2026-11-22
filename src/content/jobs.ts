@@ -18,7 +18,7 @@ export const JOBS: JobDefinition[] = [
     (location) => ({
       id: `retail-${location}`,
       name: "Neighborhood retail",
-      employer: `resident-${location}`,
+      employer: location === "reservoir" ? "mr-lewis" : `resident-${location}`,
       location,
       workdays: [1, 3, 5],
       wage: BALANCE.workIncome,
