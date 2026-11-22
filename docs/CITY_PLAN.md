@@ -1,5 +1,7 @@
 # Building the city block by block: plan and review of PR #28
 
+> **CURRENT OWNERSHIP UPDATE — 2026-11-22:** `AGENTS.md` section **00A** is authoritative. Claude owns world/map/render presentation; Codex owns gameplay engine and headless location APIs; Gemini owns independently developed NPC world simulation/navigation/presence (no repo write access yet). **Player controls, movement and camera-follow ownership remain unassigned.** Earlier tables or proposals assigning `src/city/**` or movement to Claude/Codex are historical and superseded. `docs/CODEX_CITY_BRIEF.md` has been rewritten accordingly. The five-street Reservoir direction and save-compatibility rules remain active.
+
 Decided 2026-11-20 with the owner. Claude owns this plan and the world it builds. Codex owns rules, movement rules, content and the data behind them.
 
 ## The decision
