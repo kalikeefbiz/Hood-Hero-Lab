@@ -1,24 +1,31 @@
 # Codex brief: make the Reservoir playable
 
-Read `AGENTS.md` section 00 first. The old board is frozen; the game is now played in the walkable Reservoir (`strip.html`, code in `src/strip/`). Claude owns how it looks and where things are. You own making it play.
+Read `AGENTS.md` section 00, then `docs/RESERVOIR_MAP.md` (picture + data). The old board is frozen. The game is played in the walkable Reservoir (`strip.html`, code in `src/strip/`). Claude owns how it looks and where things are. You own making it play. Claude oversees: reviews at the checkpoints below so nothing gets built twice.
 
-## What exists
-- Five walkable streets, north to south: Dirty Money Dr, Big Mouth Blvd, Lil Bit Lane (Lil Jay's), Blocc Boy Blvd, No Refund Rd, linked by Kirkwood St. Layout: `docs/RESERVOIR_LAYOUT.md`.
-- `src/strip/cityMap.ts` — **your contract**: `WALLS` (building footprints), `FENCES`, `WALK_BOUNDS`, `DOORS` (game locations with `locationId`), `STOREFRONTS` and `HOUSES` (scenery, `locationId: null`), `NPC_SPOTS` (Quanny at Lil Jay's), `PLAYER_START`. Open `strip.html?map` to see it drawn over the city.
-- `window.__strip` exposes `scene`, `camera`, `controls`, `setMode`. Quanny is rigged with walk/run/idle clips (`public/assets/models/characters/quanny*.glb`).
-- Your prototype on `codex/immersive-city-prototype` (PR #28) proved the flow: touch pad, collision, follow camera, Quanny's conversation, buying at Lil Jay's, run-in escalation, retreat, save/reload.
+## Outcome (what must be true when you're done)
+A player on an iPhone-size screen can: spawn outside Lil Jay's, walk the five streets with a touch pad without passing through buildings or fences, reach each place and use its real engine actions, talk to Quanny, buy at Lil Jay's, trigger the run-in and retreat, case and break into a Reservoir home, save, close, reload and continue. All of it on the existing save slot.
 
-## The task
-Port that flow onto this city in a new module `src/city/` that `src/strip/main.ts` starts (one small hook; ask Claude or keep the hook to a single import + call).
-1. **Player**: spawn at `PLAYER_START`, move with the touch pad, collide with `WALLS`/`FENCES`, stay in `WALK_BOUNDS`. Follow camera (Claude can tune the look after).
-2. **Places**: entering a `DOORS` radius offers that location's actions from the engine (`placeActions` / `LocationDef.links` data), the same rules the board used. No menu shortcuts (AGENTS.md section 0).
-3. **People**: Quanny at his `NPC_SPOTS` entry runs his existing conversation and the `approachQuannyAtMarket` flow.
-4. **Purchases, the run-in, retreat** as in PR #28.
-5. **Saves**: use the existing save slot and engine state. Do **not** rename the save slot (PR #28 did; don't carry that over). Position in the city may be saved as nearest door / street.
-6. **Tests**: Playwright on 390x844 (Chromium + WebKit): start, walk to Lil Jay's, buy, talk to Quanny, run-in, save/reload. `npm test`, `npm run build` green.
+## Contract you read (don't edit)
+`src/strip/cityMap.ts`: `WALLS`, `FENCES`, `WALK_BOUNDS`, `DOORS` (places), `HOUSES` (Reservoir Homes, each has `id`, `targetId`), `STOREFRONTS` (scenery for now), `NPC_SPOTS`, `PLAYER_START`. `window.__strip` gives you `scene`, `camera`, `controls`, `setMode`. Quanny has walk/run/idle clips in `public/assets/models/characters/`.
 
-## Rules
-- Don't edit `src/strip/**`, `public/assets/**`, `art/**`, `src/board/**`. If you need a door moved, a wall fixed, a storefront made a place, or an NPC spot, say so in the PR by id and Claude updates `cityMap.ts`.
-- `reservoir.homes` is not assigned to a house yet; propose which in the PR.
-- Performance: no per-frame allocation; collision against ~25 rects is fine as a plain loop.
-- PR to Lab main, "ready for Claude review/merge", don't self-merge.
+## How to get it right once (tips, not orders; keep your creativity)
+1. **Build it data-driven, for five hoods.** Take a map object (`{walls, fences, doors, homes, npcs, bounds, start}`) rather than importing Reservoir constants all over `src/city/`. Southside, Eastside, Northside and Downtown arrive with the same shape, so adding a hood should need no new code in `src/city/`.
+2. **One interaction path.** A single "what's the nearest interactable" function over doors, homes and NPCs feeds one prompt/tap UI. Places and homes both resolve to the engine's existing `placeActions` / robbery system. Don't write a second robbery or shop engine; `src/content/robberyCareer.ts` already has the targets.
+3. **Save ids, not coordinates.** Save position as `{hood, doorId or homeId}`. Claude will move doors and fix walls, and coordinates will change. Home state (cased, hit, cooldown) is keyed by the property `id` in engine state, with a short migration note and a test that an old save still loads. Don't rename the save slot (PR #28 did; don't carry that over).
+4. **Collision:** circle-vs-rectangle with sliding along walls, and segment collision for fences. Test at run speed so the player can't tunnel through a thin fence on a slow frame.
+5. **Frame budget:** no allocation per frame, no React re-render per frame. The HUD updates only when its value changes. Put camera distance/height/lerp in one small constants file so Claude can tune the look without touching your logic.
+6. **Testing without flaky walking:** expose a debug hook such as `window.__city.teleport(doorId)` and use it in most Playwright tests. Keep one real "walk with the pad" test. 390x844, Chromium + WebKit. `npm test` and `npm run build` green.
+7. **Wiring to the strip:** `src/strip/main.ts` gets one import + one call that starts `src/city/`. Ask Claude to change anything else in `src/strip/`.
+8. **Respect section 0:** things happen at places and with people, not in menus.
+
+## Checkpoints (open each as a draft PR to Lab main, say which is ready for Claude)
+- **A. Move:** spawn, touch pad, collision, follow camera, a text-free test that you can't enter buildings. Claude reviews feel and collision against `?map`.
+- **B. Places and people:** door prompts, real actions, Quanny conversation + `approachQuannyAtMarket`, buying at Lil Jay's, run-in and retreat.
+- **C. Homes and saves:** Reservoir Homes with the three attached targets, save/reload with ids, migration note.
+Earlier review means fewer rewrites. Don't start C before A is reviewed.
+
+## Ask Claude (in the PR, by id) when you need
+A door moved, a wall fixed, a storefront turned into a place (`locationId`), a new NPC spot, another house attached/detached, or a visual change. Don't edit `src/strip/**`, `public/assets/**`, `art/**`, `src/board/**`.
+
+## Definition of done
+Outcome above holds on a phone-size browser; tests green with real command output in the PR; save impact stated; "ready for Claude review/merge"; no self-merge.

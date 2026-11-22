@@ -77,24 +77,46 @@ export const STOREFRONTS: Door[] = [
   { locationId: null, label: "No Refund Auto & Tires", x: -2.32, z: 90.9, radius: 2.0, facing: 0 },
 ];
 
-/** Houses, at the front walk. `reservoir.homes` is unassigned: owner/Codex pick which. */
-export const HOUSES: Door[] = [
-  { locationId: null, label: "Lil Bit Lane, dark house", x: -10.1, z: -1.0, radius: 1.8, facing: 0 },
-  { locationId: null, label: "Lil Bit Lane, tan house", x: -19.4, z: -1.0, radius: 1.8, facing: 0 },
-  { locationId: null, label: "Lil Bit Lane, abandoned house", x: -28.4, z: -1.0, radius: 1.8, facing: 0 },
-  { locationId: null, label: "Lil Bit Lane, tan house (south)", x: -2.6, z: 16.9, radius: 1.8, facing: S },
-  { locationId: null, label: "Lil Bit Lane, abandoned house (south)", x: -13.6, z: 16.9, radius: 1.8, facing: S },
-  { locationId: null, label: "Lil Bit Lane, dark house (south)", x: -25.9, z: 16.9, radius: 1.8, facing: S },
-  { locationId: null, label: "Lil Bit Lane, dark house (Kirkwood)", x: 21.6, z: 16.9, radius: 1.8, facing: S },
-  { locationId: null, label: "Big Mouth Blvd, dark two-story", x: -39.0, z: -43.3, radius: 1.8, facing: 0 },
-  { locationId: null, label: "Big Mouth Blvd, dark house", x: -29.1, z: -43.3, radius: 1.8, facing: 0 },
-  { locationId: null, label: "Dirty Money Dr, dark house", x: -10.1, z: -94.7, radius: 1.8, facing: 0 },
-  { locationId: null, label: "Dirty Money Dr, dark two-story", x: -30.5, z: -94.7, radius: 1.8, facing: 0 },
-  { locationId: null, label: "Dirty Money Dr, tan bungalow", x: -41.4, z: -94.7, radius: 1.8, facing: 0 },
-  { locationId: null, label: "Dirty Money Dr, duplex 721", x: -7.2, z: -79.9, radius: 1.6, facing: S },
-  { locationId: null, label: "Dirty Money Dr, duplex 723", x: -2.8, z: -79.9, radius: 1.6, facing: S },
-  { locationId: null, label: "Dirty Money Dr, abandoned house", x: -26.1, z: -79.9, radius: 1.8, facing: S },
-  { locationId: null, label: "Dirty Money Dr, tan bungalow (south)", x: -47.1, z: -79.9, radius: 1.8, facing: S },
+/**
+ * Reservoir Homes: the section of properties a player can case and break into.
+ * Every house in the city belongs to it (`locationId` is always "reservoir.homes"); `id` says which
+ * one. `targetId` links a house to an existing engine target in src/content/robberyCareer.ts
+ * (home.reservoir.1..3). A null `targetId` is a real, enterable-looking house with no job attached
+ * yet: Codex/content can attach new targets to it without moving anything. Other hoods follow the
+ * same shape (southside.homes, eastside.homes, ...).
+ */
+export interface HomeProperty extends Door {
+  /** Stable id for this property. Never reuse; saves may point at it. */
+  id: string;
+  street: string;
+  /** What it looks like, for picking targets that fit ("dark", "tan", "abandoned", "two-story", "duplex", "bungalow"). */
+  look: string;
+  /** Engine robbery target (src/content/robberyCareer.ts) or null if none is attached yet. */
+  targetId: string | null;
+}
+const HOME = "reservoir.homes";
+export const HOUSES: HomeProperty[] = [
+  // Lil Bit Lane, north side (fronts face south)
+  { id: "res-home-01", street: "Lil Bit Lane", look: "dark", targetId: null, locationId: HOME, label: "Lil Bit Lane, dark house", x: -10.1, z: -1.0, radius: 1.8, facing: 0 },
+  { id: "res-home-02", street: "Lil Bit Lane", look: "tan", targetId: "home.reservoir.1", locationId: HOME, label: "Lil Bit Lane, tan house", x: -19.4, z: -1.0, radius: 1.8, facing: 0 },
+  { id: "res-home-03", street: "Lil Bit Lane", look: "abandoned", targetId: null, locationId: HOME, label: "Lil Bit Lane, abandoned house", x: -28.4, z: -1.0, radius: 1.8, facing: 0 },
+  // Lil Bit Lane, south side (fronts face north)
+  { id: "res-home-04", street: "Lil Bit Lane", look: "tan", targetId: null, locationId: HOME, label: "Lil Bit Lane, tan house (south)", x: -2.6, z: 16.9, radius: 1.8, facing: S },
+  { id: "res-home-05", street: "Lil Bit Lane", look: "abandoned", targetId: null, locationId: HOME, label: "Lil Bit Lane, abandoned house (south)", x: -13.6, z: 16.9, radius: 1.8, facing: S },
+  { id: "res-home-06", street: "Lil Bit Lane", look: "dark", targetId: null, locationId: HOME, label: "Lil Bit Lane, dark house (south)", x: -25.9, z: 16.9, radius: 1.8, facing: S },
+  { id: "res-home-07", street: "Lil Bit Lane", look: "dark", targetId: null, locationId: HOME, label: "Lil Bit Lane, dark house (Kirkwood)", x: 21.6, z: 16.9, radius: 1.8, facing: S },
+  // Big Mouth Blvd (south side; the boarded house at x -49.9 is its own place, reservoir.boarded-house)
+  { id: "res-home-08", street: "Big Mouth Blvd", look: "dark two-story", targetId: "home.reservoir.3", locationId: HOME, label: "Big Mouth Blvd, dark two-story", x: -39.0, z: -43.3, radius: 1.8, facing: 0 },
+  { id: "res-home-09", street: "Big Mouth Blvd", look: "dark", targetId: null, locationId: HOME, label: "Big Mouth Blvd, dark house", x: -29.1, z: -43.3, radius: 1.8, facing: 0 },
+  // Dirty Money Dr, south side (fronts face south)
+  { id: "res-home-10", street: "Dirty Money Dr", look: "dark", targetId: null, locationId: HOME, label: "Dirty Money Dr, dark house", x: -10.1, z: -94.7, radius: 1.8, facing: 0 },
+  { id: "res-home-11", street: "Dirty Money Dr", look: "dark two-story", targetId: null, locationId: HOME, label: "Dirty Money Dr, dark two-story", x: -30.5, z: -94.7, radius: 1.8, facing: 0 },
+  { id: "res-home-12", street: "Dirty Money Dr", look: "tan bungalow", targetId: "home.reservoir.2", locationId: HOME, label: "Dirty Money Dr, tan bungalow", x: -41.4, z: -94.7, radius: 1.8, facing: 0 },
+  // Dirty Money Dr, north side (fronts face north)
+  { id: "res-home-13", street: "Dirty Money Dr", look: "duplex 721", targetId: null, locationId: HOME, label: "Dirty Money Dr, duplex 721", x: -7.2, z: -79.9, radius: 1.6, facing: S },
+  { id: "res-home-14", street: "Dirty Money Dr", look: "duplex 723", targetId: null, locationId: HOME, label: "Dirty Money Dr, duplex 723", x: -2.8, z: -79.9, radius: 1.6, facing: S },
+  { id: "res-home-15", street: "Dirty Money Dr", look: "abandoned", targetId: null, locationId: HOME, label: "Dirty Money Dr, abandoned house", x: -26.1, z: -79.9, radius: 1.8, facing: S },
+  { id: "res-home-16", street: "Dirty Money Dr", look: "tan bungalow", targetId: null, locationId: HOME, label: "Dirty Money Dr, tan bungalow (south)", x: -47.1, z: -79.9, radius: 1.8, facing: S },
 ];
 
 /** Where people stand. Quanny posts up outside Lil Jay's. */
