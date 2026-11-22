@@ -8,10 +8,11 @@ Read `docs/CITY_PLAN.md`. Summary:
 
 - **The old board (`src/board/**`) is frozen.** No features, content, fixes or visual changes there. Only a bug that breaks saves or stops the game running may be fixed, and say so in the PR. The game engine, saves, characters and rules stay where they are and keep working.
 - **The new city is built street by street in `src/city/**`** (seed: `src/strip/`), sharing the same engine and saves. The Reservoir comes first (4 to 6 streets), then Southside, Eastside, Northside, Downtown. A hood is done when everything in the game is playable in it: locations, NPCs, player interactions, shops, crime locations, encounters.
-- **Claude owns the city**: `src/city/**`, `src/strip/**`, `public/assets/models/**`, `public/assets/strip/**`, `art/**`. Streets, buildings, characters, camera, controls UI, collision, door/NPC placement, streaming, performance. Claude decides where each feature physically happens in the city.
-- **Codex owns the engine and content**: `src/systems/**`, `src/content/**`, rules, commands, encounters, dialogue, economy, rule tests.
-- **Per-street loop**: owner gives art and intent, Claude builds the street, Codex supplies game data (stable location ids, NPCs, actions per place), Claude wires it, both test on a phone, owner plays, merge.
-- Codex does not edit `src/city/**`, `src/strip/**` or `public/assets/**`. Request places and people by stable id in the PR. Prototypes like PR #28 are welcome as experiments but are ported by Claude, never merged into the old board.
+- **Split updated 2026-11-22 (owner):** Claude does what the city looks like and where things are; Codex does everything that makes it play.
+- **Claude owns the look and the map**: `src/strip/**` (scene, streets, buildings, camera look, lighting, loading, `layout.ts`, and the gameplay map `cityMap.ts`), `public/assets/**` (models, textures), `art/**`. Claude places doors, walls, fences, NPC spots and the player start in `cityMap.ts`, and decides where each feature physically happens.
+- **Codex owns the gameplay in the city**: `src/city/**` — player movement and collision (read `WALLS`/`FENCES`/`WALK_BOUNDS`), touch controls, interaction at doors and people (read `DOORS`/`NPC_SPOTS`), triggers, encounters, purchases, save/load hookup — plus the engine and content as before (`src/systems/**`, `src/content/**`, rules, dialogue, economy, tests).
+- **Per-street loop**: owner gives art and intent, Claude builds the street and its map data, Codex wires the gameplay, both test on a phone, owner plays, merge.
+- Codex reads but does not edit `src/strip/**`, `public/assets/**` or `art/**`. Need a door, a wall fixed, an NPC spot, a storefront made a real place? Ask in the PR by location/character id; Claude updates `cityMap.ts`. Brief: `docs/CODEX_CITY_BRIEF.md`.
 - Anywhere below that says "on the board", read "in the city".
 
 ## 0. The city comes first (read this before designing anything)
@@ -51,7 +52,7 @@ For every new feature:
 
 ## 2. File ownership and coordination
 
-### Claude — city, 3D and presentation owner (old `src/board/**` is frozen, see 00)
+### Claude — city look, 3D and map owner (old `src/board/**` is frozen; see 00 for the current split)
 - src/board/**, including locations, people placement, board interaction/presentation wiring, rendering, camera and layout.
 - src/board/ui/** and board-specific CSS or visuals.
 - public/assets/models/**, including GLBs, rigged characters, animation clips and shared environmental assets.
