@@ -6,7 +6,8 @@ import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { STRIP_ASSETS, STRIP_NPCS, START, STREET_LAMPS, BOUNDS } from "./layout";
+import { STREETS, STRIP_NPCS, START, STREET_LAMPS, BOUNDS, type Placed } from "./layout";
+import { createSharedTextures } from "./sharedTextures";
 import "./strip.css";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -104,14 +105,61 @@ function applyMode() {
 // ---------------------------------------------------------------- loading
 const ktx2 = new KTX2Loader().setTranscoderPath(url("basis/")).detectSupport(renderer);
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx2);
+const attachShared = createSharedTextures(ktx2, url("assets/tex/"), Math.min(8, renderer.capabilities.getMaxAnisotropy()));
 const progress = document.querySelector<HTMLElement>("#progress")!;
-let loaded = 0;
-const total = STRIP_ASSETS.length + STRIP_NPCS.length;
-const tick = () => {
-  loaded++;
-  progress.textContent = `Loading the block… ${Math.round((loaded / total) * 100)}%`;
-  if (loaded === total) progress.remove();
+
+// Streets load nearest-first, a few files at a time, so the street you start on is
+// playable before the rest of the hood arrives. A file used several times (the
+// houses) downloads once and is cloned; clones share geometry, materials, textures.
+const startZ = START.target[2];
+const ordered = [...STREETS].sort((a, b) => Math.abs(a.z - startZ) - Math.abs(b.z - startZ));
+const firstStreet = new Set(ordered[0].assets);
+let firstLeft = ordered[0].assets.length + STRIP_NPCS.length;
+let allLeft = ordered.reduce((n, s) => n + s.assets.length, 0) + STRIP_NPCS.length;
+const tick = (first: boolean) => {
+  allLeft--;
+  if (first) firstLeft--;
+  if (firstLeft > 0) {
+    const total = ordered[0].assets.length + STRIP_NPCS.length;
+    progress.textContent = `Loading ${ordered[0].name}… ${Math.round(((total - firstLeft) / total) * 100)}%`;
+  } else if (allLeft > 0) {
+    progress.classList.add("background");
+    progress.textContent = "Loading more of the Reservoir…";
+  } else progress.remove();
 };
+const sceneCache = new Map<string, Promise<THREE.Object3D>>();
+function loadScene(file: string): Promise<THREE.Object3D> {
+  let p = sceneCache.get(file);
+  if (!p) {
+    p = loader.loadAsync(url(file)).then(async (g) => {
+      await attachShared(g.scene);
+      tune(g.scene);
+      return g.scene;
+    });
+    sceneCache.set(file, p);
+    return p;
+  }
+  return p.then((s) => s.clone());
+}
+async function place(a: Placed) {
+  try {
+    const obj = await loadScene(a.file);
+    obj.position.set(a.x, 0, a.z);
+    obj.rotation.y = a.rotY ?? 0;
+    scene.add(obj);
+    applyMode();
+  } catch (e) {
+    console.error("strip asset failed", a.file, e);
+  }
+  tick(firstStreet.has(a));
+}
+async function runQueue(items: Placed[], width: number) {
+  let i = 0;
+  await Promise.all(Array.from({ length: width }, async () => {
+    while (i < items.length) await place(items[i++]);
+  }));
+}
+runQueue(ordered.flatMap((s) => s.assets), 4);
 
 function tune(root: THREE.Object3D) {
   root.traverse((o) => {
@@ -140,21 +188,11 @@ function tune(root: THREE.Object3D) {
       if (m.aoMap) m.aoMapIntensity = 1.0;
       if (/Bulb|Neon|Lamp_Lens/.test(n)) emissiveMats.push({ m, night: 6, dusk: 2.5 });
       else if (m.emissiveMap) emissiveMats.push({ m, night: 1.7, dusk: 0.35 });
-      if (m.map) m.map.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      if (m.map && !m.userData.shared?.map) m.map.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     }
   });
 }
 
-for (const a of STRIP_ASSETS) {
-  loader.load(url(a.file), (g) => {
-    tune(g.scene);
-    g.scene.position.set(a.x, 0, a.z);
-    g.scene.rotation.y = a.rotY ?? 0;
-    scene.add(g.scene);
-    applyMode();
-    tick();
-  }, undefined, () => tick());
-}
 for (const n of STRIP_NPCS) {
   loader.load(url(n.file), (g) => {
     g.scene.traverse((o) => { if ((o as THREE.Mesh).isMesh) o.castShadow = true; });
@@ -174,8 +212,8 @@ for (const n of STRIP_NPCS) {
     };
     if (n.clip) loader.load(url(n.clip), (c) => play(c.animations[0]));
     else play(g.animations[0]);
-    tick();
-  }, undefined, () => tick());
+    tick(true);
+  }, undefined, () => tick(true));
 }
 const mixers: THREE.AnimationMixer[] = [];
 

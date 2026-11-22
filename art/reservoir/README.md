@@ -17,6 +17,7 @@ To add a building: put its front view in `ref/`, open it with a pixel grid, meas
 4. `python ../strip/scripts/bake_export.py -- /tmp/lj/out/<id>.blend /tmp/lj/out/<id>.glb 1024 64` (AO bake + export)
 5. Pack for phones with glTF Transform + ktx2-encoder: UASTC for the `_atlas` (keeps signs legible), UASTC normals, ETC1S everything else, meshopt geometry.
 6. `scripts/preview.py` renders a 3/4 and a street-level check.
+7. **Share tiling textures**: `node scripts/share_textures.mjs public/assets/tex public/assets/strip/*.glb public/assets/reservoir/*.glb` moves asphalt, sidewalk, concrete, brick, roof, siding and house window/door textures out of the GLBs into `public/assets/tex/` and records them in each material's `extras.shared`. `src/strip/sharedTextures.ts` downloads each once at runtime and gives every material the same GPU texture. Run it after packing any GLB that uses those textures. (Packing scripts `pack_building.mjs` and `share_textures.mjs` run with glTF Transform, ktx2-encoder, meshoptimizer and sharp from npm.)
 
 One-off landmarks have their own scripts: `water_tower.py` (cylindrical projection of the front view onto the tank), `boarded_house.py` (projected front, porch, gable, steps, yard), `lot_court.py` (floor from the top-down plan, mural and backboards from the angled view).
 
@@ -38,4 +39,4 @@ Streets: `scripts/avenue.py` + `streets.json` (Big Mouth Blvd, No Refund Road); 
 | big-mouth-blvd / no-refund-road | streets from `streets.json` via `scripts/avenue.py`, ~3.8 MB each | ~2.6k | yes |
 | blocc-boy-blvd | street, sidewalks, Kirkwood extension, poles, lot, 3.9 MB | ~2.8k | yes |
 
-Known limits: window bars and wall lamps' arms are painted (real lamp heads, sills, signs, canopies and doors have depth); the street GLBs each carry their own copy of the asphalt/sidewalk textures (shared texture files would save about 3 MB).
+Known limits: window bars and wall lamps' arms are painted (real lamp heads, sills, signs, canopies and doors have depth). Sizes in the table are before texture sharing; streets are now ~0.2-0.5 MB each.

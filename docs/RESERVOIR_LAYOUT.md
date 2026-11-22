@@ -53,3 +53,9 @@ Owner: Vesper's plans are references, not authority; Claude lays out the city. N
 | Dirty Money Drive | planned | Reservoir Laundry (built), houses. Goes north of Big Mouth or south of No Refund. |
 
 Game locations now standing in the city: `reservoir.lil-jays`, `.pawn`, `.warehouse`, `.lot-court`, `.boarded-house`, `.water-tower`. Still to place: `.laundry`, `.homes` (houses exist; which one is "Reservoir homes" is for Codex/owner).
+
+## Design intent (owner, 2026-11-21)
+The Reservoir's west side is meant to feel thin: empty lots, run-down and abandoned houses, a handful of family-owned businesses. A fantasy Detroit or Flint. Not every lot gets filled; open lots and fenced yards are part of the look.
+
+## Loading (2026-11-21)
+Streets load as groups, nearest to the start first, four files at a time; the start street (Lil Bit Lane) is playable after ~8 MB, the rest streams in behind it. Repeated files (houses) download once and are cloned. Tiling textures are shared from `public/assets/tex/`. Whole Reservoir: ~24 MB (was ~45 MB).

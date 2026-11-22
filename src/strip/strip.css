@@ -15,5 +15,6 @@ html, body { margin: 0; height: 100%; background: #0b0d12; overflow: hidden; tou
   box-shadow: 0 2px 10px #0008; pointer-events: none; }
 #fps { position: fixed; right: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); font: 11px ui-monospace, monospace; color: #fff9; }
 #progress { position: fixed; inset: 0; display: grid; place-items: center; font: 600 15px system-ui; color: #f0c24b; pointer-events: none; }
+#progress.background { inset: auto 0 calc(118px + env(safe-area-inset-bottom)) 0; font-size: 12px; opacity: 0.8; }
 .hint { position: fixed; right: 12px; bottom: calc(34px + env(safe-area-inset-bottom)); max-width: 46vw; text-align: right;
   font: 12px/1.35 system-ui; color: #fffc; text-shadow: 0 1px 4px #000; }
