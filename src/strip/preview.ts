@@ -12,15 +12,23 @@ import { Pins, fixtureFigure, type ExtraPin } from "./pins";
 export interface PreviewHost {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
-  controls: OrbitControls;
   canvas: HTMLCanvasElement;
+  /**
+   * "select": developer location selector. Tapping a pin or a Places entry stands you there on
+   * the test campaign; the camera flies over. Needs `controls`.
+   * "walk": the player controller owns position. Pins only point the way; you use a place by
+   * walking up to it (walk.ts calls `use`).
+   */
+  mode: "select" | "walk";
+  controls?: OrbitControls;
 }
 
 export const streetOf = (a: CityAnchor) =>
   a.street ?? [...STREETS].sort((p, q) => Math.abs(p.z - a.z) - Math.abs(q.z - a.z))[0].name;
 
 export function startPreview(host: PreviewHost) {
-  const { scene, camera, controls, canvas } = host;
+  const { scene, camera, canvas, mode } = host;
+  const controls = host.controls;
   const session = new PreviewSession(fixturePresence);
 
   // Fixture stand-ins for NPC spots with no approved model in the scene.
@@ -48,6 +56,7 @@ export function startPreview(host: PreviewHost) {
   // ------------------------------------------------------------ camera flights
   let flight: { start: number; t: number; fromT: THREE.Vector3; toT: THREE.Vector3; fromE: THREE.Vector3; toE: THREE.Vector3 } | null = null;
   function flyTo(a: CityAnchor) {
+    if (!controls) return;
     // Frame the building the door belongs to: the nearest footprint sets how far back to stand.
     let size = 8;
     let best = 6;
@@ -63,15 +72,17 @@ export function startPreview(host: PreviewHost) {
     // Stand back out in the street, in front of the door, a little to the side.
     const f = a.facing + 0.3;
     const toE = new THREE.Vector3(a.x + Math.sin(f) * dist, 2.6 + dist * 0.28, a.z + Math.cos(f) * dist);
-    flight = { start: performance.now(), t: 0, fromT: controls.target.clone(), toT, fromE: camera.position.clone(), toE };
+    flight = { start: performance.now(), t: 0, fromT: controls!.target.clone(), toT, fromE: camera.position.clone(), toE };
   }
 
   // ------------------------------------------------------------ selecting
-  function select(a: CityAnchor) {
-    // An NPC fixture pin opens the place its spot belongs to.
-    const target = a.kind === "npc" && a.locationId ? anchorById(a.locationId) ?? a : a;
+  const placeOf = (a: CityAnchor) => (a.kind === "npc" && a.locationId ? anchorById(a.locationId) ?? a : a);
+
+  /** Open a place's card. In walk mode this is only reached by physically arriving there. */
+  function use(a: CityAnchor) {
+    // An NPC's spot opens the place it belongs to.
+    const target = placeOf(a);
     pins.select(target.id);
-    flyTo(target);
     let note: string | undefined;
     if (isInteractive(target)) {
       const before = session.placeId;
@@ -79,6 +90,30 @@ export function startPreview(host: PreviewHost) {
         note = `Still at ${before}: the engine won't move you yet. Finish what's open where you are.`;
     }
     panel.show(target, note);
+  }
+
+  function select(a: CityAnchor) {
+    if (mode === "walk") {
+      // No teleporting: a pin tells you where it is and lights up so you can walk to it.
+      const target = placeOf(a);
+      pins.select(target.id);
+      toast(`${target.label}: walk up to it to go in.`);
+      return;
+    }
+    flyTo(placeOf(a));
+    use(a);
+  }
+
+  const toastEl = document.createElement("p");
+  toastEl.className = "toast";
+  toastEl.hidden = true;
+  document.body.append(toastEl);
+  let toastTimer = 0;
+  function toast(text: string) {
+    toastEl.textContent = text;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => { toastEl.hidden = true; }, 2600);
   }
 
   // Tap (not drag) on a pin.
@@ -137,6 +172,7 @@ export function startPreview(host: PreviewHost) {
   }
   document.body.append(sheet);
   listBtn.onclick = () => { panel.open && panel.hide(); sheet.hidden = !sheet.hidden; };
+  listBtn.hidden = mode !== "select";
 
   // ------------------------------------------------------------ per frame
   const ease = (t: number) => t * t * (3 - 2 * t);
@@ -155,17 +191,22 @@ export function startPreview(host: PreviewHost) {
       // Wall-clock, so a slow frame rate shortens the flight instead of stretching it.
       flight.t = Math.min(1, (performance.now() - flight.start) / 700);
       const k = ease(flight.t);
-      controls.target.lerpVectors(flight.fromT, flight.toT, k);
+      controls!.target.lerpVectors(flight.fromT, flight.toT, k);
       camera.position.lerpVectors(flight.fromE, flight.toE, k);
       if (flight.t >= 1) flight = null;
     }
-    pins.update(camera, controls.target, canvas.clientHeight || innerHeight);
+    pins.update(camera, focus(), canvas.clientHeight || innerHeight);
   }
+  let focusFn: () => THREE.Vector3 = () => controls!.target;
+  const focus = () => focusFn();
   // Any manual drag cancels a flight in progress.
-  controls.addEventListener("start", () => { flight = null; });
+  controls?.addEventListener("start", () => { flight = null; });
 
   const api = {
-    session, pins, panel, select: (id: string) => { const a = anchorById(id); if (a) select(a); },
+    mode, session, pins, panel, use, toast,
+    /** Where pins measure "near" from (the player in walk mode, the orbit target otherwise). */
+    setFocus: (fn: () => THREE.Vector3) => { focusFn = fn; },
+    select: (id: string) => { const a = anchorById(id); if (a) select(a); },
     screenOf: (id: string) => pins.screenOf(id, camera, canvas.clientWidth, canvas.clientHeight),
     flying: () => flight !== null,
   };

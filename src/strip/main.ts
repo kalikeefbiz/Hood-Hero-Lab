@@ -11,6 +11,7 @@ import { STREETS, STRIP_NPCS, START, STREET_LAMPS, BOUNDS, type Placed } from ".
 import { createSharedTextures } from "./sharedTextures";
 import { WALLS, FENCES, DOORS, STOREFRONTS, HOUSES, PLAYER_START } from "./cityMap";
 import { startPreview } from "./preview";
+import { startWalk } from "./walk";
 import "./strip.css";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -251,75 +252,95 @@ const windowGlow = new THREE.PointLight(0xdfe8ff, 14, 8, 2);
 windowGlow.position.set(0, 1.6, 1.4); scene.add(windowGlow); nightLights.push(windowGlow);
 
 // ---------------------------------------------------------------- controls
-const controls = new OrbitControls(camera, canvas);
-sunFollows = controls.target;
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-controls.maxPolarAngle = Math.PI * 0.495;
-controls.minDistance = 1.2;
-controls.maxDistance = 38;
-controls.target.set(START.target[0], START.target[1], START.target[2]);
-camera.position.set(START.eye[0], START.eye[1], START.eye[2]);
-
-// joystick: walks the look-target along the ground, camera follows
-const pad = document.querySelector<HTMLElement>("#pad")!;
-const knob = pad.querySelector<HTMLElement>(".knob")!;
-const move = new THREE.Vector2();
-let padId: number | null = null;
-function padMove(e: PointerEvent) {
-  const r = pad.getBoundingClientRect();
-  const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-  const max = r.width / 2;
-  const len = Math.min(max, Math.hypot(dx, dy));
-  const a = Math.atan2(dy, dx);
-  knob.style.transform = `translate(${Math.cos(a) * len}px, ${Math.sin(a) * len}px)`;
-  move.set((Math.cos(a) * len) / max, (Math.sin(a) * len) / max);
-}
-pad.addEventListener("pointerdown", (e) => { padId = e.pointerId; pad.setPointerCapture(e.pointerId); padMove(e); e.stopPropagation(); });
-pad.addEventListener("pointermove", (e) => { if (e.pointerId === padId) padMove(e); });
-const padEnd = (e: PointerEvent) => { if (e.pointerId !== padId) return; padId = null; move.set(0, 0); knob.style.transform = ""; };
-pad.addEventListener("pointerup", padEnd);
-pad.addEventListener("pointercancel", padEnd);
-const keys = new Set<string>();
-addEventListener("keydown", (e) => keys.add(e.key.toLowerCase()));
-addEventListener("keyup", (e) => keys.delete(e.key.toLowerCase()));
+// Default: walk the temporary avatar (player controller). ?select: the developer location
+// selector with a free orbit camera. Both run on the same isolated test campaign.
+const view: "walk" | "select" = params.has("select") ? "select" : "walk";
+document.body.dataset.view = view;
 
 document.querySelector("#mode")!.addEventListener("click", () => {
   mode = mode === "dusk" ? "night" : "dusk";
   applyMode();
 });
-document.querySelector("#street")!.addEventListener("click", () => {
-  // drop to eye level just behind the current target
-  const dir = new THREE.Vector3().subVectors(camera.position, controls.target).setY(0).normalize();
-  controls.target.y = 1.6;
-  camera.position.copy(controls.target).addScaledVector(dir, 2.2).setY(1.7);
-});
-document.querySelector("#overview")!.addEventListener("click", () => {
-  controls.target.set(START.target[0], START.target[1], START.target[2]);
-  camera.position.set(START.eye[0], START.eye[1], START.eye[2]);
-});
 
-const preview = startPreview({ scene, camera, controls, canvas });
+let controls: OrbitControls | undefined;
+let walk: ReturnType<typeof startWalk> | null = null;
+let move: THREE.Vector2 | null = null;
+const keys = new Set<string>();
+if (view === "select") {
+  const orbit = new OrbitControls(camera, canvas);
+  controls = orbit;
+  sunFollows = orbit.target;
+  orbit.enableDamping = true;
+  orbit.dampingFactor = 0.08;
+  orbit.maxPolarAngle = Math.PI * 0.495;
+  orbit.minDistance = 1.2;
+  orbit.maxDistance = 38;
+  orbit.target.set(START.target[0], START.target[1], START.target[2]);
+  camera.position.set(START.eye[0], START.eye[1], START.eye[2]);
+
+  // joystick: slides the look-target along the ground, camera follows
+  const pad = document.querySelector<HTMLElement>("#pad")!;
+  const knob = pad.querySelector<HTMLElement>(".knob")!;
+  const m = (move = new THREE.Vector2());
+  let padId: number | null = null;
+  const padMove = (e: PointerEvent) => {
+    const r = pad.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    const max = r.width / 2;
+    const len = Math.min(max, Math.hypot(dx, dy));
+    const a = Math.atan2(dy, dx);
+    knob.style.transform = `translate(${Math.cos(a) * len}px, ${Math.sin(a) * len}px)`;
+    m.set((Math.cos(a) * len) / max, (Math.sin(a) * len) / max);
+  };
+  pad.addEventListener("pointerdown", (e) => { padId = e.pointerId; pad.setPointerCapture(e.pointerId); padMove(e); e.stopPropagation(); });
+  pad.addEventListener("pointermove", (e) => { if (e.pointerId === padId) padMove(e); });
+  const padEnd = (e: PointerEvent) => { if (e.pointerId !== padId) return; padId = null; m.set(0, 0); knob.style.transform = ""; };
+  pad.addEventListener("pointerup", padEnd);
+  pad.addEventListener("pointercancel", padEnd);
+  addEventListener("keydown", (e) => keys.add(e.key.toLowerCase()));
+  addEventListener("keyup", (e) => keys.delete(e.key.toLowerCase()));
+
+  document.querySelector("#street")!.addEventListener("click", () => {
+    const dir = new THREE.Vector3().subVectors(camera.position, orbit.target).setY(0).normalize();
+    orbit.target.y = 1.6;
+    camera.position.copy(orbit.target).addScaledVector(dir, 2.2).setY(1.7);
+  });
+  document.querySelector("#overview")!.addEventListener("click", () => {
+    orbit.target.set(START.target[0], START.target[1], START.target[2]);
+    camera.position.set(START.eye[0], START.eye[1], START.eye[2]);
+  });
+}
+
+const preview = startPreview({ scene, camera, canvas, mode: view, controls });
+if (view === "walk") {
+  walk = startWalk({ scene, camera, canvas, loader, url, preview: preview.api });
+  sunFollows = walk.focus();
+}
 
 const clock = new THREE.Clock();
 const fpsEl = document.querySelector<HTMLElement>("#fps")!;
 let frames = 0, acc = 0;
 function frame() {
   const dt = Math.min(0.05, clock.getDelta());
-  const kx = (keys.has("d") || keys.has("arrowright") ? 1 : 0) - (keys.has("a") || keys.has("arrowleft") ? 1 : 0);
-  const ky = (keys.has("s") || keys.has("arrowdown") ? 1 : 0) - (keys.has("w") || keys.has("arrowup") ? 1 : 0);
-  const mx = move.x + kx, my = move.y + ky;
-  if (mx || my) {
-    const fwd = new THREE.Vector3().subVectors(controls.target, camera.position).setY(0).normalize();
-    const right = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0));
-    const step = new THREE.Vector3().addScaledVector(right, mx).addScaledVector(fwd, -my).multiplyScalar(3.2 * dt);
-    controls.target.add(step);
-    controls.target.x = THREE.MathUtils.clamp(controls.target.x, BOUNDS.x0, BOUNDS.x1);
-    controls.target.z = THREE.MathUtils.clamp(controls.target.z, BOUNDS.z0, BOUNDS.z1);
-    camera.position.add(step);
+  if (walk) {
+    walk.update(dt);
+    walk.focus();
+  } else if (controls && move) {
+    const kx = (keys.has("d") || keys.has("arrowright") ? 1 : 0) - (keys.has("a") || keys.has("arrowleft") ? 1 : 0);
+    const ky = (keys.has("s") || keys.has("arrowdown") ? 1 : 0) - (keys.has("w") || keys.has("arrowup") ? 1 : 0);
+    const mx = move.x + kx, my = move.y + ky;
+    if (mx || my) {
+      const fwd = new THREE.Vector3().subVectors(controls.target, camera.position).setY(0).normalize();
+      const right = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0));
+      const step = new THREE.Vector3().addScaledVector(right, mx).addScaledVector(fwd, -my).multiplyScalar(3.2 * dt);
+      controls.target.add(step);
+      controls.target.x = THREE.MathUtils.clamp(controls.target.x, BOUNDS.x0, BOUNDS.x1);
+      controls.target.z = THREE.MathUtils.clamp(controls.target.z, BOUNDS.z0, BOUNDS.z1);
+      camera.position.add(step);
+    }
   }
   preview.update(dt);
-  controls.update();
+  controls?.update();
   followSun();
   if (camera.position.y < 0.4) camera.position.y = 0.4;
   for (const m of mixers) m.update(dt);
@@ -339,4 +360,4 @@ addEventListener("resize", resize);
 resize();
 applyMode();
 frame();
-(window as unknown as { __strip: unknown }).__strip = { scene, camera, controls, renderer, preview: preview.api, setMode: (m: Mode) => { mode = m; applyMode(); } };
+(window as unknown as { __strip: unknown }).__strip = { scene, camera, controls, renderer, view, preview: preview.api, walk: walk?.api ?? null, setMode: (m: Mode) => { mode = m; applyMode(); } };

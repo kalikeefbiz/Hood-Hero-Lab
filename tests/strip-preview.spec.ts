@@ -1,10 +1,10 @@
 import { test, expect, type Page } from "@playwright/test";
 
-// The Reservoir integration preview (strip.html): physical anchors open Codex's location API on an
+// The Reservoir integration preview (strip.html?select, developer location selector): physical anchors open Codex's location API on an
 // isolated test campaign. Tapping uses the real on-screen pin position.
 
 async function ready(page: Page) {
-  await page.goto("strip.html");
+  await page.goto("strip.html?select");
   await page.waitForFunction(() => !document.querySelector("#progress"), null, { timeout: 180_000 });
 }
 const settled = (page: Page) =>
