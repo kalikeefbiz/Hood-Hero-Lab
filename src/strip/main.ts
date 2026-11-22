@@ -1,5 +1,6 @@
-// Reservoir street strip — standalone art preview for the street-level city.
-// Not part of the game build's runtime; it loads only on strip.html.
+// Reservoir street strip — standalone preview of the street-level city.
+// Not part of the game build's runtime; it loads only on strip.html. The places on it run
+// the real game engine on an isolated test campaign (preview.ts); real saves are never touched.
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
@@ -9,6 +10,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { STREETS, STRIP_NPCS, START, STREET_LAMPS, BOUNDS, type Placed } from "./layout";
 import { createSharedTextures } from "./sharedTextures";
 import { WALLS, FENCES, DOORS, STOREFRONTS, HOUSES, PLAYER_START } from "./cityMap";
+import { startPreview } from "./preview";
 import "./strip.css";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -297,6 +299,8 @@ document.querySelector("#overview")!.addEventListener("click", () => {
   camera.position.set(START.eye[0], START.eye[1], START.eye[2]);
 });
 
+const preview = startPreview({ scene, camera, controls, canvas });
+
 const clock = new THREE.Clock();
 const fpsEl = document.querySelector<HTMLElement>("#fps")!;
 let frames = 0, acc = 0;
@@ -314,6 +318,7 @@ function frame() {
     controls.target.z = THREE.MathUtils.clamp(controls.target.z, BOUNDS.z0, BOUNDS.z1);
     camera.position.add(step);
   }
+  preview.update(dt);
   controls.update();
   followSun();
   if (camera.position.y < 0.4) camera.position.y = 0.4;
@@ -334,4 +339,4 @@ addEventListener("resize", resize);
 resize();
 applyMode();
 frame();
-(window as unknown as { __strip: unknown }).__strip = { scene, camera, controls, renderer, setMode: (m: Mode) => { mode = m; applyMode(); } };
+(window as unknown as { __strip: unknown }).__strip = { scene, camera, controls, renderer, preview: preview.api, setMode: (m: Mode) => { mode = m; applyMode(); } };

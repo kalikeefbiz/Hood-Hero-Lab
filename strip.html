@@ -10,14 +10,15 @@
   <body>
     <canvas id="strip"></canvas>
     <div class="hud">
-      <div><h1>The Reservoir</h1><small>Westside · street preview</small></div>
+      <div><h1>The Reservoir</h1><small>Westside · test state, not saved</small></div>
       <div class="grow"></div>
+      <button id="places" type="button">Places</button>
       <button id="street" type="button">Street level</button>
       <button id="overview" type="button">Overview</button>
       <button id="mode" type="button">Dusk / Night</button>
     </div>
     <div id="pad" aria-label="Move"><div class="knob"></div></div>
-    <p class="hint">Drag to look · pinch to zoom · joystick to walk</p>
+    <p class="hint">Tap a marker to use a place · drag to look · pinch to zoom</p>
     <div id="fps"></div>
     <div id="progress">Loading the block…</div>
     <script type="module" src="/src/strip/main.ts"></script>

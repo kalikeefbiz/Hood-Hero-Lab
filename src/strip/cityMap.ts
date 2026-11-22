@@ -16,7 +16,11 @@ export interface Door {
   /** Direction the doorway faces, radians about +Y (0 = +Z). */
   facing: number;
 }
-export interface NpcSpot { characterId: string; x: number; z: number; rotY: number }
+export interface NpcSpot {
+  characterId: string; x: number; z: number; rotY: number;
+  /** The game location this spot belongs to (for co-presence checks). */
+  locationId: string;
+}
 
 /** Building footprints (everything above 1.6 m). Solid: the player can't enter them. */
 export const WALLS: Rect[] = [
@@ -70,11 +74,12 @@ export const DOORS: Door[] = [
 ];
 
 /** Storefronts that are scenery for now. Give one a locationId to make it a place. */
-export const STOREFRONTS: Door[] = [
-  { locationId: null, label: "Reservoir Barber Shop", x: -22.6, z: 45.9, radius: 2.0, facing: 0 },
-  { locationId: null, label: "Reservoir Liquor & Deli", x: -14.6, z: 46.4, radius: 2.0, facing: 0 },
-  { locationId: null, label: "Reservoir Beauty Supply", x: -6.95, z: 46.2, radius: 2.0, facing: 0 },
-  { locationId: null, label: "No Refund Auto & Tires", x: -2.32, z: 90.9, radius: 2.0, facing: 0 },
+export interface Storefront extends Door { /** Stable anchor id; keep it when the store gets a locationId. */ id: string }
+export const STOREFRONTS: Storefront[] = [
+  { id: "res-store-barber", locationId: null, label: "Reservoir Barber Shop", x: -22.6, z: 45.9, radius: 2.0, facing: 0 },
+  { id: "res-store-liquor-deli", locationId: null, label: "Reservoir Liquor & Deli", x: -14.6, z: 46.4, radius: 2.0, facing: 0 },
+  { id: "res-store-beauty-supply", locationId: null, label: "Reservoir Beauty Supply", x: -6.95, z: 46.2, radius: 2.0, facing: 0 },
+  { id: "res-store-auto", locationId: null, label: "No Refund Auto & Tires", x: -2.32, z: 90.9, radius: 2.0, facing: 0 },
 ];
 
 /**
@@ -119,9 +124,77 @@ export const HOUSES: HomeProperty[] = [
   { id: "res-home-16", street: "Dirty Money Dr", look: "tan bungalow", targetId: null, locationId: HOME, label: "Dirty Money Dr, tan bungalow (south)", x: -47.1, z: -79.9, radius: 1.8, facing: S },
 ];
 
-/** Where people stand. Quanny posts up outside Lil Jay's. */
+/**
+ * Where people stand when they are at a place. These are physical anchors, not schedules:
+ * who is actually here, and when, is decided by the NPC simulation (Gemini) and the engine.
+ * Quanny posts up outside Lil Jay's; Mr. Lewis works his own counter by the door.
+ */
 export const NPC_SPOTS: NpcSpot[] = [
-  { characterId: "quanny", x: 2.7, z: 1.5, rotY: 0.35 },
+  { characterId: "quanny", locationId: "reservoir.lil-jays", x: 2.7, z: 1.5, rotY: 0.35 },
+  { characterId: "mr-lewis", locationId: "reservoir.lil-jays", x: -1.5, z: 1.4, rotY: 0 },
+];
+
+/**
+ * Places where people gather that aren't a single character's spot. NPC simulation can send
+ * anyone here; the location's social actions use whoever is verified present.
+ */
+export interface GatheringSpot { id: string; locationId: string; label: string; x: number; z: number; radius: number }
+export const GATHERING_SPOTS: GatheringSpot[] = [
+  // Inside the Lot Court gate, on the sideline (the fence gate is at x -18.8..-15.1, z 88.7).
+  { id: "res-court-sideline", locationId: "reservoir.lot-court", label: "Lot Court sideline", x: -16.98, z: 86.4, radius: 3.0 },
+  // The stoop outside Lil Jay's, where the Blocc Boys link up without making Mr. Lewis part of it.
+  { id: "res-lil-jays-stoop", locationId: "reservoir.lil-jays", label: "Outside Lil Jay's", x: 3.6, z: 2.6, radius: 2.4 },
+];
+
+/**
+ * Who lives where (docs/RESERVOIR_CANON.md section E). Several people share a house; most houses
+ * are not owned by anyone the player has met. `residents` uses ids that exist in the engine today.
+ * `canonResidents` uses the canon's suggested ids for approved cast who have no engine record yet:
+ * Codex creates those records, and keeps or renames the id there.
+ * A household is a destination, not a schedule, and never makes a house buyable.
+ */
+export type HouseholdKind = "owner-occupied" | "bando" | "family" | "shared";
+export interface Household {
+  /** Stable household id. Never reuse; saves and the NPC simulation may point at it. */
+  id: string;
+  /** HOUSES[].id this household lives in. */
+  propertyId: string;
+  kind: HouseholdKind;
+  residents: string[];
+  canonResidents: string[];
+  note: string;
+}
+export const HOUSEHOLDS: Household[] = [
+  {
+    id: "household.lewis", propertyId: "res-home-04", kind: "owner-occupied",
+    residents: ["mr-lewis"], canonResidents: [],
+    note: "Mr. Lewis owns it. Across Lil Bit Lane from his market; no robbery target attached.",
+  },
+  {
+    id: "household.splash-gang", propertyId: "res-home-03", kind: "bando",
+    residents: ["quanny"], canonResidents: ["baby-reek", "tay-savage", "lil-deuce", "k3"],
+    note: "Splash Gang's shared bando: the abandoned house at the west end of Lil Bit Lane, the Blocc Boys' link-up street. Separate from the 327 boarded house (reservoir.boarded-house), which stays street work.",
+  },
+  {
+    id: "household.bb-dirty-money", propertyId: "res-home-15", kind: "bando",
+    residents: [], canonResidents: [],
+    note: "Shared bando for other Blocc Boys. Occupants unassigned until their engine records exist.",
+  },
+  {
+    id: "household.duplex-721", propertyId: "res-home-13", kind: "family",
+    residents: [], canonResidents: ["shay-reservoir"],
+    note: "Shay and the relatives she raises her child with.",
+  },
+  {
+    id: "household.duplex-723", propertyId: "res-home-14", kind: "family",
+    residents: [], canonResidents: ["keisha-reservoir"],
+    note: "Keisha's family. Works an ordinary job; stays out of gang business.",
+  },
+  {
+    id: "household.pat", propertyId: "res-home-16", kind: "owner-occupied",
+    residents: [], canonResidents: ["miss-pat"],
+    note: "Miss Pat's house; she has been on Dirty Money Drive since its better years.",
+  },
 ];
 
 /** Player spawn on Lil Bit Lane's sidewalk, by Lil Jay's. */
