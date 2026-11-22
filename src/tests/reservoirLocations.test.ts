@@ -10,7 +10,7 @@ import {
 } from "../city/LocationInteractions";
 import { record } from "../core/EventLog";
 import { addGrievance, expose } from "../systems/Danger";
-import { syncEncounters } from "../systems/Encounters";
+import { dismissEncounter, syncEncounters } from "../systems/Encounters";
 import { frontMerchandise } from "../systems/Consignment";
 import { ITEMS } from "../content/economy";
 import { player, type GameState } from "../core/GameState";
@@ -177,10 +177,16 @@ describe("Reservoir location gameplay without rendering", () => {
       for (let attempts = 0; !shiftToday(s) && attempts < 7; attempts++)
         s = advanceDay(s);
       expect(shiftToday(s)).toBeTruthy();
-      const openScene = queryLocation(s, c).actions.find(
+      const visitor = s.danger.scenes.find(
+        (scene) => scene.status === "open" && scene.location === location,
+      );
+      const sceneContext = context(location, {
+        peopleHere: visitor ? [visitor.npc] : [],
+      });
+      const openScene = queryLocation(s, sceneContext).actions.find(
         (a) => a.command.responseId === "leave",
       );
-      if (openScene) s = run(s, c, openScene.command).state;
+      if (openScene) s = run(s, sceneContext, openScene.command).state;
       player(s).affiliation = "blocks";
       const territory = structuredClone(s.strategic.territories.reservoir);
       const wage = currentEmployment(s)!.wage;
@@ -259,7 +265,7 @@ describe("Reservoir location gameplay without rendering", () => {
     expect(sold.state.assets[0].recurringIncome).toBe(0);
   });
 
-  it("runs the market introduction and civilian work and keeps Lewis unaffiliated", () => {
+  it("requires verified market NPCs for delivery, social actions and Quanny’s introduction", () => {
     const s = freshGame("Resident", "reservoir");
     at(s, market);
     expect(s.characters.quanny).toMatchObject({
@@ -268,29 +274,54 @@ describe("Reservoir location gameplay without rendering", () => {
       description: expect.stringContaining("Splash Gang"),
     });
     expect(s.characters["mr-lewis"].affiliation).toBeNull();
-    const delivered = run(s, context(market), {
+    const unverified = context(market);
+    const withLewis = context(market, { peopleHere: ["mr-lewis"] });
+    const withQuanny = context(market, { peopleHere: ["quanny"] });
+    const delivery = {
       type: "lewisDelivery",
       targetId: "mr-lewis",
-    });
+    } as const;
+    const introduction = { type: "meetQuanny", targetId: "quanny" } as const;
+    for (const c of [unverified, context(market, { peopleHere: [] })]) {
+      expect(queryLocation(s, c).actions).not.toContainEqual(
+        expect.objectContaining({
+          command: expect.objectContaining({
+            targetId: expect.stringMatching(/^(quanny|mr-lewis)$/),
+          }),
+        }),
+      );
+      blocked(s, c, delivery, /unavailable/);
+      blocked(s, c, introduction, /unavailable/);
+    }
+    blocked(s, withLewis, introduction, /unavailable/);
+    blocked(s, withQuanny, delivery, /unavailable/);
+    const busy = structuredClone(s);
+    busy.characters.quanny.availableDay = busy.day + 1;
+    blocked(busy, withQuanny, introduction, /isn’t available/);
+
+    const delivered = run(s, withLewis, delivery);
     expect(delivered.changes).toMatchObject({
       apSpent: 1,
       wallet: { clean: 38 },
     });
-    blocked(
-      delivered.state,
-      context(market),
-      { type: "lewisDelivery", targetId: "mr-lewis" },
-      /unavailable/,
-    );
-    const met = run(delivered.state, context(market), {
-      type: "meetQuanny",
-      targetId: "quanny",
-    });
+    blocked(delivered.state, withLewis, delivery, /unavailable/);
+    const met = run(delivered.state, withQuanny, introduction);
     expect(met.state.quanny).toMatchObject({ met: true, location: market });
-    const answer = queryLocation(met.state, context(market)).actions.find(
+    const business = { type: "quanny", targetId: "quanny" } as const;
+    blocked(met.state, withLewis, business, /unavailable/);
+    blocked(met.state, withQuanny, business, /Finish this conversation/);
+
+    const answer = queryLocation(met.state, withQuanny).actions.find(
       (a) => a.command.responseId === "claim:unaffiliated",
     )!;
-    const replied = run(met.state, context(market), answer.command).state;
+    blocked(met.state, unverified, answer.command, /unavailable/);
+    const targetId = answer.command.targetId!;
+    const deferred = dismissEncounter(met.state, targetId);
+    expect(validateLocationAction(deferred, withQuanny, business)).toBeNull();
+    const reopen = { type: "openEncounter", targetId } as const;
+    blocked(deferred, withLewis, reopen, /unavailable/);
+    const resumed = run(deferred, withQuanny, reopen).state;
+    const replied = run(resumed, withQuanny, answer.command).state;
     expect(replied.quanny.claim).toBe("unaffiliated");
     expect(deserialize(serialize(replied)).quanny).toEqual(replied.quanny);
   });
@@ -329,7 +360,7 @@ describe("Reservoir location gameplay without rendering", () => {
     expect(deserialize(serialize(rested.state))).toEqual(rested.state);
   });
 
-  it("resolves an engine-generated confrontation only at its actual court location", () => {
+  it("requires the court location and a verified participant to resolve a confrontation", () => {
     const s = campaign(court, 8);
     const factions = structuredClone(
       s.strategic.territories.reservoir.factions,
@@ -342,12 +373,19 @@ describe("Reservoir location gameplay without rendering", () => {
     s.danger.rng = 8;
     expose(s, court, "activity", "court-visit");
     syncEncounters(s);
-    const response = queryLocation(s, context(court)).actions.find(
+    const withContact = context(court, { peopleHere: ["contact-blocks"] });
+    const response = queryLocation(s, withContact).actions.find(
       (a) => a.command.responseId === "leave",
     )!;
     expect(response).toBeDefined();
-    blocked(s, context(tower), response.command, /unavailable/);
-    const result = run(s, context(court), response.command);
+    blocked(s, context(court), response.command, /unavailable/);
+    blocked(
+      s,
+      context(tower, { peopleHere: ["contact-blocks"] }),
+      response.command,
+      /unavailable/,
+    );
+    const result = run(s, withContact, response.command);
     expect(result.state.danger.scenes.at(-1)).toMatchObject({
       location: court,
       status: "resolved",

@@ -58,7 +58,7 @@ export interface LocationContext {
   locationId: string;
   /** Resolve an individual house at reservoir.homes. */
   propertyId?: string;
-  /** Trusted world presence supplied by the host. Include the actor when acting as an NPC. */
+  /** Verified people at this location. Include the actor when acting as an NPC. */
   peopleHere?: readonly string[];
 }
 
@@ -138,9 +138,7 @@ function inspect(state: GameState, context: LocationContext) {
     ? null
     : "Actor must be at this location.";
   const actions: Binding[] = [];
-  const people = new Set(
-    peopleHere ?? (locationId === QUANNY_HOME ? ["quanny", "mr-lewis"] : []),
-  );
+  const people = new Set(peopleHere);
   // Story state can relocate Quanny during an active scene. Lewis runs the market.
   if (quannyLocation(state) !== locationId) people.delete("quanny");
   if (locationId !== QUANNY_HOME) people.delete("mr-lewis");
@@ -287,7 +285,13 @@ function inspect(state: GameState, context: LocationContext) {
                 e.eventIds.includes(encounter.sourceEventId),
             )
           : false;
-    if (!here) continue;
+    if (
+      !here ||
+      !encounter.participants.every(
+        (id) => id === actorId || peopleHere?.includes(id),
+      )
+    )
+      continue;
     const definition = encounterDefinition(encounter);
     if (!definition.eligible(state, encounter) || presenceError) continue;
     const targetId = encounter.id;
