@@ -1,8 +1,8 @@
 # Building the city block by block: plan and review of PR #28
 
-> **CURRENT OWNERSHIP UPDATE — 2026-11-22:** `AGENTS.md` section **00A** is authoritative. Claude owns world/map/render presentation; Codex owns gameplay engine and headless location APIs; Gemini owns independently developed NPC world simulation/navigation/presence (no repo write access yet). **Player controls, movement and camera-follow ownership remain unassigned.** Earlier tables or proposals assigning `src/city/**` or movement to Claude/Codex are historical and superseded. `docs/CODEX_CITY_BRIEF.md` has been rewritten accordingly. The five-street Reservoir direction and save-compatibility rules remain active.
+> **CURRENT OWNERSHIP UPDATE — 2026-11-22:** `AGENTS.md` section **00A** is authoritative. Claude owns world/map/render presentation; Codex owns gameplay engine and headless location APIs; Gemini owns independently developed NPC world simulation/navigation/presence (no repo write access yet). **Claude owns player controls, movement, physical collision and camera-follow in `src/strip/**` (owner decision 2026-11-22).** Earlier tables or proposals assigning `src/city/**` or movement to Claude/Codex are historical and superseded. `docs/CODEX_CITY_BRIEF.md` has been rewritten accordingly. The five-street Reservoir direction and save-compatibility rules remain active.
 
-Decided 2026-11-20 with the owner. Claude owns this plan and the world it builds. Codex owns rules, movement rules, content and the data behind them.
+Decided 2026-11-20 with the owner. Claude owns this plan, the world and player movement/controller. Codex owns gameplay rules, content and consequences; Gemini owns NPC autonomy and navigation. Conflicting older assignments below are historical.
 
 ## The decision
 Grow the new city **beside** the old strategy board and share the same game engine. Do not merge new on top of old, and do not restart the game. Retire the old board one hood at a time, only after the new city covers that hood.
@@ -68,4 +68,4 @@ It walks the **old board's** Reservoir strip, not the new one. It proves the *fl
 - Physical iPhone performance is unverified for both the strip and the prototype. First gate of phase 1.
 
 ## Split update (owner, 2026-11-22; supersedes "Who does what" above)
-Claude: the look and the map (`src/strip/**`, `cityMap.ts`, assets, art). Codex: all gameplay wiring in the city (`src/city/**`) plus engine and content. The map file is the handshake. Brief for Codex: `docs/CODEX_CITY_BRIEF.md`.
+Claude: city presentation, map and player controller (`src/strip/**`, `cityMap.ts`, assets, art), including touch input, collisions, camera follow and physical interaction-range detection. Codex: all canonical gameplay wiring in `src/city/**`, engine and content. Gemini: NPC presence, autonomy and navigation. The map file is the handshake. Brief for Codex: `docs/CODEX_CITY_BRIEF.md`.
