@@ -8,6 +8,7 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { STREETS, STRIP_NPCS, START, STREET_LAMPS, BOUNDS, type Placed } from "./layout";
 import { createSharedTextures } from "./sharedTextures";
+import { WALLS, FENCES, DOORS, STOREFRONTS, HOUSES, PLAYER_START } from "./cityMap";
 import "./strip.css";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -105,6 +106,23 @@ function applyMode() {
 // ---------------------------------------------------------------- loading
 const ktx2 = new KTX2Loader().setTranscoderPath(url("basis/")).detectSupport(renderer);
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx2);
+// strip.html?map draws the gameplay map (cityMap.ts) over the city for checking.
+if (params.has("map")) {
+  const g = new THREE.Group();
+  const line = (pts: number[][], color: number) => {
+    const geo = new THREE.BufferGeometry().setFromPoints(pts.map(([x, z]) => new THREE.Vector3(x, 0.15, z)));
+    g.add(new THREE.Line(geo, new THREE.LineBasicMaterial({ color, depthTest: false })));
+  };
+  for (const r of WALLS) line([[r.x0, r.z0], [r.x1, r.z0], [r.x1, r.z1], [r.x0, r.z1], [r.x0, r.z0]], 0xff3030);
+  for (const f of FENCES) line([[f.ax, f.az], [f.bx, f.bz]], 0xff9a20);
+  const ring = (x: number, z: number, r: number, color: number) =>
+    line(Array.from({ length: 25 }, (_, i) => [x + r * Math.cos((i / 24) * Math.PI * 2), z + r * Math.sin((i / 24) * Math.PI * 2)]), color);
+  for (const d of DOORS) ring(d.x, d.z, d.radius, 0x30ff60);
+  for (const d of [...STOREFRONTS, ...HOUSES]) ring(d.x, d.z, d.radius, 0x30c0ff);
+  ring(PLAYER_START.x, PLAYER_START.z, 0.5, 0xffffff);
+  g.renderOrder = 999;
+  scene.add(g);
+}
 const attachShared = createSharedTextures(ktx2, url("assets/tex/"), Math.min(8, renderer.capabilities.getMaxAnisotropy()));
 const progress = document.querySelector<HTMLElement>("#progress")!;
 

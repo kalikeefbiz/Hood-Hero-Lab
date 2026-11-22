@@ -64,3 +64,6 @@ It walks the **old board's** Reservoir strip, not the new one. It proves the *fl
 
 ## Open items
 - Physical iPhone performance is unverified for both the strip and the prototype. First gate of phase 1.
+
+## Split update (owner, 2026-11-22; supersedes "Who does what" above)
+Claude: the look and the map (`src/strip/**`, `cityMap.ts`, assets, art). Codex: all gameplay wiring in the city (`src/city/**`) plus engine and content. The map file is the handshake. Brief for Codex: `docs/CODEX_CITY_BRIEF.md`.
