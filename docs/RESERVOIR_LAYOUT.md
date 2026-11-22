@@ -33,9 +33,29 @@ Reservoir Liquor & Deli, No Refund Auto & Tires, Barbershop, Liquors, Beauty Sup
 ## Art status
 - Have: five street plans, plus angled shots of Liquor & Deli, Auto & Tires, Westside Warehouse, Pawn, Laundry.
 - Front elevations received 2026-11-21 (`front-*.png`): Laundry, Westside Warehouse, No Refund Auto & Tires, Pawn & Resale, Liquor & Deli. Front + angled pair is complete for all five.
-- Still need: Barbershop and Beauty Supply (Blocc Boy Blvd), lot court, water tower, house types, props.
+- Barber Shop and Beauty Supply received 2026-11-21 (fronts are canon; the angled shots differ in details and were used only for side-wall reference).
+- Still need: lot court, water tower, house types, props.
 
 ## Built (2026-11-21)
-- **Blocc Boy Boulevard** (street 2) is one block south of Lil Bit Lane, reached down Kirkwood St. North side, west to east: parking lot, barbershop (placeholder), Reservoir Liquor & Deli, beauty supply (placeholder), Reservoir Pawn & Resale on the Kirkwood corner. South side is fenced empty lots for now. Coordinates in `src/strip/layout.ts`.
+- **Blocc Boy Boulevard** (street 2) is one block south of Lil Bit Lane, reached down Kirkwood St. North side, west to east: parking lot, Reservoir Barber Shop, Reservoir Liquor & Deli, Reservoir Beauty Supply, Reservoir Pawn & Resale on the Kirkwood corner. South side is fenced empty lots for now. Coordinates in `src/strip/layout.ts`.
 - Laundry, Auto & Tires and Westside Warehouse are built and waiting for their streets.
 - The plans are concept art, not survey drawings. Claude sets one metric grid when building.
+
+## Street grid as built (2026-11-21)
+Owner: Vesper's plans are references, not authority; Claude lays out the city. North to south along Kirkwood St (x 6.6..14):
+
+| Street | Road (three.js z) | What's on it |
+|---|---|---|
+| Big Mouth Blvd | -40.6..-31.2 | Water tower closes the west end (x -68, the westernmost point of the Stixx). North side: boarded house (327), two houses. South side: the back fences of Lil Bit Lane's houses. |
+| Lil Bit Lane | ~3..12.6 | Lil Jay's Market and its houses (unchanged). |
+| Blocc Boy Blvd | 48..57.4 | Barber Shop, Liquor & Deli, Beauty Supply, Pawn. South side open. |
+| No Refund Road | 92..101.4 | Westside Warehouse, Lot Court, No Refund Auto & Tires (court mural on its west wall). South side open. |
+| Dirty Money Drive | planned | Reservoir Laundry (built), houses. Goes north of Big Mouth or south of No Refund. |
+
+Game locations now standing in the city: `reservoir.lil-jays`, `.pawn`, `.warehouse`, `.lot-court`, `.boarded-house`, `.water-tower`. Still to place: `.laundry`, `.homes` (houses exist; which one is "Reservoir homes" is for Codex/owner).
+
+## Design intent (owner, 2026-11-21)
+The Reservoir's west side is meant to feel thin: empty lots, run-down and abandoned houses, a handful of family-owned businesses. A fantasy Detroit or Flint. Not every lot gets filled; open lots and fenced yards are part of the look.
+
+## Loading (2026-11-21)
+Streets load as groups, nearest to the start first, four files at a time; the start street (Lil Bit Lane) is playable after ~8 MB, the rest streams in behind it. Repeated files (houses) download once and are cloned. Tiling textures are shared from `public/assets/tex/`. Whole Reservoir: ~24 MB (was ~45 MB).

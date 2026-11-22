@@ -18,7 +18,9 @@ Last updated: 2026-11-20. Update the "Where we are" and "Next" sections at the e
 - **Street strip: done and deployed** (PR #36). Quanny now stands outside Lil Jay's with a hand-animated street idle (PR after #38). Preview: https://kalikeefbiz.github.io/Hood-Hero-Lab/strip.html. Pipeline and budgets: `art/strip/README.md`. Whole strip is ~15k tris, ~13 MB. Not yet tested on a real iPhone.
 - Codex prototype `codex/immersive-city-prototype` (PR #28): walkable Reservoir on the OLD board, flow proven. **Do not merge as-is** (renames the save slot, adds street mode into BoardRenderer). Reviewed in `docs/CITY_PLAN.md`: port the flow into a new `src/city/` beside the old board.
 
-- **Blocc Boy Boulevard built** (street 2): Pawn and Liquor & Deli placed, barbershop and beauty supply are placeholders; Laundry, Auto & Tires and Westside Warehouse built, not yet placed. `art/reservoir/README.md`, `docs/RESERVOIR_LAYOUT.md`.
+- **Blocc Boy Boulevard built** (street 2): north side complete (Barber Shop, Liquor & Deli, Beauty Supply, Pawn); Laundry, Auto & Tires and Westside Warehouse built, not yet placed. `art/reservoir/README.md`, `docs/RESERVOIR_LAYOUT.md`.
+
+- **Big Mouth Blvd and No Refund Road built**: water tower (west end), boarded house, Lot Court, Warehouse and Auto & Tires placed. Street grid in `docs/RESERVOIR_LAYOUT.md`.
 
 ## Next: grow the strip into the city (Claude owns this)
 Plan, architecture and the PR #28 review: **`docs/CITY_PLAN.md`** (new city beside the old board, shared engine, retire old hoods one at a time). Phase 1 = Reservoir vertical slice.

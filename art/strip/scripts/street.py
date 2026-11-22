@@ -96,7 +96,8 @@ for (a, b) in LOTS:
 ground(-6.0, -4.0, 0.0, 18.0, SZ - 0.01, "gravel", (2, 2))     # alley beside the store
 ground(-4.0, 4.0, 10.0, 18.0, SZ - 0.01, "gravel", (2, 2))     # lot behind the store
 ground(-4.0, 4.0, 0.0, 10.0, SZ - 0.004, "walk", (3, 3))        # slab under the store
-ground(X0, X1, 18.0, 40.0, SZ - 0.02, "yard", (4, 4))           # back field
+ground(X0, SX0 - 2.6, 18.0, 28.0, SZ - 0.02, "yard", (4, 4))     # back field, up to Big Mouth Blvd's
+ground(SX1 + 2.6, X1, 18.0, 28.0, SZ - 0.02, "yard", (4, 4))     # sidewalk (Kirkwood St runs north between)
 ground(X0, SX0, -40.0, ROAD_B - 3.2, SZ - 0.02, "yard", (4, 4))  # far side lots (Kirkwood St runs south
 ground(SX1, X1, -40.0, ROAD_B - 3.2, SZ - 0.02, "yard", (4, 4))  # between them to Blocc Boy Blvd)
 # walkways from sidewalk to porches
