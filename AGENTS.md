@@ -1,6 +1,6 @@
 # AGENTS.md — Hood Hero Lab collaboration rules
 
-These standing instructions apply to all coding agents working in **kalikeefbiz/Hood-Hero-Lab**. Read them before editing. They protect the shared playable Lab and coordinate Codex (gameplay/content) with Claude (board/3D). The project owner has final authority over scope and release decisions.
+These standing instructions apply to all coding agents working in **kalikeefbiz/Hood-Hero-Lab**. Read them before editing. They protect the shared playable Lab and coordinate Claude (world presentation), Codex (gameplay), and Gemini (NPC simulation). The project owner has final authority over scope and release decisions.
 
 ## 00. Current direction (owner decision 2026-11-20; overrides anything below that conflicts)
 
@@ -8,12 +8,34 @@ Read `docs/CITY_PLAN.md`. Summary:
 
 - **The old board (`src/board/**`) is frozen.** No features, content, fixes or visual changes there. Only a bug that breaks saves or stops the game running may be fixed, and say so in the PR. The game engine, saves, characters and rules stay where they are and keep working.
 - **The new city is built street by street in `src/city/**`** (seed: `src/strip/`), sharing the same engine and saves. The Reservoir comes first (4 to 6 streets), then Southside, Eastside, Northside, Downtown. A hood is done when everything in the game is playable in it: locations, NPCs, player interactions, shops, crime locations, encounters.
-- **Split updated 2026-11-22 (owner):** Claude does what the city looks like and where things are; Codex does everything that makes it play.
+- **Current split, locked 2026-11-22:** Claude owns physical world, map and visual presentation; Codex owns canonical gameplay systems and location action API; Gemini owns NPC simulation, schedules, navigation, and authoritative NPC presence. See **section 00A**. This overrides historical two-agent assignments below.
 - **Claude owns the look and the map**: `src/strip/**` (scene, streets, buildings, camera look, lighting, loading, `layout.ts`, and the gameplay map `cityMap.ts`), `public/assets/**` (models, textures), `art/**`. Claude places doors, walls, fences, NPC spots and the player start in `cityMap.ts`, and decides where each feature physically happens.
-- **Codex owns the gameplay in the city**: `src/city/**` — player movement and collision (read `WALLS`/`FENCES`/`WALK_BOUNDS`), touch controls, interaction at doors and people (read `DOORS`/`NPC_SPOTS`), triggers, encounters, purchases, save/load hookup — plus the engine and content as before (`src/systems/**`, `src/content/**`, rules, dialogue, economy, tests).
-- **Per-street loop**: owner gives art and intent, Claude builds the street and its map data, Codex wires the gameplay, both test on a phone, owner plays, merge.
+- **Codex owns gameplay contracts and resolution**: `src/city/**` location action API, `src/systems/**`, `src/content/**`, `src/core/**`, validation, economy, crimes, encounters, faction consequences, relationships and saves. **Player movement, touch controls, collision runtime and camera follow are unassigned**, not automatically Codex tasks.
+- **Per-street loop**: owner locks canon, Claude builds physical streets and map anchors, Codex wires real gameplay actions, Gemini supplies NPC autonomy after its integration is authorized, owner playtests and approves merge. Nothing in this loop assigns player controls.
 - Codex reads but does not edit `src/strip/**`, `public/assets/**` or `art/**`. Need a door, a wall fixed, an NPC spot, a storefront made a real place? Ask in the PR by location/character id; Claude updates `cityMap.ts`. Brief: `docs/CODEX_CITY_BRIEF.md`.
 - Anywhere below that says "on the board", read "in the city".
+
+## 00A. Three-agent boundaries and current integration contract (owner-approved 2026-11-22; overrides conflicting text anywhere in this repository)
+
+**ONLY active development repository:** `kalikeefbiz/Hood-Hero-Lab`. `kalikeefbiz/Hood-Hero` is frozen and must not be touched. **Authoritative canon:** `docs/RESERVOIR_CANON.md`. **Physical map:** `src/strip/cityMap.ts` (Claude). **Gameplay contract in review:** PR #51, `src/city/LocationInteractions.ts` and `docs/RESERVOIR_GAMEPLAY_WIRING.md` (Codex); these files exist on the PR branch until merged, not necessarily on `main`.
+
+| Agent | Owns | Must not implement without a newly approved task |
+| --- | --- | --- |
+| **Claude** | Physical geometry, buildings, sidewalks, doors, fences and anchors in `src/strip/**`, visual rendering, lighting, asset presentation, interface that displays engine-returned actions/results | NPC decisions, schedules, pathfinding, autonomous movement, social AI, action resolution, new game rules, unassigned player controls |
+| **Codex** | Canonical game rules, item/cash/inventory/relationship/faction effects, eligibility, persistent state, jobs/crime/businesses, presentation-free location gameplay API in `src/city/**`, rule tests | Geometry, city map, renderer, NPC world scheduler/pathfinding, unassigned player movement/controls/camera |
+| **Gemini** | Independently prototyped NPC movement/navigation, schedules, behavior, NPC-to-NPC interaction decisions, population persistence and runtime presence/co-presence | Game engine truth/economy/relationship resolution/saves, visual renderer and approved assets, player controls; **no repo edits yet** until integration scope/access explicitly approved |
+
+**Player movement and controls:** ownership **UNASSIGNED**. No agent may implement player walking, joystick, touch input, player collision runtime, camera follow or related controller without a new owner decision. Claude still owns existing camera *presentation* and geometry. Prior Codex movement assignments in `docs/CODEX_CITY_BRIEF.md` and `docs/CITY_PLAN.md` are superseded.
+
+**Production NPC presence:** Gemini will determine actual NPC coordinates and co-presence; the host supplies **verified `peopleHere`** to Codex's location API. Neither Claude's static `NPC_SPOTS` nor legacy story-location assumptions are a permanent substitute. Claude may use *explicit isolated preview fixtures* derived from map NPC spots (including a temporary Mr. Lewis market anchor), but must label them fixtures and keep them out of gameplay and saves. Claude **does not implement NPC behavior**. Claude renders a character and its approved animations from authoritative state; Gemini determines the behavioral/locomotion state, not the Three.js scene.
+
+**Preview position:** Until player controls are assigned, Claude may use a **developer-only location selector with isolated test state** to exercise the actual gameplay API and display results. It may invoke the existing legitimate location transition in that *throwaway test state*, not silently move a real player's save or add a permanent tap-to-teleport strategy interface. The preview is not proof that walking gameplay works.
+
+**File seam:** Claude's presentation adapter lives in Claude-owned `src/strip/**`; it **imports** Codex's public API from `src/city/**` after #51 merges. Codex does not edit `src/strip/**`. Gemini consumes canonical maps and game state when integration is authorized; it does not install its own renderer or write authoritative game state.
+
+**Review order:** (1) Claude reviews PR #51 compatibility and merges only if clean; (2) Claude builds separate visual-anchoring PR after rebasing onto merged `main`; (3) Gemini validates independent five-street simulation using real destinations and action contracts; (4) owner determines player controller scope/owner. No new camera-board prototype and no old `src/city3d/**` revival.
+
+**Docs hygiene:** Whenever the owner changes responsibility or architecture, the coordinating agent **must update `AGENTS.md` and any conflicting active task brief before issuing an implementation handoff**. An in-chat decision alone is not sufficient. Existing safeguards about branches, PRs, saving, production isolation, and mobile-first testing still apply.
 
 ## 0. The city comes first (read this before designing anything)
 
@@ -59,7 +81,7 @@ For every new feature:
 - Board and renderer tests, 3D performance, model loading, and environment presentation.
 
 ### Codex — rules, narrative and content owner
-- src/systems/** and src/content/**: game rules, faction logic, NPC agency, economy, story, encounters and content.
+- src/systems/** and src/content/**: canonical game rules, faction logic, NPC action outcomes, economy, story, encounters and content. **Gemini owns NPC runtime schedules/navigation/behavior; Codex owns the engine consequences.**
 - src/core/** except explicitly shared state contracts noted below.
 - Gameplay, encounter and simulation tests; authoring/validation of content and approved portrait assets.
 - public/assets/characters/** and portrait mapping/expression selection in existing UI helpers, without redesigning board layouts.
@@ -77,7 +99,7 @@ For every new feature:
 - Prefer **data and persistent IDs** over duplicating renderer logic. Game rules own character records, state transitions, encounter eligibility, outcomes and save data. The board reads this state and renders it.
 - Keep character and location IDs stable; coordinate new IDs before board hookup. Example: Quanny's canonical character ID is **quanny** and his contact location is **reservoir.lil-jays**. His model can be resolved from the same character ID without gameplay code loading GLBs.
 - Do not change a canonical ID, location registry key, dialogue choice ID or save-state field casually. Preserve existing campaigns and historical records when adding content; document deliberate schema changes.
-- Respect the existing 3D strategy-board architecture and real location/presence rules. Do not introduce a parallel UI, encounter engine, NPC placement system or rendering pipeline for a content feature.
+- Respect the new walkable-City direction and real location/presence rules. The old 3D strategy board is frozen. Do not introduce a parallel UI, encounter engine, NPC placement system, or rendering pipeline.
 - For character portraits, use the established portrait components and approved art only. Do not introduce new expressions or substitute images without approval.
 
 ## 4. Required agent workflow
@@ -111,7 +133,7 @@ If cross-owner integration is unfinished, label it clearly as a dependency; do n
 - Never commit credentials, tokens, private user details, local workstation data or external personal information to this public repository.
 - Do not modify GitHub repository rules, CI protection or release process without explicit authorization.
 
-**Bottom line:** Codex produces a reviewed gameplay/content PR. Claude integrates board/3D changes and merges after compatibility review. The owner decides scope and when Lab is ready to move into the original Hood-Hero production repository.
+**Bottom line:** Codex produces a reviewed gameplay/content PR. Claude integrates board/3D changes and merges after compatibility review. The owner decides scope and when Lab is ready to move into the original Hood-Hero production repository. Gemini owns NPC world simulation, but has no repository write assignment yet; player movement/controls ownership is unassigned.
 
 
 ## 7. Mobile-first
