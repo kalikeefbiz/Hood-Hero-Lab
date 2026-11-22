@@ -50,12 +50,12 @@ Owner: Vesper's plans are references, not authority; Claude lays out the city. N
 | Lil Bit Lane | ~3..12.6 | Lil Jay's Market and its houses (unchanged). |
 | Blocc Boy Blvd | 48..57.4 | Barber Shop, Liquor & Deli, Beauty Supply, Pawn. South side open. |
 | No Refund Road | 92..101.4 | Westside Warehouse, Lot Court, No Refund Auto & Tires (court mural on its west wall). South side open. |
-| Dirty Money Drive | planned | Reservoir Laundry (built), houses. Goes north of Big Mouth or south of No Refund. |
+| Dirty Money Drive | -92..-82.6 | North of Big Mouth, the northern edge. Reservoir Laundry on the Kirkwood corner, three houses each side, fenced empty lots between. |
 
-Game locations now standing in the city: `reservoir.lil-jays`, `.pawn`, `.warehouse`, `.lot-court`, `.boarded-house`, `.water-tower`. Still to place: `.laundry`, `.homes` (houses exist; which one is "Reservoir homes" is for Codex/owner).
+Game locations now standing in the city: `reservoir.lil-jays`, `.pawn`, `.warehouse`, `.lot-court`, `.boarded-house`, `.water-tower`. `.laundry` is on Dirty Money Drive. Still to decide: which houses are `.homes` (for Codex/owner).
 
 ## Design intent (owner, 2026-11-21)
 The Reservoir's west side is meant to feel thin: empty lots, run-down and abandoned houses, a handful of family-owned businesses. A fantasy Detroit or Flint. Not every lot gets filled; open lots and fenced yards are part of the look.
 
 ## Loading (2026-11-21)
-Streets load as groups, nearest to the start first, four files at a time; the start street (Lil Bit Lane) is playable after ~8 MB, the rest streams in behind it. Repeated files (houses) download once and are cloned. Tiling textures are shared from `public/assets/tex/`. Whole Reservoir: ~24 MB (was ~45 MB).
+Streets load as groups, nearest to the start first, four files at a time; the start street (Lil Bit Lane) is playable after ~8 MB, the rest streams in behind it. Repeated files (houses) download once and are cloned. Tiling textures are shared from `public/assets/tex/`. Whole Reservoir: ~25 MB (was ~45 MB).
