@@ -36,7 +36,7 @@ export const FACTIONS: Record<FactionId, Faction> = {
   },
   blocks: {
     id: "blocks",
-    name: "Block Boys",
+    name: "Blocc Boys",
     color: "#6caaa6",
     home: "reservoir",
     leaders: [],

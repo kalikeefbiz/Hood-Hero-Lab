@@ -261,16 +261,17 @@ export function payTribute(s: GameState) {
     received: 0,
   });
 }
+export const LEWIS_DELIVERY_WAGE = 38;
+export function lawfulLewisError(s: GameState) {
+  if (!s.streetLife || s.streetLife.scenes.lewis) return "This delivery is unavailable.";
+  if (!atPerson(s, "mr-lewis")) return "Find Mr. Lewis at the market.";
+  if (!safeStory(s)) return "Finish what you’re doing first.";
+  return s.ap < 1 ? "You need 1 AP." : null;
+}
 export function lawfulLewis(s: GameState) {
-  if (
-    !safeStory(s) ||
-    !atPerson(s, "mr-lewis") ||
-    s.ap < 1 ||
-    s.streetLife?.scenes.lewis
-  )
-    return;
+  if (lawfulLewisError(s)) return;
   s.ap--;
-  earn(s, player(s), 38, "clean", "Delivery gig for Mr. Lewis");
+  earn(s, player(s), LEWIS_DELIVERY_WAGE, "clean", "Delivery gig for Mr. Lewis");
   const e = record(
     s,
     "money",
@@ -285,7 +286,7 @@ export function lawfulLewis(s: GameState) {
     id: e.id,
     quantity: 0,
     paid: 0,
-    received: 38,
+    received: LEWIS_DELIVERY_WAGE,
     provenance: "clean",
   });
   completeWorkIntro(s, e.id, "gig");

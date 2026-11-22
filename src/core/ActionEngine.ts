@@ -139,6 +139,7 @@ export const ACTIONS = {
   },
   offer: {
     label: "Offer support · $20",
+    amount: 20,
     ap: 1,
     risk: "None",
     description: "Help them out with some money. Where it came from goes with it.",
@@ -146,6 +147,7 @@ export const ACTIONS = {
   },
   transfer: {
     label: "Give $25",
+    amount: 25,
     ap: 1,
     risk: "None",
     description: "Give them $25.",
@@ -414,7 +416,7 @@ export function validateAction(s: GameState, a: Action): string | null {
     return "You don’t have enough cash";
   if (
     (a.type === "offer" || a.type === "transfer") &&
-    cash(c) < (a.type === "offer" ? 20 : 25)
+    cash(c) < ACTIONS[a.type].amount
   )
     return "Insufficient cash";
   if (a.type === "buy" && (!a.item || !ITEMS[a.item])) return "Choose an item";
@@ -598,7 +600,7 @@ export function resolveAction(s: GameState, a: Action) {
       break;
     case "offer":
     case "transfer": {
-      const amount = a.type === "offer" ? 20 : 25,
+      const amount = ACTIONS[a.type].amount,
         paid = expense(s, c, amount, `Support for ${t!.name}`)!;
       t!.wallet.clean += paid.clean;
       t!.wallet.illicit += paid.illicit;
@@ -836,28 +838,31 @@ export function resolveAction(s: GameState, a: Action) {
   }
   return e;
 }
+function crewActivityFor(state: GameState, a: Action) {
+  if (a.actor !== state.playerId || !a.target || !state.crew.members.includes(a.target))
+    return null;
+  if (a.type === "socialize") return "social";
+  if (a.type === "inquire" || a.type === "introduce") return "information";
+  return null;
+}
+
+/** Includes the extra willingness check for social actions routed through your Set. */
+export function actionExecutionError(state: GameState, a: Action) {
+  const error = validateAction(state, a);
+  if (error) return error;
+  const activity = crewActivityFor(state, a);
+  return activity && a.target ? requestError(state, a.target, activity) : null;
+}
+
 export function performAction(
   state: GameState,
   a: Action,
 ): { state: GameState; error: string | null; event?: GameEvent } {
-  const error = validateAction(state, a);
+  const error = actionExecutionError(state, a);
   if (error) return { state, error };
   const next = structuredClone(state);
-  // Existing social action entry points route Set members through the same willingness/lifecycle.
-  const crewActivity =
-    a.type === "socialize"
-      ? "social"
-      : ["inquire", "introduce"].includes(a.type)
-        ? "information"
-        : null;
-  if (
-    a.actor === state.playerId &&
-    a.target &&
-    state.crew.members.includes(a.target) &&
-    crewActivity
-  ) {
-    const error = requestError(state, a.target, crewActivity);
-    if (error) return { state, error };
+  const crewActivity = crewActivityFor(state, a);
+  if (a.target && crewActivity) {
     requestActivity(next, a.target, crewActivity);
     expose(next, presenceOf(next).location, "activity", String(state.ap));
     progress(next);

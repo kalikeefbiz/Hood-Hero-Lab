@@ -5,6 +5,7 @@ import { earn, expense } from "./Economy";
 import { record } from "../core/EventLog";
 import { random } from "../core/Random";
 import { applyInfluence, rivalControl } from "./Territory";
+export const BUSINESS_MAINTENANCE_COST = 120;
 export const operating = (status: string) =>
   ["operating", "profitable", "struggling"].includes(status);
 export function businessError(
@@ -32,12 +33,12 @@ export function businessError(
       return "Pay off what you owe first";
   } else {
     if (!b || !operating(b.status)) return "This business isn’t running";
-    if (action === "maintain" && p.wallet[b.provenance] < 120)
-      return `You need $120 in ${b.provenance === "clean" ? "clean" : "street"} money`;
+    if (action === "maintain" && p.wallet[b.provenance] < BUSINESS_MAINTENANCE_COST)
+      return `You need $${BUSINESS_MAINTENANCE_COST} in ${b.provenance === "clean" ? "clean" : "street"} money`;
     if (
       action === "maintain" &&
       b.history.some(
-        (h) => h.day === s.day && h.revenue === 0 && h.expenses === 120,
+        (h) => h.day === s.day && h.revenue === 0 && h.expenses === BUSINESS_MAINTENANCE_COST,
       )
     )
       return "You already took care of it today";
@@ -92,17 +93,17 @@ export function businessAction(
       asset = s.assets.find((a) => a.id === b.id)!;
     if (action === "maintain") {
       // A clean-funded asset cannot be contaminated or magically cleaned by mixed upkeep.
-      p.wallet[b.provenance] -= 120;
+      p.wallet[b.provenance] -= BUSINESS_MAINTENANCE_COST;
       s.ledger.push({
         day: s.day,
-        amount: -120,
+        amount: -BUSINESS_MAINTENANCE_COST,
         provenance: b.provenance,
         reason: `Maintenance: ${d.name}`,
       });
       b.condition = clamp(b.condition + 30);
       asset.value = Math.round((d.cost * 0.65 * b.condition) / 100);
-      b.totalNet -= 120;
-      b.history.push({ day: s.day, revenue: 0, expenses: 120, net: -120 });
+      b.totalNet -= BUSINESS_MAINTENANCE_COST;
+      b.history.push({ day: s.day, revenue: 0, expenses: BUSINESS_MAINTENANCE_COST, net: -BUSINESS_MAINTENANCE_COST });
       updateBusinessIncome(s, b);
     } else {
       if (action === "sell")
@@ -168,7 +169,7 @@ export function advanceBusinesses(s: GameState) {
     asset.value = Math.round((d.cost * 0.65 * b.condition) / 100);
     updateBusinessIncome(s, b);
     if (b.provenance === "clean" && net > 0) {
-      if (b.history.some(h => h.expenses === 120 && h.revenue === 0 && h.day >= s.day - 7))
+      if (b.history.some(h => h.expenses === BUSINESS_MAINTENANCE_COST && h.revenue === 0 && h.day >= s.day - 7))
         awardSkill(s, p.id, "business", 100, `managed-business:${s.day}`);
       applyInfluence(s, {
         actor: p.id,
