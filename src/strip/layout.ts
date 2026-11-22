@@ -47,6 +47,22 @@ export const STREETS: Street[] = [
     ],
   },
   {
+    // North of Big Mouth Blvd, the Reservoir's last street. Thin on purpose: the
+    // Laundry on the Kirkwood corner, a few houses, fenced empty lots between.
+    name: "Dirty Money Drive", z: -87.3,
+    assets: [
+      { file: R + "dirty-money-drive.glb", x: 0, z: 0 },
+      { file: R + "reservoir-laundry.glb", x: 0, z: -95.2 },
+      { file: H + "house-dark.glb", x: -10.5, z: -99.6 },
+      { file: H + "house-abandoned.glb", x: -30.5, z: -99.6 },
+      { file: H + "house-tan.glb", x: -41.5, z: -99.8 },
+      // south side, facing north
+      { file: H + "house-tan.glb", x: -5.0, z: -75.0, rotY: Math.PI },
+      { file: H + "house-abandoned.glb", x: -26.0, z: -75.0, rotY: Math.PI },
+      { file: H + "house-dark.glb", x: -47.0, z: -75.0, rotY: Math.PI },
+    ],
+  },
+  {
     // One block south of Blocc Boy: the industrial edge. The Lot Court's mural is
     // on Auto & Tires' west wall.
     name: "No Refund Road", z: 96.7,
@@ -77,6 +93,8 @@ export const STREET_LAMPS: [number, number, number][] = [
   [-22, 6.1, 49.4], [-6.5, 6.1, 49.4], [-12, 6.3, 56.0],
   // Big Mouth Blvd and No Refund Road
   [-34, 6.1, -39.2], [-16, 6.1, -39.2], [-30, 6.1, 93.4], [-14, 6.1, 93.4],
+  // Dirty Money Drive
+  [-34, 6.1, -90.6], [-16, 6.1, -90.6],
 ];
 export const START = { eye: [12.5, 2.3, 10.5], target: [-1.5, 2.4, 0.5] };
-export const BOUNDS = { x0: -64, x1: 20, z0: -58, z1: 108 };
+export const BOUNDS = { x0: -64, x1: 20, z0: -104, z1: 108 };

@@ -22,6 +22,8 @@ Last updated: 2026-11-20. Update the "Where we are" and "Next" sections at the e
 
 - **Big Mouth Blvd and No Refund Road built**: water tower (west end), boarded house, Lot Court, Warehouse and Auto & Tires placed. Street grid in `docs/RESERVOIR_LAYOUT.md`.
 
+- **Dirty Money Drive built**: all five Reservoir streets now stand (Dirty Money, Big Mouth, Lil Bit Lane, Blocc Boy, No Refund, north to south). Reservoir Laundry placed.
+
 ## Next: grow the strip into the city (Claude owns this)
 Plan, architecture and the PR #28 review: **`docs/CITY_PLAN.md`** (new city beside the old board, shared engine, retire old hoods one at a time). Phase 1 = Reservoir vertical slice.
 The owner's plan (2026-11-20): build the Reservoir strip up slowly, block by block, until it is a complete city. Same split as before: Claude builds and presents the strip (layout, buildings, characters, camera, movement presentation); Codex owns the rules and content behind it and requests places or people in its PRs.

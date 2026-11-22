@@ -58,6 +58,10 @@ ground(X0, X1, RS, RN, RZ, "asphalt", (4, 4))
 for xa, xb in segs:
     curb_x(xa, xb, RN, -1); curb_x(xa, xb, RS, 1)
     ground(xa, xb, RN, NC, SZ, "walk", (3, 3)); ground(xa, xb, SC, RS, SZ, "walk", (3, 3))
+if kx:   # Kirkwood's crossing legs between the road and the sidewalk lines
+    for ya, yb in ((RN, NC), (SC, RS)):
+        ground(SX0, SX1, ya, yb, RZ, "asphalt", (1, 1))
+        curb_y(ya, yb, SX0, 1); curb_y(ya, yb, SX1, -1)
 for za, zb in C.get("kirkwood", []):
     ya, yb = Y(za), Y(zb)
     ground(SX0, SX1, ya, yb, RZ, "asphalt", (4, 4))
