@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      input: { main: "index.html", strip: "strip.html" },
+      input: { main: "index.html", strip: "strip.html", reservoirHouse: "reservoir-house.html" },
     },
   },
   test: { include: ["src/tests/**/*.test.ts"] },
