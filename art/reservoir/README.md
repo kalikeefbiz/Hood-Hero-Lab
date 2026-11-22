@@ -19,6 +19,8 @@ To add a building: put its front view in `ref/`, open it with a pixel grid, meas
 6. `scripts/preview.py` renders a 3/4 and a street-level check.
 7. **Share tiling textures**: `node scripts/share_textures.mjs public/assets/tex public/assets/strip/*.glb public/assets/reservoir/*.glb` moves asphalt, sidewalk, concrete, brick, roof, siding and house window/door textures out of the GLBs into `public/assets/tex/` and records them in each material's `extras.shared`. `src/strip/sharedTextures.ts` downloads each once at runtime and gives every material the same GPU texture. Run it after packing any GLB that uses those textures. (Packing scripts `pack_building.mjs` and `share_textures.mjs` run with glTF Transform, ktx2-encoder, meshoptimizer and sharp from npm.)
 
+Houses: `scripts/house.py` + `houses.json` (side- or front-gabled, open or enclosed porch). Angled shots are first straightened into a front view (`ref/rect-*.png`, a 4-point perspective warp of the front wall).
+
 One-off landmarks have their own scripts: `water_tower.py` (cylindrical projection of the front view onto the tank), `boarded_house.py` (projected front, porch, gable, steps, yard), `lot_court.py` (floor from the top-down plan, mural and backboards from the angled view).
 
 Streets: `scripts/avenue.py` + `streets.json` (Big Mouth Blvd, No Refund Road, Dirty Money Drive); `scripts/blocc_boy_street.py` (same conventions as `art/strip/scripts/street.py`). `scripts/placeholder_store.py` makes a blank stand-in for a slot whose art hasn't arrived (not currently used).
@@ -37,6 +39,7 @@ Streets: `scripts/avenue.py` + `streets.json` (Big Mouth Blvd, No Refund Road, D
 | boarded-house | 7.9 x 9 m + porch and front yard, 4.4 MB | ~0.7k | Big Mouth Blvd |
 | lot-court | 22 x 13 m fenced court, two hoops, mural, 1.0 MB | ~1.8k | No Refund Road |
 | big-mouth-blvd / no-refund-road / dirty-money-drive | streets from `streets.json` via `scripts/avenue.py`, ~3.8 MB each | ~2.6k | yes |
+| house-duplex-721 / house-tan-bungalow / house-dark-two-story | from `houses.json` via `scripts/house.py`, ~1.5-1.8 MB each | ~0.6-1k | Big Mouth Blvd, Dirty Money Drive |
 | blocc-boy-blvd | street, sidewalks, Kirkwood extension, poles, lot, 3.9 MB | ~2.8k | yes |
 
 Known limits: window bars and wall lamps' arms are painted (real lamp heads, sills, signs, canopies and doors have depth). Sizes in the table are before texture sharing; streets are now ~0.2-0.5 MB each.
