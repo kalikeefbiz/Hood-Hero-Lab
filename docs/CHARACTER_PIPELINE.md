@@ -99,7 +99,7 @@ Reuse Quanny's clips as the starting point. They're hand-made street animations;
 1. Append Quanny's rig and actions from `art/source/hood-hero/quanny/quanny_source.blend`: object `QuannyRig`, actions `Idle`, `Walk`, `Run`. Use `bpy.data.libraries.load` (`blender-core/references/bpy-patterns.md`, append/link).
 2. **Don't use `--map auto` onto the Rigify control rig.** It maps onto `ORG-`/`DEF-` bones that Rigify's constraints drive, so the result is overwritten. Instead:
    - switch `RIG_Body`'s four limbs to FK (`IK_FK = 1.0` on each limb's parent control)
-   - pass the explicit map `art/source/hood-hero/quanny/pipeline/quanny_to_rigify_fk.json` (22 bones: `torso`, `spine_fk.001`–`003`, `neck`, `head`, `shoulder.L/R`, `*_fk.L/R`)
+   - pass an explicit JSON map from Quanny's bones to the FK controls (22 bones: `torso`, `spine_fk.001`–`003`, `neck`, `head`, `shoulder.L/R`, `*_fk.L/R`). Gemini wrote this map for Flacco (#61). Once it's merged it lives at `art/source/hood-hero/quanny/pipeline/quanny_to_rigify_fk.json`; reuse it, don't rewrite it.
    
    Check with `--show-map`.
 3. For each clip, set `QuannyRig`'s active action, then run `retarget.py -- --source QuannyRig --target RIG_Body --map <that json> --in-place --name Walk`, and the same for `Run` and `Idle`. Gate: `max_error_deg` under 1.
