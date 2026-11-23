@@ -1,0 +1,22 @@
+{
+  "id": "flacco",
+  "displayName": "Flacco",
+  "heightM": 1.78,
+  "bindPose": "T",
+  "facing": "+Z",
+  "triangles": 29982,
+  "texture": 1024,
+  "rig": "rigify-game",
+  "clips": {
+    "Idle": { "seconds": 8.0, "frames": 240, "speedMps": 0 },
+    "Walk": { "seconds": 1.2, "frames": 36, "speedMps": 0.71 },
+    "Run":  { "seconds": 0.733, "frames": 22, "speedMps": 2.06 }
+  },
+  "animatedFrom": "retargeted from Quanny, then reworked",
+  "sourceArt": ["owner-attached front ref (1AA0160C-9A75-4ABF-B6F0-74296C027C0A.png)"],
+  "meshyTaskId": "01a2065a-d5b6-7394-b09e-e3254e5d56a6",
+  "blender": "5.3",
+  "skillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
+  "approvedBy": "owner",
+  "notes": "Deviations documented in PR: (1) owner supplied front ref directly in chat rather than art/source/hood-hero/flacco/ref/; (2) surgical removal of 12 non-manifold/z-fighting faces after make_lods.py --cleanup + deleted generated Body_LOD1..3; (3) explicit 4-influence weight clamp + head lock after bind_mesh.py proxy fallback left max_influences=9; (4) explicit FK control bone map JSON for retarget.py on RIG_Body because --map auto targeted constrained ORG-/DEF- bones; (5) export_def_bones=False on export_asset.py so unweighted root bone is exported; (6) Workbench textured headless renders for stress/previews (no GPU for headless EEVEE)."
+}
