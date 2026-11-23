@@ -187,9 +187,9 @@ export function startPreview(host: PreviewHost) {
     }
     pins.update(camera, focus(), canvas.clientHeight || innerHeight);
     // People come and go: re-show the card when who is here changes (at most twice a second).
-    presenceCheck += dt;
-    if (presenceCheck > 0.5 && panel.open && panel.current?.locationId) {
-      presenceCheck = 0;
+    const now = performance.now();
+    if (now - presenceCheck > 500 && panel.open && panel.current?.locationId) {
+      presenceCheck = now;
       if (presence.peopleAt(panel.current.locationId).join(",") !== panel.shownPeople) panel.refresh();
     }
   }
