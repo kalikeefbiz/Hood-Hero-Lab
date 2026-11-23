@@ -1,177 +1,163 @@
-# Character pipeline: the Blender route (for Codex and Gemini)
+# Character pipeline (for Codex and Gemini)
 
-How Quanny was built, written so another agent can build the next character the same way and hand Claude a file set that drops straight into the city. Follow it exactly. When a step says "as Quanny", the working reference is `art/source/hood-hero/quanny/`.
+**Why this exists:** Hood Hero needs 100+ rigged, animated characters. Claude should not build them one by one. This is the route Codex and Gemini follow to produce a character Claude can drop into the city after a short review. It's also a test of whether that works, so follow it exactly and report every place it didn't.
 
-Owner decision 2026-11-23: Codex and Gemini may produce character models by this route. You deliver **only** into `art/incoming/<id>/` (see AGENTS.md 00C). Claude reviews, places the files in `public/assets/models/characters/` and wires them into the game.
+Owner decision 2026-11-23. You deliver **only** into `art/incoming/<id>/` (AGENTS.md 00C). Claude reviews, places the file in `public/assets/models/characters/` and wires it up.
 
-## What was used
+## Tools
 
-- **Blender** run headless from the command line (`blender -b -P script.py -- args`). Quanny was built in **Blender 5.3**; use 5.3 so the `.blend` and the action API match (`animate.py` already handles the layered-action API).
-- **Python `bpy` scripts**: the seven files in `art/source/hood-hero/quanny/pipeline/`. They are the method. Copy them; don't rewrite them.
-- **glTF Transform** (Node) with `ktx2-encoder`, `meshoptimizer` and `sharp`: `compress.mjs`. Install those in a scratch folder outside the repo: `npm i @gltf-transform/core @gltf-transform/extensions @gltf-transform/functions ktx2-encoder meshoptimizer sharp`.
-- **Meshy** for the base mesh only (the owner's Meshy account). Meshy's auto-rig and stock animations are **not** used on this route; Mega used them, which is why he has no idle and a 24-bone rig.
-- **Agent skills:** none were used to build Quanny. His pass was hand-scripted in Blender in an earlier Claude session. When Claude makes base meshes it uses the `meshy-3d-agent:meshy-3d-generation` skill. You don't have that skill: use Meshy's web app or API with the settings in step 1.
-- **Checker:** `node scripts/check-character.mjs art/incoming/<id>` must print `PASS`. Quanny's shipped files pass it (54 checks).
+You have Meshy, Blender and Node in your environment. Use them directly.
 
-## Inputs you need before starting
+- **Blender 5.3**, headless: `blender -b`. 5.2 LTS is the minimum the skills support.
+- **Blender agent skills: `EL4CTEO/blender-skills`**, pinned to commit `1a1cc6c49312f9f370aae86f52b7b907f29c94f6` (2026-11-21). Every Blender step below runs one of its scripts. Read each skill's `SKILL.md` before the step that uses it; they hold the rules this doc doesn't repeat.
 
-1. **A canonical character id** that exists in the engine (`src/content/characters.ts`), e.g. `mr-lewis`. Do not invent characters (AGENTS.md 6). Canon cast without an engine record (Ty Ty, Baby Reek…) needs Codex to add the record first.
-2. **Owner-approved art** of that character: front view at least; side view if available. It goes in `art/source/hood-hero/<id>/ref/`. No approved art, no model.
-3. **Height** in metres from the owner, or 1.78 m if none is given. Quanny is 1.90 m.
+  ```
+  git clone https://github.com/EL4CTEO/blender-skills && cd blender-skills
+  git checkout 1a1cc6c49312f9f370aae86f52b7b907f29c94f6
+  ./install/install.sh --agent codex      # Codex
+  ./install/install.sh --agent gemini     # Gemini CLI  (or --agent agents for ~/.agents/skills)
+  ```
+
+  Below, `S` means the installed skills folder (`~/.agents/skills` or the clone's `skills/`). Every script runs headless the same way:
+
+  ```
+  python $S/blender-core/scripts/run_in_blender.py --blend in.blend $S/<skill>/scripts/<script>.py -- <args> --save out.blend
+  ```
+
+  It prints the script's JSON result. **Keep that output for each step; it goes in your PR.**
+- **Meshy** for the base mesh only. Don't use Meshy's auto-rig or stock animations: that's how Mega was made, and he ended up with a 24-bone rig and no idle.
+- **Node**, for the final compression with `art/source/hood-hero/quanny/pipeline/compress.mjs`. Install its packages in a scratch folder outside the repo: `npm i @gltf-transform/core @gltf-transform/extensions @gltf-transform/functions ktx2-encoder meshoptimizer sharp`.
+- **Checker:** `node scripts/check-character.mjs art/incoming/<id>` must print `PASS` before you open a PR.
+
+Skills used, in order:
+- `blender-core` (always first)
+- `blender-asset-qa`
+- `blender-retopology-uv`
+- `blender-game-optimization`
+- `blender-character-rigging`
+- `blender-animation`
+- `blender-export-pipelines`
+- `blender-rendering`
+
+The playbook these steps follow is `blender-workflow-recipes` §3, "Game character".
+
+## Inputs, before you start
+
+1. **A canonical character id** that exists in the engine (`src/content/characters.ts`), e.g. `mr-lewis`. Don't invent characters (AGENTS.md 6). Canon cast without an engine record needs Codex to add the record first.
+2. **Owner-approved art** in `art/source/hood-hero/<id>/ref/`: front view at least. No approved art, no model.
+3. **Height** from the owner, or 1.78 m if none is given. Quanny is 1.90 m.
 
 ## Steps
 
-Work in a scratch folder. Copy `art/source/hood-hero/quanny/pipeline/` into it, then do a find-and-replace in every script: `'Quanny'` → your mesh name (e.g. `'MrLewis'`), `'QuannyRig'` → `'<Name>Rig'`, `quanny` in file names → `<id>`. Each script starts with `sys.path.insert(0,'/home/claude/scripts')`: change that to your scratch folder.
+Work in a scratch folder. Save a `.blend` after every step (`--save`). The **Gate** lines are stop-and-fix points.
 
-### 1. Base mesh (Meshy)
+### 0. Environment
 
-- Meshy image-to-3D from the approved front view. Settings: `--ai-model meshy-t2.5`, `--pose-mode t-pose` (arms straight out, palms down), PBR off, 2k texture. Quanny's upload was a high-detail model of about 580k triangles.
-- Check the result against the art: face, clothes, colours, accessories. If it's wrong, regenerate; don't fix likeness in Blender.
-- Download the textured GLB. **Do not** run Meshy's rigging or animation.
-- Note the Meshy task id; it goes in the manifest.
+`python $S/blender-core/scripts/run_in_blender.py $S/blender-core/scripts/env_report.py`
 
-### 2. Clean up and decimate (Blender)
+Gate: Blender 5.2 or newer is reported. Read `blender-core/SKILL.md`, in particular the 5.x API changes (`action.fcurves` no longer exists).
 
-This step isn't scripted in the Quanny folder, so do exactly this in a small script of your own:
+### 1. Base mesh (Meshy, then import)
 
-1. Import the GLB. Keep one mesh and one material with a base-colour texture. Delete everything else (lights, cameras, empties, extra meshes; join accessory meshes into the body first).
-2. Orientation: Blender is Z-up. The character faces **−Y in Blender** (this exports as +Z in glTF, which is what the city expects). Rotate if needed.
-3. Scale so the top of the head is at the owner's height. Put the feet on the ground (lowest vertex at z = 0) and centre the body on x = 0, y = 0. Apply all transforms.
-4. Decimate to **30,000–38,000 triangles**: Decimate modifier, `Collapse`, ratio = target ÷ current triangle count, `use_collapse_triangulate=True`, delimit `{'UV','SEAM'}` so texture seams survive. Apply it.
-5. Save as `<id>_clean.blend`. Check: no holes at the seams, the face reads at phone size, triangle count is in range.
+- Meshy image-to-3D from the approved front view: `meshy-t2.5`, **T-pose** (arms straight out, palms down), PBR off, 2k texture. T-pose matters: step 5 reuses Quanny's clips, and retargeting needs matching rest poses.
+- Check it against the art: face, clothes, colours, accessories. If it's wrong, regenerate; don't fix likeness in Blender.
+- Don't use Meshy's rigging or animation. Note the Meshy task id for the manifest.
+- Import into Blender. Name the body object `Body`; join any accessory meshes into it. Scale to the owner's height, face **−Y** (Blender front), feet at z = 0, centred on x = 0, transforms applied (`blender-core` rules).
+- `qa_check.py -- --objects Body --profile render`.
 
-### 3. Rig (`build_rig.py`)
+Gate: no errors; `ob.dimensions.z` equals the height.
 
-Run: `blender -b -P build_rig.py -- <id>_clean.glb <id>_rigged.blend`. Export step 2's result to GLB first, or change the script to open the `.blend`.
+### 2. Make it game-weight (`blender-retopology-uv`, `blender-game-optimization`)
 
-Before running, edit **only** these parts of `build_rig.py`:
+- `auto_retopo.py -- --objects Body --method decimate --tris 32000`. Use `decimate`, not `quadriflow`: decimate keeps Meshy's UVs and texture, so nothing needs re-baking. Target 30k–38k triangles. It creates `Body_low`; rename it to `Body` and delete the source.
+- `make_lods.py -- --objects Body --cleanup` merges by distance and removes degenerate and loose geometry. Don't make LODs.
+- `mesh_stats.py -- --objects Body --budget web`, then `qa_check.py -- --objects Body --profile game`.
+- `review_shots.py -- --objects Body --mode material`, then `--mode wire`. Open both PNGs.
 
-- `body.location.z += 0.9517` is Quanny's ground offset. Set it to 0 if step 2 already put the feet at z = 0.
-- **The joint table `B`.** Quanny's joints are absolute positions measured on his 1.90 m body. For your character:
-  1. Scale every coordinate by `H / 1.90`, where H is your character's height, as a first guess.
-  2. Then move each joint onto the body's real landmarks, measured from the mesh. Hips: top of the pelvis, between the hip sockets. UpLeg: hip socket. Leg: knee centre. Foot: ankle centre. ToeBase: ball of the foot. Shoulder: clavicle root. Arm: shoulder socket. ForeArm: elbow. Hand: wrist. Fingers and thumbs: along the real fingers. Neck: base of the neck. Head: top of the neck.
-  3. Joints must sit **inside** the mesh, centred in the limb.
-- Keep these exact: the **bone names and hierarchy**, `Root` at the origin with `use_deform = False`, and the roll rule (`align_roll`).
-- Quanny's `Bandana` bone is his alone. A character with a hanging accessory (chain, bag strap, long coat flap) may add **one or two** extra bones parented to `Hips` or `Spine2`, named after the item (`Chain`, `Strap`). Nothing else may be added.
+Gate: QA `"pass": true`; one or two materials; the face and hands read at phone size; seams intact.
 
-The required 31 bones (the checker enforces these names):
+### 3. Rig and skin (`blender-character-rigging`)
 
-```
-Root > Hips > Spine > Spine1 > Spine2 > Neck > Head
-Spine2 > LeftShoulder > LeftArm > LeftForeArm > LeftHand > LeftHandFingers1 > LeftHandFingers2
-                                               LeftHand > LeftHandThumb1 > LeftHandThumb2
-Hips > LeftUpLeg > LeftLeg > LeftFoot > LeftToeBase
-(and the same for Right)
-```
+1. `rigify_build.py -- --add basic_human --no-face --fit Body` creates `META_Body`.
+2. **Place the joints.** The fit only scales the metarig. Move each joint to its pivot of rotation, inside the volume: hip sockets, knees, ankles, ball of foot, clavicle roots, shoulder sockets, elbows, wrists, neck base, head. Give elbows and knees a slight bend in their natural direction. Symmetrize. Check with `review_shots.py` in `wire` and `solid` modes, or MCP `look` with `xray` if you work live. **This is the step most likely to go wrong. Save a contact sheet of the placed joints for the PR.**
+3. `rigify_build.py -- --metarig META_Body --generate` creates `RIG_Body`, the control rig with IK/FK.
+4. `bind_mesh.py -- --armature RIG_Body --meshes Body`: heat weights with an automatic voxel-proxy fallback (the same method Quanny was skinned with), cleaned to 4 influences and normalized.
+5. Follow the skill's **weight painting rules**:
+   - hair, hats and headwraps 100% `head`
+   - rigid props (chains, phones) 100% on one bone
+   - hanging cloth smoothly blended
+6. `stress_poses.py -- --armature RIG_Body`, then render the stress frames (`render_batch.py -- --preset preview --frames 1,10,20,30,40,50 --out //stress_####`). Fix collapsing elbows, candy-wrapped forearms, sunken shoulders and hip creases with the skill's fixes.
+7. `rigify_build.py -- --rig RIG_Body --game-skeleton` creates `GAME_RIG_Body`: `root` plus deform bones, `DEF-` stripped (`spine`, `thigh.L`, `upper_arm.L`…). This is what ships.
+8. `rig_check.py -- --armature GAME_RIG_Body --profile game --fix`.
 
-Weights come from Blender's heat weighting on a voxel-remeshed proxy (voxel size 0.009), copied to the real mesh with a Data Transfer modifier. The script already does this.
+Gate: `rig_check` is clean, every vertex is weighted, there are at most 4 influences, and no stress frame tears.
 
-### 4. Fix weights (`fix_weights.py`)
+### 4. Animate (`blender-animation`)
 
-Run: `blender -b -P fix_weights.py -- <id>_rigged.blend <id>_weighted.blend`.
+Reuse Quanny's clips as the starting point. They're hand-made street animations; retargeting puts them on your rig with the right proportions.
 
-- The **bandana and hair selections are Quanny's**: they pick vertices by colour and position. Delete those blocks and write the equivalent for your character's accessories and hair (hair and headwear → 100% `Head`; hanging items → their own bone, blended into the parent near the attachment point).
-- Keep the last block exactly as it is: fill unweighted vertices from neighbours, clean weights under 0.01, **limit to 4 influences per vertex**, normalise. The script must print `still unweighted 0`.
-- Check: pose the rig (arms down 70°, a deep knee bend, head turned 45°) and render a still with `common.py`'s `render()`. No tearing at the armpits, crotch, neck or elbows; nothing stretches between the legs; accessories follow the right bone.
+1. Append Quanny's rig and actions from `art/source/hood-hero/quanny/quanny_source.blend`: object `QuannyRig`, actions `Idle`, `Walk`, `Run`. Use `bpy.data.libraries.load` (`blender-core/references/bpy-patterns.md`, append/link).
+2. `retarget.py -- --source QuannyRig --target RIG_Body --show-map`. Gate: `unmapped_key_parts` is empty. Quanny's bone names are Mixamo-style, which the auto map understands.
+3. For each clip, set `QuannyRig`'s active action, then run `retarget.py -- --source QuannyRig --target RIG_Body --in-place --name Walk`, and the same for `Run` and `Idle`.
+4. **Make it this character's motion**, on `RIG_Body`, following the skill's studio workflow (blocking, breakdowns, spline, polish):
+   - Mr. Lewis, for example: shorter stride, upright, less hip swing, slower idle with a glance at the store.
+   - Read the character's canon in `docs/RESERVOIR_CANON.md` §D.
+   - Keep feet planted (IK) and the clip in place.
+   - Optional: if the retargeted clip is wrong for the character, author it from scratch on `RIG_Body` instead.
+5. `bake_action.py -- --source RIG_Body --target GAME_RIG_Body --actions Idle Walk Run`. Don't pass `--root-motion`: the city needs **in-place** clips.
+6. `loop_check.py -- --object GAME_RIG_Body --action <baked action> --fix` for each clip. Gate: no pops or hitches reported.
+7. Rename the three baked actions to exactly **`Idle`**, **`Walk`**, **`Run`**, with a fake user on each.
 
-### 5. Animate walk and run (`animate.py`)
+Clip rules (the checker enforces these):
 
-Walk: `blender -b -P animate.py -- <id>_weighted.blend <id>_walk.blend '<walk params json>'`
-Run: the same command with `<id>_run.blend` and the run params.
+| Clip | Loop length | Notes |
+| --- | --- | --- |
+| Walk | 0.8–1.6 s | Quanny: 1.20 s (36 frames) |
+| Run | 0.5–0.9 s | Quanny: 0.733 s (22 frames) |
+| Idle | 4–12 s | Quanny: 8 s (240 frames) |
 
-`animate.py` builds a procedural, IK-planted gait from parameters, bakes it to plain FK and removes its helper bones. Quanny's exact parameters are in `walk_params.json` and `run_params.json`; anything not listed uses the defaults at the top of `animate.py`.
+All clips: 30 fps, first frame equals last, root not moving, no animated scale.
 
-Adjust per character:
+**Ground speed** (manifest `speedMps`) is how fast the character travels when the clip plays at 1×. Measure it: the distance a planted foot slides backwards over one cycle, divided by the cycle length. Quanny's walk is 0.92 m/s and his run 2.73 m/s. Retargeted clips start near `0.92 × (your hips height ÷ 0.97 m)`. The city plays the clip at the character's real speed, so a wrong value makes the feet slide.
 
-| Parameter | Meaning | Quanny walk | Quanny run | Scale or adjust for yours |
-| --- | --- | --- | --- | --- |
-| `N` | frames per cycle at 30 fps | 36 | 22 | older or slower: walk 38–42 |
-| `cyc` | metres per cycle | 1.10 | 2.0 | × H / 1.90 |
-| `base` | hip height in the cycle (m) | 0.925 | 0.89 | × H / 1.90 |
-| `fx` | foot spacing from centre (m) | 0.125 | 0.085 | × H / 1.90 |
-| `lift` | foot lift in swing (m) | 0.075 | 0.22 | × H / 1.90 |
-| `bob`, `swayx` | body bounce and side sway (m) | 0.02 / 0.026 | 0.034 / 0.012 | smaller for a calm or older character |
-| `roll`, `yaw`, `tilt` | pelvis roll, twist, forward tilt (°) | 6 / 8 / 4 | 3.5 / 6 / 7 | swagger up, stiffness down |
-| `arms`, `armdown` | arm swing (°), arm hang (°) | 16 / 65 | 30 / 76 | — |
-| `name` | action name | `Walk` | `Run` | keep exactly `Walk` / `Run` |
+### 5. Export and compress (`blender-export-pipelines`)
 
-Run params that only apply to the run (`flex`, `curl1`, `curl2`, `chest`…) can stay as Quanny's. Accessory params (`band`, `bandback`) drive the `Bandana` bone: rename them to your accessory bone or drop them.
+1. `export_asset.py -- --preset web --objects GAME_RIG_Body --set export_animation_mode=ACTIONS --out //<id>_raw.glb`. This writes meshopt geometry and WebP textures. Keep WebP; `compress.mjs` can't read KTX2 input.
+   Gate: the returned summary shows 1 skin, 3 animations named `Idle`/`Walk`/`Run` and nothing else, and the expected triangle count.
+2. `node compress.mjs <id>_raw.glb <id>.glb 1024 0` (`art/source/hood-hero/quanny/pipeline/compress.mjs`). This gives KTX2 base colour at 1024, no normal map, quantized, meshopt. Budget: **≤ 1.4 MB** for the one file.
 
-**Ground speed** = `cyc ÷ (N ÷ 30)`. Quanny's walk is 1.10 ÷ 1.2 = 0.92 m/s. Write it in the manifest. The city plays the clip at the speed the character actually moves; a wrong value makes the feet slide.
+You ship **one file**, `<id>.glb`, with mesh, skin and the three named clips. Quanny's four-file layout is also accepted, but don't use it for new characters.
 
-The script prints `max foot IK error`, which must be under 0.01. Check visually:
-- planted feet don't slide or sink
-- knees point forward
-- frame 0 equals the last frame (seamless loop)
-- no root motion: the character walks on the spot
+### 6. Previews (`blender-rendering`, `blender-asset-qa`)
 
-### 6. Idle (`idle.py`)
+Put these in `previews/`:
+- `<id>_sheet.png`: `review_shots.py -- --objects Body --mode material`
+- `<id>_joints.png`: the joint placement sheet from step 3
+- `<id>_stress.png`: the stress frames
+- `<id>_walk.mp4`, `<id>_run.mp4`, `<id>_idle.mp4`: `render_batch.py -- --preset preview --format MP4`, side view, one full loop, 512 px
 
-Run: `blender -b -P idle.py -- <id>_weighted.blend <id>_idle.blend`. This gives an 8 s loop (240 frames), feet planted by IK.
+### 7. Check and deliver
 
-- The pose keys in `idle.py` are **Quanny's attitude**: weight on the right leg, thumb in his pocket, scanning the block. Rewrite the key poses for your character's canon (RESERVOIR_CANON D). Mr. Lewis, for example: weight even, hands together or one on the hip, slower breathing, a glance toward the store door.
-- Keep it subtle: breathing, a weight shift, one head turn and one hand gesture per loop.
-- Loop: 4–12 s, first frame equals last. Name the action `Idle`.
+1. Build the folder:
 
-### 7. Combine and save the source (`combine.py`, `add_action.py`)
+   ```
+   art/incoming/<id>/
+     <id>.glb                    mesh + skin + Idle/Walk/Run, compressed
+     manifest.json
+     source/
+       <id>_source.blend         Body, RIG_Body, GAME_RIG_Body, actions, textures packed
+     previews/                   the files from step 6
+   ```
 
-`combine.py` puts Walk and Run into one file; `add_action.py` adds Idle. Pack the textures. The result is `<id>_source.blend` with mesh, rig, weights and the three actions (`use_fake_user` on each).
-
-### 8. Export (`export_parts.py`)
-
-Run it four times against `<id>_source.blend`, with modes `model`, `walk`, `run`, `idle`:
-
-- `model`: mesh and skin in **bind pose** (T-pose), no animation.
-- `walk`, `run`, `idle`: the armature only, with that one action, force-sampled at 30 fps.
-
-Before each clip export, set the armature's active action to that clip. The script exports whatever action is active.
-
-Also export one uncompressed master (2048 textures, no animation) as `<id>_master_uncompressed.glb` for close-ups.
-
-### 9. Compress (`compress.mjs`)
-
-```
-node compress.mjs <id>.glb       out/<id>.glb       1024 0
-node compress.mjs <id>-walk.glb  out/<id>-walk.glb  1024 0
-node compress.mjs <id>-run.glb   out/<id>-run.glb   1024 0
-node compress.mjs <id>-idle.glb  out/<id>-idle.glb  1024 0
-```
-
-This gives KTX2 ETC1S base colour at 1024, no normal map (the 4th argument `0`; the city doesn't use one at this size), quantized and meshopt-compressed. Size budget:
-- model ≤ 1 MB (Quanny: 727 KB)
-- each clip ≤ 117 KB (Quanny: 35–42 KB)
-
-### 10. Previews
-
-Render with `common.py` (`setup_render`, `cam`, `render`), Cycles, 512 px:
-
-- `previews/<id>_bind.png`: front, side, back and three-quarter views of the bind pose on one sheet.
-- `previews/<id>_walk.gif`, `<id>_run.gif`, `<id>_idle.gif`: one full loop each, side view, ground line visible.
-
-### 11. Check and deliver
-
-1. Build `art/incoming/<id>/` exactly as below and fill in `manifest.json`.
 2. Run `node scripts/check-character.mjs art/incoming/<id>` until it prints `PASS`.
-3. Open a PR from `codex/<id>-model` or `gemini/<id>-model` that changes **only** `art/incoming/<id>/`:
-   - paste the checker output and the four previews into the PR body
-   - list the Meshy task id and any step where you deviated from this route, and why
-   - say **ready for Claude review**
-4. Do not edit `public/assets/**`, `src/strip/**`, `src/render/**` or `characterModels.ts`. Wiring the character in is Claude's job.
-
-```
-art/incoming/<id>/
-  <id>.glb                 model, bind pose, no clip
-  <id>-idle.glb            armature + "Idle"
-  <id>-walk.glb            armature + "Walk"
-  <id>-run.glb             armature + "Run"
-  manifest.json
-  source/
-    <id>_source.blend      mesh, rig, weights, Idle/Walk/Run, textures packed
-    <id>_master_uncompressed.glb
-    pipeline/              your edited copies of the scripts + walk_params.json, run_params.json
-  previews/
-    <id>_bind.png  <id>_walk.gif  <id>_run.gif  <id>_idle.gif
-```
+3. Open a PR from `codex/<id>-model` or `gemini/<id>-model` that changes **only** `art/incoming/<id>/`. In the body:
+   - the checker output
+   - the JSON results from steps 1–5
+   - the joint, stress and sheet images
+   - the Meshy task id
+   - every deviation from this route and why
+   - **ready for Claude review**
+4. Don't edit `public/assets/**`, `src/**` or `characterModels.ts`.
 
 `manifest.json`:
 
@@ -182,50 +168,53 @@ art/incoming/<id>/
   "heightM": 1.78,
   "bindPose": "T",
   "facing": "+Z",
-  "triangles": 34500,
+  "triangles": 32000,
   "texture": 1024,
-  "extraBones": [],
+  "rig": "rigify-game",
   "clips": {
     "Idle": { "seconds": 8.0, "frames": 240, "speedMps": 0 },
-    "Walk": { "seconds": 1.333, "frames": 40, "speedMps": 0.77 },
-    "Run":  { "seconds": 0.733, "frames": 22, "speedMps": 2.56 }
+    "Walk": { "seconds": 1.333, "frames": 40, "speedMps": 0.80 },
+    "Run":  { "seconds": 0.733, "frames": 22, "speedMps": 2.50 }
   },
+  "animatedFrom": "retargeted from Quanny, then reworked",
   "sourceArt": ["art/source/hood-hero/mr-lewis/ref/front.png"],
   "meshyTaskId": "…",
   "blender": "5.3",
+  "skillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
   "approvedBy": "owner",
-  "notes": "Anything Claude should know: deviations, known weight issues."
+  "notes": "Deviations, known issues."
 }
 ```
 
 ## What Claude accepts
 
-A delivery is accepted when **all** of these hold. The checker covers the first block; Claude checks the rest by eye in the city.
+All of these must hold.
 
 **Checked by `scripts/check-character.mjs`:**
-- Files and folders as listed above; the manifest parses, its `id` matches the folder, height is 1.2–2.2 m, the bind pose is T or A, source art is listed and `approvedBy` is `"owner"`.
+- Folder, manifest and source as above. The manifest `id` matches; height is 1.2–2.2 m; bind pose is T or A; source art is listed; `approvedBy` is `"owner"`.
 - Model:
-  - ≤ 1 MB, 8k–40k triangles, ≤ 2 materials
-  - KTX2 textures ≤ 1024 px
-  - `EXT_meshopt_compression`, `KHR_mesh_quantization` and `KHR_texture_basisu`
-  - one skin with 31–40 joints including all 31 required names
-  - no animation
-- Each clip:
-  - ≤ 117 KB, no mesh, exactly one animation named `Idle` / `Walk` / `Run`
-  - every channel targets a model bone; Root translation is constant (in place)
-  - length matches the manifest
-  - walk 0.8–1.6 s, run 0.5–0.9 s, idle 4–12 s; speeds in range
+  - ≤ 1.4 MB, 8k–40k triangles, ≤ 2 materials
+  - meshopt, `KHR_mesh_quantization` and KTX2 textures ≤ 1024 px
+  - one skin with 20–100 joints and every body part present (root, hips, chest, neck, head; each side's upper arm, forearm, hand, thigh, shin and foot)
+  - no Rigify control or helper bones (`MCH-`/`ORG-`/`DEF-`)
+- Clips: exactly `Idle`, `Walk` and `Run`.
+  - every channel targets a skin bone; root translation is constant; no animated scale
+  - lengths match the manifest and the table above; speeds are in range
 
 **Checked by Claude in the city (`strip.html`):**
-- Faces +Z; feet exactly on the ground; height matches the manifest.
+- Faces forward; feet on the ground; height matches the manifest.
 - Looks like the approved art at phone size, day and night.
-- No skinning tears in walk, run or idle; accessories follow.
-- Walking at the manifest speed, the feet don't slide (± 5%).
+- No skinning tears in any clip.
+- At the manifest speed the feet don't slide (± 5%).
 - Loops are seamless, and blending idle → walk → run doesn't pop.
-- It reads as the canon character's attitude (RESERVOIR_CANON D).
+- The motion fits the character's canon.
 
-A delivery that fails gets a PR comment naming the failing check, the clip and the frame. Fix and push to the same PR.
+A failed delivery gets a PR comment naming the failing check, the clip and the frame. Fix and push to the same PR.
 
 ## What Claude does on acceptance
 
-Claude moves the four GLBs to `public/assets/models/characters/` and registers the id in `src/render/AvatarAdapter.ts` (`APPROVED_CHARACTER_ASSETS`) and `src/board/characterModels.ts`, using the manifest's clip speeds. Claude also moves `source/` and `previews/` to `art/source/hood-hero/<id>/` and deletes `art/incoming/<id>/`. The placeholder figure for that id disappears automatically.
+Claude moves `<id>.glb` to `public/assets/models/characters/` and registers the id in `src/render/AvatarAdapter.ts` and `src/board/characterModels.ts`. Clips are referenced inside the file (`<id>.glb#Walk`), at the manifest's speeds. Claude also moves `source/` and `previews/` to `art/source/hood-hero/<id>/`. The placeholder figure for that id disappears.
+
+## Reference: how Quanny was built
+
+Quanny predates the skills. He was rigged by hand with a custom 32-bone, Mixamo-style skeleton, and his clips come from a procedural IK gait script. See `art/source/hood-hero/quanny/README.md` and `pipeline/`. His shipped files pass the checker in the four-file layout, and his clips are the starting point for step 4. Don't copy his rig scripts for new characters; the skills route above replaces them.

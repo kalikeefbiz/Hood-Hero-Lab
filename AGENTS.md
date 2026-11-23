@@ -47,9 +47,9 @@ Every save in Hood-Hero-Lab belongs to the owner's own playtesting. None needs p
 - **Production is unchanged.** `kalikeefbiz/Hood-Hero`, its site and its save keys stay frozen and protected (section 1). Lab must keep using its own save keys and never touch production ones.
 - In PRs, "save impact" means: does it wipe Lab saves (fine, just say so), and does the owner still get past the opening.
 
-## 00C. Character models by the Blender route (owner decision 2026-11-23)
+## 00C. Character models (owner decision 2026-11-23)
 
-Codex and Gemini may build character models (mesh, rig, idle/walk/run) by following `docs/CHARACTER_PIPELINE.md` exactly. They write **only** to `art/incoming/<id>/`, which is an exception to Claude's `art/**` ownership for that folder alone. They never edit `public/assets/**`, `src/strip/**`, `src/render/**` or `characterModels.ts`. A delivery must pass `node scripts/check-character.mjs art/incoming/<id>`. Claude reviews it in the city, moves it into place and wires it up. Only canonical character ids with owner-approved art.
+Codex and Gemini build character models (mesh, rig, idle/walk/run) by following `docs/CHARACTER_PIPELINE.md` exactly, using Meshy, Blender 5.3 and the pinned `EL4CTEO/blender-skills` agent skills. They write **only** to `art/incoming/<id>/`, which is an exception to Claude's `art/**` ownership for that folder alone. They never edit `public/assets/**`, `src/**` or `characterModels.ts`. A delivery must pass `node scripts/check-character.mjs art/incoming/<id>`. Claude reviews it in the city, moves it into place and wires it up. Only canonical character ids with owner-approved art.
 
 ## 0. The city comes first (read this before designing anything)
 
