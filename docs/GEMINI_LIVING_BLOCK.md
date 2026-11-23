@@ -86,7 +86,7 @@ makes engine day and minute-of-day authoritative for gameplay. The independent
 preview minute counter below describes the existing standalone mode. Lab saves
 start fresh under schema 13.
 
-- **One Clock:** Engine `GameState.day` is authoritative. Call `sim.syncEngineDay(state.day)` whenever the engine advances the day. The sim only tracks `minuteOfDay` (`0..1440`) and sets `clock.dayWrapPending = true` at midnight without incrementing a second `dayCount`.
+- **One Clock:** In gameplay mode, pass the engine snapshot (`day`, `minuteOfDay`) from `worldTime(state)` into each sim step, as specified in [World Clock V3](WORLD_CLOCK_V3.md). Use it for schedule evaluation at both active and off-view cadence. When time jumps, resample from the NPCs’ existing positions. Real frame time still drives movement and animation. `syncEngineDay`, the sim’s own minute counter and `clock.dayWrapPending` apply only to the standalone preview.
 - **Presence (`peopleHere`):** Read `sim.peopleHere(locationIdOrHomeId)` or `sim.peopleNear(x, z, radius)` to query which NPCs are physically at a door/home/point for interaction menus and encounters.
 - **Relationships:** Pass `createGameStateRelationshipAdapter(() => state, onDelta)` into `LivingBlockSim`. The sim caches read-only affinity scores and emits non-authoritative `RelationshipDelta` proposals; `src/systems/Relationships.ts` remains the sole writer.
 - **Player context:** Feed player coordinates, faction, and disturbance flags via `sim.setPlayerContext({ x, z, affiliation, disturbanceActive })` from `src/city/**`.
