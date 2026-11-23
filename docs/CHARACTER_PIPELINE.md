@@ -220,7 +220,11 @@ A failed delivery gets a PR comment naming the failing check, the clip and the f
 
 ## What Claude does on acceptance
 
-Claude moves `<id>.glb` to `public/assets/models/characters/` and registers the id in `src/render/AvatarAdapter.ts` and `src/board/characterModels.ts`. Clips are referenced inside the file (`<id>.glb#Walk`), at the manifest's speeds. Claude also moves `source/` and `previews/` to `art/source/hood-hero/<id>/`. The placeholder figure for that id disappears.
+The reviewer moves the files with `git mv` (nothing is deleted; see `docs/handoff/character-review.md`):
+- `<id>.glb` to `public/assets/models/characters/`
+- `source/`, `previews/`, `ref/` and `manifest.json` to `art/source/hood-hero/<id>/`
+
+It then registers the id in `src/render/AvatarAdapter.ts`, with clips referenced inside the file (`<id>.glb#Walk`) and the manifest's height and speeds. The placeholder figure for that id disappears.
 
 ## Reference: how Quanny was built
 
