@@ -1,18 +1,7 @@
-import {
-  DOORS,
-  FENCES,
-  HOUSES,
-  NPC_SPOTS,
-  PLAYER_START,
-  STOREFRONTS,
-  WALK_BOUNDS,
-  WALLS,
-  type Door,
-  type HomeProperty,
-  type Rect,
-  type Segment,
-} from "../strip/cityMap";
-import type { NavEdge, NavEdgeKind, NavMap, NavNode } from "./types";
+// Navigation helpers for the NPC simulation: node-id scheme shared with Claude's authored graph
+// (src/strip/navMap.ts) and circle-vs-world collision. The graph itself is RESERVOIR_NAV_MAP.
+import type { Rect, Segment } from "../strip/cityMap";
+import type { NavMap } from "./types";
 
 /** Minimum clearance (metres) kept between NPC capsule center and walls/fences. */
 export const NPC_COLLISION_RADIUS = 0.42;
