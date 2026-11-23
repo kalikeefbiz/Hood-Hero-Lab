@@ -37,6 +37,16 @@ Read `docs/CITY_PLAN.md`. Summary:
 
 **Docs hygiene:** Whenever the owner changes responsibility or architecture, the coordinating agent **must update `AGENTS.md` and any conflicting active task brief before issuing an implementation handoff**. An in-chat decision alone is not sufficient. Existing safeguards about branches, PRs, saving, production isolation, and mobile-first testing still apply.
 
+## 00B. Lab saves are disposable test data (owner decision 2026-11-23; overrides save-compatibility wording anywhere below)
+
+Every save in Hood-Hero-Lab belongs to the owner's own playtesting. None needs preserving.
+
+- **No migrations or backwards compatibility for Lab saves.** A schema, id or state change may wipe or reset existing Lab saves. Prefer a clean break (bump the version, discard what doesn't match) over migration code. Do not spend effort keeping old Lab campaigns loading.
+- **Ids may change when that makes the game better.** Location, household, character and anchor ids are still contracts *between agents*: change them in one coordinated PR that updates every reader. They are not save-compatibility constraints.
+- **One thing must keep working: getting past the opening.** The owner must always be able to reach the open city beyond the opening storyline (Mega's chains) without replaying it. A dev "start after the opening" option or a fresh test save is fine. Keeping old saves alive is not required.
+- **Production is unchanged.** `kalikeefbiz/Hood-Hero`, its site and its save keys stay frozen and protected (section 1). Lab must keep using its own save keys and never touch production ones.
+- In PRs, "save impact" means: does it wipe Lab saves (fine, just say so), and does the owner still get past the opening.
+
 ## 0. The city comes first (read this before designing anything)
 
 The Actions menu is being retired. Players do things **in the city**: at a
@@ -88,7 +98,7 @@ For every new feature:
 
 ### Shared or cross-cutting — coordinate and minimize changes
 - src/ui/App.tsx and other application-level UI: only targeted changes necessary to expose gameplay, with no broad layout refactors. Claude owns the board's appearance; Codex owns the gameplay being displayed.
-- src/core/GameState.ts, src/persistence/**, save schemas and storage: narrowly scoped, backwards-conscious changes with tests and a clear migration/compatibility note.
+- src/core/GameState.ts, src/persistence/**, save schemas and storage: narrowly scoped changes with tests. Lab saves are disposable (00B): say if a change wipes them; no migration needed.
 - src/board/locations.ts, src/board/people.ts, src/board/interactions.ts and board components: **Claude-owned even when a new gameplay feature needs a location, NPC, or interaction shown on the board**. Codex should add stable game data and document the board integration request in its PR. Claude makes/approves the board wiring. Do not circumvent this rule by moving board behavior into gameplay modules.
 - tests/** and src/tests/**: ownership follows the behavior being tested. Coordinate when a test changes someone else's board or shared UI assumptions.
 - If a task genuinely requires touching another agent's files, keep the diff minimal, explicitly identify the cross-owner change in the PR, and obtain owner/Claude review. Do not silently reorganize or overwrite another agent's area.
@@ -98,7 +108,7 @@ For every new feature:
 
 - Prefer **data and persistent IDs** over duplicating renderer logic. Game rules own character records, state transitions, encounter eligibility, outcomes and save data. The board reads this state and renders it.
 - Keep character and location IDs stable; coordinate new IDs before board hookup. Example: Quanny's canonical character ID is **quanny** and his contact location is **reservoir.lil-jays**. His model can be resolved from the same character ID without gameplay code loading GLBs.
-- Do not change a canonical ID, location registry key, dialogue choice ID or save-state field casually. Preserve existing campaigns and historical records when adding content; document deliberate schema changes.
+- Do not change a canonical ID, location registry key, dialogue choice ID or save-state field casually: other agents read them. Change one in a single coordinated PR that updates every reader. Existing Lab campaigns need not survive it (00B); document deliberate schema changes.
 - Respect the new walkable-City direction and real location/presence rules. The old 3D strategy board is frozen. Do not introduce a parallel UI, encounter engine, NPC placement system, or rendering pipeline.
 - For character portraits, use the established portrait components and approved art only. Do not introduce new expressions or substitute images without approval.
 
@@ -118,10 +128,10 @@ For every new feature:
 Every Codex PR should answer:
 
 - What player-facing behavior was added or fixed? What was deliberately left out?
-- What stable IDs, state fields or save behavior changed?
+- What stable IDs, state fields or save behavior changed? Does it wipe Lab saves (allowed, 00B), and can the owner still get past the opening?
 - Does Claude need to wire up a board location, visible NPC, model, animation, UI layout, camera or visual asset?
 - Which tests passed, which failed, and which failures are independently confirmed on main?
-- Is this ready to merge without breaking the current board, UI, existing encounters and saved game?
+- Is this ready to merge without breaking the current board, UI and existing encounters?
 - Is the work still unmerged and therefore not yet present on the public Lab?
 
 If cross-owner integration is unfinished, label it clearly as a dependency; do not request merge as if the whole feature were complete.
