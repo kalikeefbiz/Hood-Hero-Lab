@@ -854,17 +854,20 @@ export function actionExecutionError(state: GameState, a: Action) {
   return activity && a.target ? requestError(state, a.target, activity) : null;
 }
 
+/** By default the caller's state is preserved. Use inPlace only with exclusively owned state. */
 export function performAction(
   state: GameState,
   a: Action,
+  { inPlace = false } = {},
 ): { state: GameState; error: string | null; event?: GameEvent } {
   const error = actionExecutionError(state, a);
   if (error) return { state, error };
-  const next = structuredClone(state);
+  const previousAP = state.ap;
+  const next = inPlace ? state : structuredClone(state);
   const crewActivity = crewActivityFor(state, a);
   if (a.target && crewActivity) {
     requestActivity(next, a.target, crewActivity);
-    expose(next, presenceOf(next).location, "activity", String(state.ap));
+    expose(next, presenceOf(next).location, "activity", String(previousAP));
     progress(next);
     syncEncounters(next);
     return { state: next, error: null, event: next.events.at(-1) };
@@ -917,7 +920,7 @@ export function performAction(
                 ].slice(-12),
         };
     }
-    expose(next, presenceOf(next).location, "activity", String(state.ap));
+    expose(next, presenceOf(next).location, "activity", String(previousAP));
   }
   progress(next);
   finalizeEnding(next);
