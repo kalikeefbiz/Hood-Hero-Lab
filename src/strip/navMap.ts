@@ -12,34 +12,8 @@
 // home:<res-home-NN>, spot:<characterId>, spot:<gathering id>, sw:<street>:<n>, cw:<name>.
 import { WALLS, FENCES, WALK_BOUNDS, DOORS, HOUSES, STOREFRONTS, NPC_SPOTS, GATHERING_SPOTS, type Rect, type Segment } from "./cityMap";
 
-// Structural copy of src/sim/types.ts NavMap (kept local so the map has no dependency on the sim).
-export interface NavNode {
-  id: string;
-  kind: "sidewalk" | "crosswalk" | "door" | "porch" | "portal" | "spot";
-  x: number; z: number;
-  street?: string;
-  locationId?: string | null;
-  homeId?: string | null;
-  facing?: number;
-  radius?: number;
-}
-export interface NavEdge {
-  from: string; to: string;
-  kind: "sidewalk" | "crosswalk" | "approach" | "portal";
-  cost: number; width: number;
-  bidirectional?: boolean;
-}
-export interface NavMap {
-  version: 1;
-  hood: "reservoir";
-  source: "authored-navMap";
-  nodes: NavNode[];
-  edges: NavEdge[];
-  obstacles: Rect[];
-  fences: Segment[];
-  bounds: { x0: number; x1: number; z0: number; z1: number };
-  missingConnections: string[];
-}
+import type { NavMap, NavNode, NavEdge } from "../sim/types";
+export type { NavMap, NavNode, NavEdge };
 
 /** NPC body radius the simulation collides with (src/sim NPC_COLLISION_RADIUS). Edges keep this clear. */
 export const NAV_CLEARANCE = 0.42;

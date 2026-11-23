@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { LivingBlockSim, createReservoirNpcProfiles } from "../sim";
 import { RESERVOIR_NAV_MAP, edgeBlocked } from "../strip/navMap";
-import { withMappedHomes } from "../strip/living";
 import { WALLS, DOORS, HOUSES, NPC_SPOTS, HOUSEHOLDS } from "../strip/cityMap";
 import { newGame } from "../core/Simulation";
 
@@ -10,9 +9,8 @@ const inWall = (x: number, z: number) => WALLS.some((w) => x > w.x0 && x < w.x1 
 function makeSim() {
   const state = newGame("T", "reservoir");
   return new LivingBlockSim({
-    navMap: nav as never,
+    navMap: nav,
     engineState: state,
-    profiles: withMappedHomes(createReservoirNpcProfiles(state)),
     simMinutesPerSecond: 3,
   });
 }
@@ -50,7 +48,7 @@ describe("authored nav map (src/strip/navMap.ts)", () => {
 
 describe("living Reservoir (Gemini's simulation on Claude's map)", () => {
   it("homes NPCs where cityMap HOUSEHOLDS says", () => {
-    const profiles = withMappedHomes(createReservoirNpcProfiles(newGame("T", "reservoir")));
+    const profiles = createReservoirNpcProfiles(newGame("T", "reservoir"));
     for (const h of HOUSEHOLDS) for (const id of h.residents) {
       const p = profiles.find((q) => q.id === id);
       if (p) expect(p.homeDestinationId, id).toBe(h.propertyId);

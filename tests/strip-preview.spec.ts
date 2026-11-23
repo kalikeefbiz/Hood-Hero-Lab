@@ -63,7 +63,9 @@ test("presence follows the simulation: Quanny walks off and his actions go; Mr. 
     () => !(window as any).__strip.sim.peopleHere("reservoir.lil-jays").some((p: any) => p.characterId === "quanny"),
     null, { timeout: 120_000 },
   );
-  await expect(card.locator(".act[data-target=quanny]")).toHaveCount(0, { timeout: 5_000 });
+  // The card re-reads presence: Quanny is no longer here, and the engine refuses his actions.
+  await expect(card.locator(".people .chip", { hasText: "Quanny" })).toHaveCount(0, { timeout: 5_000 });
+  await expect(card.locator(".act[data-target=quanny]:not([disabled])")).toHaveCount(0);
 
   // Mr. Lewis's shift: once the simulation has him at the market, the engine offers his work.
   await page.waitForFunction(

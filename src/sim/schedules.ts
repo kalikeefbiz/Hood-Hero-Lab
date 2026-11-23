@@ -2,6 +2,16 @@ import { canonicalCharacters, residents } from "../content/characters";
 import type { Character, GameState } from "../core/GameState";
 import { doorNodeId, homeNodeId, npcSpotNodeId } from "./derivedNavMap";
 import type { ScheduleSlot, SimNpcProfile } from "./types";
+import { HOUSEHOLDS, HOUSES } from "../strip/cityMap";
+
+/** Homes come from the map's households (Claude, cityMap.ts HOUSEHOLDS; RESERVOIR_CANON E). */
+const homeOf = (characterId: string, fallback: string) =>
+  HOUSEHOLDS.find((h) => h.residents.includes(characterId))?.propertyId ?? fallback;
+const houseLabel = (id: string) => HOUSES.find((h) => h.id === id)?.label ?? id;
+const QUANNY_HOME = homeOf("quanny", "res-home-03");
+const LEWIS_HOME = homeOf("mr-lewis", "res-home-04");
+/** Anonymous test resident A lives in a house no household claims. */
+const TEST_RESIDENT_A_HOME = "res-home-01";
 
 function lookupCanonical(
   id: string,
@@ -37,8 +47,8 @@ export function createReservoirNpcProfiles(
       isCanonical: true,
       affiliation: quanny?.affiliation ?? "blocks",
       homeZone: quanny?.home ?? "reservoir",
-      homeNodeId: homeNodeId("res-home-01"),
-      homeDestinationId: "res-home-01",
+      homeNodeId: homeNodeId(QUANNY_HOME),
+      homeDestinationId: QUANNY_HOME,
       startNodeId: npcSpotNodeId("quanny"),
       walkSpeed: 1.48,
       runSpeed: 3.1,
@@ -104,9 +114,9 @@ export function createReservoirNpcProfiles(
           id: "quanny-late-rest",
           startMinute: 1320,
           endMinute: 1440, // 22:00 - 24:00
-          targetNodeId: homeNodeId("res-home-01"),
-          destinationId: "res-home-01",
-          destinationLabel: "Lil Bit Lane, dark house",
+          targetNodeId: homeNodeId(QUANNY_HOME),
+          destinationId: QUANNY_HOME,
+          destinationLabel: houseLabel(QUANNY_HOME),
           activity: "home_rest",
           reason: "Turning in for the night",
         },
@@ -120,9 +130,9 @@ export function createReservoirNpcProfiles(
       isCanonical: true,
       affiliation: mrLewis?.affiliation ?? null,
       homeZone: mrLewis?.home ?? "reservoir",
-      homeNodeId: homeNodeId("res-home-01"),
-      homeDestinationId: "res-home-01",
-      startNodeId: homeNodeId("res-home-01"),
+      homeNodeId: homeNodeId(LEWIS_HOME),
+      homeDestinationId: LEWIS_HOME,
+      startNodeId: homeNodeId(LEWIS_HOME),
       walkSpeed: 1.22,
       runSpeed: 2.35,
       traits: {
@@ -136,9 +146,9 @@ export function createReservoirNpcProfiles(
           id: "lewis-early-home",
           startMinute: 0,
           endMinute: 450, // 00:00 - 07:30
-          targetNodeId: homeNodeId("res-home-01"),
-          destinationId: "res-home-01",
-          destinationLabel: "Lil Bit Lane, dark house",
+          targetNodeId: homeNodeId(LEWIS_HOME),
+          destinationId: LEWIS_HOME,
+          destinationLabel: houseLabel(LEWIS_HOME),
           activity: "home_rest",
           reason: "Morning coffee before opening the market",
         },
@@ -186,9 +196,9 @@ export function createReservoirNpcProfiles(
           id: "lewis-night-home",
           startMinute: 1200,
           endMinute: 1440, // 20:00 - 24:00
-          targetNodeId: homeNodeId("res-home-01"),
-          destinationId: "res-home-01",
-          destinationLabel: "Lil Bit Lane, dark house",
+          targetNodeId: homeNodeId(LEWIS_HOME),
+          destinationId: LEWIS_HOME,
+          destinationLabel: houseLabel(LEWIS_HOME),
           activity: "home_rest",
           reason: "Home for dinner and rest",
         },
@@ -287,16 +297,16 @@ export function createReservoirNpcProfiles(
       ],
     },
 
-    // 4. Anonymous Test Resident A (South Side, res-home-04) — clearly labeled non-canon resident.
+    // 4. Anonymous Test Resident A (Lil Bit Lane north, res-home-01) — clearly labeled non-canon resident.
     {
       id: "sim-resident-lilbit-04",
       displayName: "Resident #4 (Test)",
       isCanonical: false,
       affiliation: null,
       homeZone: "reservoir",
-      homeNodeId: homeNodeId("res-home-04"),
-      homeDestinationId: "res-home-04",
-      startNodeId: homeNodeId("res-home-04"),
+      homeNodeId: homeNodeId(TEST_RESIDENT_A_HOME),
+      homeDestinationId: TEST_RESIDENT_A_HOME,
+      startNodeId: homeNodeId(TEST_RESIDENT_A_HOME),
       walkSpeed: 1.32,
       runSpeed: 2.6,
       traits: {
@@ -310,9 +320,9 @@ export function createReservoirNpcProfiles(
           id: "res04-early-home",
           startMinute: 0,
           endMinute: 465, // 00:00 - 07:45
-          targetNodeId: homeNodeId("res-home-04"),
-          destinationId: "res-home-04",
-          destinationLabel: "Lil Bit Lane, tan house (south)",
+          targetNodeId: homeNodeId(TEST_RESIDENT_A_HOME),
+          destinationId: TEST_RESIDENT_A_HOME,
+          destinationLabel: houseLabel(TEST_RESIDENT_A_HOME),
           activity: "home_rest",
           reason: "At home on the south side of Lil Bit Lane",
         },
@@ -330,9 +340,9 @@ export function createReservoirNpcProfiles(
           id: "res04-home-host",
           startMinute: 545,
           endMinute: 700, // 09:05 - 11:40
-          targetNodeId: homeNodeId("res-home-04"),
-          destinationId: "res-home-04",
-          destinationLabel: "Lil Bit Lane, tan house (south)",
+          targetNodeId: homeNodeId(TEST_RESIDENT_A_HOME),
+          destinationId: TEST_RESIDENT_A_HOME,
+          destinationLabel: houseLabel(TEST_RESIDENT_A_HOME),
           activity: "home_rest",
           reason: "Back on the porch hosting neighbors",
         },
@@ -360,9 +370,9 @@ export function createReservoirNpcProfiles(
           id: "res04-evening-home",
           startMinute: 990,
           endMinute: 1440, // 16:30 - 24:00
-          targetNodeId: homeNodeId("res-home-04"),
-          destinationId: "res-home-04",
-          destinationLabel: "Lil Bit Lane, tan house (south)",
+          targetNodeId: homeNodeId(TEST_RESIDENT_A_HOME),
+          destinationId: TEST_RESIDENT_A_HOME,
+          destinationLabel: houseLabel(TEST_RESIDENT_A_HOME),
           activity: "home_rest",
           reason: "Home for the evening",
         },

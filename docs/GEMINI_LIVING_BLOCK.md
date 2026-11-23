@@ -4,6 +4,15 @@ Implements the headless, deterministic NPC autonomy simulation for **Lil Bit Lan
 
 No files in `src/strip/**`, `src/board/**`, `src/city/**`, `src/systems/**`, `src/content/**`, `src/core/**`, `src/persistence/**`, `public/assets/**`, or `art/**` were modified.
 
+
+> **Integration changes (Claude, 2026-11-23; owner authorized reworking clashing parts).** The NPC simulation itself (schedules, decisions, movement, presence, interruptions, persistence) is unchanged. Changed around it:
+> - **Nav graph:** the sim's default graph is now Claude's authored `RESERVOIR_NAV_MAP` (`src/strip/navMap.ts`, all five streets, same `door:`/`home:`/`spot:` ids). The derived builder was removed from `derivedNavMap.ts`, which keeps the id and collision helpers.
+> - **Homes:** homes come from `HOUSEHOLDS` in `cityMap.ts` (Quanny → `res-home-03`, the Splash Gang bando; Mr. Lewis → `res-home-04`; test resident A → `res-home-01`).
+> - **Nearest node:** `findNearestNavNode` skips nodes with no edges, so recovery can't start from an orphan.
+> - **Shared destinations:** NPCs who share one stand side by side along the doorway (`settleSlot`), walking there, not stacked on one point.
+> - **Assets:** `AvatarAdapter` asset paths are relative to the site root, so they work under `/Hood-Hero-Lab/`.
+> - **Preview:** the separate canvas preview (`src/sim/preview/`) and its spec were removed. The sim runs in the real 3D city (`strip.html`, `docs/LIVING_RESERVOIR.md`), with the inspector under `#dev`.
+
 ---
 
 ## 1. Architecture & Files

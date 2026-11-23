@@ -30,24 +30,25 @@ export interface AvatarPose {
 }
 
 /**
- * Approved character rig paths in `public/assets/models/characters/` (read-only).
+ * Approved character rig paths in `public/assets/models/characters/` (read-only), relative to the
+ * site root so the host can resolve them under any base path.
  * Never invents or modifies Claude's assets.
  */
 const APPROVED_CHARACTER_ASSETS: Record<string, AvatarAssetDescriptor> = {
   quanny: {
-    modelUrl: "/assets/models/characters/quanny.glb",
+    modelUrl: "assets/models/characters/quanny.glb",
     clips: {
-      idle: "/assets/models/characters/quanny-idle.glb",
-      walk: "/assets/models/characters/quanny-walk.glb",
-      run: "/assets/models/characters/quanny-run.glb",
+      idle: "assets/models/characters/quanny-idle.glb",
+      walk: "assets/models/characters/quanny-walk.glb",
+      run: "assets/models/characters/quanny-run.glb",
     },
     usesApprovedModel: true,
   },
   mega: {
-    modelUrl: "/assets/models/characters/mega.glb",
+    modelUrl: "assets/models/characters/mega.glb",
     clips: {
-      walk: "/assets/models/characters/mega-walk.glb",
-      run: "/assets/models/characters/mega-run.glb",
+      walk: "assets/models/characters/mega-walk.glb",
+      run: "assets/models/characters/mega-run.glb",
     },
     usesApprovedModel: true,
   },

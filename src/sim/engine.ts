@@ -1,9 +1,6 @@
 import type { GameState } from "../core/GameState";
-import {
-  buildDerivedReservoirNavMap,
-  NPC_COLLISION_RADIUS,
-  resolveWorldCollision,
-} from "./derivedNavMap";
+import { NPC_COLLISION_RADIUS, resolveWorldCollision } from "./derivedNavMap";
+import { RESERVOIR_NAV_MAP } from "../strip/navMap";
 import {
   buildNavGraphIndex,
   findNavPath,
@@ -103,7 +100,7 @@ export class LivingBlockSim {
   };
 
   constructor(options: LivingBlockSimOptions = {}) {
-    this.navMap = options.navMap ?? buildDerivedReservoirNavMap();
+    this.navMap = options.navMap ?? RESERVOIR_NAV_MAP;
     this.navIndex = buildNavGraphIndex(this.navMap);
     this.relationships = new SimRelationshipCache(options.relationshipAdapter);
     this.simMinutesPerSecond = options.simMinutesPerSecond ?? 0.5;
@@ -812,6 +809,20 @@ export class LivingBlockSim {
       if (targetNode) {
         npc.currentNodeId = targetNode.id;
         npc.atDestinationId = targetNode.homeId ?? targetNode.locationId ?? npc.goal.destinationId;
+        // People sharing a destination stand side by side, not on one point: step to this
+        // NPC's own slot along the doorway (walking, collision-checked, never teleporting).
+        const slot = this.settleSlot(npc, targetNode);
+        const sdx = slot.x - npc.x, sdz = slot.z - npc.z, sd = Math.hypot(sdx, sdz);
+        if (sd > 0.05) {
+          const step = Math.min(sd, profile.walkSpeed * dt);
+          const r = resolveWorldCollision(npc.x + (sdx / sd) * step, npc.z + (sdz / sd) * step, this.navMap, NPC_COLLISION_RADIUS);
+          npc.x = r.x;
+          npc.z = r.z;
+          npc.facing = turnToward(npc.facing, Math.atan2(sdx, sdz), 8.0 * dt);
+          npc.speed = profile.walkSpeed;
+          npc.locomotion = "walk";
+          return;
+        }
         if (targetNode.facing !== undefined && npc.goal.activity !== "react_disturbance") {
           npc.facing = turnToward(npc.facing, targetNode.facing, 4.5 * dt);
         }
@@ -887,6 +898,23 @@ export class LivingBlockSim {
         `Arrived at ${npc.goal.destinationLabel} (${npc.goal.activity})`,
       );
     }
+  }
+
+  /**
+   * Where an NPC stands at a shared destination: the node itself for the first arrival (by id
+   * order), then 0.9 m steps either side along the doorway. Deterministic.
+   */
+  private settleSlot(npc: SimNpcState, node: { id: string; x: number; z: number; facing?: number }) {
+    const here = this.npcs
+      .filter((n) => n.goal.targetNodeId === node.id && n.pathIndex >= n.path.length)
+      .map((n) => n.id)
+      .sort();
+    const rank = Math.max(0, here.indexOf(npc.id));
+    const offsets = [0, 0.9, -0.9, 1.8, -1.8, 2.7, -2.7];
+    const o = offsets[rank % offsets.length]!;
+    const f = node.facing ?? 0;
+    const r = resolveWorldCollision(node.x + Math.cos(f) * o, node.z - Math.sin(f) * o, this.navMap, NPC_COLLISION_RADIUS);
+    return { x: r.x, z: r.z };
   }
 
   private logDecision(npcId: string, event: string, detail: string): void {

@@ -96,16 +96,29 @@ export function findNavPath(
   return null;
 }
 
+/** Nodes with at least one edge, per map (an unconnected node is never a usable start). */
+const connectedCache = new WeakMap<NavMap, Set<string>>();
+function connectedNodes(navMap: NavMap): Set<string> {
+  let set = connectedCache.get(navMap);
+  if (!set) {
+    set = new Set<string>();
+    for (const e of navMap.edges) { set.add(e.from); set.add(e.to); }
+    connectedCache.set(navMap, set);
+  }
+  return set;
+}
+
 export function findNearestNavNode(
   navMap: NavMap,
   x: number,
   z: number,
   blockedNodes?: ReadonlySet<string>,
 ): NavNode | null {
+  const connected = connectedNodes(navMap);
   let best: NavNode | null = null;
   let bestDist = Infinity;
   for (const node of navMap.nodes) {
-    if (blockedNodes?.has(node.id)) continue;
+    if (blockedNodes?.has(node.id) || !connected.has(node.id)) continue;
     const d = Math.hypot(node.x - x, node.z - z);
     if (d < bestDist - 1e-9 || (Math.abs(d - bestDist) <= 1e-9 && best && node.id < best.id)) {
       bestDist = d;

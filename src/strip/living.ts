@@ -4,58 +4,24 @@
 // from LivingBlockSim.
 import * as THREE from "three";
 import type { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { LivingBlockSim, createReservoirNpcProfiles, type SimNpcProfile } from "../sim";
-import { AvatarAdapter, type AvatarPose } from "../render/AvatarAdapter";
+import { LivingBlockSim } from "../sim";
+import { AvatarAdapter, resolveAvatarAssets, type AvatarAssetDescriptor, type AvatarPose } from "../render/AvatarAdapter";
 import type { GameState } from "../core/GameState";
 import { RESERVOIR_NAV_MAP } from "./navMap";
-import { HOUSES, HOUSEHOLDS } from "./cityMap";
 import { Avatar, type AvatarSpec } from "./player/avatar";
 import type { PresenceSource } from "./previewSession";
 import type { Motion } from "./player/controller";
 
-/**
- * Physical home assignments (Claude owns these: RESERVOIR_CANON E, cityMap HOUSEHOLDS).
- * Gemini's profiles predate HOUSEHOLDS and put Quanny and Mr. Lewis in res-home-01. Until the
- * profiles read HOUSEHOLDS themselves (requested on PR #55), this swaps each NPC's own home id
- * to the mapped house. Schedules, times and activities are untouched.
- */
-const HOME_OF: Record<string, string> = {
-  ...Object.fromEntries(HOUSEHOLDS.flatMap((h) => h.residents.map((id) => [id, h.propertyId]))),
-  // Gemini's anonymous test resident lived in what is now Mr. Lewis's house; give them a free one.
-  "sim-resident-lilbit-04": "res-home-01",
-};
-export function withMappedHomes(profiles: SimNpcProfile[]): SimNpcProfile[] {
-  return profiles.map((p) => {
-    const to = HOME_OF[p.id];
-    const from = p.homeDestinationId;
-    if (!to || to === from) return p;
-    const label = HOUSES.find((h) => h.id === to)?.label ?? to;
-    const swap = (id: string) => (id === `home:${from}` ? `home:${to}` : id === from ? to : id);
-    return {
-      ...p,
-      homeNodeId: swap(p.homeNodeId),
-      homeDestinationId: to,
-      startNodeId: swap(p.startNodeId),
-      schedule: p.schedule.map((s) =>
-        s.destinationId === from
-          ? { ...s, targetNodeId: swap(s.targetNodeId), destinationId: to, destinationLabel: label }
-          : s,
-      ),
-    };
-  });
+/** Draw settings for an approved rig named by the sim's AvatarAdapter (src/render/AvatarAdapter.ts). */
+function specFor(assets: AvatarAssetDescriptor): AvatarSpec | null {
+  if (!assets.usesApprovedModel || !assets.modelUrl || !assets.clips.walk || !assets.clips.run) return null;
+  return {
+    model: assets.modelUrl,
+    clips: { idle: assets.clips.idle, walk: assets.clips.walk, run: assets.clips.run },
+    height: 1.8,
+    clipSpeed: { walk: 1.4, run: 3.6 },
+  };
 }
-
-/** Approved rigs the sim's AvatarAdapter names; anything else is drawn as a placeholder. */
-const QUANNY: AvatarSpec = {
-  model: "assets/models/characters/quanny.glb",
-  clips: {
-    idle: "assets/models/characters/quanny-idle.glb",
-    walk: "assets/models/characters/quanny-walk.glb",
-    run: "assets/models/characters/quanny-run.glb",
-  },
-  height: 1.8,
-  clipSpeed: { walk: 1.4, run: 3.6 },
-};
 
 const motionOf = (p: AvatarPose): Motion => (p.clip === "run" ? "run" : p.clip === "walk" ? "walk" : "idle");
 
@@ -118,9 +84,8 @@ export interface LivingHost {
 export function startLiving(host: LivingHost) {
   const engineState = host.state();
   const sim = new LivingBlockSim({
-    navMap: RESERVOIR_NAV_MAP as never, // structurally the sim's NavMap (src/sim/types.ts)
+    navMap: RESERVOIR_NAV_MAP,
     engineState,
-    profiles: withMappedHomes(createReservoirNpcProfiles(engineState)),
     simMinutesPerSecond: host.minutesPerSecond ?? 3,
   });
   const adapter = new AvatarAdapter();
@@ -129,8 +94,8 @@ export function startLiving(host: LivingHost) {
 
   for (const npc of sim.getNpcs()) {
     const profile = sim.profiles.get(npc.id)!;
-    const approved = (profile.modelId ?? npc.id) === "quanny";
-    const draw = approved ? new Avatar(QUANNY, host.loader, host.url) : new PlaceholderPerson(profile.accentColor);
+    const spec = specFor(resolveAvatarAssets(profile.modelId ?? npc.id));
+    const draw = spec ? new Avatar(spec, host.loader, host.url) : new PlaceholderPerson(profile.accentColor);
     draw.root.name = `npc:${npc.id}`;
     const tag = nameTag(npc.isCanonical ? npc.displayName : `${npc.displayName} (test)`, npc.isCanonical);
     host.scene.add(draw.root, tag);

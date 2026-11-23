@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { AvatarAdapter } from "../render/AvatarAdapter";
 import { DOORS, FENCES, HOUSES, WALLS } from "../strip/cityMap";
+import { RESERVOIR_NAV_MAP } from "../strip/navMap";
 import {
   ACTIVE_DT,
-  buildDerivedReservoirNavMap,
   createGameStateRelationshipAdapter,
   doorNodeId,
   extractSimSnapshot,
@@ -20,11 +20,12 @@ import {
 } from "../sim";
 
 describe("One Living Block — headless Reservoir NPC simulation", () => {
-  it("derives navMap from cityMap.ts with real IDs and zero wall/fence intersections", () => {
-    const navMap = buildDerivedReservoirNavMap();
+  it("walks Claude's authored navMap (built from cityMap.ts): real IDs, zero wall/fence intersections", () => {
+    const navMap = new LivingBlockSim().navMap;
+    expect(navMap).toBe(RESERVOIR_NAV_MAP);
 
     expect(navMap.hood).toBe("reservoir");
-    expect(navMap.source).toBe("derived-from-cityMap");
+    expect(navMap.source).toBe("authored-navMap");
     expect(navMap.obstacles).toBe(WALLS);
     expect(navMap.fences).toBe(FENCES);
 
@@ -310,7 +311,7 @@ describe("One Living Block — headless Reservoir NPC simulation", () => {
     expect(poses0).toHaveLength(5);
     const quannyPose = adapter.getPose("quanny")!;
     expect(quannyPose.assets.usesApprovedModel).toBe(true);
-    expect(quannyPose.assets.modelUrl).toBe("/assets/models/characters/quanny.glb");
+    expect(quannyPose.assets.modelUrl).toBe("assets/models/characters/quanny.glb");
     expect(adapter.getPose("sim-resident-lilbit-04")!.assets.usesApprovedModel).toBe(false);
 
     // Measure 1,000 active 20 Hz ticks + render interpolation sync.
