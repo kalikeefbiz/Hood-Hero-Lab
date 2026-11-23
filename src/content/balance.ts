@@ -4,7 +4,7 @@ export const BALANCE = {
   livingCost: 18,
   buyback: 150,
   minimumBuyback: 95,
-  incidentDeadline: 8,
+  incidentDeadline: 6,
   workIncome: 96,
   employment: {
     attendanceWindow: 5,

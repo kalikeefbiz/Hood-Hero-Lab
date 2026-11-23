@@ -60,7 +60,8 @@ it.each([
     s = paid.state;
     expect(s.day).toBe(3);
     expect(s.ap).toBe(0);
-    expect(cash(player(s))).toBe(15);
+    expect(s.incidents["the-chains"].paidDemand).toBe(165);
+    expect(cash(player(s))).toBe(0);
     expect(s.properties.chains.possession).toEqual({
       kind: "character",
       id: "mega",

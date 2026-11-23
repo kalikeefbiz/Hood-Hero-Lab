@@ -33,6 +33,14 @@ export function openingIncident(s: GameState) {
     status: "active",
     interventions: [],
   };
+  record(
+    s,
+    "incident",
+    "Word around Southside Towers is three Angels robbed Cuzzo for his chains.",
+    [],
+    [s.playerId],
+    { incidentId: "the-chains" },
+  );
   const e = record(
     s,
     "incident",

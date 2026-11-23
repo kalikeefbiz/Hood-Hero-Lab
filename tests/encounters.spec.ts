@@ -71,6 +71,41 @@ async function endDay(page: Page) {
   await page.getByRole("button", { name: "End day" }).click();
 }
 
+test("the City resolves the ignored Chains by Day 7", async ({ page }) => {
+  // Exercise the supported flat City so the day loop works on headless CI.
+  await page.addInitScript(() => {
+    HTMLCanvasElement.prototype.getContext = new Proxy(
+      HTMLCanvasElement.prototype.getContext,
+      {
+        apply(target, canvas, args) {
+          if (args[0] === "webgl" || args[0] === "webgl2") return null;
+          return Reflect.apply(target, canvas, args);
+        },
+      },
+    );
+  });
+  await seed(page, newGame("Test(3)", "south", 2));
+  await expect(page.locator(".city-map")).toBeVisible();
+  await expect(modal(page)).toBeVisible();
+  expect((await saved(page)).incidents["the-chains"].startedDay).toBe(1);
+  await modal(page).getByRole("button", { name: "Close conversation" }).click();
+
+  for (let day = 2; day <= 7; day++) {
+    await endDay(page);
+    await declineCrewOffer(page);
+    if (await modal(page).count()) await acknowledge(page);
+  }
+
+  const s = await saved(page);
+  expect(s.day).toBe(7);
+  const incident = s.incidents["the-chains"];
+  expect(incident.status).not.toBe("active");
+  expect(s.commitments.filter((c) => c.incidentId === incident.id)).toHaveLength(0);
+  expect(
+    s.events.find((e) => e.id === incident.resolvedEventId)?.day,
+  ).toBeLessThanOrEqual(7);
+});
+
 test("true City modal, sequential questions, promise closure, queued fulfillment, history and Resume", async ({
   page,
 }) => {
@@ -113,7 +148,7 @@ test("true City modal, sequential questions, promise closure, queued fulfillment
   await openJournal(page);
   await expect(
     page.getByRole("region", { name: "Your promises" }),
-  ).toContainText("8 days left");
+  ).toContainText("6 days left");
   expect(incidentPromise(await saved(page), "the-chains")?.status).toBe(
     "pending",
   );
@@ -214,7 +249,7 @@ for (const outcome of ["fulfilled", "broken"] as const)
     test.setTimeout(180000);
     await seed(
       page,
-      newGame("Test(3)", "south", outcome === "broken" ? 13 : 2026),
+      newGame("Test(3)", "south", outcome === "broken" ? 2 : 2026),
     );
     await reply(page, "I’ll help you").click();
     if (outcome === "fulfilled") {
@@ -226,10 +261,10 @@ for (const outcome of ["fulfilled", "broken"] as const)
         .getByRole("button", { name: /Pay to return the chains/ })
         .click();
     } else {
-      for (let day = 2; day <= 9; day++) {
+      for (let day = 2; day <= 7; day++) {
         await endDay(page);
         await declineCrewOffer(page);
-        if (day < 9 && (await modal(page).count())) await acknowledge(page);
+        if (day < 7 && (await modal(page).count())) await acknowledge(page);
       }
     }
     await declineCrewOffer(page);
