@@ -11,7 +11,6 @@ const STYLE: Record<string, { fill: string; ring: string; glyph: string }> = {
   lead: { fill: "#e0675a", ring: "#250906", glyph: "◆" },
   home: { fill: "#c9ccd6", ring: "#15171c", glyph: "⌂" },
   storefront: { fill: "#7c818c", ring: "#15171c", glyph: "▪" },
-  fixture: { fill: "#b9a6ff", ring: "#130c2a", glyph: "◉" },
 };
 const styleOf = (a: CityAnchor) =>
   a.kind === "home" ? (a.household ? "household" : a.targetId ? "lead" : "home") : a.kind;
@@ -129,22 +128,4 @@ export class Pins {
     this.tmp.copy(p.sprite.position).project(camera);
     return { x: (this.tmp.x + 1) / 2 * w, y: (1 - this.tmp.y) / 2 * h, visible: p.sprite.visible && this.tmp.z < 1 };
   }
-}
-
-/**
- * A plain stand-in figure for a preview fixture that has no approved model (Mr. Lewis).
- * Deliberately not a character: a neutral capsule, so nobody mistakes it for final art.
- */
-export function fixtureFigure(x: number, z: number, rotY: number) {
-  const g = new THREE.Group();
-  const body = new THREE.Mesh(
-    new THREE.CapsuleGeometry(0.24, 1.05, 4, 10),
-    new THREE.MeshStandardMaterial({ color: 0x6d6a80, roughness: 0.8, transparent: true, opacity: 0.85 }),
-  );
-  body.position.y = 0.77;
-  body.castShadow = true;
-  g.add(body);
-  g.position.set(x, 0, z);
-  g.rotation.y = rotY;
-  return g;
 }

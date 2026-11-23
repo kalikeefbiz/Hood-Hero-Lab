@@ -4,7 +4,6 @@
 import type { CityAnchor } from "./anchors";
 import type { LocationQuery, LocationResult, PreviewSession } from "./previewSession";
 import type { LocationAction } from "../city/LocationInteractions";
-import { PREVIEW_FIXTURE_NOTICE } from "./previewFixtures";
 import { JOBS } from "../content/jobs";
 
 const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
@@ -19,8 +18,6 @@ export interface PlacePanelHost {
   session: PreviewSession;
   /** Verified people for display (same list the API was given). */
   peopleAt(locationId: string): string[];
-  /** True while the preview's people come from fixtures. */
-  fixtures: boolean;
   onClose(): void;
 }
 
@@ -55,6 +52,9 @@ export class PlacePanel {
 
   refresh() { if (this.anchor) this.render(); }
 
+  /** Who is here, as the card last showed it (to re-render when the simulation moves people). */
+  shownPeople = "";
+
   private render(note?: string) {
     const a = this.anchor!;
     const s = this.host.session;
@@ -85,12 +85,12 @@ export class PlacePanel {
     }
     const q = s.query(a);
     const people = this.host.peopleAt(a.locationId);
+    this.shownPeople = people.join(",");
     if (people.length) {
       const row = el("div", "people");
-      row.append(el("span", "lbl", this.host.fixtures ? "Here (preview fixture)" : "Here"));
+      row.append(el("span", "lbl", "Here now"));
       for (const id of people) row.append(el("span", "chip", s.state.characters[id]?.name ?? id));
       r.append(row);
-      if (this.host.fixtures) r.append(el("p", "fixture", PREVIEW_FIXTURE_NOTICE));
     }
     if (q.politics) r.append(politicsBlock(q));
     if (q.error) r.append(el("p", "error", q.error));

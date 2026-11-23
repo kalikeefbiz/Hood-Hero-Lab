@@ -81,7 +81,7 @@ describe("preview session", () => {
     const prior = g.localStorage;
     g.localStorage = new Proxy({}, { get() { throw new Error("preview touched localStorage"); } });
     try {
-      const s = new PreviewSession();
+      const s = new PreviewSession({ peopleAt: (id) => (id === "reservoir.lil-jays" ? ["mr-lewis", "quanny"] : []) });
       const market = anchorById("reservoir.lil-jays")!;
       expect(s.arrive(market)).toBe(true);
       const delivery = s.query(market).actions.find((a) => a.command.type === "lewisDelivery")!;

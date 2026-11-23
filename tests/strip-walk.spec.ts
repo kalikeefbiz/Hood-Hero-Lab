@@ -1,6 +1,6 @@
 import { test, expect, type Page, type CDPSession } from "@playwright/test";
 
-// Player controller preview (strip.html, default walk mode): a temporary avatar driven by the
+// Player controller preview (strip.html, default walk mode, NPCs from the living simulation): a temporary avatar driven by the
 // on-screen touch stick, colliding with the map, followed by the camera, walking up to a real
 // door and using the engine there. Chromium sends genuine touch events through CDP.
 
@@ -79,7 +79,8 @@ test("walk and run with the touch stick, collide with a wall, camera follows and
   const atDoor = await player(page);
   expect(atDoor.nearby).toContain("reservoir.lil-jays");
   expect(atDoor.offered).toBe("reservoir.lil-jays");
-  await expect(page.locator("#prompt")).toHaveText(/Go in · Lil Jay's Market/);
+  // Either the door, or Quanny if the simulation has him right beside you there.
+  await expect(page.locator("#prompt")).toHaveText(/Go in · Lil Jay's Market|Talk to Quanny/);
 
   // Blocked: push right (north, into the store front) and stay outside the wall.
   await stick.hold(90, 0.7);
@@ -130,4 +131,31 @@ test("pins point the way in walk mode; they never teleport the player", async ({
   expect(Math.hypot(after.x - before.x, after.z - before.z)).toBeLessThan(0.01);
   await expect(page.locator(".place")).toBeHidden();
   await expect(page.locator("#places")).toBeHidden();
+});
+
+test("NPCs move on their own; walk up to Quanny and talk to him through the engine", async ({ page }) => {
+  test.setTimeout(420_000);
+  await ready(page);
+  const npcs = () => page.evaluate(() => (window as any).__strip.sim.getNpcs().map((n: any) => ({ id: n.id, x: n.x, z: n.z, loco: n.locomotion })));
+  const first = await npcs();
+  expect(first).toHaveLength(5);
+  // Software rendering here is slow; run the neighborhood clock fast for a moment.
+  await page.evaluate(() => (window as any).__strip.sim.setSpeedMultiplier(10));
+  await page.waitForTimeout(6_000);
+  await page.evaluate(() => (window as any).__strip.sim.setSpeedMultiplier(1));
+  const later = await npcs();
+  const moved = later.filter((n: any) => { const a = first.find((f: any) => f.id === n.id); return Math.hypot(n.x - a.x, n.z - a.z) > 0.5; });
+  expect(moved.length, "some NPCs walk while the player stands still").toBeGreaterThan(0);
+
+  // Quanny is posted up outside Lil Jay's at 08:05; walk toward him until the prompt offers him.
+  const stick = await makeStick(page);
+  await stick.hold(0, 0.5);
+  await page.waitForFunction(() => (window as any).__strip.walk.offeredPerson() === "quanny", null, { timeout: 120_000 });
+  await stick.release();
+  await expect(page.locator("#prompt")).toHaveText("Talk to Quanny");
+  await page.locator("#prompt").click();
+  const card = page.locator(".place");
+  await expect(card.locator(".people .chip")).toContainText(["Quanny"]);
+  await card.locator(".act[data-command=respondEncounter]:not([disabled])").first().click();
+  await expect(card.locator(".result")).toContainText("Quanny");
 });

@@ -11,20 +11,18 @@ import {
   type LocationCommand,
 } from "../city/LocationInteractions";
 import type { CityAnchor } from "./anchors";
-import { fixturePeopleAt } from "./previewFixtures";
 
 export type LocationQuery = ReturnType<typeof queryLocation>;
 export type LocationResult = ReturnType<typeof executeLocationAction>;
 
 export interface PresenceSource {
-  /** Verified people at a game location. The preview uses fixtures; the game will use Gemini's sim. */
+  /** Verified people at a game location (the strip uses Gemini's NPC simulation, living.ts). */
   peopleAt(locationId: string): string[];
 }
-export const fixturePresence: PresenceSource = { peopleAt: fixturePeopleAt };
 
 export class PreviewSession {
   state: GameState;
-  constructor(private presence: PresenceSource = fixturePresence, seed = 2026) {
+  constructor(private presence: PresenceSource, seed = 2026) {
     this.state = newGame("Preview", "reservoir", seed);
   }
 

@@ -3,11 +3,11 @@
 import * as THREE from "three";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { CITY_ANCHORS, anchorById, isInteractive, type CityAnchor } from "./anchors";
-import { NPC_SPOTS, WALLS } from "./cityMap";
-import { STREETS, STRIP_NPCS } from "./layout";
-import { PreviewSession, fixturePresence } from "./previewSession";
+import { WALLS } from "./cityMap";
+import { STREETS } from "./layout";
+import type { PreviewSession, PresenceSource } from "./previewSession";
 import { PlacePanel } from "./placePanel";
-import { Pins, fixtureFigure, type ExtraPin } from "./pins";
+import { Pins } from "./pins";
 
 export interface PreviewHost {
   scene: THREE.Scene;
@@ -21,6 +21,10 @@ export interface PreviewHost {
    */
   mode: "select" | "walk";
   controls?: OrbitControls;
+  /** The test campaign. */
+  session: PreviewSession;
+  /** Who is where (Gemini's simulation via living.ts). */
+  presence: PresenceSource;
 }
 
 export const streetOf = (a: CityAnchor) =>
@@ -29,27 +33,13 @@ export const streetOf = (a: CityAnchor) =>
 export function startPreview(host: PreviewHost) {
   const { scene, camera, canvas, mode } = host;
   const controls = host.controls;
-  const session = new PreviewSession(fixturePresence);
-
-  // Fixture stand-ins for NPC spots with no approved model in the scene.
-  const modelled = new Set(STRIP_NPCS.map((n) => n.id));
-  const extra: ExtraPin[] = [];
-  for (const spot of NPC_SPOTS) {
-    if (modelled.has(spot.characterId)) continue;
-    const fig = fixtureFigure(spot.x, spot.z, spot.rotY);
-    fig.name = `fixture:${spot.characterId}`;
-    scene.add(fig);
-    const anchor = anchorById(`npc:${spot.characterId}`)!;
-    const name = session.state.characters[spot.characterId]?.name ?? spot.characterId;
-    extra.push({ anchor, style: "fixture", label: `${name} · fixture`, y: 2.25 });
-  }
-  const pins = new Pins(CITY_ANCHORS, { extra });
+  const { session, presence } = host;
+  const pins = new Pins(CITY_ANCHORS);
   scene.add(pins.group);
 
   const panel = new PlacePanel({
     session,
-    peopleAt: (id) => fixturePresence.peopleAt(id),
-    fixtures: true,
+    peopleAt: (id) => presence.peopleAt(id),
     onClose: () => pins.select(null),
   });
 
@@ -196,7 +186,14 @@ export function startPreview(host: PreviewHost) {
       if (flight.t >= 1) flight = null;
     }
     pins.update(camera, focus(), canvas.clientHeight || innerHeight);
+    // People come and go: re-show the card when who is here changes (at most twice a second).
+    presenceCheck += dt;
+    if (presenceCheck > 0.5 && panel.open && panel.current?.locationId) {
+      presenceCheck = 0;
+      if (presence.peopleAt(panel.current.locationId).join(",") !== panel.shownPeople) panel.refresh();
+    }
   }
+  let presenceCheck = 0;
   let focusFn: () => THREE.Vector3 = () => controls!.target;
   const focus = () => focusFn();
   // Any manual drag cancels a flight in progress.
