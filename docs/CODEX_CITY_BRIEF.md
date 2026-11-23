@@ -5,11 +5,11 @@
 **Repository:** `kalikeefbiz/Hood-Hero-Lab` only. Never modify the frozen `kalikeefbiz/Hood-Hero` repository or `src/board/**`.
 
 ## Implemented — PR #51
-Codex's `codex/reservoir-gameplay-wiring` PR #51 connects **all eight existing Reservoir location IDs** in Claude's `src/strip/cityMap.ts` to actual game rules through the headless API in `src/city/LocationInteractions.ts`. Its report `docs/RESERVOIR_GAMEPLAY_WIRING.md` specifies verified actions, limits, remaining map/house assignments, Gemini contract and test results. **Review this PR before giving additional tasks; those files are on its branch until merged.** Don't duplicate this implementation.
+Codex's PR #51 merged into `main` as `dd54394`. It connects **all eight existing Reservoir location IDs** in Claude's `src/strip/cityMap.ts` to game rules through the headless API in `src/city/LocationInteractions.ts`. Its report `docs/RESERVOIR_GAMEPLAY_WIRING.md` specifies verified actions, limits, remaining map/house assignments, the Gemini contract and test results. Use the merged API and report for integration.
 
 ## Current integration sequence
-1. **Claude** reviews PR #51 for compatibility. If clean, merges it. Claude then creates a separate presentation PR with physical location anchors and visual display of the **existing** API outputs in `src/strip/**`; no new gameplay mechanics.
-2. **Gemini** continues **independent** NPC simulation experiments; no repo write access yet. Its eventual world host supplies validated NPC co-presence (`peopleHere`) and actions through the existing engine. No parallel economy, relationship truth, save slot, renderer or invented location map.
+1. **Claude** completed PR #51 review and merge. Claude owns the separate presentation work in `src/strip/**`, including physical location anchors and display of the existing API outputs.
+2. **Gemini** works through PRs in `src/sim/**` and `src/render/AvatarAdapter.ts`, with approved character deliveries in `art/incoming/<id>/` under `AGENTS.md` 00C. Gemini does not self-merge. The simulation determines NPC co-presence, and the walkable host passes verified `peopleHere` to the location API. The existing engine owns time, economy, relationship outcomes and saves. Claude owns the renderer and authored map.
 3. **Claude** owns the future separate player-controller implementation in `src/strip/**` (touch movement, collisions, camera follow and spatial interaction range) with a temporary avatar. This does not change Codex's headless gameplay API or require protagonist integration.
 4. **Codex** addresses confirmed defects in its gameplay API and future owner-approved gameplay-only assignments in `src/city/**`, `src/systems/**`, `src/content/**` and `src/core/**`. It should not independently start building movement or AI.
 
@@ -28,4 +28,4 @@ A visible building is only a gameplay destination when it maps to an approved `l
 - Edits to `src/strip/**`, `public/assets/**`, `art/**`, frozen `src/board/**`.
 
 ## Workflow
-Continue to follow `AGENTS.md` branch, PR, code ownership, save compatibility and test requirements. Present actual command/test results. Do not claim the entire five-street world is playable because the headless location API is complete. Report remaining gaps honestly. **Do not self-merge.** Player movement and controls belong to Claude, not Codex.
+Follow `AGENTS.md` for branch, PR, code ownership and test requirements. Follow 00B for disposable Lab saves, report any reset and keep the start-past-the-opening flow available. Present actual command and test results and report remaining integration gaps. **Do not self-merge.** Player movement and controls belong to Claude.

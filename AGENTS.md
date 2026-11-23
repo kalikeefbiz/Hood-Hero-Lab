@@ -17,13 +17,13 @@ Read `docs/CITY_PLAN.md`. Summary:
 
 ## 00A. Three-agent boundaries and current integration contract (owner-approved 2026-11-22; overrides conflicting text anywhere in this repository)
 
-**ONLY active development repository:** `kalikeefbiz/Hood-Hero-Lab`. `kalikeefbiz/Hood-Hero` is frozen and must not be touched. **Authoritative canon:** `docs/RESERVOIR_CANON.md`. **Physical map:** `src/strip/cityMap.ts` (Claude). **Gameplay contract in review:** PR #51, `src/city/LocationInteractions.ts` and `docs/RESERVOIR_GAMEPLAY_WIRING.md` (Codex); these files exist on the PR branch until merged, not necessarily on `main`.
+**ONLY active development repository:** `kalikeefbiz/Hood-Hero-Lab`. `kalikeefbiz/Hood-Hero` is frozen and must not be touched. **Authoritative canon:** `docs/RESERVOIR_CANON.md`. **Physical map:** `src/strip/cityMap.ts` (Claude). **Gameplay contract:** PR #51 merged as `dd54394`. Codex's `src/city/LocationInteractions.ts` and `docs/RESERVOIR_GAMEPLAY_WIRING.md` are on `main`.
 
 | Agent | Owns | Must not implement without a newly approved task |
 | --- | --- | --- |
 | **Claude** | Physical geometry, buildings, sidewalks, doors, fences and anchors in `src/strip/**`, visual rendering, lighting, asset presentation, interface that displays engine-returned actions/results, player movement/touch controls/collision/camera follow and physical interaction-range detection | NPC decisions, schedules, pathfinding, autonomous movement, social AI, action resolution, new game rules |
 | **Codex** | Canonical game rules, item/cash/inventory/relationship/faction effects, eligibility, persistent state, jobs/crime/businesses, presentation-free location gameplay API in `src/city/**`, rule tests | Geometry, city map, renderer, NPC world scheduler/pathfinding, player movement/controls/camera |
-| **Gemini** | Independently prototyped NPC movement/navigation, schedules, behavior, NPC-to-NPC interaction decisions, population persistence and runtime presence/co-presence | Game engine truth/economy/relationship resolution/saves, visual renderer and approved assets, player controls; **no repo edits yet** until integration scope/access explicitly approved |
+| **Gemini** | NPC movement/navigation, schedules, behavior, NPC-to-NPC interaction decisions, population persistence and runtime presence/co-presence. Works through PRs in `src/sim/**` and `src/render/AvatarAdapter.ts`, and delivers approved character models in `art/incoming/<id>/` under 00C. | Game engine truth/economy/relationship resolution/saves, visual renderer and approved assets, player controls. No self-merge. |
 
 **Player movement and controls (owner decision 2026-11-22): CLAUDE.** Claude owns the reusable player controller, walk/run, iPhone touch input, player collision with authored world geometry, camera follow/occlusion, player locomotion-animation presentation and physical interaction-range detection. Implement within Claude-owned `src/strip/**` and approved assets, using a temporary avatar; the final protagonist remains deferred. Expose a stable read-only interface for player position, movement state and nearby anchors. Codex remains solely responsible for action eligibility, costs, consequences, economy and canonical saves; Claude must call its public API rather than duplicate rules. Gemini owns NPC autonomy, navigation, locomotion decisions and presence; it can consume approved map geometry but does not control the player. No competing movement engine, new board mode or save schema. Historical Codex movement assignments are superseded.
 
@@ -31,9 +31,9 @@ Read `docs/CITY_PLAN.md`. Summary:
 
 **Preview position:** Claude may use a **developer-only location selector with isolated throwaway state** for API testing; never teleport a real save or make it a permanent gameplay shortcut. The separately scoped controller preview must demonstrate temporary-avatar walking/running, iPhone touch control, world collisions, camera following and physical approach to approved anchors, using real Codex API outputs. Explicit NPC fixtures remain labeled as test-only and never become production presence.
 
-**File seam:** Claude's presentation adapter lives in Claude-owned `src/strip/**`; it **imports** Codex's public API from `src/city/**` after #51 merges. Codex does not edit `src/strip/**`. Gemini consumes canonical maps and game state when integration is authorized; it does not install its own renderer or write authoritative game state.
+**File seam:** Claude's presentation adapter in `src/strip/**` imports Codex's public API from `src/city/**`. Gemini's NPC runtime consumes canonical maps and game state. Gemini submits simulation and avatar adapter changes through PRs in `src/sim/**` and `src/render/AvatarAdapter.ts`, and approved character deliveries in `art/incoming/<id>/` under 00C. Claude owns rendering and Codex owns authoritative game state. Gemini does not self-merge.
 
-**Review order:** (1) Claude reviews PR #51 compatibility and merges only if clean; (2) Claude builds separate visual-anchoring PR after rebasing onto merged `main`; (3) Gemini validates independent five-street simulation using real destinations and action contracts; (4) Claude implements a separately scoped controller foundation and iPhone preview when scheduled, without blocking PR #51 review or visual integration. No new camera-board prototype and no old `src/city3d/**` revival.
+**Review order:** (1) Done. PR #51 was reviewed and merged into `main` as `dd54394`. (2) Claude builds visual anchoring in a separate PR from current `main`. (3) Gemini validates the five-street simulation using real destinations and action contracts through PRs in its assigned files. (4) Claude handles the separately scoped controller foundation and iPhone preview. No new camera-board prototype and no old `src/city3d/**` revival.
 
 **Docs hygiene:** Whenever the owner changes responsibility or architecture, the coordinating agent **must update `AGENTS.md` and any conflicting active task brief before issuing an implementation handoff**. An in-chat decision alone is not sufficient. Existing safeguards about branches, PRs, saving, production isolation, and mobile-first testing still apply.
 
@@ -53,24 +53,23 @@ Codex and Gemini build character models (mesh, rig, idle/walk/run) by following 
 
 ## 0. The city comes first (read this before designing anything)
 
-The Actions menu is being retired. Players do things **in the city**: at a
-place on the board, or with a person standing on it. Menus may keep
-**information** (statuses, skills, activity feed, ledgers, context), but not
-**actions** that shortcut the city. See `docs/ACTIONS_TO_CITY.md`.
+The Actions menu is retired as an entry point for gameplay. Players act at a
+place or with a person in the **walkable city**. Menus may show information
+such as statuses, skills, the activity feed, ledgers and context.
 
 For every new feature:
 
-1. **Decide where it happens.** Choose a place (`LocationDef.links` in
-   `src/board/locations.ts`, read by `placeActions` in
-   `src/board/interactions.ts`), a person (an action whose `target` is that
-   character, so it shows on their card), or both. Say which in the PR.
+1. **Decide where it happens.** Choose a place from `src/strip/cityMap.ts`,
+   a person present there, or both. Give the location ID and any relevant
+   character ID in the PR. Query and resolve actions through
+   `src/city/LocationInteractions.ts` with verified `peopleHere` for NPCs.
 2. **Do not add action buttons to `ActionsHub`, Wallet or any other menu.** If
-   no place fits, add stable game data and request the place or board object
-   from Claude in the PR (see section 2).
+   no place fits, add stable game data and request the map change from Claude
+   by location ID in the PR (see 00A).
 3. **Share the rules, not copies.** An interaction shown in more than one spot
    lives in one component or function (example: `src/ui/PlugEntry.tsx`).
-4. **Test it from the City tab.** Add a Playwright test that starts on the
-   board, finds the place or person, and completes the action.
+4. **Test it in the walkable city.** Add a Playwright test that starts there,
+   approaches the place or person, and completes the action.
 5. **Show what changed hands.** Anything that moves merchandise or cash appears
    in the exchange feed (`src/ui/exchanges.ts`), which only reads the records
    your system writes. Never calculate or award anything in the UI.
@@ -88,9 +87,9 @@ For every new feature:
 
 ## 2. File ownership and coordination
 
-### Claude — city look, 3D and map owner (old `src/board/**` is frozen; see 00 for the current split)
-- src/board/**, including locations, people placement, board interaction/presentation wiring, rendering, camera and layout.
-- src/board/ui/** and board-specific CSS or visuals.
+### Claude — city look, 3D and map owner (see 00A for current ownership)
+- **Frozen, historical:** `src/board/**`, including the old locations, people placement, interaction and presentation wiring, renderer, camera and layout.
+- **Frozen, historical:** `src/board/ui/**` and board-specific CSS or visuals.
 - public/assets/models/**, including GLBs, rigged characters, animation clips and shared environmental assets.
 - Board and renderer tests, 3D performance, model loading, and environment presentation.
 
@@ -103,7 +102,7 @@ For every new feature:
 ### Shared or cross-cutting — coordinate and minimize changes
 - src/ui/App.tsx and other application-level UI: only targeted changes necessary to expose gameplay, with no broad layout refactors. Claude owns the board's appearance; Codex owns the gameplay being displayed.
 - src/core/GameState.ts, src/persistence/**, save schemas and storage: narrowly scoped changes with tests. Lab saves are disposable (00B): say if a change wipes them; no migration needed.
-- src/board/locations.ts, src/board/people.ts, src/board/interactions.ts and board components: **Claude-owned even when a new gameplay feature needs a location, NPC, or interaction shown on the board**. Codex should add stable game data and document the board integration request in its PR. Claude makes/approves the board wiring. Do not circumvent this rule by moving board behavior into gameplay modules.
+- **Frozen, historical:** `src/board/locations.ts`, `src/board/people.ts`, `src/board/interactions.ts` and board components. See 00A for the current split. Claude owns map changes in `src/strip/cityMap.ts`, Codex owns the location action API in `src/city/**`, and Gemini supplies authoritative NPC presence.
 - tests/** and src/tests/**: ownership follows the behavior being tested. Coordinate when a test changes someone else's board or shared UI assumptions.
 - If a task genuinely requires touching another agent's files, keep the diff minimal, explicitly identify the cross-owner change in the PR, and obtain owner/Claude review. Do not silently reorganize or overwrite another agent's area.
 - Agent ownership is a coordination rule, not permission to ignore broken integrations. Flag missing board wiring, visuals or assets clearly rather than claiming feature completeness.
@@ -147,7 +146,7 @@ If cross-owner integration is unfinished, label it clearly as a dependency; do n
 - Never commit credentials, tokens, private user details, local workstation data or external personal information to this public repository.
 - Do not modify GitHub repository rules, CI protection or release process without explicit authorization.
 
-**Bottom line:** Codex produces a reviewed gameplay/content PR. Claude integrates board/3D changes and merges after compatibility review. The owner decides scope and when Lab is ready to move into the original Hood-Hero production repository. Gemini owns NPC world simulation, but has no repository write assignment yet; player movement/controls ownership belongs to Claude; the final protagonist remains deferred.
+**Bottom line:** Codex submits gameplay and content PRs. Gemini submits NPC simulation and avatar adapter PRs in `src/sim/**` and `src/render/AvatarAdapter.ts`, and approved character deliveries in `art/incoming/<id>/` under 00C. Claude owns walkable-city presentation, player movement and controls, and merges after compatibility review. Codex and Gemini do not self-merge. The owner decides scope and release timing. The final protagonist remains deferred.
 
 
 ## 7. Mobile-first
