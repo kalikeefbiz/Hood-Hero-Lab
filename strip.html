@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0b0d12" />
     <link rel="icon" href="data:," />
-    <title>The Reservoir · Street preview · Hood Hero</title>
+    <title>Living Reservoir</title>
   </head>
   <body>
     <canvas id="strip"></canvas>
     <div class="hud">
-      <div><h1>The Reservoir</h1><small>Westside · street preview</small></div>
+      <div><h1>The Reservoir</h1><small>Westside · test state, not saved</small></div>
       <div class="grow"></div>
-      <button id="street" type="button">Street level</button>
-      <button id="overview" type="button">Overview</button>
+      <button id="places" type="button">Places</button>
+      <button id="street" class="select-only" type="button">Street level</button>
+      <button id="overview" class="select-only" type="button">Overview</button>
       <button id="mode" type="button">Dusk / Night</button>
     </div>
     <div id="pad" aria-label="Move"><div class="knob"></div></div>
-    <p class="hint">Drag to look · pinch to zoom · joystick to walk</p>
+    <p class="hint walk-only">Stick to walk · push to the edge to run · walk up to a door</p>
+    <p class="hint select-only">Tap a marker to use a place · drag to look · pinch to zoom</p>
     <div id="fps"></div>
     <div id="progress">Loading the block…</div>
     <script type="module" src="/src/strip/main.ts"></script>

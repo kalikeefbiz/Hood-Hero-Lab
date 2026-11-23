@@ -13,7 +13,7 @@
     "Run":  { "seconds": 0.733, "frames": 22, "speedMps": 2.06 }
   },
   "animatedFrom": "retargeted from Quanny, then reworked",
-  "sourceArt": ["art/incoming/flacco/ref/front.png"],
+  "sourceArt": ["art/source/hood-hero/flacco/ref/front.jpg"],
   "meshyTaskId": "01a2065a-d5b6-7394-b09e-e3254e5d56a6",
   "blender": "5.3",
   "skillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",

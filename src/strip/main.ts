@@ -1,14 +1,20 @@
-// Reservoir street strip — standalone art preview for the street-level city.
-// Not part of the game build's runtime; it loads only on strip.html.
+// Reservoir street strip — standalone preview of the street-level city.
+// Not part of the game build's runtime; it loads only on strip.html. The places on it run
+// the real game engine on an isolated test campaign (preview.ts); real saves are never touched.
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { STREETS, STRIP_NPCS, START, STREET_LAMPS, BOUNDS, type Placed } from "./layout";
+import { STREETS, START, STREET_LAMPS, BOUNDS, type Placed } from "./layout";
 import { createSharedTextures } from "./sharedTextures";
 import { WALLS, FENCES, DOORS, STOREFRONTS, HOUSES, PLAYER_START } from "./cityMap";
+import { startPreview } from "./preview";
+import { startWalk } from "./walk";
+import { startLiving } from "./living";
+import { mountSimControls } from "./simControls";
+import { PreviewSession, type PresenceSource } from "./previewSession";
 import "./strip.css";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -16,6 +22,9 @@ const url = (p: string) => `${base}/${p.replace(/^\//, "")}`;
 
 type Mode = "dusk" | "night";
 const params = new URLSearchParams(location.search);
+// Hosts that only pass a #name (the hosted preview) can use #select / #dev / #night instead.
+for (const flag of ["select", "dev", "night"]) if (location.hash === `#${flag}`) params.set(flag, "");
+if (params.has("night")) params.set("mode", "night");
 let mode: Mode = params.get("mode") === "night" ? "night" : "dusk";
 
 // ---------------------------------------------------------------- renderer
@@ -132,19 +141,28 @@ const progress = document.querySelector<HTMLElement>("#progress")!;
 const startZ = START.target[2];
 const ordered = [...STREETS].sort((a, b) => Math.abs(a.z - startZ) - Math.abs(b.z - startZ));
 const firstStreet = new Set(ordered[0].assets);
-let firstLeft = ordered[0].assets.length + STRIP_NPCS.length;
-let allLeft = ordered.reduce((n, s) => n + s.assets.length, 0) + STRIP_NPCS.length;
+let firstLeft = ordered[0].assets.length;
+let allLeft = ordered.reduce((n, s) => n + s.assets.length, 0);
 const tick = (first: boolean) => {
   allLeft--;
   if (first) firstLeft--;
   if (firstLeft > 0) {
-    const total = ordered[0].assets.length + STRIP_NPCS.length;
+    const total = ordered[0].assets.length;
     progress.textContent = `Loading ${ordered[0].name}… ${Math.round(((total - firstLeft) / total) * 100)}%`;
   } else if (allLeft > 0) {
+    startClock();
     progress.classList.add("background");
     progress.textContent = "Loading more of the Reservoir…";
-  } else progress.remove();
+  } else { startClock(); progress.remove(); }
 };
+// The neighborhood clock starts once the street you stand on has loaded, so the morning
+// routines play out in front of you instead of during the download.
+let clockStarted = false;
+function startClock() {
+  if (clockStarted) return;
+  clockStarted = true;
+  livingRef?.sim.setPaused(false);
+}
 const sceneCache = new Map<string, Promise<THREE.Object3D>>();
 function loadScene(file: string): Promise<THREE.Object3D> {
   let p = sceneCache.get(file);
@@ -211,28 +229,7 @@ function tune(root: THREE.Object3D) {
   });
 }
 
-for (const n of STRIP_NPCS) {
-  loader.load(url(n.file), (g) => {
-    g.scene.traverse((o) => { if ((o as THREE.Mesh).isMesh) o.castShadow = true; });
-    const box = new THREE.Box3().setFromObject(g.scene);
-    const h = box.max.y - box.min.y;
-    g.scene.scale.setScalar(n.height / Math.max(0.01, h));
-    g.scene.position.set(n.x, 0, n.z);
-    g.scene.rotation.y = n.rotY;
-    scene.add(g.scene);
-    const play = (clip: THREE.AnimationClip | undefined) => {
-      if (!clip) return;
-      const mixer = new THREE.AnimationMixer(g.scene);
-      const action = mixer.clipAction(clip).play();
-      action.time = Math.random() * clip.duration; // NPCs never move in sync
-      mixer.update(0);
-      mixers.push(mixer);
-    };
-    if (n.clip) loader.load(url(n.clip), (c) => play(c.animations[0]));
-    else play(g.animations[0]);
-    tick(true);
-  }, undefined, () => tick(true));
-}
+// People are not placed here: Gemini's NPC simulation decides where everyone is (living.ts).
 const mixers: THREE.AnimationMixer[] = [];
 
 // street lamps at night
@@ -249,72 +246,144 @@ const windowGlow = new THREE.PointLight(0xdfe8ff, 14, 8, 2);
 windowGlow.position.set(0, 1.6, 1.4); scene.add(windowGlow); nightLights.push(windowGlow);
 
 // ---------------------------------------------------------------- controls
-const controls = new OrbitControls(camera, canvas);
-sunFollows = controls.target;
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-controls.maxPolarAngle = Math.PI * 0.495;
-controls.minDistance = 1.2;
-controls.maxDistance = 38;
-controls.target.set(START.target[0], START.target[1], START.target[2]);
-camera.position.set(START.eye[0], START.eye[1], START.eye[2]);
-
-// joystick: walks the look-target along the ground, camera follows
-const pad = document.querySelector<HTMLElement>("#pad")!;
-const knob = pad.querySelector<HTMLElement>(".knob")!;
-const move = new THREE.Vector2();
-let padId: number | null = null;
-function padMove(e: PointerEvent) {
-  const r = pad.getBoundingClientRect();
-  const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-  const max = r.width / 2;
-  const len = Math.min(max, Math.hypot(dx, dy));
-  const a = Math.atan2(dy, dx);
-  knob.style.transform = `translate(${Math.cos(a) * len}px, ${Math.sin(a) * len}px)`;
-  move.set((Math.cos(a) * len) / max, (Math.sin(a) * len) / max);
-}
-pad.addEventListener("pointerdown", (e) => { padId = e.pointerId; pad.setPointerCapture(e.pointerId); padMove(e); e.stopPropagation(); });
-pad.addEventListener("pointermove", (e) => { if (e.pointerId === padId) padMove(e); });
-const padEnd = (e: PointerEvent) => { if (e.pointerId !== padId) return; padId = null; move.set(0, 0); knob.style.transform = ""; };
-pad.addEventListener("pointerup", padEnd);
-pad.addEventListener("pointercancel", padEnd);
-const keys = new Set<string>();
-addEventListener("keydown", (e) => keys.add(e.key.toLowerCase()));
-addEventListener("keyup", (e) => keys.delete(e.key.toLowerCase()));
+// Default: walk the temporary avatar (player controller). ?select: the developer location
+// selector with a free orbit camera. Both run on the same isolated test campaign.
+const view: "walk" | "select" = params.has("select") ? "select" : "walk";
+document.body.dataset.view = view;
 
 document.querySelector("#mode")!.addEventListener("click", () => {
   mode = mode === "dusk" ? "night" : "dusk";
   applyMode();
 });
-document.querySelector("#street")!.addEventListener("click", () => {
-  // drop to eye level just behind the current target
-  const dir = new THREE.Vector3().subVectors(camera.position, controls.target).setY(0).normalize();
-  controls.target.y = 1.6;
-  camera.position.copy(controls.target).addScaledVector(dir, 2.2).setY(1.7);
-});
-document.querySelector("#overview")!.addEventListener("click", () => {
-  controls.target.set(START.target[0], START.target[1], START.target[2]);
+
+let controls: OrbitControls | undefined;
+let walk: ReturnType<typeof startWalk> | null = null;
+let move: THREE.Vector2 | null = null;
+const keys = new Set<string>();
+if (view === "select") {
+  const orbit = new OrbitControls(camera, canvas);
+  controls = orbit;
+  sunFollows = orbit.target;
+  orbit.enableDamping = true;
+  orbit.dampingFactor = 0.08;
+  orbit.maxPolarAngle = Math.PI * 0.495;
+  orbit.minDistance = 1.2;
+  orbit.maxDistance = 38;
+  orbit.target.set(START.target[0], START.target[1], START.target[2]);
   camera.position.set(START.eye[0], START.eye[1], START.eye[2]);
-});
+
+  // joystick: slides the look-target along the ground, camera follows
+  const pad = document.querySelector<HTMLElement>("#pad")!;
+  const knob = pad.querySelector<HTMLElement>(".knob")!;
+  const m = (move = new THREE.Vector2());
+  let padId: number | null = null;
+  const padMove = (e: PointerEvent) => {
+    const r = pad.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    const max = r.width / 2;
+    const len = Math.min(max, Math.hypot(dx, dy));
+    const a = Math.atan2(dy, dx);
+    knob.style.transform = `translate(${Math.cos(a) * len}px, ${Math.sin(a) * len}px)`;
+    m.set((Math.cos(a) * len) / max, (Math.sin(a) * len) / max);
+  };
+  pad.addEventListener("pointerdown", (e) => { padId = e.pointerId; pad.setPointerCapture(e.pointerId); padMove(e); e.stopPropagation(); });
+  pad.addEventListener("pointermove", (e) => { if (e.pointerId === padId) padMove(e); });
+  const padEnd = (e: PointerEvent) => { if (e.pointerId !== padId) return; padId = null; m.set(0, 0); knob.style.transform = ""; };
+  pad.addEventListener("pointerup", padEnd);
+  pad.addEventListener("pointercancel", padEnd);
+  addEventListener("keydown", (e) => keys.add(e.key.toLowerCase()));
+  addEventListener("keyup", (e) => keys.delete(e.key.toLowerCase()));
+
+  document.querySelector("#street")!.addEventListener("click", () => {
+    const dir = new THREE.Vector3().subVectors(camera.position, orbit.target).setY(0).normalize();
+    orbit.target.y = 1.6;
+    camera.position.copy(orbit.target).addScaledVector(dir, 2.2).setY(1.7);
+  });
+  document.querySelector("#overview")!.addEventListener("click", () => {
+    orbit.target.set(START.target[0], START.target[1], START.target[2]);
+    camera.position.set(START.eye[0], START.eye[1], START.eye[2]);
+  });
+}
+
+// One throwaway test campaign (never saved), Gemini's NPC simulation reading it, and Codex's
+// location API asking the simulation who is where.
+let livingRef: ReturnType<typeof startLiving> | null = null;
+const presence: PresenceSource = { peopleAt: (id) => livingRef?.presence.peopleAt(id) ?? [] };
+const session = new PreviewSession(presence);
+const living = (livingRef = startLiving({
+  scene, loader, url,
+  state: () => session.state,
+  minutesPerSecond: Number(params.get("minutes")) || undefined,
+}));
+if (!clockStarted) living.sim.setPaused(true);
+const preview = startPreview({ scene, camera, canvas, mode: view, controls, session, presence });
+const simUi = mountSimControls(living.sim, () => (walk ? walk.focus() : controls!.target));
+if (view === "walk") {
+  walk = startWalk({ scene, camera, canvas, loader, url, preview: preview.api, living });
+  sunFollows = walk.focus();
+}
 
 const clock = new THREE.Clock();
 const fpsEl = document.querySelector<HTMLElement>("#fps")!;
 let frames = 0, acc = 0;
+// Lab playtest notes (src/devtools/feedback): the same tool as the main game, fed from this page.
+let notePaused = false;
+addEventListener("hh:pause", () => { notePaused = true; });
+addEventListener("hh:resume", () => { notePaused = false; clock.getDelta(); });
+if (import.meta.env.VITE_DEV_FEEDBACK === "1" || params.has("feedback")) {
+  void import("../devtools/feedback").then((m) =>
+    m.mountFeedback({
+      capture: () => {
+        try {
+          renderer.render(scene, camera);
+          const src = renderer.domElement;
+          const scale = Math.min(1, 960 / Math.max(1, src.width));
+          const out = document.createElement("canvas");
+          out.width = Math.round(src.width * scale);
+          out.height = Math.round(src.height * scale);
+          out.getContext("2d")!.drawImage(src, 0, 0, out.width, out.height);
+          return out.toDataURL("image/jpeg", 0.72);
+        } catch { return null; }
+      },
+      game: () => session.state,
+      screen: () => {
+        const p = walk?.api.player();
+        const t = living.sim.getClock().minuteOfDay;
+        return `City preview (${view}) · ${String(Math.floor(t / 60)).padStart(2, "0")}:${String(Math.floor(t % 60)).padStart(2, "0")}` +
+          (p ? ` · player ${p.x.toFixed(1)},${p.z.toFixed(1)}` : "");
+      },
+      visibleText: () =>
+        [document.querySelector(".place:not([hidden])"), document.querySelector("#prompt:not([hidden])"), document.querySelector("#waiting:not([hidden])")]
+          .map((e) => (e?.textContent ?? "").replace(/\s+/g, " ").trim()).filter(Boolean).join(" | "),
+    }),
+  );
+}
+
 function frame() {
   const dt = Math.min(0.05, clock.getDelta());
-  const kx = (keys.has("d") || keys.has("arrowright") ? 1 : 0) - (keys.has("a") || keys.has("arrowleft") ? 1 : 0);
-  const ky = (keys.has("s") || keys.has("arrowdown") ? 1 : 0) - (keys.has("w") || keys.has("arrowup") ? 1 : 0);
-  const mx = move.x + kx, my = move.y + ky;
-  if (mx || my) {
-    const fwd = new THREE.Vector3().subVectors(controls.target, camera.position).setY(0).normalize();
-    const right = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0));
-    const step = new THREE.Vector3().addScaledVector(right, mx).addScaledVector(fwd, -my).multiplyScalar(3.2 * dt);
-    controls.target.add(step);
-    controls.target.x = THREE.MathUtils.clamp(controls.target.x, BOUNDS.x0, BOUNDS.x1);
-    controls.target.z = THREE.MathUtils.clamp(controls.target.z, BOUNDS.z0, BOUNDS.z1);
-    camera.position.add(step);
+  if (notePaused) { requestAnimationFrame(frame); return; }
+  if (walk) {
+    walk.update(dt);
+    walk.focus();
+  } else if (controls && move) {
+    const kx = (keys.has("d") || keys.has("arrowright") ? 1 : 0) - (keys.has("a") || keys.has("arrowleft") ? 1 : 0);
+    const ky = (keys.has("s") || keys.has("arrowdown") ? 1 : 0) - (keys.has("w") || keys.has("arrowup") ? 1 : 0);
+    const mx = move.x + kx, my = move.y + ky;
+    if (mx || my) {
+      const fwd = new THREE.Vector3().subVectors(controls.target, camera.position).setY(0).normalize();
+      const right = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0));
+      const step = new THREE.Vector3().addScaledVector(right, mx).addScaledVector(fwd, -my).multiplyScalar(3.2 * dt);
+      controls.target.add(step);
+      controls.target.x = THREE.MathUtils.clamp(controls.target.x, BOUNDS.x0, BOUNDS.x1);
+      controls.target.z = THREE.MathUtils.clamp(controls.target.z, BOUNDS.z0, BOUNDS.z1);
+      camera.position.add(step);
+    }
   }
-  controls.update();
+  const here = walk ? walk.focus() : controls!.target;
+  living.update(dt, here, camera);
+  simUi.update(dt);
+  preview.update(dt);
+  controls?.update();
   followSun();
   if (camera.position.y < 0.4) camera.position.y = 0.4;
   for (const m of mixers) m.update(dt);
@@ -334,4 +403,4 @@ addEventListener("resize", resize);
 resize();
 applyMode();
 frame();
-(window as unknown as { __strip: unknown }).__strip = { scene, camera, controls, renderer, setMode: (m: Mode) => { mode = m; applyMode(); } };
+(window as unknown as { __strip: unknown }).__strip = { scene, camera, controls, renderer, view, preview: preview.api, walk: walk?.api ?? null, sim: living.sim, setMode: (m: Mode) => { mode = m; applyMode(); } };

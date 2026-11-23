@@ -3,6 +3,20 @@ import { BoardRenderer } from "../../board/BoardRenderer";
 import { player } from "../../core/GameState";
 import { AUTO_KEY, loadGame } from "../../persistence/SaveSystem";
 import type { FeedbackContext } from "./format";
+import type { GameState } from "../../core/GameState";
+
+/**
+ * Where a note's screenshot and game state come from. The main game uses the board renderer
+ * and the autosave; another page (the 3D city preview, strip.html) registers its own.
+ */
+export interface FeedbackSource {
+  capture?: () => string | null;
+  game?: () => GameState | null;
+  screen?: () => string;
+  visibleText?: () => string;
+}
+let source: FeedbackSource = {};
+export function setFeedbackSource(s: FeedbackSource) { source = s; }
 
 const errors: string[] = [];
 const push = (msg: string) => {
@@ -43,7 +57,7 @@ const text = (el: Element | null | undefined) =>
 
 function gameSnapshot(): FeedbackContext["game"] {
   try {
-    const s = loadGame(localStorage, AUTO_KEY);
+    const s = source.game ? source.game() : loadGame(localStorage, AUTO_KEY);
     if (!s) return null;
     const p = player(s);
     const open = s.encounters.find((e) => e.status === "active" || e.status === "pending");
@@ -69,7 +83,7 @@ function gameSnapshot(): FeedbackContext["game"] {
 
 /** Call before the feedback sheet is shown, so the screenshot is the game. */
 export async function captureContext(): Promise<{ context: FeedbackContext; shot: string | null }> {
-  const shot = BoardRenderer.capture();
+  const shot = source.capture ? source.capture() : BoardRenderer.capture();
   const dialog = [...document.querySelectorAll('[role="dialog"]')].find(
     (d) => !d.closest(".devfb"),
   );
@@ -81,11 +95,11 @@ export async function captureContext(): Promise<{ context: FeedbackContext; shot
     localTime: now.toLocaleString(),
     commit: await buildCommit(),
     url: location.href,
-    screen: text(document.querySelector('[aria-current="page"]')) || "unknown",
+    screen: source.screen?.() || text(document.querySelector('[aria-current="page"]')) || "unknown",
     dialog: dialog
       ? [dialog.getAttribute("aria-label"), text(heading)].filter(Boolean).join(" · ") || "dialog"
       : null,
-    visibleText: text(dialog ?? main).slice(0, 900),
+    visibleText: (source.visibleText?.() ?? text(dialog ?? main)).slice(0, 900),
     viewport: `${innerWidth}×${innerHeight} @${devicePixelRatio}x`,
     userAgent: navigator.userAgent,
     game: gameSnapshot(),
