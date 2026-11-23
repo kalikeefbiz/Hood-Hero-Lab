@@ -55,7 +55,9 @@ test("tap Lil Jay's: people come from the NPC simulation, answers and purchases 
 });
 
 test("presence follows the simulation: Quanny walks off and his actions go; Mr. Lewis arrives and his work appears", async ({ page }) => {
-  test.setTimeout(300_000);
+  // Mr. Lewis walks at his own animated pace (0.75 m/s) and opens up around 10:30 game time;
+  // under software rendering in CI that is several real minutes away.
+  test.setTimeout(600_000);
   await ready(page);
   await tapPin(page, "reservoir.lil-jays");
   const card = page.locator(".place");
@@ -80,7 +82,7 @@ test("presence follows the simulation: Quanny walks off and his actions go; Mr. 
   // Mr. Lewis's shift: once the simulation has him at the market, the engine offers his work.
   await page.waitForFunction(
     () => (window as any).__strip.sim.peopleHere("reservoir.lil-jays").some((p: any) => p.characterId === "mr-lewis"),
-    null, { timeout: 120_000 },
+    null, { timeout: 420_000 },
   );
   await page.evaluate(() => (window as any).__strip.sim.setSpeedMultiplier(1));
   await expect(card.locator(".people .chip")).toContainText(["Mr. Lewis"], { timeout: 5_000 });
@@ -98,11 +100,6 @@ test("every street's places are reachable from the selector; homes show househol
     "Lil Bit Lane", "Blocc Boy Boulevard", "Big Mouth Boulevard", "Dirty Money Drive", "No Refund Road",
   ]);
 
-  await sheet.locator('.pick[data-anchor="reservoir.water-tower"]').click();
-  await settled(page);
-  await expect(page.locator(".place .politics .big")).toHaveText("Blocc Boys");
-
-  await page.click("#places");
   await sheet.locator('.pick[data-anchor="res-home-04"]').click();
   await settled(page);
   await expect(page.locator(".place h2")).toContainText("Mr. Lewis's home");
@@ -112,6 +109,12 @@ test("every street's places are reachable from the selector; homes show househol
   await sheet.locator('.pick[data-anchor="res-store-barber"]').click();
   await settled(page);
   await expect(page.locator(".place .empty")).toContainText("Scenery for now");
+
+  // Last: arriving at the tower can open an engine street conversation, which then holds you there.
+  await page.click("#places");
+  await sheet.locator('.pick[data-anchor="reservoir.water-tower"]').click();
+  await settled(page);
+  await expect(page.locator(".place .politics .big")).toHaveText("Blocc Boys");
 
   // Touch targets stay thumb-sized on a phone.
   const close = await page.locator(".place .close").boundingBox();
