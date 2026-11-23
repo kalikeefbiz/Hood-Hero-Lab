@@ -44,7 +44,7 @@ The playbook these steps follow is `blender-workflow-recipes` §3, "Game charact
 ## Inputs, before you start
 
 1. **A canonical character id** that exists in the engine (`src/content/characters.ts`), e.g. `mr-lewis`. Don't invent characters (AGENTS.md 6). Canon cast without an engine record needs Codex to add the record first.
-2. **Owner-approved art** in `art/source/hood-hero/<id>/ref/`: front view at least. No approved art, no model.
+2. **Owner-approved art**, front view at least. If the owner gives it to you in chat, commit it in your delivery as `art/incoming/<id>/ref/`, so Claude can compare the model against it. No approved art, no model.
 3. **Height** from the owner, or 1.78 m if none is given. Quanny is 1.90 m.
 
 ## Steps
@@ -70,7 +70,7 @@ Gate: no errors; `ob.dimensions.z` equals the height.
 ### 2. Make it game-weight (`blender-retopology-uv`, `blender-game-optimization`)
 
 - `auto_retopo.py -- --objects Body --method decimate --tris 32000`. Use `decimate`, not `quadriflow`: decimate keeps Meshy's UVs and texture, so nothing needs re-baking. Target 30k–38k triangles. It creates `Body_low`; rename it to `Body` and delete the source.
-- `make_lods.py -- --objects Body --cleanup` merges by distance and removes degenerate and loose geometry. Don't make LODs.
+- `make_lods.py -- --objects Body --cleanup` merges by distance and removes degenerate and loose geometry. It **also creates `Body_LOD1`–`Body_LOD3`; delete them**. If `qa_check` still reports Meshy fin faces (non-manifold, flipped winding, z-fighting pairs), remove those few faces with a targeted bmesh pass, and list how many you removed.
 - `mesh_stats.py -- --objects Body --budget web`, then `qa_check.py -- --objects Body --profile game`.
 - `review_shots.py -- --objects Body --mode material`, then `--mode wire`. Open both PNGs.
 
@@ -81,7 +81,7 @@ Gate: QA `"pass": true`; one or two materials; the face and hands read at phone 
 1. `rigify_build.py -- --add basic_human --no-face --fit Body` creates `META_Body`.
 2. **Place the joints.** The fit only scales the metarig. Move each joint to its pivot of rotation, inside the volume: hip sockets, knees, ankles, ball of foot, clavicle roots, shoulder sockets, elbows, wrists, neck base, head. Give elbows and knees a slight bend in their natural direction. Symmetrize. Check with `review_shots.py` in `wire` and `solid` modes, or MCP `look` with `xray` if you work live. **This is the step most likely to go wrong. Save a contact sheet of the placed joints for the PR.**
 3. `rigify_build.py -- --metarig META_Body --generate` creates `RIG_Body`, the control rig with IK/FK.
-4. `bind_mesh.py -- --armature RIG_Body --meshes Body`: heat weights with an automatic voxel-proxy fallback (the same method Quanny was skinned with), cleaned to 4 influences and normalized.
+4. `bind_mesh.py -- --armature RIG_Body --meshes Body`: heat weights with an automatic voxel-proxy fallback (the same method Quanny was skinned with). **On the proxy fallback it can leave up to 9 influences** despite its docs. Check `max_influences` in its output. If it's over 4: lock hair/head vertices above the jaw to the head deform bone, remove weights under 0.01, limit to 4 (`vertex_group_limit_total`), then normalize.
 5. Follow the skill's **weight painting rules**:
    - hair, hats and headwraps 100% `head`
    - rigid props (chains, phones) 100% on one bone
@@ -97,8 +97,12 @@ Gate: `rig_check` is clean, every vertex is weighted, there are at most 4 influe
 Reuse Quanny's clips as the starting point. They're hand-made street animations; retargeting puts them on your rig with the right proportions.
 
 1. Append Quanny's rig and actions from `art/source/hood-hero/quanny/quanny_source.blend`: object `QuannyRig`, actions `Idle`, `Walk`, `Run`. Use `bpy.data.libraries.load` (`blender-core/references/bpy-patterns.md`, append/link).
-2. `retarget.py -- --source QuannyRig --target RIG_Body --show-map`. Gate: `unmapped_key_parts` is empty. Quanny's bone names are Mixamo-style, which the auto map understands.
-3. For each clip, set `QuannyRig`'s active action, then run `retarget.py -- --source QuannyRig --target RIG_Body --in-place --name Walk`, and the same for `Run` and `Idle`.
+2. **Don't use `--map auto` onto the Rigify control rig.** It maps onto `ORG-`/`DEF-` bones that Rigify's constraints drive, so the result is overwritten. Instead:
+   - switch `RIG_Body`'s four limbs to FK (`IK_FK = 1.0` on each limb's parent control)
+   - pass an explicit JSON map from Quanny's bones to the FK controls (22 bones: `torso`, `spine_fk.001`–`003`, `neck`, `head`, `shoulder.L/R`, `*_fk.L/R`). Gemini wrote this map for Flacco (#61). Once it's merged it lives at `art/source/hood-hero/quanny/pipeline/quanny_to_rigify_fk.json`; reuse it, don't rewrite it.
+   
+   Check with `--show-map`.
+3. For each clip, set `QuannyRig`'s active action, then run `retarget.py -- --source QuannyRig --target RIG_Body --map <that json> --in-place --name Walk`, and the same for `Run` and `Idle`. Gate: `max_error_deg` under 1.
 4. **Make it this character's motion**, on `RIG_Body`, following the skill's studio workflow (blocking, breakdowns, spline, polish):
    - Mr. Lewis, for example: shorter stride, upright, less hip swing, slower idle with a glance at the store.
    - Read the character's canon in `docs/RESERVOIR_CANON.md` §D.
@@ -118,11 +122,11 @@ Clip rules (the checker enforces these):
 
 All clips: 30 fps, first frame equals last, root not moving, no animated scale.
 
-**Ground speed** (manifest `speedMps`) is how fast the character travels when the clip plays at 1×. Measure it: the distance a planted foot slides backwards over one cycle, divided by the cycle length. Quanny's walk is 0.92 m/s and his run 2.73 m/s. Retargeted clips start near `0.92 × (your hips height ÷ 0.97 m)`. The city plays the clip at the character's real speed, so a wrong value makes the feet slide.
+**Ground speed** (manifest `speedMps`) is how fast the character travels when the clip plays at 1×. **Measure it; don't scale it from Quanny.** Take the distance the planted foot moves backwards over one cycle, divided by the cycle length. Claude re-measures it on review, and anything more than 5% off is sent back. Quanny's walk is 0.92 m/s and his run 2.73 m/s. Retargeted clips start near `0.92 × (your hips height ÷ 0.97 m)`. The city plays the clip at the character's real speed, so a wrong value makes the feet slide.
 
 ### 5. Export and compress (`blender-export-pipelines`)
 
-1. `export_asset.py -- --preset web --objects GAME_RIG_Body --set export_animation_mode=ACTIONS --out //<id>_raw.glb`. This writes meshopt geometry and WebP textures. Keep WebP; `compress.mjs` can't read KTX2 input.
+1. `export_asset.py -- --preset web --objects GAME_RIG_Body Body --set export_animation_mode=ACTIONS export_def_bones=False --out //<id>_raw.glb`. List `Body` explicitly, and turn off `export_def_bones`: the preset's deform-only setting drops the unweighted `root` bone, which the city needs. This writes meshopt geometry and WebP textures. Keep WebP; `compress.mjs` can't read KTX2 input.
    Gate: the returned summary shows 1 skin, 3 animations named `Idle`/`Walk`/`Run` and nothing else, and the expected triangle count.
 2. `node compress.mjs <id>_raw.glb <id>.glb 1024 0` (`art/source/hood-hero/quanny/pipeline/compress.mjs`). This gives KTX2 base colour at 1024, no normal map, quantized, meshopt. Budget: **≤ 1.4 MB** for the one file.
 
@@ -136,6 +140,8 @@ Put these in `previews/`:
 - `<id>_stress.png`: the stress frames
 - `<id>_walk.mp4`, `<id>_run.mp4`, `<id>_idle.mp4`: `render_batch.py -- --preset preview --format MP4`, side view, one full loop, 512 px
 
+With no GPU (`env_report` shows `gpu.backend: NONE`), headless EEVEE won't render. Use `BLENDER_WORKBENCH` with Studio lighting and texture colour for all previews.
+
 ### 7. Check and deliver
 
 1. Build the folder:
@@ -144,6 +150,7 @@ Put these in `previews/`:
    art/incoming/<id>/
      <id>.glb                    mesh + skin + Idle/Walk/Run, compressed
      manifest.json
+     ref/                        the approved art you built from (exactly as the owner gave it)
      source/
        <id>_source.blend         Body, RIG_Body, GAME_RIG_Body, actions, textures packed
      previews/                   the files from step 6
@@ -177,7 +184,7 @@ Put these in `previews/`:
     "Run":  { "seconds": 0.733, "frames": 22, "speedMps": 2.50 }
   },
   "animatedFrom": "retargeted from Quanny, then reworked",
-  "sourceArt": ["art/source/hood-hero/mr-lewis/ref/front.png"],
+  "sourceArt": ["art/incoming/mr-lewis/ref/front.png"],
   "meshyTaskId": "…",
   "blender": "5.3",
   "skillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
