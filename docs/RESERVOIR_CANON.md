@@ -137,7 +137,7 @@ The **Blocc Boys start in control** of the Reservoir. Territory is contested thr
 3. Confirm the implementation and actual working behavior behind each existing `reservoir.*` location link. Some “live” registry entries may have only info/social actions.
 4. Assign shop-owner identities for Liquor & Deli if needed; no need for another primary NPC solely for a storefront.
 5. Decide the train-station/substation scene location before hardcoding it.
-6. Establish stable IDs for the approved new cast while preserving existing save compatibility and resolving collisions.
+6. Establish stable IDs for the approved new cast and resolve collisions. Change IDs in one coordinated PR that updates every reader. Lab saves need not survive (`AGENTS.md` 00B).
 7. Define owner-approved mechanics if/when currently scenery-only shops become player-interactive.
 
 **Never fill an unresolved mapping by silently overriding accepted canon, mutating Claude's city map, or adding fake interaction content.**
