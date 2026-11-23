@@ -5,6 +5,9 @@ import type { CityAnchor } from "./anchors";
 import type { LocationQuery, LocationResult, PreviewSession } from "./previewSession";
 import type { LocationAction } from "../city/LocationInteractions";
 import { JOBS } from "../content/jobs";
+import { encounterDefinition } from "../systems/Encounters";
+import { playerText } from "../presentation/PlayerInformation";
+import type { GameState } from "../core/GameState";
 
 const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
   const e = document.createElement(tag);
@@ -97,6 +100,14 @@ export class PlacePanel {
 
     if (this.lastResult) r.append(resultBlock(this.lastResult.label, this.lastResult.result, s));
 
+    // An open conversation: show what they're saying above your answers (as the main game's
+    // encounter scene does), from the engine's own dialogue.
+    const talking = [...new Set(q.actions.filter((x) => x.command.type === "respondEncounter").map((x) => x.command.targetId!))];
+    for (const id of talking) {
+      const line = conversationLine(s.state, id);
+      if (line) r.append(line);
+    }
+
     // What you can do now first; everything the engine refuses goes in a fold, grouped by reason.
     const list = el("div", "actions");
     const ready = q.actions.filter((x) => !x.error);
@@ -154,6 +165,24 @@ export class PlacePanel {
       this.root.scrollTop = 0;
     };
     return b;
+  }
+}
+
+/** The speaker's current line in an open engine conversation (EncounterScene's wording). */
+function conversationLine(state: GameState, encounterId: string) {
+  const e = state.encounters.find((x) => x.id === encounterId);
+  if (!e) return null;
+  try {
+    const d = encounterDefinition(e);
+    const who = state.characters[e.participants[0]];
+    const raw = playerText(state, d.dialogue(state, e));
+    const quoted = ["flacco-six", "trio-aftermath", "street-reaction"].includes(d.id) ? raw : `“${raw}”`;
+    const box = el("div", "dialogue");
+    box.dataset.encounter = encounterId;
+    box.append(el("span", "lbl", who?.name ?? "Someone"), el("p", "", quoted));
+    return box;
+  } catch {
+    return null;
   }
 }
 

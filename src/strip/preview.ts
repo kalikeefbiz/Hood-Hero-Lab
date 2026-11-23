@@ -73,13 +73,22 @@ export function startPreview(host: PreviewHost) {
     // An NPC's spot opens the place it belongs to.
     const target = placeOf(a);
     pins.select(target.id);
-    let note: string | undefined;
-    if (isInteractive(target)) {
-      const before = session.placeId;
-      if (!session.arrive(target))
-        note = `Still at ${before}: the engine won't move you yet. Finish what's open where you are.`;
+    if (isInteractive(target) && !session.arrive(target)) {
+      // The engine holds you in an open conversation (as the main game's pop-up does).
+      const b = session.blocker();
+      const home = b ? anchorById(b.locationId) : undefined;
+      if (b && home && home.id !== target.id) {
+        pins.select(home.id);
+        if (mode === "select") {
+          flyTo(home);
+          panel.show(home, `${b.name} is still talking to you. Answer before you go anywhere else.`);
+        } else {
+          toast(`${b.name} is still talking to you at ${b.place}. Go back and answer first.`);
+        }
+        return;
+      }
     }
-    panel.show(target, note);
+    panel.show(target);
   }
 
   function select(a: CityAnchor) {
@@ -186,6 +195,7 @@ export function startPreview(host: PreviewHost) {
       if (flight.t >= 1) flight = null;
     }
     pins.update(camera, focus(), canvas.clientHeight || innerHeight);
+    updateWaiting();
     // People come and go: re-show the card when who is here changes (at most twice a second).
     const now = performance.now();
     if (now - presenceCheck > 500 && panel.open && panel.current?.locationId) {
@@ -194,6 +204,31 @@ export function startPreview(host: PreviewHost) {
     }
   }
   let presenceCheck = 0;
+
+  // "Quanny is waiting for your answer": shown while a conversation holds you and its card is closed.
+  const waiting = document.createElement("button");
+  waiting.id = "waiting";
+  waiting.type = "button";
+  waiting.hidden = true;
+  document.body.append(waiting);
+  waiting.onclick = () => {
+    const b = session.blocker();
+    const home = b && anchorById(b.locationId);
+    if (!b || !home) return;
+    pins.select(home.id);
+    if (mode === "select") { flyTo(home); panel.show(home); }
+    else toast(`Walk back to ${b.place} to answer ${b.name}.`);
+  };
+  let waitCheck = 0;
+  function updateWaiting() {
+    const now = performance.now();
+    if (now - waitCheck < 400) return;
+    waitCheck = now;
+    const b = session.blocker();
+    const show = !!b && !panel.open;
+    waiting.hidden = !show;
+    if (show) waiting.textContent = `${b!.name} is waiting for your answer · ${b!.place}`;
+  }
   let focusFn: () => THREE.Vector3 = () => controls!.target;
   const focus = () => focusFn();
   // Any manual drag cancels a flight in progress.

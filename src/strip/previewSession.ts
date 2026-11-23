@@ -11,6 +11,9 @@ import {
   type LocationCommand,
 } from "../city/LocationInteractions";
 import type { CityAnchor } from "./anchors";
+import { quannyConversation, quannyLocation } from "../systems/QuannyState";
+import { streetConversation } from "../systems/Danger";
+import { locationById } from "../board/locations";
 
 export type LocationQuery = ReturnType<typeof queryLocation>;
 export type LocationResult = ReturnType<typeof executeLocationAction>;
@@ -63,6 +66,24 @@ export class PreviewSession {
   eventsOf(result: LocationResult) {
     const ids = new Set(result.changes.eventIds);
     return result.state.events.filter((e) => ids.has(e.id));
+  }
+
+  /**
+   * A conversation the engine won't let you walk out of (the same ones that hold you in place in
+   * the main game): who, and the place it's happening.
+   */
+  blocker(): { name: string; locationId: string; place: string } | null {
+    const st = this.state;
+    const scene = streetConversation(st);
+    const q = quannyConversation(st);
+    const who = scene?.npc ?? (q ? "quanny" : null);
+    if (!who) return null;
+    const locationId = scene?.location ?? quannyLocation(st);
+    return {
+      name: st.characters[who]?.name ?? who,
+      locationId,
+      place: locationById(locationId)?.name ?? locationId,
+    };
   }
 
   nextDay() { this.state = advanceDay(this.state); }

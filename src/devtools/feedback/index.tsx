@@ -3,7 +3,7 @@
 // how to remove it.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { captureContext, watchErrors } from "./context";
+import { captureContext, setFeedbackSource, watchErrors, type FeedbackSource } from "./context";
 import {
   TAGS,
   feedbackId,
@@ -91,8 +91,9 @@ function FeedbackTool() {
     if (!token) {
       const url = prefilledIssueUrl(draft);
       rememberSent({ id: draft.id, title: issueTitle(draft), number: null, url, at: context.takenAt });
-      window.open(url, "_blank", "noopener");
-      setStatus({ text: "Opened in GitHub. Tap Submit there to file it." });
+      // Some hosts (the hosted city preview) block window.open; the link below always works.
+      const opened = window.open(url, "_blank", "noopener");
+      setStatus({ text: opened ? "Opened in GitHub. Tap Submit there to file it." : "Tap Open, then Submit in GitHub to file it.", url });
       return;
     }
     setBusy(true);
@@ -102,7 +103,8 @@ function FeedbackTool() {
       window.setTimeout(() => setView((v) => (v === "note" ? "closed" : v)), 2500);
       window.setTimeout(() => window.dispatchEvent(new Event("hh:resume")), 2500);
     } catch (e) {
-      setStatus({ text: `Couldn’t send: ${(e as Error).message}`, error: true });
+      // If this page can't reach GitHub's API (a locked-down host), fall back to the prefilled form.
+      setStatus({ text: `Couldn’t send directly (${(e as Error).message}). Tap Open to file it in GitHub instead.`, error: true, url: prefilledIssueUrl(draft) });
     } finally {
       setBusy(false);
     }
@@ -287,7 +289,8 @@ function FeedbackTool() {
   );
 }
 
-export function mountFeedback() {
+export function mountFeedback(source?: FeedbackSource) {
+  if (source) setFeedbackSource(source);
   watchErrors();
   const host = document.createElement("div");
   host.id = "dev-feedback-root";

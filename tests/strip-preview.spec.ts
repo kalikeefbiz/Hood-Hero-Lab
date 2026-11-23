@@ -28,7 +28,17 @@ test("tap Lil Jay's: people come from the NPC simulation, answers and purchases 
   // 08:05: the simulation has Quanny posted up outside.
   await expect(card.locator(".people .chip")).toContainText(["Quanny"]);
 
-  // Arrival opened the engine's Quanny introduction; its answers come first.
+  // Arrival opened the engine's Quanny introduction: his line shows above your answers.
+  await expect(card.locator(".dialogue")).toContainText("Quanny");
+  await expect(card.locator(".dialogue p")).not.toBeEmpty();
+
+  // Trying to leave mid-conversation says why, and brings you back to it.
+  await page.click("#places");
+  await page.locator('.places .pick[data-anchor="reservoir.pawn"]').click();
+  await settled(page);
+  await expect(card.locator("h2")).toHaveText("Lil Jay's Market");
+  await expect(card.locator(".note")).toContainText("Quanny is still talking to you");
+
   await card.locator(".act[data-command=respondEncounter]:not([disabled])").first().click();
   await expect(card.locator(".result")).toContainText("Quanny");
   for (let i = 0; i < 3; i++) {
@@ -106,4 +116,17 @@ test("every street's places are reachable from the selector; homes show househol
   // Touch targets stay thumb-sized on a phone.
   const close = await page.locator(".place .close").boundingBox();
   expect(close!.height).toBeGreaterThanOrEqual(44);
+});
+
+test("the Lab playtest note button works on the city page", async ({ page }) => {
+  test.setTimeout(300_000);
+  await page.goto("strip.html?select&feedback");
+  await page.waitForFunction(() => !document.querySelector("#progress"), null, { timeout: 180_000 });
+  const fab = page.getByRole("button", { name: "Dev note (N)" });
+  await expect(fab).toBeVisible();
+  const box = (await fab.boundingBox())!;
+  expect(box.height).toBeGreaterThanOrEqual(44);
+  await fab.click();
+  await expect(page.getByRole("dialog", { name: "Dev feedback" })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Note" })).toBeVisible();
 });

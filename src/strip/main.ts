@@ -326,8 +326,42 @@ if (view === "walk") {
 const clock = new THREE.Clock();
 const fpsEl = document.querySelector<HTMLElement>("#fps")!;
 let frames = 0, acc = 0;
+// Lab playtest notes (src/devtools/feedback): the same tool as the main game, fed from this page.
+let notePaused = false;
+addEventListener("hh:pause", () => { notePaused = true; });
+addEventListener("hh:resume", () => { notePaused = false; clock.getDelta(); });
+if (import.meta.env.VITE_DEV_FEEDBACK === "1" || params.has("feedback")) {
+  void import("../devtools/feedback").then((m) =>
+    m.mountFeedback({
+      capture: () => {
+        try {
+          renderer.render(scene, camera);
+          const src = renderer.domElement;
+          const scale = Math.min(1, 960 / Math.max(1, src.width));
+          const out = document.createElement("canvas");
+          out.width = Math.round(src.width * scale);
+          out.height = Math.round(src.height * scale);
+          out.getContext("2d")!.drawImage(src, 0, 0, out.width, out.height);
+          return out.toDataURL("image/jpeg", 0.72);
+        } catch { return null; }
+      },
+      game: () => session.state,
+      screen: () => {
+        const p = walk?.api.player();
+        const t = living.sim.getClock().minuteOfDay;
+        return `City preview (${view}) · ${String(Math.floor(t / 60)).padStart(2, "0")}:${String(Math.floor(t % 60)).padStart(2, "0")}` +
+          (p ? ` · player ${p.x.toFixed(1)},${p.z.toFixed(1)}` : "");
+      },
+      visibleText: () =>
+        [document.querySelector(".place:not([hidden])"), document.querySelector("#prompt:not([hidden])"), document.querySelector("#waiting:not([hidden])")]
+          .map((e) => (e?.textContent ?? "").replace(/\s+/g, " ").trim()).filter(Boolean).join(" | "),
+    }),
+  );
+}
+
 function frame() {
   const dt = Math.min(0.05, clock.getDelta());
+  if (notePaused) { requestAnimationFrame(frame); return; }
   if (walk) {
     walk.update(dt);
     walk.focus();
