@@ -167,7 +167,7 @@ On a branch `claude/<id>-integrate` from fresh `main`, after merging the deliver
    - Watch the character in the city: `npm run build && npx vite preview`, then `strip.html` (walk mode) or `strip.html?select`. To see someone not in the sim's cast, temporarily pass `?avatar`-style test code locally only; never commit it.
 4. **PR** to Lab `main` describing what you checked, with screenshots. The owner merges integration PRs unless they've said otherwise.
 5. **Preview URLs:**
-   - **Lab site** (once a deploy succeeds, see open issues): `https://kalikeefbiz.github.io/Hood-Hero-Lab/strip.html` (walk), `…/strip.html?select` (selector), `#dev` for Gemini's inspector.
+   - **Lab site:** `https://kalikeefbiz.github.io/Hood-Hero-Lab/strip.html` (walk), `…/strip.html?select` (selector), `#dev` for Gemini's inspector.
    - **Private artifact** (the owner's iPhone link): `https://claude.ai/artifact/5h64jK7hUhtp6Le5qdeKGs`. To update it:
 
      ```
@@ -182,9 +182,9 @@ On a branch `claude/<id>-integrate` from fresh `main`, after merging the deliver
 
 ## Open issues
 
-1. **The Lab site isn't deploying.** Run 92 ("Deploy Hood Hero Lab", after #35 merged) failed: `src/tests/skillsSessions.test.ts` › "365-day focused City simulation avoids instant mastery" timed out at 60 s on the GitHub runner. It passes locally (509/509), and the build is fine. That test is **Codex's**: raise it with Codex (a longer timeout or a cheaper simulation, not deleting it). Until a deploy succeeds, the Lab site doesn't show the city, Mr. Lewis or Flacco; use the artifact link.
-2. **Mr. Lewis's reference image** isn't in the repo. Codex kept it locally (`front.png`, SHA-256 `4bd0c3fb…841fbb`, in `art/source/hood-hero/mr-lewis/manifest.json`) and was asked on PR #62 to add it. Chase it.
-3. **Mr. Lewis's run speed:** manifest 2.42 m/s (Codex's sole measurement), but `measure-foot-speed.mjs` gives ~2.77 corrected. He only runs when the sim makes him flee a commotion (Gemini's caution rule), so check by eye in the city (cause a commotion near him from the clock sheet) before asking Codex for anything.
+1. **Lab deployment.** The 365-day simulation exceeded its 60 s limit in [run 92](https://github.com/kalikeefbiz/Hood-Hero-Lab/actions/runs/45120560748). [The next Pages run](https://github.com/kalikeefbiz/Hood-Hero-Lab/actions/runs/45121736206) passed and published the Living Reservoir at commit `6452b85`. The test now reuses owned state across day advancement and routine actions to avoid repeatedly copying accumulated history.
+2. **Mr. Lewis's reference image.** The earlier Codex attachment and its staged PNG are unavailable in the current workspace. The recorded Meshy task could not be retrieved from the connected account. Recover the original JPEG or verified PNG for `art/source/hood-hero/mr-lewis/ref/front.png` in an isolated asset PR. The SHA-256 of the staged PNG is `4bd0c3fb9961beaaec65802818863c1cc8d9a5d0baf6cc169e543d7eef841fbb`.
+3. **Mr. Lewis's run speed.** [PR #62](https://github.com/kalikeefbiz/Hood-Hero-Lab/pull/62) reports a baked-sole measurement of 2.4182 m/s, which rounds to the manifest's 2.42 m/s (a 0.07% difference). On the shipped GLB, `measure-foot-speed.mjs` reads 2.33 m/s at the planted foot. Its Quanny-based scaling factor of 1.19 estimates 2.77 m/s, about 14.5% above the manifest. The correction is approximate. Claude owns visual acceptance. Trigger a commotion near Mr. Lewis from the clock sheet and watch his foot contact as he flees.
 4. **Texture quality:** the owner finds the results a bit "PS2". The source `.blend` files keep Meshy's 2k texture. A re-export at 2048 px with higher-quality KTX2, perhaps with a normal map, may fix most of it without rebuilding. **Owner's call; not started.** It changes the budget in the pipeline doc and the checker (1024 px cap), so update both together if the owner says go.
 5. **Speeds:** the player walks at 1.6 m/s, and the sim's placeholder people at ~1.25–1.55 m/s. Characters with models now move at their clip speed (0.75–0.92 m/s walks), which is realistic but slower than everyone else. If it looks wrong next to placeholders, that's a city tuning question (the previous Claude), not a model fault.
 6. **Mega** is pre-pipeline and below spec (see status). Rebuilding him costs credits: owner approval first.
@@ -192,7 +192,6 @@ On a branch `claude/<id>-integrate` from fresh `main`, after merging the deliver
 
 ## Next action
 
-1. Report the deploy failure (issue 1) to the owner, and ask whether to raise it with Codex.
-2. Ask the owner which characters to build next, and confirm each has approved full-body art. The engine already has records for `loco`, `pablo`, `dizzy`, `babycanon`, `joker` and `justice`. For each, get the expected Meshy credit spend approved (about 15 credits per image-to-3D). Then hand each builder the short brief: character id, art location, "follow `docs/CHARACTER_PIPELINE.md`, deliver to `art/incoming/<id>/`, ask the owner before spending credits".
-3. For Reservoir canon cast, ask Codex to add the engine character records first.
-4. Chase Mr. Lewis's reference image (issue 2).
+1. Ask the owner which characters to build next, and confirm each has approved full-body art. The engine already has records for `loco`, `pablo`, `dizzy`, `babycanon`, `joker` and `justice`. For each, get the expected Meshy credit spend approved (about 15 credits per image-to-3D). Then hand each builder the short brief: character id, art location, "follow `docs/CHARACTER_PIPELINE.md`, deliver to `art/incoming/<id>/`, ask the owner before spending credits".
+2. For Reservoir canon cast, ask Codex to add the engine character records first.
+3. Chase Mr. Lewis's reference image (issue 2).

@@ -29,9 +29,10 @@ import { progress } from "../systems/Progression";
 
 import { settleAttendance, generateShifts } from "../systems/Employment";
 import { settleWorkplaceScenes } from "../systems/Workplace";
-export function advanceDay(state: GameState): GameState {
+/** By default the caller's state is preserved. Use inPlace only with exclusively owned state. */
+export function advanceDay(state: GameState, { inPlace = false } = {}): GameState {
   if (state.end) return state;
-  const s = structuredClone(state);
+  const s = inPlace ? state : structuredClone(state);
   interruptSession(s, "The day ended. Anyone still waiting moved on.");
   settleWorkplaceScenes(s);
   settleAttendance(s);

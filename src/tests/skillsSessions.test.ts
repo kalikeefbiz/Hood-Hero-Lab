@@ -594,6 +594,8 @@ describe("focused progression balance and presentation adapter", () => {
   for (const days of [30, 60, 180, 365])
     it(`${days}-day focused City simulation avoids instant mastery`, async () => {
       let s = ready(42);
+      // The simulation owns its state and never reads discarded snapshots.
+      const inPlace = { inPlace: true };
       while (s.day <= days && !s.end) {
         // Yield now and then: a minute-long synchronous loop starves the
         // test worker's reporting channel and CI fails with an RPC timeout.
@@ -619,11 +621,11 @@ describe("focused progression balance and presentation adapter", () => {
             s = finish(result.state);
           }
           if (s.ap)
-            s = performAction(s, { actor: "player", type: "gig" }).state;
+            s = performAction(s, { actor: "player", type: "gig" }, inPlace).state;
           if (s.ap)
-            s = performAction(s, { actor: "player", type: "rest" }).state;
+            s = performAction(s, { actor: "player", type: "rest" }, inPlace).state;
         }
-        s = advanceDay(s);
+        s = advanceDay(s, inPlace);
       }
       const total = skillsOf(player(s)).xp.trapper;
       expect(total).toBeGreaterThan(0);
