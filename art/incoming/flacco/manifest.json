@@ -1,0 +1,22 @@
+{
+  "id": "flacco",
+  "displayName": "Flacco",
+  "heightM": 1.78,
+  "bindPose": "T",
+  "facing": "+Z",
+  "triangles": 29982,
+  "texture": 1024,
+  "rig": "rigify-game",
+  "clips": {
+    "Idle": { "seconds": 8.0, "frames": 240, "speedMps": 0 },
+    "Walk": { "seconds": 1.2, "frames": 36, "speedMps": 0.75 },
+    "Run":  { "seconds": 0.733, "frames": 22, "speedMps": 2.06 }
+  },
+  "animatedFrom": "retargeted from Quanny, then reworked",
+  "sourceArt": ["art/incoming/flacco/ref/front.png"],
+  "meshyTaskId": "01a2065a-d5b6-7394-b09e-e3254e5d56a6",
+  "blender": "5.3",
+  "skillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
+  "approvedBy": "owner",
+  "notes": "Addressed Claude review: Walk speedMps set to 0.75; front reference added at art/incoming/flacco/ref/front.png; 22-bone Quanny->Rigify FK retarget map added at art/incoming/flacco/source/quanny_to_rigify_fk.json."
+}
