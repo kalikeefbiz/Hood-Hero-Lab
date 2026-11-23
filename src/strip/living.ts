@@ -4,7 +4,7 @@
 // from LivingBlockSim.
 import * as THREE from "three";
 import type { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { LivingBlockSim } from "../sim";
+import { LivingBlockSim, createReservoirNpcProfiles } from "../sim";
 import { AvatarAdapter, resolveAvatarAssets, type AvatarAssetDescriptor, type AvatarPose } from "../render/AvatarAdapter";
 import type { GameState } from "../core/GameState";
 import { RESERVOIR_NAV_MAP } from "./navMap";
@@ -18,8 +18,8 @@ function specFor(assets: AvatarAssetDescriptor): AvatarSpec | null {
   return {
     model: assets.modelUrl,
     clips: { idle: assets.clips.idle, walk: assets.clips.walk, run: assets.clips.run },
-    height: 1.8,
-    clipSpeed: { walk: 1.4, run: 3.6 },
+    height: assets.heightM ?? 1.8,
+    clipSpeed: assets.clipSpeedMps ?? { walk: 1.4, run: 3.6 },
   };
 }
 
@@ -86,6 +86,12 @@ export function startLiving(host: LivingHost) {
   const sim = new LivingBlockSim({
     navMap: RESERVOIR_NAV_MAP,
     engineState,
+    // A character with an approved model moves at the speed its walk and run were animated for,
+    // so feet don't slide. Everyone else keeps the simulation's own speeds.
+    profiles: createReservoirNpcProfiles(engineState).map((p) => {
+      const s = resolveAvatarAssets(p.modelId ?? p.id).clipSpeedMps;
+      return s ? { ...p, walkSpeed: s.walk, runSpeed: s.run } : p;
+    }),
     simMinutesPerSecond: host.minutesPerSecond ?? 3,
   });
   const adapter = new AvatarAdapter();

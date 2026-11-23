@@ -5,8 +5,13 @@ export type AvatarClipName = "idle" | "walk" | "run";
 
 export interface AvatarAssetDescriptor {
   modelUrl: string | null;
+  /** A clip file, or a named animation inside one ("x.glb#Walk"). */
   clips: Partial<Record<AvatarClipName, string>>;
   usesApprovedModel: boolean;
+  /** Standing height in metres (manifest heightM). */
+  heightM?: number;
+  /** Ground speed each clip was made for (manifest speedMps); the character moves at these. */
+  clipSpeedMps?: { walk: number; run: number };
 }
 
 export interface AvatarPose {
@@ -36,11 +41,25 @@ export interface AvatarPose {
  */
 const APPROVED_CHARACTER_ASSETS: Record<string, AvatarAssetDescriptor> = {
   quanny: {
+    heightM: 1.9,
+    clipSpeedMps: { walk: 0.92, run: 2.73 },
     modelUrl: "assets/models/characters/quanny.glb",
     clips: {
       idle: "assets/models/characters/quanny-idle.glb",
       walk: "assets/models/characters/quanny-walk.glb",
       run: "assets/models/characters/quanny-run.glb",
+    },
+    usesApprovedModel: true,
+  },
+  // Delivered by Codex through docs/CHARACTER_PIPELINE.md (PR #62); one file, clips inside.
+  "mr-lewis": {
+    heightM: 1.78,
+    clipSpeedMps: { walk: 0.75, run: 2.42 },
+    modelUrl: "assets/models/characters/mr-lewis.glb",
+    clips: {
+      idle: "assets/models/characters/mr-lewis.glb#Idle",
+      walk: "assets/models/characters/mr-lewis.glb#Walk",
+      run: "assets/models/characters/mr-lewis.glb#Run",
     },
     usesApprovedModel: true,
   },
