@@ -42,15 +42,15 @@ Codex: these ids are proposals for household records. If the engine stores house
 - `res-court-sideline` inside the Lot Court gate (Codex map request 3).
 - `res-lil-jays-stoop`, where the Blocc Boys link up outside the market without involving Mr. Lewis.
 
-## Presence seam (for Gemini)
+## Presence seam
 
-Codex's API needs `peopleHere`: the people verifiably at a location. The preview gets it from `PresenceSource` (`src/strip/previewSession.ts`):
+Codex's API needs `peopleHere`: the people verifiably at a location. The strip gets it from a `PresenceSource` (`src/strip/previewSession.ts`):
 
 ```ts
 interface PresenceSource { peopleAt(locationId: string): string[] }
 ```
 
-Today `fixturePresence` (`src/strip/previewFixtures.ts`) says everyone with an `NPC_SPOTS` entry is always at their spot. That is a **preview fixture**: it is never saved, nothing in the game imports it, and it is deleted when the simulation lands. Gemini's integration provides a `PresenceSource` built from its own NPC positions, typically `anchorsAt(npc.x, npc.z)` mapped to `locationId`. Nothing else changes.
+Since the living-Reservoir integration this comes from Gemini's simulation (`src/strip/living.ts`, `sim.peopleHere`), filtered to engine characters. The old static fixtures are gone.
 
 ## Integration preview
 
@@ -60,7 +60,6 @@ Today `fixturePresence` (`src/strip/previewFixtures.ts`) says everyone with an `
 - red: a robbery lead
 - white: other houses
 - grey: scenery
-- violet: a fixture
 
 Tap a marker, or use **Places**, to stand there. The card lists what the engine offers, with costs and refusal reasons, and shows the engine's own result text after an action.
 
