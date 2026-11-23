@@ -63,6 +63,18 @@ const APPROVED_CHARACTER_ASSETS: Record<string, AvatarAssetDescriptor> = {
     },
     usesApprovedModel: true,
   },
+  // Delivered by Gemini through docs/CHARACTER_PIPELINE.md (PR #61).
+  flacco: {
+    heightM: 1.78,
+    clipSpeedMps: { walk: 0.75, run: 2.06 },
+    modelUrl: "assets/models/characters/flacco.glb",
+    clips: {
+      idle: "assets/models/characters/flacco.glb#Idle",
+      walk: "assets/models/characters/flacco.glb#Walk",
+      run: "assets/models/characters/flacco.glb#Run",
+    },
+    usesApprovedModel: true,
+  },
   mega: {
     modelUrl: "assets/models/characters/mega.glb",
     clips: {
