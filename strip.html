@@ -13,12 +13,13 @@
       <div><h1>The Reservoir</h1><small>Westside · test state, not saved</small></div>
       <div class="grow"></div>
       <button id="places" type="button">Places</button>
-      <button id="street" type="button">Street level</button>
-      <button id="overview" type="button">Overview</button>
+      <button id="street" class="select-only" type="button">Street level</button>
+      <button id="overview" class="select-only" type="button">Overview</button>
       <button id="mode" type="button">Dusk / Night</button>
     </div>
     <div id="pad" aria-label="Move"><div class="knob"></div></div>
-    <p class="hint">Tap a marker to use a place · drag to look · pinch to zoom</p>
+    <p class="hint walk-only">Stick to walk · push to the edge to run · walk up to a door</p>
+    <p class="hint select-only">Tap a marker to use a place · drag to look · pinch to zoom</p>
     <div id="fps"></div>
     <div id="progress">Loading the block…</div>
     <script type="module" src="/src/strip/main.ts"></script>

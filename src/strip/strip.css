@@ -75,3 +75,17 @@ body.place-open #pad, body.place-open .hint { display: none; }
 .place .blocked summary { min-height: 44px; display: flex; align-items: center; font: 600 13px system-ui; color: #a9adb8; cursor: pointer; }
 .place .blocked > .why { margin: 10px 0 4px; font: 500 12px/1.35 system-ui; color: #ffb4a8; }
 .place .blocked .act { min-height: 44px; padding: 8px 12px; }
+
+/* ---------------------------------------------------------------- walk mode (player controller) */
+body[data-view="walk"] .select-only, body[data-view="select"] .walk-only { display: none; }
+#pad { z-index: 3; }
+#pad.run .knob { background: #ff8a3d; }
+#prompt { position: fixed; right: 16px; bottom: calc(40px + env(safe-area-inset-bottom)); max-width: calc(100vw - 160px);
+  min-height: 52px; padding: 10px 16px; border-radius: 16px; border: 1px solid #f0c24b; background: #16130bf0; color: #f6e7b8;
+  font: 700 15px/1.25 system-ui; text-align: left; box-shadow: 0 6px 20px #0009; z-index: 3; }
+#prompt[hidden] { display: none; }
+body.place-open #prompt { display: none; }
+.toast { position: fixed; left: 50%; top: calc(120px + env(safe-area-inset-top)); transform: translateX(-50%); max-width: calc(100vw - 32px);
+  margin: 0; padding: 10px 14px; border-radius: 12px; background: #0f1116ee; border: 1px solid #ffffff22; font: 600 13px/1.35 system-ui; color: #f2f1ed; z-index: 6; }
+.toast[hidden] { display: none; }
+body[data-view="walk"] .hint { bottom: calc(104px + env(safe-area-inset-bottom)); }
