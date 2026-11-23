@@ -48,12 +48,22 @@ export class Avatar {
 
   private async load(loader: GLTFLoader, url: (p: string) => string) {
     const s = this.spec;
-    const [g, walk, run, idle] = await Promise.all([
-      loader.loadAsync(url(s.model)),
-      loader.loadAsync(url(s.clips.walk)),
-      loader.loadAsync(url(s.clips.run)),
-      s.clips.idle ? loader.loadAsync(url(s.clips.idle)) : Promise.resolve(null),
-    ]);
+    // A clip is either its own file ("x-walk.glb", first animation) or a named animation inside
+    // a file ("x.glb#Walk", as the Blender skills route exports). Each file downloads once.
+    type Loaded = { animations: THREE.AnimationClip[]; scene: THREE.Group };
+    const files = new Map<string, Promise<Loaded>>();
+    const file = (path: string) => {
+      if (!files.has(path)) files.set(path, loader.loadAsync(url(path)) as Promise<Loaded>);
+      return files.get(path)!;
+    };
+    const pick = async (ref: string | undefined) => {
+      if (!ref) return null;
+      const [path, name] = ref.split("#");
+      const gl = await file(path);
+      return { animations: name ? gl.animations.filter((a) => a.name === name) : gl.animations.slice(0, 1) };
+    };
+    const g = await file(s.model);
+    const [walk, run, idle] = await Promise.all([pick(s.clips.walk), pick(s.clips.run), pick(s.clips.idle)]);
     const model = g.scene;
     const grey = s.mannequin !== undefined
       ? new THREE.MeshStandardMaterial({ color: s.mannequin, roughness: 0.65, metalness: 0.05 })
