@@ -1,0 +1,24 @@
+{
+  "id": "mr-lewis",
+  "displayName": "Mr. Lewis",
+  "heightM": 1.78,
+  "bindPose": "T",
+  "facing": "+Z",
+  "triangles": 30818,
+  "texture": 1024,
+  "rig": "rigify-game",
+  "clips": {
+    "Idle": { "seconds": 8, "frames": 240, "speedMps": 0 },
+    "Walk": { "seconds": 1.333, "frames": 40, "speedMps": 0.75 },
+    "Run": { "seconds": 0.733, "frames": 22, "speedMps": 2.42 }
+  },
+  "animatedFrom": "retargeted from Quanny, then reworked",
+  "sourceArt": ["art/source/hood-hero/mr-lewis/ref/front.png"],
+  "sourceArtSha256": "4bd0c3fb9961beaaec65802818863c1cc8d9a5d0baf6cc169e543d7eef841fbb",
+  "meshyTaskId": "01a20664-5f28-77d7-a1d4-95ecc403b055",
+  "meshyCredits": 15,
+  "blender": "5.3.0",
+  "skillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
+  "approvedBy": "owner",
+  "notes": "The approved attachment was staged as a pixel-identical PNG in the working checkout. The clip speeds are measured from the baked boots in flat stance. The apron folds closely over the raised leg in the extreme stress poses."
+}
