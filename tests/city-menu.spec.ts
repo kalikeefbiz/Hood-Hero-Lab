@@ -110,7 +110,9 @@ test("City centers the five state-backed neighborhoods and keeps actions in Acti
     (key) => JSON.parse(localStorage.getItem(key)!).state,
     AUTO_KEY,
   );
-  expect(saved).toEqual(postDismiss); // Inspecting the map must never change ownership, membership, AP or saves.
+  // The foreground clock ticks during City inspection. Map navigation itself
+  // must still leave the rest of the campaign state alone.
+  expect(saved).toEqual({ ...postDismiss, cycleElapsedMs: saved.cycleElapsedMs });
   await expect(page.locator(".game-shell")).toHaveAttribute(
     "data-theme",
     "independent",
@@ -178,7 +180,7 @@ test("storyline uses the active demand and opens its existing City conversation"
   await expect(
     page.getByRole("dialog", { name: "Character encounter" }),
   ).toContainText("$105");
-  await expect(page.locator(".ap b")).toHaveText("2/2");
+  await expect(page.locator(".ap b")).toHaveText("3/3");
   for (const status of ["resolved", "abandoned", "missing"] as const) {
     if (status === "missing") {
       delete state.incidents["the-chains"];

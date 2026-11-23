@@ -5,8 +5,10 @@ import { newGame as fresh } from "../core/Simulation";
 import { type GameState, player, cash } from "../core/GameState";
 import {
   receivePhysical,
+  addPhysical,
   gain,
   inventoryOf,
+  syncCarried,
   capacityOf,
   canFit,
   usedLoad,
@@ -307,39 +309,23 @@ describe("GOAL 012 dual capacity and physical inventory", () => {
     expect(s.residences![a.id].safe.slots[0].quantity).toBe(2);
     expect(deserialize(serialize(s))).toEqual(s);
   });
-  for (const version of [8, 9, 10] as const)
-    it(`migrates v${version} over slot/load limits exactly; overflow is inert and recoverable`, () => {
-      const s = base();
-      s.version = version;
-      const l = stock(s, 20);
-      l.remaining = l.received = 55;
-      l.expectedGross = 1375;
-      player(s).possessions = Array(15).fill("music");
-      player(s).equipment = { owned: ["arp"], equipped: "arp" };
-      delete s.inventory;
-      delete s.residences;
-      for (const c of Object.values(s.characters)) delete c.inventory;
-      let n = deserialize(serialize(s));
-      expect(n.version).toBe(12);
-      expect(n.characters.player.equipment!.equipped).toBe("arp");
-      expect(usedLoad(inventoryOf(n))).toBeLessThanOrEqual(20);
-      const overflow = n.inventory!.overflow.player;
-      expect(
-        overflow
-          .filter((x) => x.kind === "merchandise")
-          .reduce((q, x) => q + x.quantity, 0) +
-          carriedLotQuantity(n, n.playerId, l.id),
-      ).toBe(55);
-      expect(saleLot(n)).toBeUndefined();
-      expect(deserialize(serialize(n))).toEqual(n);
-      const a = RESIDENCES[0];
-      at(n, a.id);
-      n = ok(buyProperty(n, a.id));
-      const goods = overflow.find((x) => x.kind === "merchandise")!;
-      n = ok(claimOverflow(n, n.playerId, goods.id, 10, a.id));
-      expect(n.residences![a.id].safe.slots[0].quantity).toBe(10);
-      expect(deserialize(serialize(n))).toEqual(n);
-    });
+  it("keeps overflow merchandise inert and allows recovery directly to a safe", () => {
+    let s = base();
+    const lot = stock(s, 20);
+    lot.remaining = lot.received = 40;
+    lot.expectedGross = 1000;
+    const overflow = { slots: [] as ReturnType<typeof inventoryOf>["slots"] };
+    addPhysical(s, overflow, gain("nightgoods", 20, lot.id, lot.id));
+    s.inventory!.overflow.player = overflow.slots;
+    s = deserialize(serialize(s));
+    expect(carriedLotQuantity(s, s.playerId, lot.id)).toBe(20);
+    const a = RESIDENCES[0];
+    at(s, a.id);
+    s = ok(buyProperty(s, a.id));
+    s = ok(claimOverflow(s, s.playerId, overflow.slots[0].id, 10, a.id));
+    expect(s.residences![a.id].safe.slots[0].quantity).toBe(10);
+    expect(deserialize(serialize(s))).toEqual(s);
+  });
   it("leaves a full-capacity tutorial gift pending and grants it exactly once after space is freed", () => {
     let s = fresh("Tutorial", "south");
     s.day = 3;
@@ -540,16 +526,13 @@ describe("gain retries and robbery preparation", () => {
     expect(s.robberies!.items.gloves).toBe(0);
     expect(deserialize(serialize(s))).toEqual(s);
   });
-  it("migrates excess distinct lots by slots even when load remains, and retrieves only fitting portions", () => {
+  it("blocks claiming overflow when all carry slots are used even if load remains", () => {
     const s = base();
     for (let i = 0; i < 12; i++) stock(s, 1);
-    const raw = JSON.parse(serialize(s));
-    raw.version = raw.state.version = 10;
-    for (let i = 0; i < 3; i++) {
-      const l = { ...raw.state.street.lots[0], id: `old-extra-${i}` };
-      raw.state.street.lots.push(l);
-    }
-    const n = deserialize(JSON.stringify(raw));
+    const overflow = { slots: [] as ReturnType<typeof inventoryOf>["slots"] };
+    for (let i = 0; i < 3; i++) addPhysical(s, overflow, gain("smokes", 1, `overflow-${i}`));
+    s.inventory!.overflow.player = overflow.slots;
+    const n = deserialize(serialize(s));
     expect(capacityOf(inventoryOf(n))).toMatchObject({
       usedSlots: 12,
       usedLoad: 12,
@@ -613,15 +596,15 @@ describe("stored equipment and migrated prep", () => {
     expect(equipmentBonus(player(s)).attack).toBe(2);
     expect(deserialize(serialize(s))).toEqual(s);
   });
-  it("migrates prep beyond load to inert overflow, preserving its purchase ledger and exact recovery", () => {
+  it("keeps prep in overflow inert until there is room to claim it", () => {
     let s = base();
     at(s, "south.food-mart");
     s = purchasePrep(s, "gloves", "south.food-mart");
-    const lot = stock(s, 19);
-    lot.remaining = lot.received = 20;
-    lot.expectedGross = 500;
-    player(s).possessions = []; // v10 stored prep only in robberies.items, not possessions
-    s.version = 10;
+    const inv = inventoryOf(s);
+    const prepIndex = inv.slots.findIndex((x) => x.itemId === "gloves");
+    s.inventory!.overflow.player = inv.slots.splice(prepIndex, 1);
+    syncCarried(player(s));
+    stock(s, 20);
     s = deserialize(serialize(s));
     expect(s.robberies!.items.gloves).toBe(1);
     expect(inventoryOf(s).slots.some((x) => x.itemId === "gloves")).toBe(false);

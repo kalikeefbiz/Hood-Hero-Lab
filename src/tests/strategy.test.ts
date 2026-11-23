@@ -132,7 +132,7 @@ describe("condition-driven factions and player politics", () => {
     const r = politicalAction(s, "community", "south");
     expect(r.error).toBeNull();
     expect(player(r.state).wallet.clean).toBe(100);
-    expect(r.state.ap).toBe(1);
+    expect(r.state.ap).toBe(2);
     expect(r.state.zones.south.support).toBeGreaterThan(s.zones.south.support);
     expect(politicalError(r.state, "community", "south")).toContain("day");
     expect(politicalError(s, "support", "south")).toContain("part of an organization");

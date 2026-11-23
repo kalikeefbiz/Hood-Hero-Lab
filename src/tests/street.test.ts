@@ -105,7 +105,7 @@ describe("complete inventory economy", () => {
     expect(s.street.lots[0].collected).toBe(0);
     s = act(s, "crime");
     expect(s.street.transactions).toHaveLength(1);
-    expect(s.ap).toBe(0);
+    expect(s.ap).toBe(1);
   });
   it("loss never erases debt, default happens once, and late repayment repairs some trust without erasing the broken word", () => {
     let chosen: GameState | undefined;

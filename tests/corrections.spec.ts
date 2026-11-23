@@ -1,5 +1,5 @@
 import { newGame as legacyGame } from "../src/tests/legacyGame";
-import { SAVE_KEY, serialize } from "../src/persistence/SaveSystem";
+import { AUTO_KEY, SAVE_KEY, serialize } from "../src/persistence/SaveSystem";
 import { openJournal } from "./journal";
 import { test, expect, type Page } from "@playwright/test";
 import {
@@ -12,7 +12,7 @@ import {
   storyline,
   storyAction,
 } from "./helpers";
-const key = "blackhouse.hoodhero-lab.v1.auto";
+const key = AUTO_KEY;
 const state = (page: Page) =>
   page.evaluate((k) => JSON.parse(localStorage.getItem(k)!).state, key);
 async function nav(page: Page, name: string) {
@@ -111,7 +111,7 @@ test("Actions separate Streets, Honest and Connects; completed reach-out returns
   ).toBeVisible();
   await shot(page, ".person-card", "03-connects");
   await clickAction(page, "contact");
-  expect((await state(page)).ap).toBe(1);
+  expect((await state(page)).ap).toBe(2);
   await expect(page.locator(".action-feedback")).toContainText(/getting closer|honest living/);
   await connects(page, "mega");
   await clickAction(page, "contact");
@@ -132,7 +132,7 @@ test("known suspects and leaders need real introductions; access and inventory s
   page,
 }) => {
   test.setTimeout(180000);
-  // This historical contact/economy probe resumes a genuine migrated v9 run.
+  // This contact/economy probe resumes a run with onboarding gates bypassed.
   // The full fresh tutorial → Rio → stock/robbery route is in street-life.spec.ts.
   await startHistorical(page, "rio");
   await nav(page, "People");

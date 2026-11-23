@@ -1,83 +1,15 @@
 import type { GameState } from "../core/GameState";
-import {
-  ITEM_DEFINITIONS as D,
-  type PhysicalItemId,
-} from "../content/inventory";
-import {
-  inventoryOf,
-  capacityOf,
-  gain,
-  canFit,
-  addPhysical,
-  newInventoryState,
-  syncCarried,
-  type ItemGain,
-  type ItemStack,
-} from "../systems/Inventory";
+import { ITEM_DEFINITIONS as D } from "../content/inventory";
+import { capacityOf, syncCarried, type ItemStack } from "../systems/Inventory";
 import { RESIDENCES } from "../systems/Residences";
-/** Explicit v8-v10 -> v11 migration. Only migration may create legacy overflow. */
-export function migrateInventory(s: GameState) {
-  s.inventory = newInventoryState();
-  s.residences = {};
-  for (const c of Object.values(s.characters)) {
-    const equipped = c.equipment?.equipped ?? null;
-    const equipment = [...(c.equipment?.owned ?? [])].sort(
-      (a, b) => Number(b === equipped) - Number(a === equipped),
-    );
-    const possessions = [...c.possessions];
-    c.inventory = { slots: [] };
-    const items: ItemGain[] = [
-      ...equipment.map((id) => gain(id, 1, "legacy-equipment")),
-      ...possessions.map((id) => {
-        if (!(id in D))
-          throw new Error(
-            `Unknown legacy item: ${id}. Original save has not been changed.`,
-          );
-        return gain(id as PhysicalItemId, 1, "legacy-possession");
-      }),
-      ...s.street.lots
-        .filter((l) => l.owner === c.id && l.remaining > 0)
-        .map((l) =>
-          gain(
-            l.category as PhysicalItemId,
-            l.remaining,
-            l.sourceLotId ?? l.id,
-            l.id,
-          ),
-        ),
-      ...(c.id === s.playerId
-        ? Object.entries(s.robberies?.items ?? {})
-            .filter(([, q]) => q > 0)
-            .map(([id, q]) =>
-              gain(id as PhysicalItemId, q, "legacy-preparation"),
-            )
-        : []),
-    ];
-    for (const item of items) {
-      // Unit-wise placement deliberately keeps the largest fitting portion of a stack.
-      let overflow = 0;
-      for (let i = 0; i < item.quantity; i++) {
-        const one = { ...item, quantity: 1 };
-        if (canFit(c.inventory, one, c.id === s.playerId ? "player" : "member"))
-          overflow++;
-        else addPhysical(s, c.inventory, one);
-      }
-      if (overflow) {
-        const inv = { slots: (s.inventory.overflow[c.id] ??= []) };
-        addPhysical(s, inv, { ...item, quantity: overflow });
-      }
-    }
-    syncCarried(c);
-  }
-  s.version = 11;
-}
+
 export function validateInventory(s: GameState) {
   if (
     !s.inventory ||
     !s.residences ||
     Object.values(s.characters).some((c) => !c.inventory)
   )
-    throw new Error("Missing v11 physical inventory.");
+    throw new Error("Missing physical inventory.");
   const all: { owner: string; stack: ItemStack }[] = [];
   function check(
     owner: string,

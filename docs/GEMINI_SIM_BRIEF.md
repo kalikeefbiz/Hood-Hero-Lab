@@ -8,7 +8,7 @@ Only `src/sim/**`, `src/render/AvatarAdapter.ts`, tests for them, and a short do
 ## Fix before it can merge
 1. **Use the real map.** Generate nodes from `src/strip/cityMap.ts` by import or script. Do not hard-code coordinates. Homes use the ids `res-home-01..16` (not `house_dark_n_*`); places use `locationId`.
 2. **Use the real ids.** Factions are `angels | backstreet | blocks | blips | muds` (`src/core/GameState.ts`), not `blocc_boys`. Characters use canonical ids (`quanny`). Mr. Lewis and every other canonical person come from the engine's character records.
-3. **One clock.** The engine counts days. Your sim owns only time of day within the engine's current day, and takes the day from the engine. Don't keep a second `dayCount`.
+3. **One clock.** Gameplay uses the engine day and civil minute for schedule lookup. The independent time-of-day input is for the standalone preview. See the [V3 integration contract](WORLD_CLOCK_V3.md#claude-and-gemini-integration).
 4. **Relationships stay in the engine** (`src/systems/Relationships.ts`, `NPCDecisionAI.ts`, `StreetLife.ts`, `src/board/presence.ts`). Read them through a small adapter and write changes back through it. Your matrix may exist only as a cache of those values. If two systems disagree about who likes whom, the game breaks; one source of truth.
 5. **Saves:** put your snapshot inside the existing save slot via the persistence layer (ask Codex for the hook), versioned, with a test that an old save loads with no sim data.
 6. **Determinism:** seeded random only, no `Date.now()` or `Math.random()` in `src/sim/**`.

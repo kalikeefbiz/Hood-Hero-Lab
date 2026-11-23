@@ -1,53 +1,37 @@
 import { BALANCE } from "../content/balance";
-import { advanceIncident, raiseIncidentDemand } from "../systems/Incidents";
-import { evaluatePromises, incidentDueDay } from "../systems/Commitments";
-import { syncEncounters } from "../systems/EncounterLifecycle";
-import { ROBBERY_BALANCE } from "../content/robberyCareer";
+import { CYCLE_MS } from "../content/worldClock";
 import { validateRobberyCareer } from "../systems/RobberyCareer";
-import {
-  robberyCareerSchema,
-  newRobberyCareer,
-} from "../systems/RobberyCareerState";
+import { robberyCareerSchema } from "../systems/RobberyCareerState";
 import {
   inventorySchema,
   inventoryStateSchema,
 } from "../systems/InventoryTypes";
 import { residenceSchema } from "../systems/Residences";
-import { migrateInventory, validateInventory } from "./InventoryMigration";
-import { streetLifeSchema, newStreetLife } from "../systems/StreetLifeState";
+import { validateInventory } from "./InventoryValidation";
+import { streetLifeSchema } from "../systems/StreetLifeState";
 import {
   robberyStateSchema,
   robberySessionSchema,
   validateRobberyReferences,
 } from "../systems/Robbery";
-import { residents } from "../content/characters";
 import { skillProgressSchema, skillsOf } from "../systems/Skills";
 import { equipmentSchema, equipmentOf } from "../systems/Equipment";
 import {
   streetSessionSchema,
   validateSessionReferences,
 } from "../systems/StreetSessions";
-import {
-  change,
-  relationship as relationshipOf,
-} from "../systems/Relationships";
 import { validateConsignments } from "../systems/Consignment";
 import { STREET_BALANCE } from "../content/street";
-import {
-  quannySchema,
-  newQuannyState,
-  QUANNY_HOME,
-} from "../systems/QuannyState";
-import { canonicalCharacters } from "../content/characters";
+import { quannySchema } from "../systems/QuannyState";
 import { validateQuanny } from "../systems/Quanny";
-import { dangerSchema, newDangerState } from "../systems/DangerState";
+import { dangerSchema } from "../systems/DangerState";
 import { validateDangerReferences } from "../systems/Danger";
 import { strategicSchema } from "./StrategicSchema";
 import { streetSchema } from "./StreetSchema";
 import { z } from "zod";
 import { JOBS } from "../content/jobs";
 import { ENCOUNTERS } from "../content/encounters";
-import type { GameState } from "../core/GameState";
+import { GAME_SAVE_VERSION, type GameState } from "../core/GameState";
 const id = z.string().min(1),
   n = z.number().finite(),
   nonnegative = n.nonnegative(),
@@ -147,27 +131,23 @@ const presenceSchema = z.object({
   }),
 });
 const schema = z.object({
-  robberyCareer: robberyCareerSchema.optional(),
-  inventory: inventoryStateSchema.optional(),
-  residences: record(residenceSchema).optional(),
+  robberyCareer: robberyCareerSchema,
+  inventory: inventoryStateSchema,
+  residences: record(residenceSchema),
   presence: presenceSchema.optional(),
-  quanny: quannySchema.default(newQuannyState),
-  danger: dangerSchema.default(() => newDangerState()),
-  version: z.union([
-    z.literal(8),
-    z.literal(9),
-    z.literal(10),
-    z.literal(11),
-    z.literal(12),
-  ]),
+  quanny: quannySchema,
+  danger: dangerSchema,
+  version: z.literal(GAME_SAVE_VERSION),
   activeSession: streetSessionSchema.optional(),
-  streetLife: streetLifeSchema.optional(),
+  streetLife: streetLifeSchema,
   robberies: robberyStateSchema.optional(),
   activeRobbery: robberySessionSchema.optional(),
   street: streetSchema,
   strategic: strategicSchema,
   day: integer.min(1),
-  ap: integer.max(2),
+  ap: integer.max(BALANCE.dailyAP),
+  cycleElapsedMs: nonnegative.lt(CYCLE_MS),
+  skipEndDayWarning: z.boolean(),
   rng: integer.max(4294967295),
   nextId: integer.min(1),
   playerId: id,
@@ -449,36 +429,9 @@ const schema = z.object({
 // The /next/ preview build sets VITE_SAVE_SUFFIX so it never reads or
 // overwrites the main Lab's saves.
 export const SAVE_KEY =
-  "blackhouse.hoodhero-lab.v1" +
+  "blackhouse.hoodhero-lab.v3" +
   ((import.meta.env?.VITE_SAVE_SUFFIX as string | undefined) ?? "");
 export const AUTO_KEY = SAVE_KEY + ".auto";
-const BASE_KEY = "blackhouse.hoodhero-lab.v1";
-const ADOPTED_KEY = BASE_KEY + ".adopted-next";
-/**
- * The bigger city became the official Lab build on 2026-11-13 and the /next/
- * preview was retired. Its campaign lived in the ".next" slots on the same
- * origin. The first time the official build runs, that campaign moves into
- * the main slots; any small-map campaign already there is kept, untouched,
- * under ".smallmap". Runs once, and never on a build with its own suffix.
- */
-export function adoptPreviewSaves(storage: Storage) {
-  if (SAVE_KEY !== BASE_KEY || storage.getItem(ADOPTED_KEY)) return false;
-  const pairs = [
-    [BASE_KEY, BASE_KEY + ".next"],
-    [BASE_KEY + ".auto", BASE_KEY + ".next.auto"],
-  ] as const;
-  const found = pairs.some(([, next]) => storage.getItem(next));
-  if (found)
-    for (const [main, next] of pairs) {
-      const old = storage.getItem(main),
-        preview = storage.getItem(next);
-      if (old) storage.setItem(main.replace(BASE_KEY, BASE_KEY + ".smallmap"), old);
-      if (preview) storage.setItem(main, preview);
-      else storage.removeItem(main);
-    }
-  storage.setItem(ADOPTED_KEY, new Date().toISOString());
-  return found;
-}
 export function serialize(s: GameState): string {
   return JSON.stringify({ format: "syndicate", version: s.version, state: s });
 }
@@ -494,54 +447,17 @@ export function deserialize(raw: string): GameState {
   const envelope = z
     .object({
       format: z.literal("syndicate"),
-      version: z.union([
-        z.literal(8),
-        z.literal(9),
-        z.literal(10),
-        z.literal(11),
-        z.literal(12),
-      ]),
+      version: z.literal(GAME_SAVE_VERSION),
       state: schema,
     })
     .safeParse(parsed);
   if (!envelope.success)
     throw new Error(
-      "Incompatible or damaged save. Expected Hood Hero save version 8, 9, 10, 11 or 12. Start a new test run from the new game menu.",
+      `Incompatible or damaged save. Expected Hood Hero Lab save version ${GAME_SAVE_VERSION}. Start a new test run from the new game menu.`,
     );
   const s: GameState = envelope.data.state;
-  if (s.version === 8) {
-    for (const e of s.events) {
-      e.text = e.text.replace(/night goods/gi, "Pink Magic");
-      if (e.title) e.title = e.title.replace(/night goods/gi, "Pink Magic");
-    }
-    for (const c of Object.values(s.characters))
-      for (const m of c.memories)
-        m.meaning = m.meaning.replace(/night goods/gi, "Pink Magic");
-    for (const a of s.assignments)
-      if (a.outcome)
-        a.outcome = a.outcome.replace(/night goods/gi, "Pink Magic");
-    for (const l of s.ledger)
-      l.reason = l.reason.replace(/night goods/gi, "Pink Magic");
-  }
-  if (s.version >= 10 && !s.streetLife)
-    throw new Error("Missing onboarding state.");
-  s.streetLife ??= newStreetLife(true);
-  const needsInventoryMigration = s.version < 11;
-  s.characters["contact-angels"] ??= residents().find(
-    (c) => c.id === "contact-angels",
-  )!;
-  // Only unstarted legacy leads adopt the new rules. In-flight sessions keep their saved engine.
-  if (s.version < 12)
-    for (const j of s.robberies?.jobs ?? []) {
-      if (j.status === "offered" && !j.targetId) {
-        if (j.kind === "home" && j.location === "reservoir.boarded-house")
-          j.targetId = "home.reservoir.1";
-        else if (j.kind === "strong-arm" && j.location === "rio.courtyard")
-          j.targetId = "street.rio";
-      }
-    }
   validateRobberyReferences(s);
-  const life = s.streetLife;
+  const life = envelope.data.state.streetLife;
   if (
     [life.giftLot, life.starterLot].some(
       (id) =>
@@ -560,41 +476,6 @@ export function deserialize(raw: string): GameState {
     (life.aftermathEvent && !s.events.some((e) => e.id === life.aftermathEvent))
   )
     throw new Error("Invalid street-life records.");
-  const addQuanny = !s.characters.quanny;
-  // Additive v8 migration: older Lab saves retain every existing character and record.
-  for (const c of canonicalCharacters().filter((c) =>
-    ["quanny", "mr-lewis"].includes(c.id),
-  ))
-    s.characters[c.id] ??= c;
-  if (addQuanny) {
-    const q = s.characters.quanny;
-    q.known = [
-      "mega",
-      ...Object.values(s.characters)
-        .filter(
-          (c) => c.id !== q.id && c.id !== s.playerId && c.home === q.home,
-        )
-        .map((c) => c.id),
-    ];
-    q.connections = q.known.filter((id) => id !== "mega");
-    for (const id of q.connections) {
-      relationshipOf(q, id);
-      change(q, id, {
-        trust: s.characters[id].affiliation === q.affiliation ? 27 : 8,
-        respect: s.characters[id].influence / 5,
-      });
-    }
-    relationshipOf(q, "mega").respect = 35;
-  }
-  if (
-    s.quanny.met &&
-    !s.quanny.knownLocation &&
-    (s.quanny.business === "open" ||
-      s.street.agreements.some(
-        (a) => a.debtor === "quanny" && a.supplier === s.playerId,
-      ))
-  )
-    s.quanny.knownLocation = QUANNY_HOME;
   validateDangerReferences(s);
   validateQuanny(s);
   for (const c of Object.values(s.characters)) {
@@ -606,23 +487,7 @@ export function deserialize(raw: string): GameState {
     )
       throw new Error("Invalid skill award records.");
   }
-  if (needsInventoryMigration) migrateInventory(s);
   validateInventory(s);
-  if (s.version < 12) {
-    s.robberyCareer = newRobberyCareer();
-    const a = s.activeRobbery,
-      j = s.robberies?.jobs.find((j) => j.id === a?.jobId);
-    if (a && a.status !== "ended" && j?.kind === "home") {
-      const zone = s.presence?.zone ?? "reservoir";
-      s.robberyCareer.cooldowns[`home:${zone}`] = {
-        day: a.day,
-        nextDay: a.day + ROBBERY_BALANCE.homeCooldown,
-        jobId: j.id,
-      };
-    }
-    s.version = 12;
-  }
-  if (!s.robberyCareer) throw new Error("Missing v12 robbery career state.");
   validateSessionReferences(s);
   validateConsignments(s);
   const exists = (id: string) => !!s.characters[id];
@@ -862,28 +727,6 @@ export function deserialize(raw: string): GameState {
   )
     throw new Error("Save contains missing or invalid world references.");
   validateRobberyCareer(s);
-  const chains = s.incidents["the-chains"];
-  if (chains?.status === "active" && chains.deadline > BALANCE.incidentDeadline) {
-    chains.deadline = BALANCE.incidentDeadline;
-    const dueDay = incidentDueDay(chains);
-    for (const commitment of s.commitments)
-      if (commitment.incidentId === chains.id && commitment.status === "pending")
-        commitment.dueDay = dueDay;
-    for (const encounter of s.encounters)
-      if (
-        encounter.incidentId === chains.id &&
-        (encounter.status === "active" || encounter.status === "pending")
-      )
-        encounter.dueDay = dueDay;
-    // Old timelines raised the price on Day 4. A Day 3 save missed the new tick.
-    if (s.day === chains.startedDay + 2 && !chains.leadershipAware)
-      raiseIncidentDemand(s, chains);
-    if (s.day >= dueDay) {
-      advanceIncident(s, chains);
-      evaluatePromises(s, false);
-      syncEncounters(s);
-    }
-  }
   return s;
 }
 export function saveGame(storage: Storage, s: GameState, key = SAVE_KEY) {

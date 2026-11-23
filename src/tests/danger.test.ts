@@ -351,7 +351,7 @@ describe("hospital recovery and persistence", () => {
     expect(after.day).toBe(6);
     expect(hospitalStay(after)).toBeUndefined();
     expect(player(after).status).toBe("active");
-    expect(after.ap).toBe(2);
+    expect(after.ap).toBe(3);
     expect(after.danger.injuries[0].discharged).toBe(true);
     expect(after.street.arrears).toBeGreaterThan(s.street.arrears);
     expect(after.characters["resident-downtown"].lastActionDay).toBe(6);
@@ -395,11 +395,11 @@ describe("hospital recovery and persistence", () => {
     expect(player(result.state).wallet).toEqual(player(s).wallet);
     expect(s.danger.scenes).toHaveLength(0);
   });
-  it("accepts prior version-8 Lab saves with empty danger state, rejects damaged references", () => {
+  it("requires danger state and rejects damaged references", () => {
     const s = newGame("Morgan", "south");
     const raw = JSON.parse(serialize(s));
     delete raw.state.danger;
-    expect(deserialize(JSON.stringify(raw)).danger.conflicts).toEqual([]);
+    expect(() => deserialize(JSON.stringify(raw))).toThrow(/damaged save/);
     beef(s, "mega");
     s.danger.conflicts[0].originEvent = "missing-event";
     expect(() => deserialize(serialize(s))).toThrow(/danger/);

@@ -408,7 +408,7 @@ describe("physical and transactional City sessions", () => {
     });
     expect(cash(player(s))).toBe(before);
     expect(saleLot(s)?.remaining).toBe(6);
-    expect(s.ap).toBe(0);
+    expect(s.ap).toBe(1);
   });
   it("real failed buyers gain 0.20 and real exposure; seeded runs include independent failures/successes", () => {
     const outcomes = new Set<string>();
@@ -478,7 +478,7 @@ describe("physical and transactional City sessions", () => {
     expect(skillsOf(player(s)).xp.leadership).toBe(100);
     expect(deserialize(serialize(s))).toEqual(s);
   });
-  it("permits a second paid session at this spot and a later cross-zone session, with no third AP", () => {
+  it("permits a second paid session at this spot and a later cross-zone session, with no AP after two paid sessions and supplier acquisition", () => {
     let s = ready();
     s.ap = 2;
     s = startStreetSession(s, "south.the-lot").state;
@@ -559,25 +559,7 @@ describe("physical and transactional City sessions", () => {
     player(s).rivalThreat = 80;
     expect(transactionChance(s)).toBeLessThan(quiet);
   });
-  it("migrates historical v8 state additively and rejects corrupt progress, equipment, or session references", () => {
-    const s = ready(),
-      old = JSON.parse(serialize(s));
-    old.version = 8;
-    old.state.version = 8;
-    for (const c of Object.values(old.state.characters) as Record<
-      string,
-      unknown
-    >[]) {
-      delete c.skillProgress;
-      delete c.equipment;
-    }
-    const loaded = deserialize(JSON.stringify(old));
-    expect(loaded.version).toBe(12);
-    for (const key of ["wallet", "possessions", "relationships"] as const)
-      expect(player(loaded)[key]).toEqual(player(s)[key]);
-    expect(loaded.presence).toEqual(s.presence);
-    expect(loaded.quanny).toEqual(s.quanny);
-    expect(loaded.crew).toEqual(s.crew);
+  it("rejects corrupt progress, equipment, or session references", () => {
     const bad = JSON.parse(serialize(started()));
     bad.state.activeSession.location = "south.rowhouses";
     expect(() => deserialize(JSON.stringify(bad))).toThrow();

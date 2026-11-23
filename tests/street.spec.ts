@@ -1,3 +1,4 @@
+import { AUTO_KEY } from "../src/persistence/SaveSystem";
 import { oneBuyer } from "../src/tests/sessionFixtures";
 import { buyerError } from "../src/systems/StreetEconomy";
 import { connects, honest, navigate, tapUntil } from "./helpers";
@@ -16,7 +17,7 @@ import {
 import { requestActivity, cooperation } from "../src/systems/CrewAgency";
 import { serialize } from "../src/persistence/SaveSystem";
 import type { GameState } from "../src/core/GameState";
-const key = "blackhouse.hoodhero-lab.v1.auto";
+const key = AUTO_KEY;
 test.beforeEach(async ({ page }) => {
   if (process.env.PLAYWRIGHT_EXPECTED_COMMIT) {
     const r = await page.request.get(
@@ -357,7 +358,7 @@ test("seeded real-play arrest serves every day and releases into continued gamep
   const summary = page.getByRole("button", { name: "Dismiss session summary" });
   if (await summary.count()) await summary.click();
   await page.locator('[data-action="gig"]').getByRole("button").click();
-  await expect.poll(async () => (await state(page)).ap, { timeout: 20000 }).toBe(1);
+  await expect.poll(async () => (await state(page)).ap, { timeout: 20000 }).toBe(2);
   await dismissEncounter(page);
   await nav(page, "Wallet");
   await page.getByText("Where your stuff went", { exact: true }).click();

@@ -1,5 +1,5 @@
 export const BALANCE = {
-  dailyAP: 2,
+  dailyAP: 3,
   startingCash: 125,
   livingCost: 18,
   buyback: 150,

@@ -166,7 +166,7 @@ test("action art loads near the viewport, and failed art preserves layout and ga
   expect(size!.width).toBe(loadedSize.width);
   await work.getByRole("button").click();
   await expect(page.locator(".cash-resource strong")).toHaveText("$203");
-  await expect(page.locator(".ap b")).toHaveText("0/2");
+  await expect(page.locator(".ap b")).toHaveText("1/3");
   await dismissEncounter(page);
   await honest(page, "work");
   await expect(work.getByRole("button")).toBeDisabled();
@@ -327,6 +327,6 @@ test("GOAL 002C mobile visual review and usable narrow controls", async ({
       (await page.locator(".bottom-nav").boundingBox())!.y,
     );
     await control.click();
-    await expect(page.locator(".ap b")).toHaveText("0/2");
+    await expect(page.locator(".ap b")).toHaveText("1/3");
   }
 });

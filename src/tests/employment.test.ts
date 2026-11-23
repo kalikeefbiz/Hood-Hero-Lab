@@ -56,7 +56,7 @@ describe("employment commitments and survival", () => {
         /shift to work today/,
       );
       s = hire(s);
-      expect(s.ap).toBe(1);
+      expect(s.ap).toBe(2);
       expect(s.progression.cleanEarned).toBe(0);
       expect(currentEmployment(s)?.hiredDay).toBe(1);
       expect(nextShift(s, currentEmployment(s)!)).toBe(2);
@@ -90,7 +90,7 @@ describe("employment commitments and survival", () => {
           before = player(s).wallet.clean,
           skill = player(s).skills.work;
         s = action(s, "work");
-        expect(s.ap).toBe(0);
+        expect(s.ap).toBe(1);
         expect(player(s).wallet.clean).toBe(before + wage);
         expect(player(s).skills.work).toBe(skill + 1);
         const snapshot = serialize(s);
@@ -211,10 +211,10 @@ describe("employment commitments and survival", () => {
     base = action(base, "gig");
     base = advanceDay(base);
     const working = action(base, "work");
-    expect(working.ap).toBe(0);
+    expect(working.ap).toBe(1);
     expect(
       performAction(working, {
-        type: "buyback",
+        type: "recover",
         actor: "player",
         incidentId: "the-chains",
       }).error,

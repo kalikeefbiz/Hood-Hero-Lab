@@ -72,7 +72,7 @@ test("phone gameplay: contact, lawful income, days, save and load", async ({
   await nav(page, "Actions");
   await page.getByRole("button", { name: "Honest", exact: true }).click();
   await action(page, "Pick up a gig");
-  await expect(page.locator(".ap b")).toHaveText("0/2");
+  await expect(page.locator(".ap b")).toHaveText("1/3");
   await endDay(page);
   await expect(page.locator(".day")).toHaveText("DAY 02");
   await page.getByLabel("Save game", { exact: true }).click();
@@ -82,7 +82,7 @@ test("phone gameplay: contact, lawful income, days, save and load", async ({
   await expect(page.locator(".day")).toHaveText("DAY 03");
   await page.getByLabel("Load game", { exact: true }).click();
   await expect(page.locator(".day")).toHaveText("DAY 02");
-  await expect(page.locator(".ap b")).toHaveText("2/2");
+  await expect(page.locator(".ap b")).toHaveText("3/3");
   await page.reload();
   await page.getByRole("button", { name: "Resume saved game" }).click();
   await dismissEncounter(page);
@@ -123,7 +123,7 @@ test("buyback resolves the incident and the ordinary loop remains playable", asy
     .toBe(1);
   let s = await state(page);
   expect(s.day).toBe(1);
-  expect(s.ap).toBe(1);
+  expect(s.ap).toBe(2);
   expect(s.characters.player.wallet).toEqual({ clean: 163, illicit: 0 });
   expect(s.presence?.location).toBe("downtown.docks");
   expect(s.streetLife?.workEvent).toBeTruthy();
@@ -131,16 +131,16 @@ test("buyback resolves the incident and the ordinary loop remains playable", asy
   await expect(gig.getByRole("button")).toBeDisabled();
 
   await endDay(page);
-  expect((await state(page)).ap).toBe(2);
+  expect((await state(page)).ap).toBe(3);
   await action(page, "Pick up a gig");
   await endDay(page);
   await action(page, "Reach out");
-  expect((await state(page)).ap).toBe(1);
+  expect((await state(page)).ap).toBe(2);
   await action(page, "Buy back · $150");
   await dismissEncounter(page);
   s = await state(page);
   expect(s.day).toBe(3);
-  expect(s.ap).toBe(0);
+  expect(s.ap).toBe(1);
   expect(s.incidents["the-chains"].resolution).toBe("buyback");
   expect(s.properties.chains.possession).toEqual({
     kind: "character",
@@ -163,7 +163,7 @@ test("buyback resolves the incident and the ordinary loop remains playable", asy
   await action(page, "Pick up a gig");
   await expect(page.getByRole("status")).toContainText("$38");
   s = await state(page);
-  expect(s.ap).toBe(1);
+  expect(s.ap).toBe(2);
   expect(s.presence?.location).toBe("downtown.docks");
   expect(s.progression.cleanEarned).toBe(114);
   await expect(page.locator('[data-action="gig"] button')).toBeDisabled();

@@ -62,7 +62,7 @@ describe("personal Set agency", () => {
   it("uses the existing encounter and commitment engines for accepted work and persistent outcomes", () => {
     let s = speak(fresh(), "flacco", "work");
     expect(currentEncounter(s)?.definitionId).not.toBe("crew-conversation");
-    expect(s.ap).toBe(1);
+    expect(s.ap).toBe(2);
     expect(cash(player(s))).toBe(113);
     expect(s.assignments[0].status).toBe("active");
     expect(s.commitments[0].kind).toBe("crew-activity");
@@ -89,7 +89,7 @@ describe("personal Set agency", () => {
     requestActivity(s, c.id, "work");
     expect(s.assignments[0].status).toBe("refused");
     expect(s.assignments[0].outcome).toContain("stretched too thin");
-    expect(s.ap).toBe(2);
+    expect(s.ap).toBe(3);
     expect(cash(player(s))).toBe(before);
     expect(c.relationships.player.trust).toBe(trust);
     expect(s.crew.members).toContain(c.id);
@@ -177,7 +177,7 @@ describe("personal Set agency", () => {
     const before = cash(player(s));
     requestActivity(s, "flacco", "work");
     expect(cash(player(s))).toBe(before);
-    expect(s.ap).toBe(1);
+    expect(s.ap).toBe(2);
     expect(s.assignments.filter((a) => a.status === "active")).toHaveLength(1);
     expect(
       performAction(s, { actor: "player", target: "flacco", type: "assign" })
@@ -267,7 +267,7 @@ describe("autonomous offers and extended seeded campaigns", () => {
           s = action(s, "gig");
         s = deserialize(serialize(advanceDay(s)));
         expect(s.end).toBeNull();
-        expect(s.ap).toBe(2);
+        expect(s.ap).toBe(3);
         expect(cash(player(s))).toBeGreaterThanOrEqual(0);
         expect(
           s.crewOffers.filter((o) => o.status === "pending").length,
@@ -338,7 +338,7 @@ describe("assignment boundaries and personal consequences", () => {
       const a = s.assignments[0];
       expect(a.status).toBe("resolved");
       outcomes.add(a.success!);
-      expect(s.ap).toBe(0);
+      expect(s.ap).toBe(1);
       expect(player(s).police).toBeGreaterThan(0);
       expect(s.characters[c.id].police).toBeGreaterThan(0);
       const t = s.street.transactions.filter(t=>t.partner===c.id).at(-1)!;
@@ -362,7 +362,7 @@ describe("assignment boundaries and personal consequences", () => {
     });
     expect(r.error).toBeNull();
     expect(r.state.assignments[0].status).toBe("refused");
-    expect(r.state.ap).toBe(2);
+    expect(r.state.ap).toBe(3);
     expect(r.state.characters.flacco.relationships.player.trust).toBe(
       s.characters.flacco.relationships.player.trust,
     );

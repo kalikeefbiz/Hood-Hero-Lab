@@ -7,7 +7,6 @@ import { performAction, validateAction } from "../core/ActionEngine";
 import { presenceOf } from "../board/presence";
 import { boardPeople } from "../board/people";
 import { locationById } from "../board/locations";
-import { newStreetLife } from "../systems/StreetLifeState";
 import {
   openingDecision,
   giveFlaccoStock,
@@ -337,18 +336,6 @@ describe("multi-lot transactions and compatibility", () => {
     expect(s.street.lots[0].remaining).toBe(6);
     expect(deserialize(serialize(s)).activeSession!.lotId).toBe(id);
   });
-  for (const version of [8, 9] as const)
-    it(`v${version} preserves inventory/debts and explicitly grandfathers onboarding`, () => {
-      let s = trained();
-      s.version = version;
-      delete s.streetLife;
-      const raw = serialize(s);
-      const n = deserialize(raw);
-      expect(n.streetLife).toEqual(newStreetLife(true));
-      expect(n.street.lots).toEqual(s.street.lots);
-      expect(n.quanny).toEqual(s.quanny);
-      expect(n.ap).toBe(s.ap);
-    });
   it("rejects corrupt tutorial and robbery data without changing original", () => {
     const s = trained();
     s.streetLife!.giftLot = "missing";

@@ -39,7 +39,7 @@ function info(s: GameState) {
 }
 function invariants(s: GameState) {
   expect(s.ap).toBeGreaterThanOrEqual(0);
-  expect(s.ap).toBeLessThanOrEqual(2);
+  expect(s.ap).toBeLessThanOrEqual(3);
   expect(Object.keys(s.factions)).toHaveLength(5);
   expect(new Set(s.crew.members).size).toBe(s.crew.members.length);
   expect(s.crew.members.length).toBeLessThanOrEqual(s.crew.capacity);
@@ -66,7 +66,7 @@ describe("world and canon", () => {
       expect(player(s).home).toBe(home);
       expect(player(s).affiliation).toBeNull();
       expect(cash(player(s))).toBe(125);
-      expect(s.ap).toBe(2);
+      expect(s.ap).toBe(3);
       expect(s.crew).toEqual({
         members: ["flacco"],
         capacity: 1,
@@ -151,19 +151,17 @@ describe("actions, economy, AP and persistence", () => {
     expect(player(s).wallet).toEqual({ clean: 0, illicit: 100 });
     expect(s.ledger.map((e) => e.provenance)).toEqual(["clean", "illicit"]);
   });
-  it("permits two 1AP actions, blocks overspending AP and restores daily AP", () => {
+  it("permits three 1 AP actions, blocks overspending and restores daily AP", () => {
     let s = doAction(fresh(), "gig");
+    expect(s.ap).toBe(2);
+    s = doAction(s, "rest");
     expect(s.ap).toBe(1);
-    expect(performAction(s, { actor: "player", type: "work" }).error).toMatch(
-      /AP/,
-    );
+    expect(performAction(s, { actor: "player", type: "work" }).error).toMatch(/AP/);
     s = doAction(s, "rest");
     expect(s.ap).toBe(0);
-    expect(performAction(s, { actor: "player", type: "gig" }).error).toMatch(
-      /AP/,
-    );
+    expect(performAction(s, { actor: "player", type: "gig" }).error).toMatch(/AP/);
     s = advanceDay(s);
-    expect(s.ap).toBe(2);
+    expect(s.ap).toBe(3);
     expect(s.day).toBe(2);
     expect(ACTIONS.work.ap).toBe(2);
   });
@@ -215,8 +213,8 @@ describe("actions, economy, AP and persistence", () => {
     expect(() => deserialize("invalid")).toThrow(/could not be read/);
     const raw = JSON.parse(serialize(s));
     raw.version = 99;
-    expect(() => deserialize(JSON.stringify(raw))).toThrow(/version 8/);
-    raw.version = 8;
+    expect(() => deserialize(JSON.stringify(raw))).toThrow(/version 13/);
+    raw.version = s.version;
     raw.state.characters.player.wallet.clean = -1;
     expect(() => deserialize(JSON.stringify(raw))).toThrow();
   });
@@ -298,7 +296,7 @@ describe("living simulation and personal Set", () => {
     ).toEqual(before.memories);
     s = advanceDay(s);
     s = doAction(s, "gig");
-    expect(s.ap).toBe(1);
+    expect(s.ap).toBe(2);
   });
   it("recruits an ordinary civilian through repeated trust building", () => {
     let s = fresh();
@@ -511,7 +509,7 @@ describe("regression checks for autonomous schedules and ordinary crew members",
     npc.relationships.player.trust = 60;
     player(s).influence = 6;
     s = advanceDay(s);
-    expect(s.ap).toBe(2);
+    expect(s.ap).toBe(3);
     expect(validateAction(s, { type: "gig", actor: npc.id })).toMatch(
       /busy right now/,
     );

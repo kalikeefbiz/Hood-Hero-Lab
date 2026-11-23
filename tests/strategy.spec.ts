@@ -2,7 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { newGame } from "../src/core/Simulation";
 import { advanceDay } from "../src/core/TimeSystem";
 import { performAction } from "../src/core/ActionEngine";
-import { serialize, SAVE_KEY } from "../src/persistence/SaveSystem";
+import { serialize, SAVE_KEY, AUTO_KEY } from "../src/persistence/SaveSystem";
 import { underlordReady, consolidate } from "../src/tests/strategicFixtures";
 import { businessAction } from "../src/systems/Businesses";
 import { politicalAction } from "../src/systems/Politics";
@@ -73,9 +73,8 @@ test("actual local investment, contested map, autonomous decisions and persisted
   await dismissEncounter(page);
   await shot(page, ".board-stage", "01-dynamic-map");
   const raw = await page.evaluate(
-    () =>
-      JSON.parse(localStorage.getItem("blackhouse.hoodhero-lab.v1.auto")!)
-        .state,
+    (key) => JSON.parse(localStorage.getItem(key)!).state,
+    AUTO_KEY,
   );
   expect(
     Object.values(raw.strategic.strategies).some((x: any) => x.history.length),

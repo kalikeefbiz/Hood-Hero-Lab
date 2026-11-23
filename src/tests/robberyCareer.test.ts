@@ -339,21 +339,6 @@ describe("GOAL013 City robberies", () => {
     expect(s.danger.conflicts.at(-1)?.scope).toBe("personal");
     expect(typeof answerExtortion(s, d.id, true)).toBe("string");
   });
-  it.each([8, 9, 10, 11] as const)(
-    "explicit additive v%s migration preserves cash, Chains and inventories",
-    (version) => {
-      const s = base();
-      s.version = version;
-      const raw = JSON.parse(serialize(s));
-      delete raw.state.robberyCareer;
-      raw.version = version;
-      const n = deserialize(JSON.stringify(raw));
-      expect(n.version).toBe(12);
-      expect(n.robberyCareer!.claims).toEqual([]);
-      expect(n.characters.player.wallet).toEqual(s.characters.player.wallet);
-      expect(n.incidents).toEqual(s.incidents);
-    },
-  );
   it("interruption abandons selected loot rather than laundering it through background/day changes", () => {
     let s = base();
     s = begin(shop(s));
@@ -519,7 +504,7 @@ it("a paid sell-back requires authored reconciliation; autonomous cooling cannot
   expect(beef.requiresReconciliation).toBe(true);
 });
 
-it("v11 active legacy home session preserves its pattern, spent prep, cash and cursor, while adopting the shared district lock", () => {
+it("an active home session reloads with the same pattern, prep, cash, cursor and recorded locks", () => {
   let s = base();
   ranks(s);
   person(s, "dizzy");
@@ -534,8 +519,6 @@ it("v11 active legacy home session preserves its pattern, spent prep, cash and c
   at(s, j.location);
   s = startRobbery(s, j.id).state;
   s = input(s, "patient");
-  s.version = 11;
-  delete s.robberyCareer;
   const inventory = structuredClone(s.characters.player.inventory),
     wallet = structuredClone(player(s).wallet),
     pattern = structuredClone(s.activeRobbery!.pattern);
@@ -544,9 +527,7 @@ it("v11 active legacy home session preserves its pattern, spent prep, cash and c
   expect(loaded.activeRobbery!.pattern).toEqual(pattern);
   expect(loaded.characters.player.inventory).toEqual(inventory);
   expect(player(loaded).wallet).toEqual(wallet);
-  expect(loaded.robberyCareer!.cooldowns["home:reservoir"].nextDay).toBe(
-    loaded.day + 5,
-  );
+  expect(loaded.robberyCareer!.cooldowns).toEqual(s.robberyCareer!.cooldowns);
   expect(loaded.robberyCareer!.property).toEqual({});
 });
 
@@ -615,22 +596,18 @@ it("splitting quantity loot cannot multiply its stored total value, pawn proceed
   expect(deserialize(serialize(s)).robberyCareer).toEqual(s.robberyCareer);
 });
 
-it("an unstarted v11 home lead preserves its legacy ID/location but adopts real crew rules on migration", () => {
+it("an unstarted home lead keeps its target, location and crew requirements after reload", () => {
   let s = base();
   ranks(s);
   person(s, "dizzy");
   s = ok(offerCareerLead(s, "dizzy", "home.reservoir.1"));
   const j = s.robberies!.jobs.at(-1)!;
-  delete j.targetId;
-  j.location = "reservoir.boarded-house";
   s = shop(s, "home");
   at(s, j.location);
-  s.version = 11;
-  delete s.robberyCareer;
   const loaded = deserialize(serialize(s));
   expect(loaded.robberies!.jobs[0]).toMatchObject({
     id: j.id,
-    location: "reservoir.boarded-house",
+    location: j.location,
     targetId: "home.reservoir.1",
   });
   expect(robberyStartError(loaded, j.id)).toMatch(/partner/);

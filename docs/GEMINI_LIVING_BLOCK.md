@@ -81,6 +81,11 @@ export interface NavMap {
 
 ## 3. Gameplay & Persistence Contract for Codex
 
+The [V3 integration contract](WORLD_CLOCK_V3.md#claude-and-gemini-integration)
+makes engine day and minute-of-day authoritative for gameplay. The independent
+preview minute counter below describes the existing standalone mode. Lab saves
+start fresh under schema 13.
+
 - **One Clock:** Engine `GameState.day` is authoritative. Call `sim.syncEngineDay(state.day)` whenever the engine advances the day. The sim only tracks `minuteOfDay` (`0..1440`) and sets `clock.dayWrapPending = true` at midnight without incrementing a second `dayCount`.
 - **Presence (`peopleHere`):** Read `sim.peopleHere(locationIdOrHomeId)` or `sim.peopleNear(x, z, radius)` to query which NPCs are physically at a door/home/point for interaction menus and encounters.
 - **Relationships:** Pass `createGameStateRelationshipAdapter(() => state, onDelta)` into `LivingBlockSim`. The sim caches read-only affinity scores and emits non-authoritative `RelationshipDelta` proposals; `src/systems/Relationships.ts` remains the sole writer.

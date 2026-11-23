@@ -1,0 +1,29 @@
+# World clock and 3 AP
+
+Lab campaigns previously started with 2 AP. The player advanced the calendar through End Day or an existing custody or recovery flow. The walkable Reservoir preview used a throwaway campaign and its own NPC time-of-day sample.
+
+## Engine rules
+
+- The engine now starts and normally refills at 3 AP. Existing injury, hospitalization and campaign-ending rules still apply. Activity costs are unchanged. A 1 AP activity and a 2 AP shift fit on the same day. Spending the last AP leaves movement and other free interactions available.
+- A gameplay day starts at 06:00 and ends at the next dawn. Civil midnight wraps the displayed time within that gameplay day. `src/content/worldClock.ts` configures 06:00–18:00 as daylight (five active real minutes) and 18:00–06:00 as night (seven). The engine previously had no civil-hour boundaries.
+- Natural rollover, manual End Day, custody/recovery and day commitments use the existing daily settlement. That includes attendance, expenses, incident deadlines, NPC economic decisions, session interruption and any new daily shifts. Multiple crossed dawns apply each settlement once, in order.
+- `ACTIONS` defines AP, in-world duration and `endsDay` independently. A shift takes four in-world hours and has `endsDay: false`. Other durations are authored in that catalog. Ongoing trapping and robbery use elapsed active play during playback. A duration can pass dawn through ordinary elapsed time. Only an explicit end-of-day commitment skips directly to dawn.
+- Reservoir location queries gate existing purchases, pawn service, applications, shifts and Lewis's delivery service on the configured daylight window. Doors, browsing, ordinary conversations and street work use their existing eligibility. The legacy board's manual lighting control is still a presentation control.
+- Save schema 13 uses `blackhouse.hoodhero-lab.v3` and its `.auto` slot, with the existing preview suffix where configured. It stores the day, cycle progress, remaining AP, warning preference and current engine records. Older Lab slots are ignored, including the retired preview slots. To start a fresh Lab campaign beyond the Chains opening, load the main game with `?playtest=open-city` and select **Enter Stixx City**.
+
+## Clock and travel integration
+
+`worldTime(state)` returns `{ day, minuteOfDay, isDaytime }`. `minuteOfDay` is fractional civil minutes from midnight in `[0, 1440)`. Read the snapshot after every engine command and whenever the active host advances time.
+
+`advanceActiveTime(state, elapsedMs)` consumes measured active wall-clock time regardless of movement or AP. The shared app calls it during City play, including idle exploration, and pauses it on hidden tabs, decision scenes and other app screens. A renderer should send elapsed foreground time before applying its frame-delta clamp. Clear the elapsed-time sample when pausing, resuming or switching campaigns. `advanceActiveTime` and `advanceWorldTime` support `{ inPlace: true }` for an exclusively owned simulation state. Default clock-only updates share world records. Use them as immutable snapshots.
+
+For train routes, after valid boarding, call `advanceWorldTime(state, route.hours * 60)` and pass the resulting state to the existing district arrival flow. A ride has no AP charge and can pass dusk, midnight or dawn. Keep the current campaign and persistent NPC state during the environment switch. Travel duration and environment routing belong to the route definition. This PR adds the duration API before routes are authored.
+
+## Claude and Gemini integration
+
+The shared app clock and headless Reservoir location API are wired in this PR. The walkable `strip.html` preview still needs its host clock and presentation hookup under Claude's review. It currently samples Gemini's standalone preview clock and keeps its campaign in memory.
+
+- **Claude.** In the walkable host, advance the engine state from raw foreground elapsed time before updating the living world. Read `worldTime(state)` for the clock display and lighting. Use the same state for arrival, queries and action results. Pause active time while a consequential decision is open. Keep the existing verified `peopleHere` contract and player controller.
+- **Gemini.** Add an authoritative snapshot input to the sim step. With that input supplied, use engine `day` and `minuteOfDay` for schedules at both active and off-view cadence. Disable the independent minute increment and midnight wait in this mode. Keep real frame time for moving and animating NPCs. After a time jump, reevaluate the current schedule slot and route from existing positions. Keep NPC history, presence, interrupts and behavioral state. The isolated simulator can keep its own development controls.
+- **Day commitments.** `executeTimedAction` checks current eligibility and AP before calling the engine resolver. A warning response has no side effects. The resolver charges AP and applies the actual game outcome, including an attempt that resolves as a failure. The wrapper then advances to dawn. A future vehicle-theft definition uses 2 AP and `endsDay: true` once that action has a real resolver and a mapped location.
+- **Warning presentation.** Location actions expose `timing` and an eligible action's `confirmation` model. For a day-ending command, display its title, AP cost, unused AP and the **Never show this warning again** checkbox. Use **Cancel** to dismiss with no changes, then pass **Proceed** as `"proceed"` or `"proceed-and-suppress"` with a fresh location/presence context. Show the warning even when the action uses exactly the available AP. Keep the checkbox inside its tap label and buttons accessible above iPhone safe areas. The engine stores suppression only after a resolved action. Claude's handset dialog and live end-to-end test are pending the first mapped day-ending activity.
