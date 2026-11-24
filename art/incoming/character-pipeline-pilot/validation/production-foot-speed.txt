@@ -15,4 +15,3 @@ height 1.780 m, feet at y -0.000
 Idle: 8.000 s, planted-foot speed 0.00 m/s
 Walk: 1.367 s, planted-foot speed 0.83 m/s
 Run: 0.800 s, planted-foot speed 1.64 m/s  (run reads ~16% low: ~1.95 m/s corrected)
-
