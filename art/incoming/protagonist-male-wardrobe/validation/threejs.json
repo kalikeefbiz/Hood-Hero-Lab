@@ -1,0 +1,81 @@
+{
+  "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+  "bodyTriangles": 23934,
+  "garments": {
+    "tee-white": {
+      "triangles": 2616,
+      "vertices": 1999,
+      "joints": 36,
+      "maxInfluences": 4,
+      "maxWeightError": 2.220446049250313e-16,
+      "baseColor": [
+        256,
+        256
+      ],
+      "normal": [
+        256,
+        256
+      ]
+    },
+    "jeans-denim-standard": {
+      "triangles": 3296,
+      "vertices": 3310,
+      "joints": 36,
+      "maxInfluences": 4,
+      "maxWeightError": 2.220446049250313e-16,
+      "baseColor": [
+        512,
+        512
+      ],
+      "normal": [
+        512,
+        512
+      ]
+    },
+    "court-sneakers-white": {
+      "triangles": 3960,
+      "vertices": 2886,
+      "joints": 36,
+      "maxInfluences": 2,
+      "maxWeightError": 0,
+      "baseColor": [
+        256,
+        256
+      ],
+      "normal": [
+        256,
+        256
+      ]
+    }
+  },
+  "clips": {
+    "Idle": {
+      "seconds": 8,
+      "maxSampledVertexMotionMeters": {
+        "tee-white": 0.04545,
+        "jeans-denim-standard": 0.022,
+        "court-sneakers-white": 0.02346
+      }
+    },
+    "Walk": {
+      "seconds": 1.2001953125,
+      "maxSampledVertexMotionMeters": {
+        "tee-white": 0.20059,
+        "jeans-denim-standard": 0.50323,
+        "court-sneakers-white": 0.60909
+      }
+    },
+    "Run": {
+      "seconds": 0.7333984375,
+      "maxSampledVertexMotionMeters": {
+        "tee-white": 0.29441,
+        "jeans-denim-standard": 0.83209,
+        "court-sneakers-white": 0.93538
+      }
+    }
+  },
+  "independentEquipAndRemove": true,
+  "visibleBodyTriangles": 9126,
+  "headTriangles": 6932,
+  "visibleTotalTriangles": 25930
+}

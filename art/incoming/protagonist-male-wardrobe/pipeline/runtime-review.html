@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Hood Hero starter outfit review</title>
+<style>
+  html,body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #363b42 }
+  canvas { display: block }
+</style>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { bindToBody, createWardrobe, findSkin } from './assemble.mjs';
+
+const defaultRoot = '/art/incoming/protagonist-male';
+const canonical = new URLSearchParams(location.search).get('canonical') ?? defaultRoot;
+const paths = {
+  'tee-white': '../models/tops/tee-white.glb',
+  'jeans-denim-standard': '../models/bottoms/jeans-denim-standard.glb',
+  'court-sneakers-white': '../models/footwear/court-sneakers-white.glb',
+};
+
+async function review() {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.AgXToneMapping;
+  document.body.append(renderer.domElement);
+  const ktx = new KTX2Loader().setTranscoderPath('/basis/').detectSupport(renderer);
+  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx);
+  const [bodyFile, headFile, complexion, masks] = await Promise.all([
+    fetch(`${canonical}/protagonist-male.glb`).then((response) => response.arrayBuffer()),
+    loader.loadAsync(`${canonical}/heads/face-01.glb`),
+    ktx.loadAsync(`${canonical}/complexions/complexion-01.ktx2`),
+    fetch('../body-masks.json').then((response) => response.json()),
+  ]);
+  const digest = await crypto.subtle.digest('SHA-256', bodyFile);
+  const hash = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+  const canonicalGLTF = await loader.parseAsync(bodyFile, '');
+  const body = findSkin(canonicalGLTF.scene, 'Body');
+  const head = bindToBody(body, findSkin(headFile.scene));
+  complexion.colorSpace = THREE.SRGBColorSpace;
+  complexion.flipY = false;
+  body.material.map = complexion;
+  const wardrobe = createWardrobe(body, masks, hash);
+  const base = body.geometry;
+  const bodyTriangles = base.index.count / 3;
+  const loaded = await Promise.all(Object.entries(paths).map(async ([id, path]) => [id, await loader.loadAsync(path)]));
+  const meshes = new Map();
+  const report = { bodySha256: hash, bodyTriangles, garments: {}, clips: {} };
+  for (const [id, gltf] of loaded) {
+    if (gltf.animations.length !== 0) throw new Error(`${id} duplicates the animation library`);
+    const mesh = wardrobe.equip(id, gltf);
+    meshes.set(id, mesh);
+    const position = mesh.geometry.getAttribute('position');
+    if (!mesh.material.map?.isCompressedTexture || !mesh.material.normalMap?.isCompressedTexture) {
+      throw new Error(`${id} textures did not decode through KTX2Loader`);
+    }
+    const weight = mesh.geometry.getAttribute('skinWeight');
+    let maxWeightError = 0;
+    let maxInfluences = 0;
+    for (let i = 0; i < weight.count; i++) {
+      const weights = [weight.getX(i), weight.getY(i), weight.getZ(i), weight.getW(i)];
+      maxWeightError = Math.max(maxWeightError, Math.abs(weights.reduce((a, b) => a + b, 0) - 1));
+      maxInfluences = Math.max(maxInfluences, weights.filter((w) => w > 0).length);
+    }
+    if (maxWeightError > .0001 || !maxInfluences) throw new Error(`Invalid skin weights: ${id}`);
+    report.garments[id] = {
+      triangles: mesh.geometry.index.count/3,
+      vertices: position.count,
+      joints: mesh.skeleton.bones.length,
+      maxInfluences, maxWeightError,
+      baseColor: [mesh.material.map.image.width, mesh.material.map.image.height],
+      normal: [mesh.material.normalMap.image.width, mesh.material.normalMap.image.height],
+    };
+  }
+
+  const expectedIndexCount = body.geometry.index.count;
+  for (const [id, gltf] of loaded) {
+    const slot = masks.wearables[id].slot;
+    const mesh = meshes.get(id);
+    wardrobe.remove(slot);
+    if (mesh.parent || body.geometry.index.count <= expectedIndexCount) throw new Error(`Removing ${id} failed`);
+    // The GLB scene no longer owns its mesh. Load it again as a real equip call would.
+    const replacement = await loader.loadAsync(paths[id]);
+    meshes.set(id, wardrobe.equip(id, replacement));
+    if (body.geometry.index.count !== expectedIndexCount) throw new Error(`Mask restore failed: ${id}`);
+  }
+  report.independentEquipAndRemove = true;
+  report.visibleBodyTriangles = body.geometry.index.count/3;
+  report.headTriangles = head.geometry.index.count/3;
+  report.visibleTotalTriangles = report.visibleBodyTriangles + report.headTriangles +
+    Object.values(report.garments).reduce((sum, item) => sum + item.triangles, 0);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color('#363b42');
+  scene.add(canonicalGLTF.scene, new THREE.HemisphereLight(0xe4eeff, 0xa59889, 2.1));
+  const key = new THREE.DirectionalLight(0xffeedf, 2.6);
+  key.position.set(-2, 4, 3);
+  const rim = new THREE.DirectionalLight(0xd6e7ff, 1.3);
+  rim.position.set(2, 3, -2);
+  scene.add(key, rim);
+  const camera = new THREE.PerspectiveCamera(31, innerWidth/innerHeight, .05, 15);
+  const mixer = new THREE.AnimationMixer(canonicalGLTF.scene);
+  function sample(clip, time) {
+    mixer.stopAllAction();
+    const animation = canonicalGLTF.animations.find((item) => item.name === clip);
+    mixer.clipAction(animation).play();
+    mixer.setTime(time);
+    scene.updateMatrixWorld(true);
+  }
+  for (const clip of ['Idle', 'Walk', 'Run']) {
+    const animation = canonicalGLTF.animations.find((item) => item.name === clip);
+    const maxMotion = {};
+    for (const [id, mesh] of meshes) {
+      const n = mesh.geometry.attributes.position.count;
+      let max = 0;
+      sample(clip, 0);
+      const indices = Array.from({ length: 16 }, (_, i) => Math.floor(i * (n - 1) / 15));
+      const start = indices.map((i) => mesh.getVertexPosition(i, new THREE.Vector3()));
+      for (let step = 1; step <= 8; step++) {
+        sample(clip, animation.duration * step / 9);
+        for (let k = 0; k < indices.length; k++) {
+          const point = mesh.getVertexPosition(indices[k], new THREE.Vector3());
+          if (!Number.isFinite(point.lengthSq())) throw new Error(`Nonfinite skinning: ${id}`);
+          max = Math.max(max, point.distanceTo(start[k]));
+        }
+      }
+      if (!(max > .001)) throw new Error(`${clip} did not animate ${id}`);
+      maxMotion[id] = +max.toFixed(5);
+    }
+    report.clips[clip] = { seconds: animation.duration, maxSampledVertexMotionMeters: maxMotion };
+  }
+  window.outfitFrame = (clip, time, angle, focus='body') => {
+    sample(clip, time);
+    const height = focus==='shoes' ? .16 : focus==='tee' ? 1.28 : .88;
+    const distance = focus==='shoes' ? 1.18 : focus==='tee' ? 1.72 : 3.87;
+    camera.position.set(Math.sin(angle)*distance, height + .31, Math.cos(angle)*distance);
+    camera.lookAt(0, height, 0);
+    renderer.render(scene, camera);
+  };
+  outfitFrame('Idle', 2, .20);
+  window.outfitReport = report;
+}
+review().catch((error) => { window.outfitError = error.stack; console.error(error); });
+</script>
