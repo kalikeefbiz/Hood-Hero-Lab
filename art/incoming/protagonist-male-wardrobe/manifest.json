@@ -1,0 +1,127 @@
+{
+  "id": "protagonist-male-wardrobe",
+  "approvedBy": "owner",
+  "heightM": 1.78,
+  "bindPose": "T",
+  "sourceArt": [
+    "art/source/hood-hero/protagonist/male/ref/tops-master.PNG",
+    "art/source/hood-hero/protagonist/male/ref/bottoms-master.PNG",
+    "art/source/hood-hero/protagonist/male/ref/footwear-master.PNG"
+  ],
+  "blender": "5.3.0",
+  "blenderSkillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
+  "meshyCredits": 0,
+  "bodyVersion": "protagonist-male-body-v1",
+  "skeletonVersion": "protagonist-male-rig-v1",
+  "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+  "source": "source/male-starter-outfit.blend",
+  "bodyMasks": "body-masks.json",
+  "modular": {
+    "wearables": {
+      "tee-white": {
+        "label": "Plain White T-Shirt",
+        "slot": "top",
+        "file": "models/tops/tee-white.glb",
+        "sourceArt": [
+          "ref/tee-white.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "tee-white",
+          "description": "Mask covered torso and upper-arm triangles. Keep the neck and a skin ring inside each cuff."
+        },
+        "materialVariantIds": [
+          "tee-stixx-black"
+        ],
+        "layerCompatibility": {
+          "validatedWith": [
+            "jeans-denim-standard"
+          ]
+        },
+        "knownClippingLimitations": "Extreme shoulder elevation can expose a small skin patch at the collar or sleeve root.",
+        "triangles": 2616,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 136948
+      },
+      "jeans-denim-standard": {
+        "label": "Standard Denim Jeans",
+        "slot": "bottom",
+        "file": "models/bottoms/jeans-denim-standard.glb",
+        "sourceArt": [
+          "ref/jeans-denim-standard.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "jeans-denim-standard",
+          "description": "Mask covered pelvis and leg triangles. Retain skin at the waist and cuffs."
+        },
+        "materialVariantIds": [],
+        "layerCompatibility": {
+          "validatedWith": [
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "Idle can show a small fingertip-through-cloth intersection at the outer hip. Deep stress crouches can compress the fabric behind the knees.",
+        "triangles": 3296,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 385728
+      },
+      "court-sneakers-white": {
+        "label": "White Low-Top Court Sneakers",
+        "slot": "footwear",
+        "file": "models/footwear/court-sneakers-white.glb",
+        "sourceArt": [
+          "ref/court-sneakers-white.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "court-sneakers-white",
+          "description": "Mask the covered foot and retain the skin ring at the padded collar."
+        },
+        "materialVariantIds": [
+          "court-sneakers-black"
+        ],
+        "layerCompatibility": {
+          "validatedWith": [
+            "jeans-denim-standard"
+          ]
+        },
+        "knownClippingLimitations": "A narrow ankle ring can become visible under the jean cuff during stride. The outsole sits 23 mm below the barefoot bind-pose ground plane.",
+        "triangles": 3960,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 144360
+      }
+    }
+  },
+  "starterOutfit": {
+    "top": "tee-white",
+    "bottom": "jeans-denim-standard",
+    "footwear": "court-sneakers-white",
+    "referenceHead": "face-01",
+    "referenceComplexion": "complexion-01",
+    "visibleTriangles": 25930,
+    "visibleBodyTriangles": 9126,
+    "garmentAssetBytes": 667036,
+    "equippedAssetBytes": 1692091,
+    "estimatedMaterialDraws": 5
+  }
+}
