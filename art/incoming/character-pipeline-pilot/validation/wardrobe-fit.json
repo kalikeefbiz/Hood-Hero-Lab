@@ -1,0 +1,21 @@
+{
+  "tee-white": {
+    "vertices": 1372,
+    "mean_fit_displacement_m": 0.08054,
+    "max_fit_displacement_m": 0.20185,
+    "deform_bones": 14
+  },
+  "jeans-denim-standard": {
+    "vertices": 1695,
+    "mean_fit_displacement_m": 0.07439,
+    "max_fit_displacement_m": 0.12289,
+    "deform_bones": 12
+  },
+  "court-sneakers-white": {
+    "vertices": 2154,
+    "mean_fit_displacement_m": 0.07039,
+    "max_fit_displacement_m": 0.07873,
+    "deform_bones": 6
+  },
+  "masked_vertices_including_helpers": 8604
+}

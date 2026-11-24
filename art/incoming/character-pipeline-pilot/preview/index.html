@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#161923">
+  <link rel="icon" href="data:,">
+  <title>Hood Hero | Character comparison</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">{"imports":{"three":"../../../../node_modules/three/build/three.module.js","three/addons/":"../../../../node_modules/three/examples/jsm/"}}</script>
+</head>
+<body>
+  <header><p>BLACKHOUSE / HOOD HERO</p><h1>Character comparison</h1></header>
+  <main>
+    <form id="controls">
+      <label>Compare
+        <select id="model">
+          <option value="all">All three</option>
+          <option value="baseline">Current protagonist</option>
+          <option value="a">Current rig + mocap</option>
+          <option value="b">MPFB rig + mocap</option>
+        </select>
+      </label>
+      <label>Motion
+        <select id="clip"><option>Idle</option><option>Walk</option><option>Run</option><option value="Bind">Bind pose</option></select>
+      </label>
+      <label>Playback
+        <select id="speed"><option value="0">Paused</option><option value=".25">¼×</option><option value=".5">½×</option><option value="1" selected>1×</option><option value="1.5">1½×</option></select>
+      </label>
+      <label>View
+        <select id="view"><option>Front</option><option>Side</option><option>Rear</option><option>¾</option></select>
+      </label>
+      <label>Framing
+        <select id="frame"><option>Full body</option><option>Close-up</option><option>Gameplay</option></select>
+      </label>
+      <label>Lighting
+        <select id="light"><option>Day</option><option>Night</option></select>
+      </label>
+      <label class="check"><input type="checkbox" id="clothing" checked> Outfit</label>
+      <label class="check"><input type="checkbox" id="skeleton"> Skeleton</label>
+    </form>
+    <p id="status" role="status">Loading the comparison…</p>
+    <div id="stage" aria-label="Three synchronized views of the protagonist">
+      <canvas id="scene" aria-label="Character animation comparison"></canvas>
+      <div id="panels"></div>
+    </div>
+    <p class="credit">Motion capture by Ian Mason, Sebastian Starke, and Taku Komura. 100STYLE, CC BY 4.0.
+      <a href="https://www.ianxmason.com/100style/">Source and license</a></p>
+  </main>
+  <script type="module" src="./viewer.mjs"></script>
+</body>
+</html>

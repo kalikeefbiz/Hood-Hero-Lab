@@ -1,0 +1,26 @@
+:root { color-scheme: dark; font: 16px/1.45 system-ui, sans-serif; background: #161923; color: #eef0f4; }
+* { box-sizing: border-box; }
+body { margin: 0 auto; max-width: 1490px; padding: 20px clamp(12px, 3vw, 44px); }
+header p { color: #a8dcbb; font-size: .75rem; font-weight: 750; letter-spacing: .18em; margin: 0; }
+h1 { font-size: clamp(1.85rem, 5vw, 3rem); line-height: 1.03; letter-spacing: -.035em; margin: 6px 0 21px; }
+form { display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 12px; border: 1px solid #444c5d; border-radius: 10px; }
+label { display: grid; gap: 3px; color: #d4d9e2; font-size: .78rem; font-weight: 600; flex: 1 1 94px; }
+label:first-child { flex-basis: 140px; }
+select { background: #222938; border: 1px solid #545d72; color: #f4f5f7; border-radius: 6px; min-height: 44px; padding: 5px; font: inherit; font-size: 1rem; }
+.check { display: flex; align-items: center; gap: 7px; align-self: end; min-height: 44px; flex: 0 0 auto; font-size: .9rem; }
+.check input { width: 19px; height: 19px; accent-color: #a8dcbb; }
+:focus-visible { outline: 2px solid #a8dcbb; outline-offset: 2px; }
+#status { color: #c7cfdf; min-height: 1.45em; font-size: .85rem; margin: 10px 0; }
+#stage { position: relative; overflow: hidden; border-radius: 12px; background: #232938; border: 1px solid #444c5d; }
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#panels { min-height: 290px; height: min(65vh, 670px); display: flex; position: relative; pointer-events: none; }
+.panel { flex: 1 1 0; min-width: 0; padding: 10px; display: flex; flex-direction: column; justify-content: flex-end; }
+.panel + .panel { border-left: 1px solid #d8e1ef48; }
+.panel h2 { margin: 0; font-size: clamp(.72rem, 2vw, 1.04rem); line-height: 1.2; padding: 7px; background: #161923ec; border-radius: 6px; }
+.credit { color: #c7cfdf; font-size: .83rem; }
+a { color: #b8eac9; }
+@media (max-width: 600px) {
+  #panels { height: min(48vh, 390px); }
+  .panel { padding: 4px; }
+  .panel h2 { padding: 6px 4px; }
+}

@@ -1,0 +1,112 @@
+{
+  "buildInputs": [
+    {
+      "file": "mpfb.zip",
+      "url": "https://extensions.blender.org/download/sha256:c075b3e9b94b8e5556a5f03f4653602d02ea306de08126e8f55ed6dee28a2dad/add-on-mpfb-v2.0.18.zip",
+      "sha256": "c075b3e9b94b8e5556a5f03f4653602d02ea306de08126e8f55ed6dee28a2dad",
+      "license": "GPL-3.0-or-later software and CC0-1.0 core graphics"
+    },
+    {
+      "file": "system.zip",
+      "url": "https://files.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "sha256": "b542127a8e25547c7c29c19f2d1d2adb9a664c80396ecd694095dbc8028a0107",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "motion/Idle.bvh",
+      "url": "https://drive.usercontent.google.com/download?id=1Vnz5wnFmOztNzaSBHjSt9v6y0pl0FK8X&export=download&confirm=t",
+      "sha256": "71aead2e3246bdb47a5b839cb3e60e0574e9a1a046c071cc147e2922a35f259f",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "file": "motion/Walk.bvh",
+      "url": "https://drive.usercontent.google.com/download?id=1-TqZdIJvpr-QVvAmYJREUZkuAgpAQSfd&export=download&confirm=t",
+      "sha256": "2f28800baa299547c42c257d1c926172542a1e69b46a3d3e6aa0aded0e9b40f6",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "file": "motion/Run.bvh",
+      "url": "https://drive.usercontent.google.com/download?id=1vkA3jzorKZ-8UsLGFxKur8imqhyFfnXR&export=download&confirm=t",
+      "sha256": "f46ca526027a3654c8939a0123413f6008906fb32125d5e885eafcaa830831cb",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "sources": [
+    {
+      "name": "100STYLE (Neutral_ID, Neutral_FW, Neutral_FR)",
+      "authors": [
+        "Ian Mason",
+        "Sebastian Starke",
+        "Taku Komura"
+      ],
+      "landingPage": "https://www.ianxmason.com/100style/",
+      "archive": "https://doi.org/10.5281/zenodo.8127870",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "derived": true,
+      "commercialReuse": true,
+      "redistribution": "Allowed with attribution, license link and indication of changes. Raw BVH stays outside Git.",
+      "changes": "Cropped, stage-facing alignment, 60 to 30 Hz, trajectory extraction, loop closure, rest-frame conversion, head gaze calibration and ground-height correction."
+    },
+    {
+      "name": "MPFB base mesh, morph targets and game engine rig",
+      "url": "https://static.makehumancommunity.org/about/license.html",
+      "license": "CC0-1.0 graphics",
+      "commercialReuse": true,
+      "redistribution": "Baked model and Blender project contain CC0 graphic data."
+    },
+    {
+      "name": "MakeHuman system skin and eyes",
+      "assets": [
+        "skins/young_african_male",
+        "eyes/low-poly",
+        "eyes/materials/brown"
+      ],
+      "url": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html",
+      "license": "CC0-1.0",
+      "commercialReuse": true,
+      "redistribution": "Graphics and derivatives permitted. Packed textures in editable Blender sources and derivatives in GLB. The system archive stays outside Git."
+    },
+    {
+      "name": "Hood Hero protagonist and reference art",
+      "commit": "7c36e25",
+      "source": "art/incoming/protagonist-male",
+      "license": "Project-controlled material",
+      "redistribution": "Pilot in the same owner-authorized repository. No additional license grant."
+    },
+    {
+      "name": "Hood Hero wardrobe",
+      "commit": "b113b4233325d5573b33a7ab805e77abb5e7b397",
+      "source": "art/incoming/protagonist-male-wardrobe",
+      "license": "Project-controlled material",
+      "redistribution": "Three original comparison copies, plus fitted derivatives, within the owner-authorized repository."
+    }
+  ],
+  "referencesOnly": [
+    {
+      "name": "EL4CTEO Blender Skills",
+      "commit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
+      "license": "MIT",
+      "use": "External QA scripts and rest-space retarget / loop-check documentation"
+    },
+    {
+      "name": "CharacterCreator",
+      "commit": "852e48f316b90a0937234886630e4fb4cdfd1f78",
+      "use": "Read build, export, license notes and runtime joint-sidecar approach"
+    },
+    {
+      "name": "MPFB MCP",
+      "commit": "f936f2cacd60fc11109627cb6a17208d30a1cff3",
+      "use": "Read bridge and release API to evaluate the authoring path"
+    },
+    {
+      "name": "Mixamo",
+      "url": "https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html",
+      "use": "Adobe ID sign-in. Adobe permits project use. Raw or stand-alone redistribution was outside this pilot."
+    },
+    {
+      "name": "Rokoko 263 assets",
+      "url": "https://www.rokoko.com/resources/download-263-rokoko-motion-capture-assets",
+      "use": "First name, last name, email and marketing consent form. Page grants commercial project use. Reusable public asset redistribution was not established."
+    }
+  ]
+}
