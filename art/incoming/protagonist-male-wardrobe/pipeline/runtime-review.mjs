@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { createServer } from 'vite';
 import { chromium } from '@playwright/test';
 
-const [output, canonical] = process.argv.slice(2);
+const [output, canonical, ...items] = process.argv.slice(2);
 await mkdir(output, { recursive: true });
 const server = await createServer({ configFile: false, logLevel: 'error', server: { port: 0 } });
 let browser;
@@ -16,7 +16,11 @@ try {
   });
   const page = await browser.newPage({ viewport: { width: 500, height: 660 } });
   const url = `http://localhost:${port}/art/incoming/protagonist-male-wardrobe/pipeline/runtime-review.html`;
-  await page.goto(canonical ? `${url}?canonical=${encodeURIComponent(canonical)}` : url);
+  const query = new URLSearchParams();
+  if (canonical) query.set('canonical',canonical);
+  if (items.length) query.set('items',items.join(','));
+  if (process.env.WARDROBE_SWAP) query.set('swap','1');
+  await page.goto(`${url}?${query}`);
   await page.waitForFunction(() => window.outfitReport || window.outfitError, null, { timeout: 90000 });
   const error = await page.evaluate(() => window.outfitError);
   if (error) throw new Error(error);

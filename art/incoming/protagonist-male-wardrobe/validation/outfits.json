@@ -1,0 +1,9 @@
+{
+  "graphic-tee": ["tee-stixx-black", "jeans-black-skinny", "court-sneakers-black"],
+  "summer": ["tank-white", "shorts-athletic", "flip-flops"],
+  "flannel": ["flannel-long-sleeve", "jeans-denim-baggy", "slides-black"],
+  "hood-down": ["tee-white", "hoodie-gray-down", "sweats-gray", "court-sneakers-white"],
+  "hood-up": ["tee-white", "hoodie-gray-up", "cargo-black", "court-sneakers-black"],
+  "open-jacket": ["tee-stixx-black", "windbreaker-black-open", "jeans-denim-standard", "court-sneakers-white"],
+  "puffer": ["tee-white", "puffer-black-closed", "jeans-denim-standard", "court-sneakers-white"]
+}

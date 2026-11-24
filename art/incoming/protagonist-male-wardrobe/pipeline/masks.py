@@ -5,6 +5,8 @@ import sys
 
 import bmesh
 import bpy
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from catalog_config import TOPS, BOTTOMS, FOOTWEAR
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
@@ -15,8 +17,23 @@ SLOTS = {
     "court-sneakers-white": ("footwear", ["region_feet","region_lower_legs"]),
 }
 
+for name,config in TOPS.items():
+    shape=config["shape"]
+    slot="outerwear" if shape in ("hoodie","windbreaker","puffer") else "top"
+    groups=["region_torso","region_upper_arms"]
+    if shape in ("hoodie","windbreaker","puffer","flannel"):
+        groups.append("region_forearms")
+    SLOTS[name]=(slot,groups)
+for name,config in BOTTOMS.items():
+    SLOTS[name]=("bottom",["region_torso","region_upper_legs"]+([] if config["shape"]=="shorts" else ["region_lower_legs"]))
+for name,config in FOOTWEAR.items():
+    SLOTS[name]=("footwear",["region_feet","region_lower_legs"] if config["shape"]=="court" else [])
+
 
 def covered(obj,body):
+    if obj.name in ("flip-flops","slides-black"):
+        return set()
+    shape=TOPS.get(obj.name,BOTTOMS.get(obj.name,{"shape":"other"}))["shape"]
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     # The shoe mixes closed tread, an open collar and small lace islands.
@@ -36,12 +53,29 @@ def covered(obj,body):
         x,y,z = co
         if obj.name.startswith("tee"):
             return .982 < z and abs(x)<.367
-        if obj.name.startswith("jeans"):
-            return .105 < z < .993
+        if shape=="tank":
+            return .985<z<1.49 and abs(x)<.18
+        if shape=="flannel":
+            return .946<z and abs(x)<.685
+        if shape=="windbreaker":
+            return z>1.285 and .236<abs(x)<.685
+        if shape in ("hoodie","puffer"):
+            return .963<z and abs(x)<.685
+        if shape=="shorts":
+            return .56<z<.993
+        if obj.name.startswith("jeans") or obj.name in BOTTOMS:
+            return (.09 if shape=="baggy" else .105)<z<.993
         return z < max(.071,.111-y*.19)
 
     result = set()
     for v in body.data.vertices:
+        x,_,z=v.co
+        # At the shoulder cap, the closest surface can be the collar rim
+        # instead of the covering sleeve. Keep the neckline and hide just
+        # the under-sleeve patch outside the collar.
+        if shape in ("flannel","hoodie","windbreaker","puffer") and .154<abs(x)<.252 and 1.426<z<1.535:
+            result.add(v.index)
+            continue
         if not eligible(v.co):
             continue
         _,_,dist = tree.find(v.co)
@@ -98,6 +132,8 @@ def main(runtime_path,out,selected):
                 if all(matched[j][0] in masks[name] for j in index[i:i+3])]
         slot,regions=SLOTS[name]
         result["wearables"][name]={"slot":slot,"regions":regions,"triangles":len(hidden),"ranges":ranges(hidden)}
+        if slot=="outerwear":
+            result["wearables"][name]["coversTop"]=name!="windbreaker-black-open"
     (out/"body-masks.json").write_text(json.dumps(result,separators=(",",":"))+"\n")
     (out/"source-mask-faces.json").write_text(json.dumps({
         name:[poly.index for poly in body.data.polygons if all(i in verts for i in poly.vertices)]
@@ -106,4 +142,6 @@ def main(runtime_path,out,selected):
 
 
 if __name__=="__main__":
-    main(*sys.argv[sys.argv.index("--")+1:][:2],sys.argv[sys.argv.index("--")+3:])
+    runtime_path,output,*items=sys.argv[sys.argv.index("--")+1:]
+    main(runtime_path,output,items)
+    print("@@JSON@@"+json.dumps({"ok":True,"wearables":len(items)}))

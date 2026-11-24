@@ -89,3 +89,48 @@ relocation in PR #74. Pass
 The full-character checker covers the accepted body and head package. This
 handoff uses the same GLB compression and skin checks with a separate garment
 validator, since the clip library is held by the body.
+
+## Complete catalog
+
+`source/male-wardrobe-catalog.blend` contains the 15 follow-up patterns with
+packed materials. The starter source provides the other three. The source
+includes both fleece hood configurations. They share the same base pattern,
+material and drawstring sweep. The raised hood follows the canonical head
+bone above the neckline. Keep hair hidden when equipping a raised hood until
+the hairstyle has passed a fit check. No hairstyle assets are included.
+
+The black and white tees have identical mesh and skin accessors, including
+their inverse binds. The court sneaker colorways pass the same comparison.
+The manifest records the shared geometry IDs. An integrator can reuse the
+base geometry and assign the variant material. Each GLB also works by itself.
+
+The open windbreaker keeps the top visible. The hoodie and closed puffer
+hide the top until removed. The lightweight tee layering checks are recorded
+in `validation/outfits.json`. Flip-flops and slides use empty body masks so
+the original toes and heels remain visible. Athletic shorts preserve the lower
+legs. Closed footwear has an individual ground offset in the manifest.
+
+The catalogs use textured stitches and trim on folded sections, matching UV
+charts on material variants, and deliberately stacked UVs on mirrored
+footwear. Blender generates the hood drawstrings with the installed Geometry
+Nodes skill and realizes them into the game mesh. The hood-down lip overlaps
+the back-neck binding on the inside of the garment.
+
+[Catalog renders](previews/catalog) include front and rear standalone views,
+equipped Idle/Walk/Run samples in Three.js, and Blender stress tests. The
+[three.js report](validation/catalog-runtime.json) records each equipped
+configuration's loaded asset size, visible triangles and estimated material
+draws. The summer outfit retains the most body geometry. Desktop Chromium
+and Blender provide the production checks. In-city and physical iPhone
+testing are part of final integration.
+
+To reproduce the catalog and its runtime review, run from the repository root:
+
+```sh
+bash art/incoming/protagonist-male-wardrobe/pipeline/produce-catalog.sh
+CHROMIUM_PATH=/usr/bin/chromium node art/incoming/protagonist-male-wardrobe/pipeline/review-catalog.mjs /tmp/hood-hero-catalog-review
+```
+
+Supply the same positional canonical inputs to `produce-catalog.sh` as to the
+starter script. The catalog build also expects the starter manifest and masks
+from the independent first delivery.

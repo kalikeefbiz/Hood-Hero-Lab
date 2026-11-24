@@ -1,0 +1,655 @@
+{
+  "graphic-tee": {
+    "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+    "bodyTriangles": 23934,
+    "garments": {
+      "tee-stixx-black": {
+        "triangles": 2616,
+        "vertices": 1999,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          512,
+          512
+        ],
+        "normal": [
+          512,
+          512
+        ]
+      },
+      "jeans-black-skinny": {
+        "triangles": 3296,
+        "vertices": 3310,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          512,
+          512
+        ],
+        "normal": [
+          512,
+          512
+        ]
+      },
+      "court-sneakers-black": {
+        "triangles": 3960,
+        "vertices": 2886,
+        "joints": 36,
+        "maxInfluences": 2,
+        "maxWeightError": 0,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      }
+    },
+    "clips": {
+      "Idle": {
+        "seconds": 8,
+        "maxSampledVertexMotionMeters": {
+          "tee-stixx-black": 0.04545,
+          "jeans-black-skinny": 0.02199,
+          "court-sneakers-black": 0.02346
+        }
+      },
+      "Walk": {
+        "seconds": 1.2001953125,
+        "maxSampledVertexMotionMeters": {
+          "tee-stixx-black": 0.20059,
+          "jeans-black-skinny": 0.50321,
+          "court-sneakers-black": 0.60909
+        }
+      },
+      "Run": {
+        "seconds": 0.7333984375,
+        "maxSampledVertexMotionMeters": {
+          "tee-stixx-black": 0.29441,
+          "jeans-black-skinny": 0.83135,
+          "court-sneakers-black": 0.93538
+        }
+      }
+    },
+    "drawCalls": 5,
+    "independentEquipAndRemove": true,
+    "visibleBodyTriangles": 9140,
+    "headTriangles": 6932,
+    "visibleTotalTriangles": 25944,
+    "loadedAssetBytes": 1947527
+  },
+  "summer": {
+    "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+    "bodyTriangles": 23934,
+    "garments": {
+      "tank-white": {
+        "triangles": 2096,
+        "vertices": 1547,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "shorts-athletic": {
+        "triangles": 2104,
+        "vertices": 1890,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "flip-flops": {
+        "triangles": 1648,
+        "vertices": 1268,
+        "joints": 36,
+        "maxInfluences": 2,
+        "maxWeightError": 0,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      }
+    },
+    "clips": {
+      "Idle": {
+        "seconds": 8,
+        "maxSampledVertexMotionMeters": {
+          "tank-white": 0.03889,
+          "shorts-athletic": 0.01905,
+          "flip-flops": 0.02382
+        }
+      },
+      "Walk": {
+        "seconds": 1.2001953125,
+        "maxSampledVertexMotionMeters": {
+          "tank-white": 0.06674,
+          "shorts-athletic": 0.22934,
+          "flip-flops": 0.6101
+        }
+      },
+      "Run": {
+        "seconds": 0.7333984375,
+        "maxSampledVertexMotionMeters": {
+          "tank-white": 0.0759,
+          "shorts-athletic": 0.4224,
+          "flip-flops": 0.93703
+        }
+      }
+    },
+    "drawCalls": 5,
+    "independentEquipAndRemove": true,
+    "visibleBodyTriangles": 20639,
+    "headTriangles": 6932,
+    "visibleTotalTriangles": 33419,
+    "loadedAssetBytes": 1348899
+  },
+  "flannel": {
+    "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+    "bodyTriangles": 23934,
+    "garments": {
+      "flannel-long-sleeve": {
+        "triangles": 4864,
+        "vertices": 3824,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          512,
+          512
+        ],
+        "normal": [
+          512,
+          512
+        ]
+      },
+      "jeans-denim-baggy": {
+        "triangles": 3296,
+        "vertices": 3310,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          512,
+          512
+        ],
+        "normal": [
+          512,
+          512
+        ]
+      },
+      "slides-black": {
+        "triangles": 1496,
+        "vertices": 1204,
+        "joints": 36,
+        "maxInfluences": 2,
+        "maxWeightError": 0,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      }
+    },
+    "clips": {
+      "Idle": {
+        "seconds": 8,
+        "maxSampledVertexMotionMeters": {
+          "flannel-long-sleeve": 0.05386,
+          "jeans-denim-baggy": 0.02409,
+          "slides-black": 0.0234
+        }
+      },
+      "Walk": {
+        "seconds": 1.2001953125,
+        "maxSampledVertexMotionMeters": {
+          "flannel-long-sleeve": 0.34148,
+          "jeans-denim-baggy": 0.5129,
+          "slides-black": 0.61045
+        }
+      },
+      "Run": {
+        "seconds": 0.7333984375,
+        "maxSampledVertexMotionMeters": {
+          "flannel-long-sleeve": 0.40386,
+          "jeans-denim-baggy": 0.84928,
+          "slides-black": 0.9374
+        }
+      }
+    },
+    "drawCalls": 5,
+    "independentEquipAndRemove": true,
+    "visibleBodyTriangles": 17636,
+    "headTriangles": 6932,
+    "visibleTotalTriangles": 34224,
+    "loadedAssetBytes": 1967411
+  },
+  "hood-down": {
+    "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+    "bodyTriangles": 23934,
+    "garments": {
+      "tee-white": {
+        "triangles": 2616,
+        "vertices": 1999,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "hoodie-gray-down": {
+        "triangles": 4896,
+        "vertices": 3456,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "sweats-gray": {
+        "triangles": 3560,
+        "vertices": 3542,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "court-sneakers-white": {
+        "triangles": 3960,
+        "vertices": 2886,
+        "joints": 36,
+        "maxInfluences": 2,
+        "maxWeightError": 0,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      }
+    },
+    "clips": {
+      "Idle": {
+        "seconds": 8,
+        "maxSampledVertexMotionMeters": {
+          "tee-white": 0.04545,
+          "hoodie-gray-down": 0.04824,
+          "sweats-gray": 0.02144,
+          "court-sneakers-white": 0.02346
+        }
+      },
+      "Walk": {
+        "seconds": 1.2001953125,
+        "maxSampledVertexMotionMeters": {
+          "tee-white": 0.20059,
+          "hoodie-gray-down": 0.36542,
+          "sweats-gray": 0.50348,
+          "court-sneakers-white": 0.60909
+        }
+      },
+      "Run": {
+        "seconds": 0.7333984375,
+        "maxSampledVertexMotionMeters": {
+          "tee-white": 0.29441,
+          "hoodie-gray-down": 0.40684,
+          "sweats-gray": 0.83006,
+          "court-sneakers-white": 0.93538
+        }
+      }
+    },
+    "drawCalls": 5,
+    "independentEquipAndRemove": true,
+    "visibleBodyTriangles": 14570,
+    "headTriangles": 6932,
+    "visibleTotalTriangles": 33918,
+    "loadedAssetBytes": 1636691
+  },
+  "hood-up": {
+    "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+    "bodyTriangles": 23934,
+    "garments": {
+      "tee-white": {
+        "triangles": 2616,
+        "vertices": 1999,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "hoodie-gray-up": {
+        "triangles": 4896,
+        "vertices": 3460,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "cargo-black": {
+        "triangles": 3712,
+        "vertices": 3822,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "court-sneakers-black": {
+        "triangles": 3960,
+        "vertices": 2886,
+        "joints": 36,
+        "maxInfluences": 2,
+        "maxWeightError": 0,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      }
+    },
+    "clips": {
+      "Idle": {
+        "seconds": 8,
+        "maxSampledVertexMotionMeters": {
+          "tee-white": 0.04545,
+          "hoodie-gray-up": 0.0699,
+          "cargo-black": 0.02195,
+          "court-sneakers-black": 0.02346
+        }
+      },
+      "Walk": {
+        "seconds": 1.2001953125,
+        "maxSampledVertexMotionMeters": {
+          "tee-white": 0.20059,
+          "hoodie-gray-up": 0.3253,
+          "cargo-black": 0.49533,
+          "court-sneakers-black": 0.60909
+        }
+      },
+      "Run": {
+        "seconds": 0.7333984375,
+        "maxSampledVertexMotionMeters": {
+          "tee-white": 0.29441,
+          "hoodie-gray-up": 0.3482,
+          "cargo-black": 0.80343,
+          "court-sneakers-black": 0.93538
+        }
+      }
+    },
+    "drawCalls": 5,
+    "independentEquipAndRemove": true,
+    "visibleBodyTriangles": 14542,
+    "headTriangles": 6932,
+    "visibleTotalTriangles": 34042,
+    "loadedAssetBytes": 1643595
+  },
+  "open-jacket": {
+    "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+    "bodyTriangles": 23934,
+    "garments": {
+      "tee-stixx-black": {
+        "triangles": 2616,
+        "vertices": 1999,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          512,
+          512
+        ],
+        "normal": [
+          512,
+          512
+        ]
+      },
+      "windbreaker-black-open": {
+        "triangles": 3778,
+        "vertices": 2776,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "jeans-denim-standard": {
+        "triangles": 3296,
+        "vertices": 3310,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          512,
+          512
+        ],
+        "normal": [
+          512,
+          512
+        ]
+      },
+      "court-sneakers-white": {
+        "triangles": 3960,
+        "vertices": 2886,
+        "joints": 36,
+        "maxInfluences": 2,
+        "maxWeightError": 0,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      }
+    },
+    "clips": {
+      "Idle": {
+        "seconds": 8,
+        "maxSampledVertexMotionMeters": {
+          "tee-stixx-black": 0.04545,
+          "windbreaker-black-open": 0.06333,
+          "jeans-denim-standard": 0.022,
+          "court-sneakers-white": 0.02346
+        }
+      },
+      "Walk": {
+        "seconds": 1.2001953125,
+        "maxSampledVertexMotionMeters": {
+          "tee-stixx-black": 0.20059,
+          "windbreaker-black-open": 0.39114,
+          "jeans-denim-standard": 0.50323,
+          "court-sneakers-white": 0.60909
+        }
+      },
+      "Run": {
+        "seconds": 0.7333984375,
+        "maxSampledVertexMotionMeters": {
+          "tee-stixx-black": 0.29441,
+          "windbreaker-black-open": 0.44127,
+          "jeans-denim-standard": 0.83209,
+          "court-sneakers-white": 0.93538
+        }
+      }
+    },
+    "drawCalls": 6,
+    "independentEquipAndRemove": true,
+    "visibleBodyTriangles": 9126,
+    "headTriangles": 6932,
+    "visibleTotalTriangles": 29708,
+    "loadedAssetBytes": 2129347
+  },
+  "puffer": {
+    "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+    "bodyTriangles": 23934,
+    "garments": {
+      "tee-white": {
+        "triangles": 2616,
+        "vertices": 1999,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "puffer-black-closed": {
+        "triangles": 4000,
+        "vertices": 2791,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      },
+      "jeans-denim-standard": {
+        "triangles": 3296,
+        "vertices": 3310,
+        "joints": 36,
+        "maxInfluences": 4,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": [
+          512,
+          512
+        ],
+        "normal": [
+          512,
+          512
+        ]
+      },
+      "court-sneakers-white": {
+        "triangles": 3960,
+        "vertices": 2886,
+        "joints": 36,
+        "maxInfluences": 2,
+        "maxWeightError": 0,
+        "baseColor": [
+          256,
+          256
+        ],
+        "normal": [
+          256,
+          256
+        ]
+      }
+    },
+    "clips": {
+      "Idle": {
+        "seconds": 8,
+        "maxSampledVertexMotionMeters": {
+          "tee-white": 0.04545,
+          "puffer-black-closed": 0.06215,
+          "jeans-denim-standard": 0.022,
+          "court-sneakers-white": 0.02346
+        }
+      },
+      "Walk": {
+        "seconds": 1.2001953125,
+        "maxSampledVertexMotionMeters": {
+          "tee-white": 0.20059,
+          "puffer-black-closed": 0.36344,
+          "jeans-denim-standard": 0.50323,
+          "court-sneakers-white": 0.60909
+        }
+      },
+      "Run": {
+        "seconds": 0.7333984375,
+        "maxSampledVertexMotionMeters": {
+          "tee-white": 0.29441,
+          "puffer-black-closed": 0.4482,
+          "jeans-denim-standard": 0.83209,
+          "court-sneakers-white": 0.93538
+        }
+      }
+    },
+    "drawCalls": 5,
+    "independentEquipAndRemove": true,
+    "visibleBodyTriangles": 14500,
+    "headTriangles": 6932,
+    "visibleTotalTriangles": 32688,
+    "loadedAssetBytes": 1852171
+  }
+}

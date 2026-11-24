@@ -6,7 +6,8 @@
   "sourceArt": [
     "art/source/hood-hero/protagonist/male/ref/tops-master.PNG",
     "art/source/hood-hero/protagonist/male/ref/bottoms-master.PNG",
-    "art/source/hood-hero/protagonist/male/ref/footwear-master.PNG"
+    "art/source/hood-hero/protagonist/male/ref/footwear-master.PNG",
+    "art/source/hood-hero/protagonist/male/ref/outwear-master.PNG"
   ],
   "blender": "5.3.0",
   "blenderSkillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
@@ -109,6 +110,413 @@
           256
         ],
         "bytes": 144360
+      },
+      "tee-stixx-black": {
+        "label": "The Stixx Black Graphic T-Shirt",
+        "slot": "top",
+        "file": "models/tops/tee-stixx-black.glb",
+        "sourceArt": [
+          "ref/tee-stixx-black.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "tee-stixx-black",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "Shares the white crewneck fit. Extreme shoulder elevation can reveal a small patch at the collar or sleeve root.",
+        "triangles": 2616,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 416176,
+        "sharedGeometry": "tee-white"
+      },
+      "tank-white": {
+        "label": "White Ribbed Tank Top",
+        "slot": "top",
+        "file": "models/tops/tank-white.glb",
+        "sourceArt": [
+          "ref/tank-white.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "tank-white",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "The deep armhole exposes the side of the upper torso as designed. The binding can crease against the shoulder at extreme elevation.",
+        "triangles": 2096,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 129128
+      },
+      "flannel-long-sleeve": {
+        "label": "Long-Sleeve Flannel",
+        "slot": "top",
+        "file": "models/tops/flannel-long-sleeve.glb",
+        "sourceArt": [
+          "ref/flannel-long-sleeve.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "flannel-long-sleeve",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "The point collar and cuff can bunch in extreme arm and chest motion.",
+        "triangles": 4864,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 483952
+      },
+      "hoodie-gray-down": {
+        "label": "Gray Hoodie, Hood Down",
+        "slot": "outerwear",
+        "file": "models/outerwear/hoodie-gray-down.glb",
+        "sourceArt": [
+          "ref/hoodie-gray-down.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "hoodie-gray-down",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": true
+        },
+        "knownClippingLimitations": "The folded hood rests near the back of the neck. A hard neck turn can compress the fold.",
+        "triangles": 4896,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 171632,
+        "garmentFamily": "hoodie-gray",
+        "hood": "down",
+        "sharedMaterials": "hoodie-gray-down"
+      },
+      "hoodie-gray-up": {
+        "label": "Gray Hoodie, Hood Up",
+        "slot": "outerwear",
+        "file": "models/outerwear/hoodie-gray-up.glb",
+        "sourceArt": [
+          "ref/hoodie-gray-up.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "hoodie-gray-up",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": true,
+          "hair": "Hide hair unless the style has been tested inside the raised hood."
+        },
+        "knownClippingLimitations": "A hard neck turn can bunch the lower hood at the shoulder. Small skin flecks can show near the collar in a Run close-up. Hair needs a separate hood-fit check.",
+        "triangles": 4896,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 172884,
+        "garmentFamily": "hoodie-gray",
+        "hood": "up",
+        "sharedMaterials": "hoodie-gray-down"
+      },
+      "windbreaker-black-open": {
+        "label": "Open Black Windbreaker",
+        "slot": "outerwear",
+        "file": "models/outerwear/windbreaker-black-open.glb",
+        "sourceArt": [
+          "ref/windbreaker-black-open.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "windbreaker-black-open",
+          "description": "Mask covered shoulder and arm geometry. Keep the skin or shirt in the front opening."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "topIds": [
+            "tee-white",
+            "tee-stixx-black",
+            "tank-white"
+          ]
+        },
+        "knownClippingLimitations": "Layering was reviewed over the Stixx tee, which shares the white tee geometry. Larger or bulky tops need a fit check.",
+        "triangles": 3778,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 158028
+      },
+      "puffer-black-closed": {
+        "label": "Closed Black Puffer Jacket",
+        "slot": "outerwear",
+        "file": "models/outerwear/puffer-black-closed.glb",
+        "sourceArt": [
+          "ref/puffer-black-closed.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "puffer-black-closed",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": true
+        },
+        "knownClippingLimitations": "Padded sleeves compress at the armhole in extreme arm raises. Hide the underlying top as documented.",
+        "triangles": 4000,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 160080
+      },
+      "jeans-black-skinny": {
+        "label": "Black Skinny Jeans",
+        "slot": "bottom",
+        "file": "models/bottoms/jeans-black-skinny.glb",
+        "sourceArt": [
+          "ref/jeans-black-skinny.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "jeans-black-skinny",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "A narrow ankle ring can show when the foot flexes. Deep knee flex compresses the fabric behind the knee.",
+        "triangles": 3296,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 363484
+      },
+      "jeans-denim-baggy": {
+        "label": "Baggy Denim Jeans",
+        "slot": "bottom",
+        "file": "models/bottoms/jeans-denim-baggy.glb",
+        "sourceArt": [
+          "ref/jeans-denim-baggy.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "jeans-denim-baggy",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "Long cuffs drape onto low footwear. Check the cuff over thicker footwear and in deep bends.",
+        "triangles": 3296,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 385288
+      },
+      "cargo-black": {
+        "label": "Black Cargo Pants",
+        "slot": "bottom",
+        "file": "models/bottoms/cargo-black.glb",
+        "sourceArt": [
+          "ref/cargo-black.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "cargo-black",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "Bellows pockets fold with the thigh during deep crouches. A narrow ankle ring can show over low court shoes.",
+        "triangles": 3712,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 165896
+      },
+      "sweats-gray": {
+        "label": "Gray Sweatpants",
+        "slot": "bottom",
+        "file": "models/bottoms/sweats-gray.glb",
+        "sourceArt": [
+          "ref/sweats-gray.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "sweats-gray",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "Gathered ankle fabric can overlap the edge of the shoe collar during the stride.",
+        "triangles": 3560,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 158696
+      },
+      "shorts-athletic": {
+        "label": "Navy Athletic Shorts",
+        "slot": "bottom",
+        "file": "models/bottoms/shorts-athletic.glb",
+        "sourceArt": [
+          "ref/shorts-athletic.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "shorts-athletic",
+          "description": "Preserve lower legs and a ring of thigh at the cuff."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "Canonical Idle can place fingertips at the outer hip. The short cuffs leave the knee and lower leg visible.",
+        "triangles": 2104,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 118976
+      },
+      "flip-flops": {
+        "label": "Flip-Flops",
+        "slot": "footwear",
+        "file": "models/footwear/flip-flops.glb",
+        "sourceArt": [
+          "ref/flip-flops.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "flip-flops",
+          "description": "Preserve the entire foot and lower leg."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "The complete foot is visible. The toe post and strap fit are most sensitive during forefoot flex.",
+        "triangles": 1648,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 75740,
+        "groundOffsetMeters": 0.02
+      },
+      "slides-black": {
+        "label": "Black Slides",
+        "slot": "footwear",
+        "file": "models/footwear/slides-black.glb",
+        "sourceArt": [
+          "ref/slides-black.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "slides-black",
+          "description": "Preserve the entire foot and lower leg."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "The complete foot is visible. The molded band sits close to the foot in forefoot flex.",
+        "triangles": 1496,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 73116,
+        "groundOffsetMeters": 0.02
+      },
+      "court-sneakers-black": {
+        "label": "Black Low-Top Court Sneakers",
+        "slot": "footwear",
+        "file": "models/footwear/court-sneakers-black.glb",
+        "sourceArt": [
+          "ref/court-sneakers-black.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-v1",
+        "skeletonVersion": "protagonist-male-rig-v1",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "court-sneakers-black",
+          "description": "Mask the covered foot. Keep a ring of skin inside the collar."
+        },
+        "layerCompatibility": {
+          "coversTop": false
+        },
+        "knownClippingLimitations": "Identical fit to the white court shoes. A small ankle ring can show with a short or flexed cuff.",
+        "triangles": 3960,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 142812,
+        "sharedGeometry": "court-sneakers-white",
+        "groundOffsetMeters": 0.023
       }
     }
   },
@@ -123,5 +531,6 @@
     "garmentAssetBytes": 667036,
     "equippedAssetBytes": 1692091,
     "estimatedMaterialDraws": 5
-  }
+  },
+  "catalogSource": "source/male-wardrobe-catalog.blend"
 }

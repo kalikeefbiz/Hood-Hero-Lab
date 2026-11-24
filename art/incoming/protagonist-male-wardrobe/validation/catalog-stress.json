@@ -1,0 +1,135 @@
+{
+  "stress": {
+    "ok": true,
+    "action": "QA_Stress",
+    "frames": [
+      1,
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "bones_used": {
+      "upper_arm.L": "upper_arm.L",
+      "upper_arm.R": "upper_arm.R",
+      "forearm.L": "forearm.L",
+      "forearm.R": "forearm.R",
+      "thigh.L": "thigh.L",
+      "shin.L": "shin.L",
+      "thigh.R": "thigh.R",
+      "shin.R": "shin.R",
+      "spine": "spine.002",
+      "head": "spine.006"
+    },
+    "missing_roles": []
+  },
+  "outfits": {
+    "graphic-tee": {
+      "visible": [
+        "court-sneakers-black",
+        "jeans-black-skinny",
+        "tee-stixx-black"
+      ],
+      "frames": [
+        1,
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    },
+    "summer": {
+      "visible": [
+        "flip-flops",
+        "shorts-athletic",
+        "tank-white"
+      ],
+      "frames": [
+        1,
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    },
+    "flannel": {
+      "visible": [
+        "flannel-long-sleeve",
+        "jeans-denim-baggy",
+        "slides-black"
+      ],
+      "frames": [
+        1,
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    },
+    "hood-down": {
+      "visible": [
+        "court-sneakers-white",
+        "hoodie-gray-down",
+        "sweats-gray"
+      ],
+      "frames": [
+        1,
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    },
+    "hood-up": {
+      "visible": [
+        "cargo-black",
+        "court-sneakers-black",
+        "hoodie-gray-up"
+      ],
+      "frames": [
+        1,
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    },
+    "open-jacket": {
+      "visible": [
+        "court-sneakers-white",
+        "jeans-denim-standard",
+        "tee-stixx-black",
+        "windbreaker-black-open"
+      ],
+      "frames": [
+        1,
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    },
+    "puffer": {
+      "visible": [
+        "court-sneakers-white",
+        "jeans-denim-standard",
+        "puffer-black-closed"
+      ],
+      "frames": [
+        1,
+        10,
+        20,
+        30,
+        40,
+        50
+      ]
+    }
+  }
+}

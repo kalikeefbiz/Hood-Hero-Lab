@@ -14,12 +14,8 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { bindToBody, createWardrobe, findSkin } from './assemble.mjs';
 
 const defaultRoot = '/art/incoming/protagonist-male';
-const canonical = new URLSearchParams(location.search).get('canonical') ?? defaultRoot;
-const paths = {
-  'tee-white': '../models/tops/tee-white.glb',
-  'jeans-denim-standard': '../models/bottoms/jeans-denim-standard.glb',
-  'court-sneakers-white': '../models/footwear/court-sneakers-white.glb',
-};
+const query = new URLSearchParams(location.search);
+const canonical = query.get('canonical') ?? defaultRoot;
 
 async function review() {
   const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -29,11 +25,12 @@ async function review() {
   document.body.append(renderer.domElement);
   const ktx = new KTX2Loader().setTranscoderPath('/basis/').detectSupport(renderer);
   const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx);
-  const [bodyFile, headFile, complexion, masks] = await Promise.all([
+  const [bodyFile, headFile, complexion, masks, manifest] = await Promise.all([
     fetch(`${canonical}/protagonist-male.glb`).then((response) => response.arrayBuffer()),
     loader.loadAsync(`${canonical}/heads/face-01.glb`),
     ktx.loadAsync(`${canonical}/complexions/complexion-01.ktx2`),
     fetch('../body-masks.json').then((response) => response.json()),
+    fetch('../manifest.json').then((response) => response.json()),
   ]);
   const digest = await crypto.subtle.digest('SHA-256', bodyFile);
   const hash = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
@@ -46,6 +43,8 @@ async function review() {
   const wardrobe = createWardrobe(body, masks, hash);
   const base = body.geometry;
   const bodyTriangles = base.index.count / 3;
+  const selected = query.get('items')?.split(',') ?? ['tee-white','jeans-denim-standard','court-sneakers-white'];
+  const paths = Object.fromEntries(selected.map((id) => [id, `../${manifest.modular.wearables[id].file}`]));
   const loaded = await Promise.all(Object.entries(paths).map(async ([id, path]) => [id, await loader.loadAsync(path)]));
   const meshes = new Map();
   const report = { bodySha256: hash, bodyTriangles, garments: {}, clips: {} };
@@ -77,21 +76,50 @@ async function review() {
   }
 
   const expectedIndexCount = body.geometry.index.count;
-  for (const [id, gltf] of loaded) {
+  for (const [id] of loaded) {
     const slot = masks.wearables[id].slot;
     const mesh = meshes.get(id);
     wardrobe.remove(slot);
-    if (mesh.parent || body.geometry.index.count <= expectedIndexCount) throw new Error(`Removing ${id} failed`);
+    if (mesh.parent) throw new Error(`Removing ${id} failed`);
+    if (slot === 'outerwear' && selected.some((candidate) => masks.wearables[candidate].slot === 'top')) {
+      const top = findSkin(canonicalGLTF.scene, selected.find((candidate) => masks.wearables[candidate].slot === 'top'));
+      if (!top.visible) throw new Error('Removing outerwear failed to reveal the top layer');
+    }
     // The GLB scene no longer owns its mesh. Load it again as a real equip call would.
     const replacement = await loader.loadAsync(paths[id]);
     meshes.set(id, wardrobe.equip(id, replacement));
     if (body.geometry.index.count !== expectedIndexCount) throw new Error(`Mask restore failed: ${id}`);
   }
+  if (query.has('swap')) {
+    report.slotSwaps = {};
+    for (const original of selected) {
+      const slot = masks.wearables[original].slot;
+      const other = Object.entries(manifest.modular.wearables)
+        .find(([id, record]) => record.slot === slot && id !== original);
+      if (!other) continue;
+      const [id, record] = other;
+      const previous = meshes.get(original);
+      const alternative = await loader.loadAsync(`../${record.file}`);
+      const active = wardrobe.equip(id, alternative);
+      if (previous.parent || active.parent !== body.parent) throw new Error(`Replacing ${original} failed`);
+      meshes.set(original, wardrobe.equip(original, await loader.loadAsync(paths[original])));
+      if (active.parent || body.geometry.index.count !== expectedIndexCount) {
+        throw new Error(`Restoring ${original} after replacement failed`);
+      }
+      report.slotSwaps[slot] = [original, id, original];
+    }
+  }
+  const outerwear = selected.find((id) => masks.wearables[id].slot === 'outerwear');
+  const top = selected.find((id) => masks.wearables[id].slot === 'top');
+  if (outerwear && top && meshes.get(top).visible === Boolean(masks.wearables[outerwear].coversTop)) {
+    throw new Error('Outerwear did not set the underlying top visibility correctly');
+  }
+  report.drawCalls = [...meshes.values()].filter((mesh) => mesh.visible).length + 2;
   report.independentEquipAndRemove = true;
   report.visibleBodyTriangles = body.geometry.index.count/3;
   report.headTriangles = head.geometry.index.count/3;
   report.visibleTotalTriangles = report.visibleBodyTriangles + report.headTriangles +
-    Object.values(report.garments).reduce((sum, item) => sum + item.triangles, 0);
+    Object.entries(report.garments).reduce((sum, [id,item]) => sum + (meshes.get(id).visible ? item.triangles : 0), 0);
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#363b42');

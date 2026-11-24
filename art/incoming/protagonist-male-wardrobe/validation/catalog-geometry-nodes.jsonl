@@ -1,0 +1,7 @@
+{"ok": true, "tree": "Hood drawstring sweep", "nodes": 5, "links": 4, "evaluated": {"verts": 48, "faces": 42}, "modifier": "Hood drawstring sweep"}
+{"ok": true, "tree": "Hood drawstring sweep", "nodes": 5, "links": 4, "evaluated": {"verts": 48, "faces": 42}, "modifier": "Hood drawstring sweep"}
+{"ok": true, "material": "M_hoodie-gray-down", "maps": {"basecolor": "fabric_basecolor.png", "normal": "fabric_normal.png"}, "assigned": ["hoodie-gray-down"]}
+{"covered_verts": 5813, "poke_verts": 141, "poke_max_m": 0.09992}
+{"ok": true, "tree": "Hood drawstring sweep", "nodes": 5, "links": 4, "evaluated": {"verts": 48, "faces": 42}, "modifier": "Hood drawstring sweep"}
+{"ok": true, "tree": "Hood drawstring sweep", "nodes": 5, "links": 4, "evaluated": {"verts": 48, "faces": 42}, "modifier": "Hood drawstring sweep"}
+{"covered_verts": 5970, "poke_verts": 127, "poke_max_m": 0.09979}

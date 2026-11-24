@@ -1,6 +1,5 @@
 """Render and measure wearables on the real animated protagonist."""
 import json
-import math
 import os
 from pathlib import Path
 import sys
@@ -75,7 +74,7 @@ def main(folder, names, mode):
         if o.type=="MESH":
             o.hide_render = o not in (BODY,bpy.data.objects["Head_face_01"],*assets)
     camera = studio()
-    if mode in {"images","tee"}:
+    if mode in {"images","tee","standalone"}:
         for obj in assets:
             for o in (BODY,bpy.data.objects["Head_face_01"],*assets):
                 o.hide_render = o != obj
@@ -84,7 +83,9 @@ def main(folder, names, mode):
             center = sum(bbox,Vector())/8
             scale = max(obj.dimensions)*1.19
             for angle, off in (("front",(1.40,-4,1.15)),("back",(-1.30,4,.60))):
-                render(camera, folder/f"{obj.name}-{angle}", center, off, scale, (500,500))
+                render(camera, folder/f"{obj.name}-{angle}", center, off, scale, (380,380) if mode=="standalone" else (500,500))
+        if mode=="standalone":
+            return
         for o in (BODY,bpy.data.objects["Head_face_01"],*assets):
             o.hide_render = False
         if mode == "tee":

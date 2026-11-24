@@ -23,6 +23,7 @@ for obj in list(bpy.context.scene.objects):
 for action in list(bpy.data.actions):
     bpy.data.actions.remove(action)
 bpy.ops.outliner.orphans_purge(do_local_ids=True,do_linked_ids=False,do_recursive=True)
+bpy.context.preferences.filepaths.save_version = 0
 bpy.ops.wm.save_as_mainfile(filepath=str(Path(source).resolve()),compress=True)
 for name in names:
     # The Blender exporter includes all children of the selected rig.

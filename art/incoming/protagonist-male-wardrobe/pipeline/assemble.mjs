@@ -38,7 +38,11 @@ export function createWardrobe(body, masks, verifiedBodySha256) {
     body.geometry = base;
     if (!slots.size) return;
     const hidden = new Uint8Array(indices.length / 3);
-    for (const { id } of slots.values()) {
+    const outerwear = slots.get('outerwear');
+    const hideTop = outerwear && masks.wearables[outerwear.id].coversTop;
+    for (const [slot, { id, mesh }] of slots) {
+      mesh.visible = !(slot === 'top' && hideTop);
+      if (!mesh.visible) continue;
       for (const [start, count] of masks.wearables[id].ranges) hidden.fill(1, start, start + count);
     }
     const visible = new indices.constructor(indices.length - hidden.reduce((a, b) => a + 3 * b, 0));
