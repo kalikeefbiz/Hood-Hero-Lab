@@ -4,7 +4,7 @@
   "heightM": 1.78,
   "bindPose": "T",
   "facing": "+Z",
-  "triangles": 23238,
+  "triangles": 23934,
   "texture": 1024,
   "rig": "rigify-game",
   "clips": {
@@ -61,5 +61,5 @@
       }
     }
   },
-  "notes": "Pilot Round 2 delivery (body + face-01 + face-02 + complexion-01/02) per docs/handoff/protagonist-male.md. Job 2 used multi-image-to-3d meshy-7.1 + meshy-n1 (30 credits, owner-approved Option A) because multi-image-to-3d does not support meshy-t2.5. Total Meshy spend: 45 credits (0 new credits in Round 2). Both heads rebuilt with watertight bmesh.ops.bridge_loops neck collar, face-protected decimation on face-02, 3-island clean UV unwrap + 1024x1024 Cycles diffuse bake from untouched raw Meshy meshes, and pure sRGB 4.2 cm neck-seam colour blending. Shared 76-vertex neck-seam loop at z=1.505m verified at 0.000mm pos diff, <=0.025 deg normal diff, 0.0000 weight diff, and 0.000mm animated gap across Idle/Walk/Run."
+  "notes": "Pilot Round 3 delivery (body + face-01 + face-02 + complexion-01/02) per docs/handoff/protagonist-male.md. Job 2 used multi-image-to-3d meshy-7.1 + meshy-n1 (30 credits, owner-approved Option A) because multi-image-to-3d does not support meshy-t2.5. Total Meshy spend: 45 credits (0 new credits in Round 2/3). Body rebuilt from untouched Job 1 mesh cut cleanly at Z_SEAM=1.538m (above both shoulders, fixing the left shoulder flap and left upper arm cutout) with original Meshy custom normals and transferred 36-bone skinning. face-01 cut directly at Z_SEAM=1.538m with 620x940px front-face UV projection, zero-raycast UV-to-UV self-bake, and transferred Meshy custom normals. face-02 keeps Meshy's own UVs and texture untouched on the face, reduced to 7238 tris with UV-delimited face-protected DECIMATE and only the lowest neck band stitched and blended from complexion-02. Shared 94-vertex neck-seam loop at z=1.538m verified at 0.000mm pos diff, <=0.025 deg normal diff, 0.0000 weight diff, and 0.000mm animated gap across Idle/Walk/Run."
 }
