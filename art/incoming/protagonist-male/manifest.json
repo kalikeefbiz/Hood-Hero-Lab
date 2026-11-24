@@ -17,7 +17,16 @@
     "art/incoming/protagonist-male/ref/body/t-pose-front.png",
     "art/incoming/protagonist-male/ref/heads/face-02/front.png",
     "art/incoming/protagonist-male/ref/heads/face-02/left.png",
-    "art/incoming/protagonist-male/ref/heads/face-02/rear.png"
+    "art/incoming/protagonist-male/ref/heads/face-02/rear.png",
+    "art/incoming/protagonist-male/ref/heads/face-03/front.png",
+    "art/incoming/protagonist-male/ref/heads/face-03/left.png",
+    "art/incoming/protagonist-male/ref/heads/face-03/rear.png",
+    "art/incoming/protagonist-male/ref/heads/face-04/front.png",
+    "art/incoming/protagonist-male/ref/heads/face-04/left.png",
+    "art/incoming/protagonist-male/ref/heads/face-04/rear.png",
+    "art/incoming/protagonist-male/ref/heads/face-05/front.png",
+    "art/incoming/protagonist-male/ref/heads/face-05/left.png",
+    "art/incoming/protagonist-male/ref/heads/face-05/rear.png"
   ],
   "meshyTaskId": "01a20b45-e738-71c2-ba1b-871200f57913",
   "blender": "5.3",
@@ -46,6 +55,42 @@
           "ref/heads/face-02/left.png",
           "ref/heads/face-02/rear.png"
         ]
+      },
+      "face-03": {
+        "file": "heads/face-03.glb",
+        "complexion": "complexion-03",
+        "label": "Hispanic/Latino",
+        "meshyTaskId": "01a20d29-0949-72ac-9d16-b60dc89798da",
+        "meshyMode": "multi-image-to-3d",
+        "inputs": [
+          "ref/heads/face-03/front.png",
+          "ref/heads/face-03/left.png",
+          "ref/heads/face-03/rear.png"
+        ]
+      },
+      "face-04": {
+        "file": "heads/face-04.glb",
+        "complexion": "complexion-04",
+        "label": "Asian",
+        "meshyTaskId": "01a20d29-1217-712c-98dd-105f7b81cd6a",
+        "meshyMode": "multi-image-to-3d",
+        "inputs": [
+          "ref/heads/face-04/front.png",
+          "ref/heads/face-04/left.png",
+          "ref/heads/face-04/rear.png"
+        ]
+      },
+      "face-05": {
+        "file": "heads/face-05.glb",
+        "complexion": "complexion-05",
+        "label": "Mixed-heritage",
+        "meshyTaskId": "01a20d29-1a0f-7169-ac50-680571998cb2",
+        "meshyMode": "multi-image-to-3d",
+        "inputs": [
+          "ref/heads/face-05/front.png",
+          "ref/heads/face-05/left.png",
+          "ref/heads/face-05/rear.png"
+        ]
       }
     },
     "complexions": {
@@ -58,8 +103,23 @@
         "file": "complexions/complexion-02.ktx2",
         "label": "White",
         "hex": "#a6725e"
+      },
+      "complexion-03": {
+        "file": "complexions/complexion-03.ktx2",
+        "label": "Hispanic/Latino",
+        "hex": "#8e5e45"
+      },
+      "complexion-04": {
+        "file": "complexions/complexion-04.ktx2",
+        "label": "Asian",
+        "hex": "#a26e50"
+      },
+      "complexion-05": {
+        "file": "complexions/complexion-05.ktx2",
+        "label": "Mixed-heritage",
+        "hex": "#915f43"
       }
     }
   },
-  "notes": "Pilot Round 3 delivery (body + face-01 + face-02 + complexion-01/02) per docs/handoff/protagonist-male.md. Job 2 used multi-image-to-3d meshy-7.1 + meshy-n1 (30 credits, owner-approved Option A) because multi-image-to-3d does not support meshy-t2.5. Total Meshy spend: 45 credits (0 new credits in Round 2/3). Body rebuilt from untouched Job 1 mesh cut cleanly at Z_SEAM=1.538m (above both shoulders, fixing the left shoulder flap and left upper arm cutout) with original Meshy custom normals and transferred 36-bone skinning. face-01 cut directly at Z_SEAM=1.538m with 620x940px front-face UV projection, zero-raycast UV-to-UV self-bake, and transferred Meshy custom normals. face-02 keeps Meshy's own UVs and texture untouched on the face, reduced to 7238 tris with UV-delimited face-protected DECIMATE and only the lowest neck band stitched and blended from complexion-02. Shared 94-vertex neck-seam loop at z=1.538m verified at 0.000mm pos diff, <=0.025 deg normal diff, 0.0000 weight diff, and 0.000mm animated gap across Idle/Walk/Run."
+  "notes": "Round 4 delivery (frozen body from 867dbe8 + faces 01-05 + complexions 01-05) per docs/handoff/protagonist-male.md (#73). Body protagonist-male.glb is byte-identical to 867dbe8. Faces 03-05 generated via multi-image-to-3d meshy-7.1 + meshy-n1 (30 credits each, 90 credits Round 4, 135 credits total). Faces 02-05 keep Meshy's own UVs and texture untouched on the face, reduced to <=8k tris with UV-delimited face+ear-protected DECIMATE, stitched to the shared 94-vertex Z_SEAM=1.538m ring, and cosine-blended over the lowest 3.4cm into paired complexions. face-01 polished to remove cheek/jaw UV-seam chips while leaving eyes untouched."
 }
