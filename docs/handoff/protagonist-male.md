@@ -67,6 +67,54 @@ their causes:
 
 Push to the same PR (#71).
 
+### Round 4: faces 03–05 and pilot polish (owner-approved 2026-11-24)
+
+The pilot (PR #71, round 3) is **accepted and merged** (`867dbe8`). Claude is moving it into
+the game and wiring it as the player. This round adds the other three heads and polishes two
+small things.
+
+**Budget: approved by the owner, up to 90 Meshy credits.** That covers three new multi-image head jobs (face-03, face-04,
+face-05) at about 30 credits each, the same settings as job 2 (`multi-image-to-3d`,
+`meshy-7.1` + `meshy-n1`, PBR off, 2k, inputs `ref/heads/face-0N/{front,left,rear}.png`).
+- You don't need to ask again inside this budget. Report the exact spend per job in the PR.
+- Use free retries whenever an output is wrong.
+- Going over 90 credits, or any other paid task (remesh included), needs the owner first.
+
+**The recipe for each new head is exactly round 3's face-02 recipe. Nothing else:**
+- **Keep Meshy's own UVs and texture on the head. Don't re-unwrap or rebake the head.**
+- Reduce to ≤ 8k triangles with UV-delimited decimation, protecting eyes, nose, lips and
+  cheeks.
+- Trim and stitch to the body's 94-vertex ring at `Z_SEAM = 1.538 m`. Map the collar to
+  Meshy's own neck pixels. Blend the lowest ~3.6 cm into the paired complexion.
+- Before shots with `--raw --bust` for each new head.
+- Complexions 03–05: recolour the body texture the same way as complexion-02, matched at each
+  head's neck.
+
+**The body doesn't change.** `protagonist-male.glb`, the rig and the clips stay byte-identical to
+`867dbe8`.
+
+**Polish: fix only these, on the existing heads:**
+- **face-02:** the faint vertical light streaks on both sides of the neck, the faint band at
+  the nape, and the dark crease in the ear.
+- **face-01:** chips on the left cheek and jaw line **that aren't in the raw**. Compare with
+  `raw_face-01_face.png`. Leave anything Meshy made.
+- **Leave the eyes alone** on every head. Owner decision: the softness doesn't show at
+  game-camera distance, and it isn't worth the risk.
+- **Don't regress.** Each touched head's face sheet must be at least as clean as its round-3
+  sheet. If a fix risks the face, skip it and say so.
+
+**Deliver** on a new branch from latest `main` (e.g. `gemini/protagonist-male-faces`), into
+`art/incoming/protagonist-male/`. Claude may have moved the pilot out of that folder; if so,
+restore it from `867dbe8`.
+- The folder is a full delivery: the unchanged body, `heads/face-01`…`face-05`, and
+  `complexions/complexion-01`…`complexion-05`.
+- The manifest lists all five heads and complexions.
+- Include the raw sheets for the three new heads and the three.js sheets for all five.
+- The checker must print `PASS`.
+- The PR says, in plain words, what the sheets show.
+
+Then **stop**: hair, clothing and footwear aren't approved yet.
+
 ## Body
 
 - **Proportions:** keep `t-pose-front.png`. Height 1.78 m unless the owner says otherwise.
