@@ -35,9 +35,12 @@ sitting on the shared neck with no visible seam. Prove that once before spending
 
 Rules for both:
 
-- **Quote, then wait.** Before running, post the exact credit cost of each job from `meshy`
-  (multi-image may cost more than 15). Don't run until the owner approves that amount.
-  Regenerating also needs approval.
+- **Credits.** Each Meshy task has **4 free retries**: use them whenever the output is wrong,
+  without asking. A **new** task (new input images or mode) costs credits: post the exact cost
+  from `meshy` and wait for the owner's approval.
+- **Before shots.** Render every raw Meshy output with
+  `node scripts/review-character.mjs --raw <model.glb>` (`--bust` for heads) before touching it.
+  If the raw face is torn or blotchy, spend a free retry. These sheets go in the PR.
 - **Inputs stay as given.** Plain resampling (Lanczos) of the ~303 px crops is allowed. AI
   upscaling, retouching or inpainting is not; it changes the likeness.
 - **`original.jpeg` is for checking likeness only. Never feed it to Meshy:** it has hair and a
@@ -47,6 +50,22 @@ Rules for both:
 
 After the pilot passes review, faces 03, 04 and 05 each follow job 2's recipe (multi-image,
 front/left/rear), as a separate approval.
+
+### Round 2 (after Claude's review of PR #71, 2026-11-24)
+
+The body, rig, clips and complexions are accepted as delivered. The heads aren't. The defects and
+their causes:
+
+| Defect | Cause | Fix |
+| --- | --- | --- |
+| face-01: torn shards round the eyes, cheek and jaw | Not yet known: the face is ~100 px wide in a full-body image, and/or step-2 decimation tore UVs. Mr. Lewis and Flacco show the same thing. | Render job 1's raw GLB with `--raw`. **Raw face clean:** the processing did it; redo it with the face protected from decimation (no credits). **Raw face bad:** spend job 1's free retries. If those fail too, make face-01 a multi-image head from `ref/heads/face-01/{front,left,rear}.png` like face-02 (a new task: quote and wait). |
+| Hard colour line round the base of the neck, both heads | No colour blend was made across the seam | See **Seam → Colour** below. |
+| face-02: streaked neck | One UV per stitched collar triangle | Give the collar band real UVs, or bake it from the body texture. |
+| face-02: dark flaps at the trapezius | Meshy's bust shoulders weren't fully cut away | No head geometry below the seam ring or outside the body's neck surface. |
+| face-02: dark flecks on the cheek | Left over from the vertex-merge passes | Find and remove; compare with the raw sheet. |
+| face-01: spike under the throat | Seam-cut geometry | Remove. |
+
+Push to the same PR (#71).
 
 ## Body
 
@@ -78,8 +97,12 @@ front/left/rear), as a separate approval.
   - identical bone weights on the seam vertices
 - **No gap or crease** at any frame of Idle, Walk or Run, including the run's head bob and any
   head turn in the idle.
-- **Colour:** at the seam, a head's skin colour must match its paired complexion. No visible
-  line in neutral light, in day game lighting or in night game lighting.
+- **Colour:** at the seam, a head's skin colour must match its paired complexion. Matching
+  geometry doesn't do this; the two textures come from separate Meshy jobs and never match on
+  their own. **Required step:** sample both textures along the ring and repaint or bake the
+  head's lowest 3–4 cm so its colour fades into the body's at the ring, for each head and its
+  complexion. Proof is the three.js `neck · front` and `neck · back 3/4` views: no visible
+  line, day or night.
 
 ## Heads
 
@@ -151,7 +174,10 @@ Set the top-level `meshyTaskId` to job 1's id.
 
 ## Check and hand off
 
-1. Run `node scripts/check-character.mjs art/incoming/protagonist-male` until it prints
+1. Run `node scripts/review-character.mjs art/incoming/protagonist-male`. It writes a face
+   sheet and a body sheet **per head** to `previews/threejs/`, rendered in three.js with the
+   city's lighting, exactly as Claude reviews. Open every one and fix what you see.
+   Then run `node scripts/check-character.mjs art/incoming/protagonist-male` until it prints
    `PASS`. It now also checks the modular parts:
    - every head and complexion file is listed in the manifest
    - head budgets, and no animations in heads
@@ -162,6 +188,9 @@ Set the top-level `meshyTaskId` to job 1's id.
 2. Push the branch and open a PR to `main` that changes only `art/incoming/protagonist-male/`.
    In the body, include:
    - the checker output
+   - the three.js sheets, with the raw (`--raw`) face sheets beside them
+   - **what the sheets show, in plain words**: every flaw you can see and whether you fixed it.
+     A seam metric doesn't replace looking.
    - the JSON from each pipeline step
    - the seam numbers
    - the Meshy task ids, modes, inputs and credits spent
