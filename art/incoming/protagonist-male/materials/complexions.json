@@ -1,0 +1,90 @@
+{
+  "version": "1.0.0",
+  "presets": {
+    "face-01": {
+      "id": "complexion-face-01",
+      "faceId": "face-01",
+      "slug": "black",
+      "label": "Black",
+      "foreheadHex": "#71452f",
+      "cheekHex": "#7a4a32",
+      "neckHex": "#583421",
+      "averageRgb": [
+        107.6,
+        65.2,
+        43.4
+      ],
+      "averageHex": "#6c412b",
+      "roughnessFactor": 0.72,
+      "metallicFactor": 0.0
+    },
+    "face-02": {
+      "id": "complexion-face-02",
+      "faceId": "face-02",
+      "slug": "white",
+      "label": "White",
+      "foreheadHex": "#ac7964",
+      "cheekHex": "#ae7562",
+      "neckHex": "#976953",
+      "averageRgb": [
+        165.8,
+        114.1,
+        93.5
+      ],
+      "averageHex": "#a6725e",
+      "roughnessFactor": 0.72,
+      "metallicFactor": 0.0
+    },
+    "face-03": {
+      "id": "complexion-face-03",
+      "faceId": "face-03",
+      "slug": "hispanic-latino",
+      "label": "Hispanic/Latino",
+      "foreheadHex": "#885c47",
+      "cheekHex": "#9f6a51",
+      "neckHex": "#835437",
+      "averageRgb": [
+        141.9,
+        94.1,
+        68.9
+      ],
+      "averageHex": "#8e5e45",
+      "roughnessFactor": 0.72,
+      "metallicFactor": 0.0
+    },
+    "face-04": {
+      "id": "complexion-face-04",
+      "faceId": "face-04",
+      "slug": "asian",
+      "label": "Asian",
+      "foreheadHex": "#9a684d",
+      "cheekHex": "#b27a5e",
+      "neckHex": "#996745",
+      "averageRgb": [
+        161.8,
+        109.6,
+        79.8
+      ],
+      "averageHex": "#a26e50",
+      "roughnessFactor": 0.72,
+      "metallicFactor": 0.0
+    },
+    "face-05": {
+      "id": "complexion-face-05",
+      "faceId": "face-05",
+      "slug": "mixed-heritage",
+      "label": "Mixed-heritage",
+      "foreheadHex": "#94644b",
+      "cheekHex": "#a46b4b",
+      "neckHex": "#7d4f33",
+      "averageRgb": [
+        145.5,
+        95.3,
+        66.9
+      ],
+      "averageHex": "#915f43",
+      "roughnessFactor": 0.72,
+      "metallicFactor": 0.0
+    }
+  }
+}
