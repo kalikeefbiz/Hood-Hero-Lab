@@ -31,9 +31,16 @@ controller.onLeave(anchor => …)
 - **Codex:** the engine decides eligibility, costs and outcomes. The controller only says where the player physically is.
 - **Gemini:** the NPC simulation can import `resolveCircle`, `moveCircle`, `blocked` and `MAP_SOLIDS` from `player/collision.ts`, and `anchorsAt` from `anchors.ts`, so NPCs and the player agree on what is solid and what counts as "at a door". The controller never moves NPCs. NPCs at their spots are solid circles for the player.
 
-## Temporary avatar
+## Player avatar: the male protagonist
 
-`TEMP_AVATAR` is the approved Mega rig with its approved walk and run clips, recoloured as a plain grey mannequin so it does not read as Mega or as a protagonist. The rig has no idle clip, so idle is its rest pose. To swap in the final protagonist, pass a different `AvatarSpec`: model, clips, height and the speed each clip was authored at. Nothing else changes.
+The player is the male protagonist (`protagonistMale()` in `src/strip/player/avatar.ts`).
+- **Files:** `public/assets/models/characters/protagonist-male/`. Sources and previews are in `art/source/hood-hero/protagonist-male/`; the contract is `docs/handoff/protagonist-male.md`.
+- **It's modular:** one headless body carries the rig and the `Idle`/`Walk`/`Run` clips. A separate head (`heads/face-0N.glb`) is rebound to the body's bones by name, so it follows every clip. A matching body skin texture (`complexions/complexion-0N.ktx2`) replaces the body's base colour.
+- **Heads:** `face-01` by default. `strip.html?face=face-02` previews another head. Choosing a head for real is a character-creation and save decision, which belongs to Codex, and isn't built yet.
+- **Speeds:** the clips were authored at 0.79 m/s (walk) and 2.55 m/s (run). Playback speeds up to 2.1× (walk) and 1.7× (run) to match the player's 1.6 and 4.2 m/s, so the feet don't slide.
+- **Not final:** no clothing, hair or footwear yet; those parts come later on the same skeleton.
+
+`TEMP_AVATAR`, the grey Mega mannequin, is still exported for comparisons. Any `AvatarSpec` can be passed as `WalkHost.avatar`.
 
 ## Speeds and feel
 

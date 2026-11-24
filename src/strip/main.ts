@@ -246,7 +246,7 @@ const windowGlow = new THREE.PointLight(0xdfe8ff, 14, 8, 2);
 windowGlow.position.set(0, 1.6, 1.4); scene.add(windowGlow); nightLights.push(windowGlow);
 
 // ---------------------------------------------------------------- controls
-// Default: walk the temporary avatar (player controller). ?select: the developer location
+// Default: walk the protagonist (player controller). ?select: the developer location
 // selector with a free orbit camera. Both run on the same isolated test campaign.
 const view: "walk" | "select" = params.has("select") ? "select" : "walk";
 document.body.dataset.view = view;

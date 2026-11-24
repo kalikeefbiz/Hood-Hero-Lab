@@ -1,4 +1,4 @@
-// Walk mode: the temporary avatar on the five streets, driven by the touch stick (or WASD),
+// Walk mode: the protagonist on the five streets, driven by the touch stick (or WASD),
 // colliding with the map, followed by the camera. Walking up to a door or a person offers it;
 // tapping the offer opens the same engine-backed card as the developer selector, after the
 // engine's normal arrival at that location (on the test campaign).
@@ -8,7 +8,7 @@ import { PLAYER_START } from "./cityMap";
 import { anchorById, isInteractive, type CityAnchor } from "./anchors";
 import { PlayerController } from "./player/controller";
 import { MAP_SOLIDS, type Circle } from "./player/collision";
-import { Avatar, TEMP_AVATAR, type AvatarSpec } from "./player/avatar";
+import { Avatar, PROTAGONIST_MALE_HEADS, protagonistMale, type AvatarSpec, type ProtagonistHead } from "./player/avatar";
 import { FollowCamera } from "./player/followCamera";
 import type { startPreview } from "./preview";
 import type { startLiving } from "./living";
@@ -36,7 +36,11 @@ export function startWalk(host: WalkHost) {
     x: PLAYER_START.x, z: PLAYER_START.z, heading: PLAYER_START.rotY, solids,
     arrivalKinds: ["place", "home", "storefront"],
   });
-  const avatar = new Avatar(host.avatar ?? TEMP_AVATAR, host.loader, host.url);
+  // The male protagonist. Which head is the player's choice; until character creation exists
+  // (a game/save decision), ?face=face-02 previews another head. Nothing is saved.
+  const face = new URLSearchParams(location.search).get("face");
+  const head = (PROTAGONIST_MALE_HEADS as readonly string[]).includes(face ?? "") ? (face as ProtagonistHead) : undefined;
+  const avatar = new Avatar(host.avatar ?? protagonistMale(head), host.loader, host.url);
   scene.add(avatar.root);
   const cam = new FollowCamera(camera, canvas, PLAYER_START.rotY);
   const focus = new THREE.Vector3();

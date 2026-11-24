@@ -18,12 +18,40 @@ export interface AvatarSpec {
   mannequin?: number;
   /** Extra yaw if the model's forward isn't +Z. */
   yawOffset?: number;
+  /**
+   * Modular character: a head GLB skinned to the same skeleton, bound to the model's bones by
+   * name. The model is measured for `height` with the head on.
+   */
+  head?: string;
+  /** Modular character: a KTX2 base-colour texture that replaces the model's body texture. */
+  skin?: string;
+}
+
+const PROTAGONIST_DIR = "assets/models/characters/protagonist-male";
+/** Heads delivered for the male protagonist, each paired with its body complexion. */
+export const PROTAGONIST_MALE_HEADS = ["face-01", "face-02"] as const;
+export type ProtagonistHead = (typeof PROTAGONIST_MALE_HEADS)[number];
+
+/**
+ * The male protagonist (art/source/hood-hero/protagonist-male, docs/handoff/protagonist-male.md):
+ * one headless body with the rig and clips, a swappable head and a matching body complexion.
+ * Speeds are the manifest's measured ground speeds.
+ */
+export function protagonistMale(head: ProtagonistHead = "face-01"): AvatarSpec {
+  const model = `${PROTAGONIST_DIR}/protagonist-male.glb`;
+  return {
+    model,
+    clips: { idle: `${model}#Idle`, walk: `${model}#Walk`, run: `${model}#Run` },
+    height: 1.78,
+    clipSpeed: { walk: 0.79, run: 2.55 },
+    head: `${PROTAGONIST_DIR}/heads/${head}.glb`,
+    skin: `${PROTAGONIST_DIR}/complexions/${head.replace("face", "complexion")}.ktx2`,
+  };
 }
 
 /**
- * TEMPORARY player avatar. The final protagonist is not chosen yet. This borrows the approved
- * Mega rig and its walk/run clips, recoloured as a plain mannequin so it reads as a placeholder,
- * not as Mega (a Southside character).
+ * Former stand-in player avatar, kept for tests and comparisons: the approved Mega rig and its
+ * walk/run clips, recoloured as a plain mannequin so it doesn't read as Mega.
  */
 export const TEMP_AVATAR: AvatarSpec = {
   model: "assets/models/characters/mega.glb",
@@ -62,9 +90,22 @@ export class Avatar {
       const gl = await file(path);
       return { animations: name ? gl.animations.filter((a) => a.name === name) : gl.animations.slice(0, 1) };
     };
-    const g = await file(s.model);
-    const [walk, run, idle] = await Promise.all([pick(s.clips.walk), pick(s.clips.run), pick(s.clips.idle)]);
+    const ktx2 = loader.ktx2Loader;
+    const [g, walk, run, idle, headFile, skinTex] = await Promise.all([
+      file(s.model), pick(s.clips.walk), pick(s.clips.run), pick(s.clips.idle),
+      s.head ? file(s.head) : null,
+      s.skin && ktx2 ? ktx2.loadAsync(url(s.skin)) : null,
+    ]);
     const model = g.scene;
+    if (headFile) this.attachHead(model, headFile.scene);
+    if (skinTex) {
+      skinTex.flipY = false; // glTF texture convention
+      skinTex.colorSpace = THREE.SRGBColorSpace;
+      let body: THREE.SkinnedMesh | undefined;
+      model.traverse((o) => { if (!body && (o as THREE.SkinnedMesh).isSkinnedMesh && o.name !== "avatar-head") body = o as THREE.SkinnedMesh; });
+      const mat = body?.material as THREE.MeshStandardMaterial | undefined;
+      if (mat) { mat.map = skinTex; mat.needsUpdate = true; }
+    }
     const grey = s.mannequin !== undefined
       ? new THREE.MeshStandardMaterial({ color: s.mannequin, roughness: 0.65, metalness: 0.05 })
       : null;
@@ -75,6 +116,7 @@ export class Avatar {
       m.frustumCulled = false; // skinned bounds don't follow the animation
       if (grey) m.material = grey;
     });
+    model.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(model);
     model.scale.multiplyScalar(s.height / Math.max(0.01, box.max.y - box.min.y));
     model.rotation.y = s.yawOffset ?? 0;
@@ -96,6 +138,28 @@ export class Avatar {
     this.loaded = true;
     this.setState("idle");
     this.actions.idle?.setEffectiveWeight(1);
+  }
+
+  /**
+   * Put a separately delivered head on the body: its skinned mesh is rebound to the body's own
+   * bones (matched by name), so it follows every clip. Both files share one rest skeleton; the
+   * delivery checker verifies that (scripts/check-character.mjs).
+   */
+  private attachHead(model: THREE.Object3D, headScene: THREE.Object3D) {
+    const bones = new Map<string, THREE.Bone>();
+    let body: THREE.SkinnedMesh | undefined;
+    model.traverse((o) => {
+      if ((o as THREE.Bone).isBone) bones.set(o.name, o as THREE.Bone);
+      if (!body && (o as THREE.SkinnedMesh).isSkinnedMesh) body = o as THREE.SkinnedMesh;
+    });
+    let head: THREE.SkinnedMesh | undefined;
+    headScene.traverse((o) => { if (!head && (o as THREE.SkinnedMesh).isSkinnedMesh) head = o as THREE.SkinnedMesh; });
+    if (!body?.parent || !head) return;
+    const mapped = head.skeleton.bones.map((b) => bones.get(b.name));
+    if (mapped.some((b) => !b)) return; // not the same skeleton: leave the head off rather than tear it
+    head.name = "avatar-head";
+    body.parent.add(head);
+    head.bind(new THREE.Skeleton(mapped as THREE.Bone[], head.skeleton.boneInverses), head.bindMatrix);
   }
 
   private setState(next: "idle" | "walk" | "run") {
@@ -122,8 +186,10 @@ export class Avatar {
     const s = this.spec.clipSpeed;
     const walk = this.actions.walk, run = this.actions.run;
     // Feet match the ground: scale the clip's playback to the speed actually travelled.
-    if (walk) walk.timeScale = p.motion === "walk" ? THREE.MathUtils.clamp(p.speed / s.walk, 0.5, 1.6) : 1;
-    if (run) run.timeScale = p.motion === "run" ? THREE.MathUtils.clamp(p.speed / s.run, 0.7, 1.4) : 1;
+    // The protagonist's clips were authored at 0.79 / 2.55 m/s and the player walks up to 1.6 and
+    // runs at 4.2, so playback needs room to speed up or the feet slide.
+    if (walk) walk.timeScale = p.motion === "walk" ? THREE.MathUtils.clamp(p.speed / s.walk, 0.5, 2.1) : 1;
+    if (run) run.timeScale = p.motion === "run" ? THREE.MathUtils.clamp(p.speed / s.run, 0.7, 1.7) : 1;
     this.blend(dt);
     this.mixer.update(dt);
   }

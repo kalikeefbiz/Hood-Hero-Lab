@@ -1,6 +1,6 @@
 import { test, expect, type Page, type CDPSession } from "@playwright/test";
 
-// Player controller preview (strip.html, default walk mode, NPCs from the living simulation): a temporary avatar driven by the
+// Player controller preview (strip.html, default walk mode, NPCs from the living simulation): the protagonist driven by the
 // on-screen touch stick, colliding with the map, followed by the camera, walking up to a real
 // door and using the engine there. Chromium sends genuine touch events through CDP.
 
