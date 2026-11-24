@@ -28,6 +28,11 @@ You have Meshy, Blender and Node in your environment. Use them directly.
 - **Meshy** for the base mesh only. Don't use Meshy's auto-rig or stock animations: that's how Mega was made, and he ended up with a 24-bone rig and no idle.
 - **Node**, for the final compression with `art/source/hood-hero/quanny/pipeline/compress.mjs`. Install its packages in a scratch folder outside the repo: `npm i @gltf-transform/core @gltf-transform/extensions @gltf-transform/functions ktx2-encoder meshoptimizer sharp`.
 - **Checker:** `node scripts/check-character.mjs art/incoming/<id>` must print `PASS` before you open a PR.
+- **Review sheets:** `node scripts/review-character.mjs` renders the model in **three.js, the game's renderer, with the city's day and night lighting**: face and neck close-ups, a run frame and full-body views. Claude reviews from these same sheets. Blender renders (Cycles, EEVEE, Workbench) hide texture tears and seams that three.js shows, so a delivery checked only in Blender isn't checked. It needs the repo's packages (`npm ci`) and a Chromium for Playwright (`npx playwright install chromium`, or set `CHROMIUM_PATH`); no GPU needed.
+
+### Why the review sheets exist (2026-11-24)
+
+Mr. Lewis, Flacco and the protagonist's face-01 all shipped or were delivered with **torn, shard-like texture round the eyes, mouth and jaw**. It's visible only up close, and none of the Blender previews showed it. Quanny, built by hand, is clean. The likely causes are low face resolution in a full-body Meshy image and step 2's decimation collapsing across UV seams, where the eyes and mouth are densest. Which of the two it is hasn't been settled, because nobody kept a render of Meshy's raw output. The before/after shots in steps 1 and 2 settle it for every new character.
 
 Skills used, in order:
 - `blender-core` (always first)
@@ -61,6 +66,8 @@ Gate: Blender 5.2 or newer is reported. Read `blender-core/SKILL.md`, in particu
 
 - Meshy image-to-3D from the approved front view: `meshy-t2.5`, **T-pose** (arms straight out, palms down), PBR off, 2k texture. T-pose matters: step 5 reuses Quanny's clips, and retargeting needs matching rest poses.
 - Check it against the art: face, clothes, colours, accessories. If it's wrong, regenerate; don't fix likeness in Blender.
+- **Before shot:** `node scripts/review-character.mjs --raw <meshy model.glb> --out <scratch>/review` (add `--bust` for a head-only model and `--yaw 180` if it faces away). Open `*_raw_face.png`. If the raw face is torn, blotchy or smeared, Meshy made it: regenerate. Keep these sheets; they go in the PR.
+- **Credits:** Meshy gives each task **4 free retries**. Use them whenever the output is wrong, without asking. A **new** task (different input images or mode) costs credits: quote the exact cost and get the owner's approval first.
 - Don't use Meshy's rigging or animation. Note the Meshy task id for the manifest.
 - Import into Blender. Name the body object `Body`; join any accessory meshes into it. Scale to the owner's height, face **−Y** (Blender front), feet at z = 0, centred on x = 0, transforms applied (`blender-core` rules).
 - `qa_check.py -- --objects Body --profile render`.
@@ -73,8 +80,11 @@ Gate: no errors; `ob.dimensions.z` equals the height.
 - `make_lods.py -- --objects Body --cleanup` merges by distance and removes degenerate and loose geometry. It **also creates `Body_LOD1`–`Body_LOD3`; delete them**. If `qa_check` still reports Meshy fin faces (non-manifold, flipped winding, z-fighting pairs), remove those few faces with a targeted bmesh pass, and list how many you removed.
 - `mesh_stats.py -- --objects Body --budget web`, then `qa_check.py -- --objects Body --profile game`.
 - `review_shots.py -- --objects Body --mode material`, then `--mode wire`. Open both PNGs.
+- **After shot:** export `Body` as a quick GLB (`export_asset.py -- --preset web --objects Body --out //body_step2.glb`) and run `review-character.mjs --raw` on it with the same `--yaw`. Put its face sheet next to step 1's. **Anything new round the eyes, mouth or jaw (shards, tears, smears) came from this step.** Fix it before going on:
+  - protect the face from decimation (Blender's Decimate modifier in Collapse mode with a face vertex group and *Invert*), or
+  - ask Meshy for the triangle budget directly (`--target-polycount`) so decimation barely runs.
 
-Gate: QA `"pass": true`; one or two materials; the face and hands read at phone size; seams intact.
+Gate: QA `"pass": true`; one or two materials; the face and hands read at phone size; seams intact; **the step-2 face sheet is no worse than the raw one.**
 
 ### 3. Rig and skin (`blender-character-rigging`)
 
@@ -156,15 +166,18 @@ With no GPU (`env_report` shows `gpu.backend: NONE`), headless EEVEE won't rende
      previews/                   the files from step 6
    ```
 
-2. Run `node scripts/check-character.mjs art/incoming/<id>` until it prints `PASS`.
-3. Open a PR from `codex/<id>-model` or `gemini/<id>-model` that changes **only** `art/incoming/<id>/`. In the body:
+2. Run `node scripts/review-character.mjs art/incoming/<id>`. It writes `previews/threejs/*_face.png` and `*_body.png`. **Open every sheet.** Fix what you see before going on: tears, flecks, seams, gaps, geometry poking out.
+3. Run `node scripts/check-character.mjs art/incoming/<id>` until it prints `PASS`. It requires the three.js sheets.
+4. Open a PR from `codex/<id>-model` or `gemini/<id>-model` that changes **only** `art/incoming/<id>/`. In the body:
    - the checker output
+   - the three.js sheets, with the step 1 and step 2 face sheets beside them
+   - **what the sheets show, in plain words.** Name every flaw you can see and say whether you fixed it. A metric ("0.000 mm seam gap") doesn't replace looking.
    - the JSON results from steps 1–5
    - the joint, stress and sheet images
    - the Meshy task id
    - every deviation from this route and why
    - **ready for Claude review**
-4. Don't edit `public/assets/**`, `src/**` or `characterModels.ts`.
+5. Don't edit `public/assets/**`, `src/**` or `characterModels.ts`.
 
 `manifest.json`:
 
@@ -208,7 +221,10 @@ All of these must hold.
   - every channel targets a skin bone; root translation is constant; no animated scale
   - lengths match the manifest and the table above; speeds are in range
 
-**Checked by Claude in the city (`strip.html`):**
+- `previews/threejs/` holds the face and body sheets from `review-character.mjs`.
+
+**Checked by Claude from the three.js sheets and in the city (`strip.html`):**
+- No texture tears, shards or flecks on the face at close-up, day or night.
 - Faces forward; feet on the ground; height matches the manifest.
 - Looks like the approved art at phone size, day and night.
 - No skinning tears in any clip.

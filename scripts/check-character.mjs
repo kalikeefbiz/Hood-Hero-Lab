@@ -77,6 +77,10 @@ function main(dir) {
   ok(existsSync(manifestPath), "file manifest.json");
   ok(existsSync(join(dir, "source")) && readdirSync(join(dir, "source")).some((f) => f.endsWith(".blend")), "source/<id>_source.blend");
   ok(existsSync(join(dir, "previews")) && readdirSync(join(dir, "previews")).length >= 3, "previews/ (contact sheet, stress sheet, clip previews)");
+  const sheetsDir = join(dir, "previews", "threejs");
+  const sheets = existsSync(sheetsDir) ? readdirSync(sheetsDir) : [];
+  ok(sheets.some((f) => f.endsWith("_face.png")) && sheets.some((f) => f.endsWith("_body.png")),
+    "previews/threejs/ has the face and body sheets (node scripts/review-character.mjs " + dir + ")");
   if (failed) { console.log("\nFAIL (missing files)"); return 1; }
 
   let manifest = {};
@@ -189,6 +193,7 @@ function main(dir) {
       if (!ok(!!h.file && existsSync(p), `head ${hid}: file ${h.file}`)) continue;
       ok(!!skins[h.complexion], `head ${hid}: paired complexion "${h.complexion}" is listed`);
       ok(typeof h.meshyTaskId === "string" && h.meshyTaskId.length > 0, `head ${hid}: meshyTaskId recorded`);
+      ok(sheets.some((f) => f.endsWith(`_${hid}_face.png`)), `head ${hid}: three.js face sheet in previews/threejs/`);
       const hg = readGlb(p), hj = hg.json;
       ok(hg.bytes <= 350_000, `head ${hid}: size ${(hg.bytes / 1024).toFixed(0)} KB <= 342 KB`);
       ok((hj.extensionsUsed ?? []).some((e) => /meshopt_compression$/.test(e)) && (hj.extensionsUsed ?? []).includes("KHR_mesh_quantization"),
