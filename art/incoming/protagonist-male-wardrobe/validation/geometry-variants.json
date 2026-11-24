@@ -1,0 +1,30 @@
+{
+  "tee-stixx-black": {
+    "base": "tee-white",
+    "identicalAccessors": [
+      "POSITION",
+      "NORMAL",
+      "TEXCOORD_0",
+      "TANGENT",
+      "JOINTS_0",
+      "WEIGHTS_0"
+    ],
+    "identicalIndexBuffer": true,
+    "identicalInverseBinds": true,
+    "distinctBaseColor": true
+  },
+  "court-sneakers-black": {
+    "base": "court-sneakers-white",
+    "identicalAccessors": [
+      "POSITION",
+      "NORMAL",
+      "TEXCOORD_0",
+      "TANGENT",
+      "JOINTS_0",
+      "WEIGHTS_0"
+    ],
+    "identicalIndexBuffer": true,
+    "identicalInverseBinds": true,
+    "distinctBaseColor": true
+  }
+}
