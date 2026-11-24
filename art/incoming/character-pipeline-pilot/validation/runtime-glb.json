@@ -1,0 +1,777 @@
+{
+  "protagonist-male.glb": {
+    "bytes": 605428,
+    "triangleCountAllMeshes": 23934,
+    "materials": 1,
+    "textures": [
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          1024,
+          1024
+        ]
+      }
+    ],
+    "jointsPerSkin": [
+      36
+    ],
+    "extensions": [
+      "EXT_meshopt_compression",
+      "KHR_mesh_quantization",
+      "KHR_texture_basisu"
+    ],
+    "maxWeights": 4,
+    "unweighted": 0,
+    "clips": {
+      "Idle": {
+        "duration": 8,
+        "channels": 108,
+        "scaleChannels": 36,
+        "tracksWith30HzGrid": 83,
+        "tracks": 108
+      },
+      "Run": {
+        "duration": 0.7333984375,
+        "channels": 108,
+        "scaleChannels": 36,
+        "tracksWith30HzGrid": 0,
+        "tracks": 108
+      },
+      "Walk": {
+        "duration": 1.2001953125,
+        "channels": 108,
+        "scaleChannels": 36,
+        "tracksWith30HzGrid": 0,
+        "tracks": 108
+      }
+    },
+    "validation": {
+      "numErrors": 0,
+      "numWarnings": 3,
+      "numInfos": 3,
+      "numHints": 0,
+      "messages": [
+        {
+          "code": "UNSUPPORTED_EXTENSION",
+          "message": "Cannot validate an extension as it is not supported by the validator: 'EXT_meshopt_compression'.",
+          "severity": 2,
+          "pointer": "/extensionsUsed/0"
+        },
+        {
+          "code": "UNSUPPORTED_EXTENSION",
+          "message": "Cannot validate an extension as it is not supported by the validator: 'KHR_texture_basisu'.",
+          "severity": 2,
+          "pointer": "/extensionsUsed/2"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/0/mimeType"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/36"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/images/0"
+        },
+        {
+          "code": "IMAGE_UNRECOGNIZED_FORMAT",
+          "message": "Image format not recognized.",
+          "severity": 1,
+          "pointer": "/images/0"
+        }
+      ],
+      "truncated": false
+    }
+  },
+  "protagonist-mocap.glb": {
+    "bytes": 774016,
+    "triangleCountAllMeshes": 23934,
+    "materials": 1,
+    "textures": [
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          1024,
+          1024
+        ]
+      }
+    ],
+    "jointsPerSkin": [
+      36
+    ],
+    "extensions": [
+      "EXT_meshopt_compression",
+      "KHR_mesh_quantization",
+      "KHR_texture_basisu"
+    ],
+    "maxWeights": 4,
+    "unweighted": 0,
+    "clips": {
+      "Idle": {
+        "duration": 8,
+        "channels": 36,
+        "scaleChannels": 0,
+        "tracksWith30HzGrid": 36,
+        "tracks": 36
+      },
+      "Walk": {
+        "duration": 1.3666666746139526,
+        "channels": 36,
+        "scaleChannels": 0,
+        "tracksWith30HzGrid": 36,
+        "tracks": 36
+      },
+      "Run": {
+        "duration": 0.800000011920929,
+        "channels": 36,
+        "scaleChannels": 0,
+        "tracksWith30HzGrid": 36,
+        "tracks": 36
+      }
+    },
+    "validation": {
+      "numErrors": 0,
+      "numWarnings": 2,
+      "numInfos": 23,
+      "numHints": 0,
+      "messages": [
+        {
+          "code": "UNSUPPORTED_EXTENSION",
+          "message": "Cannot validate an extension as it is not supported by the validator: 'EXT_meshopt_compression'.",
+          "severity": 2,
+          "pointer": "/extensionsUsed/0"
+        },
+        {
+          "code": "UNSUPPORTED_EXTENSION",
+          "message": "Cannot validate an extension as it is not supported by the validator: 'KHR_texture_basisu'.",
+          "severity": 2,
+          "pointer": "/extensionsUsed/2"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/0/mimeType"
+        },
+        {
+          "code": "NODE_SKINNED_MESH_NON_ROOT",
+          "message": "Node with a skinned mesh is not root. Parent transforms will not affect a skinned mesh.",
+          "severity": 1,
+          "pointer": "/nodes/36"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/1"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/2"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/3"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/4"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/5"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/6"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/7"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/8"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/9"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/10"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/11"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/12"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/13"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/14"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/15"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/16"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/17"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/18"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/19"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/accessors/20"
+        }
+      ],
+      "truncated": true
+    }
+  },
+  "mpfb-protagonist.glb": {
+    "bytes": 638924,
+    "triangleCountAllMeshes": 26928,
+    "materials": 2,
+    "textures": [
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          1024,
+          1024
+        ]
+      },
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          1024,
+          1024
+        ]
+      }
+    ],
+    "jointsPerSkin": [
+      53,
+      53
+    ],
+    "extensions": [
+      "EXT_meshopt_compression",
+      "KHR_materials_clearcoat",
+      "KHR_mesh_quantization",
+      "KHR_texture_basisu"
+    ],
+    "maxWeights": 4,
+    "unweighted": 0,
+    "clips": {
+      "Idle": {
+        "duration": 8,
+        "channels": 54,
+        "scaleChannels": 0,
+        "tracksWith30HzGrid": 159,
+        "tracks": 159
+      },
+      "Walk": {
+        "duration": 1.3666666746139526,
+        "channels": 54,
+        "scaleChannels": 0,
+        "tracksWith30HzGrid": 159,
+        "tracks": 159
+      },
+      "Run": {
+        "duration": 0.800000011920929,
+        "channels": 54,
+        "scaleChannels": 0,
+        "tracksWith30HzGrid": 159,
+        "tracks": 159
+      }
+    },
+    "validation": {
+      "numErrors": 0,
+      "numWarnings": 2,
+      "numInfos": 23,
+      "numHints": 0,
+      "messages": [
+        {
+          "code": "UNSUPPORTED_EXTENSION",
+          "message": "Cannot validate an extension as it is not supported by the validator: 'EXT_meshopt_compression'.",
+          "severity": 2,
+          "pointer": "/extensionsUsed/0"
+        },
+        {
+          "code": "UNSUPPORTED_EXTENSION",
+          "message": "Cannot validate an extension as it is not supported by the validator: 'KHR_texture_basisu'.",
+          "severity": 2,
+          "pointer": "/extensionsUsed/3"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/0/mimeType"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/1/mimeType"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/2"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/5"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/6"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/8"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/9"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/11"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/12"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/14"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/15"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/17"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/18"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/20"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/21"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/23"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/24"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/26"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/27"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/29"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/30"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/32"
+        }
+      ],
+      "truncated": true
+    }
+  },
+  "mpfb-outfit.glb": {
+    "bytes": 2838748,
+    "triangleCountAllMeshes": 53432,
+    "materials": 5,
+    "textures": [
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          512,
+          512
+        ]
+      },
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          512,
+          512
+        ]
+      },
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          1024,
+          1024
+        ]
+      },
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          1024,
+          1024
+        ]
+      },
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          1024,
+          1024
+        ]
+      },
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          1024,
+          1024
+        ]
+      },
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          512,
+          512
+        ]
+      },
+      {
+        "mime": "image/ktx2",
+        "dimensions": [
+          512,
+          512
+        ]
+      }
+    ],
+    "jointsPerSkin": [
+      53,
+      53,
+      53,
+      53,
+      53,
+      53
+    ],
+    "extensions": [
+      "EXT_meshopt_compression",
+      "KHR_materials_clearcoat",
+      "KHR_materials_sheen",
+      "KHR_mesh_quantization",
+      "KHR_texture_basisu"
+    ],
+    "maxWeights": 4,
+    "unweighted": 0,
+    "clips": {
+      "Idle": {
+        "duration": 8,
+        "channels": 54,
+        "scaleChannels": 0,
+        "tracksWith30HzGrid": 159,
+        "tracks": 159
+      },
+      "Walk": {
+        "duration": 1.3666666746139526,
+        "channels": 54,
+        "scaleChannels": 0,
+        "tracksWith30HzGrid": 159,
+        "tracks": 159
+      },
+      "Run": {
+        "duration": 0.800000011920929,
+        "channels": 54,
+        "scaleChannels": 0,
+        "tracksWith30HzGrid": 159,
+        "tracks": 159
+      }
+    },
+    "validation": {
+      "numErrors": 0,
+      "numWarnings": 11,
+      "numInfos": 14,
+      "numHints": 0,
+      "messages": [
+        {
+          "code": "UNSUPPORTED_EXTENSION",
+          "message": "Cannot validate an extension as it is not supported by the validator: 'EXT_meshopt_compression'.",
+          "severity": 2,
+          "pointer": "/extensionsUsed/0"
+        },
+        {
+          "code": "UNSUPPORTED_EXTENSION",
+          "message": "Cannot validate an extension as it is not supported by the validator: 'KHR_texture_basisu'.",
+          "severity": 2,
+          "pointer": "/extensionsUsed/4"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/0/mimeType"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/1/mimeType"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/2/mimeType"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/3/mimeType"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/4/mimeType"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/5/mimeType"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/6/mimeType"
+        },
+        {
+          "code": "VALUE_NOT_IN_LIST",
+          "message": "Invalid value 'image/ktx2'. Valid values are ('image/jpeg', 'image/png').",
+          "severity": 1,
+          "pointer": "/images/7/mimeType"
+        },
+        {
+          "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+          "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+          "severity": 1,
+          "pointer": "/meshes/0/primitives/0/material"
+        },
+        {
+          "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+          "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+          "severity": 1,
+          "pointer": "/meshes/1/primitives/0/material"
+        },
+        {
+          "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+          "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+          "severity": 1,
+          "pointer": "/meshes/5/primitives/0/material"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/2"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/5"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/6"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/8"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/9"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/11"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/12"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/14"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/15"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/17"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/animations/0/samplers/18"
+        }
+      ],
+      "truncated": true
+    }
+  }
+}

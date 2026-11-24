@@ -1,0 +1,7 @@
+FAIL  file test-b.glb
+FAIL  file manifest.json
+FAIL  source/<id>_source.blend
+FAIL  previews/ (contact sheet, stress sheet, clip previews)
+FAIL  previews/threejs/ has the face and body sheets (node scripts/review-character.mjs /workspace/Hood-Hero-Lab/art/incoming/character-pipeline-pilot/test-b)
+
+FAIL (missing files)

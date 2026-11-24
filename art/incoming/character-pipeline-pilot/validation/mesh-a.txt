@@ -1,0 +1,6 @@
+00:04.486  blend            | Read blend: "/workspace/scratch/pilot-tools/stage/a.blend"
+@@JSON@@{"ok":true,"pass":false,"errors":["Body: 4 zero-area UV faces","Body: degenerate faces=1 zero-len edges=0","z-fighting: Body (7 overlapping coplanar tri pairs)"],"warnings":["Body: duplicate verts=5919 loose verts=0","hidden back-to-back faces: Body (50 pairs) - delete to save tris"],"ground_z":0.0,"zfighting":[{"where":"Body","tri_pairs":7}],"floating":[],"back_to_back":[{"where":"Body","tri_pairs":50}],"enclosed":[],"objects":{"Body":{"verts":18875,"faces":23934,"tris":23934,"ngons":0,"boundary_edges":12210,"nonmanifold_edges":0,"wire_edges":0,"loose_verts":0,"degenerate_faces":1,"zero_length_edges":0,"inconsistent_normals_edges":0,"duplicate_verts":5919,"islands":1166,"inside_out_islands":0,"scale":[1.0,1.0,1.0],"materials":1,"unweighted_verts":0,"verts_over_4_influences":0,"uv_maps":1,"uv_oob_pct":0.0,"uv_zero_area_faces":4,"uv_overlap_pct":0.07,"uv_coverage_pct":35.1}}}
+Blender 5.3.0 (hash 02f0899d78e3 built 2026-11-10 01:31:18)
+scripts disabled for "/workspace/scratch/pilot-tools/stage/a.blend", skipping 'RIG_Body_ui.py'
+
+Blender quit

@@ -1,0 +1,18 @@
+{
+  "viewport": [
+    390,
+    664
+  ],
+  "touch": true,
+  "collapsedToOnePanel": true,
+  "noHorizontalOverflow": true,
+  "skeletonVisible": true,
+  "outfitHidden": true,
+  "idleWalkOverlapSamples": 5,
+  "settledWeights": {
+    "Idle": 0,
+    "Walk": 1,
+    "Run": 0
+  },
+  "errors": []
+}

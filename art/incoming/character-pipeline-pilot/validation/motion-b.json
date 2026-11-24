@@ -1,0 +1,185 @@
+{
+  "Idle": {
+    "LeftToe": {
+      "low_toe_intervals": 240,
+      "median_backward_mps": -0.00147,
+      "p10_p90_backward_mps": [
+        -0.00177,
+        -0.00106
+      ],
+      "horizontal_contact_proxy_mps": [
+        2e-05,
+        -0.00147
+      ]
+    },
+    "RightToe": {
+      "low_toe_intervals": 240,
+      "median_backward_mps": -0.00114,
+      "p10_p90_backward_mps": [
+        -0.00149,
+        -0.0008
+      ],
+      "horizontal_contact_proxy_mps": [
+        -0.00021,
+        -0.00114
+      ]
+    },
+    "Hips": {
+      "vertical_excursion_m": 0.00035,
+      "sagittal_excursion_m": 0.0081
+    },
+    "LeftWrist": {
+      "vertical_excursion_m": 0.00682,
+      "sagittal_excursion_m": 0.01831
+    },
+    "Head": {
+      "vertical_excursion_m": 0.00607,
+      "sagittal_excursion_m": 0.03181
+    },
+    "LeftCollar": {
+      "vertical_excursion_m": 0.00454,
+      "sagittal_excursion_m": 0.02311
+    },
+    "sole_height_range_m": [
+      -3e-05,
+      1e-05
+    ],
+    "head_pitch_degrees_positive_up": [
+      -5.48537,
+      -2.73366
+    ],
+    "left_joint_flexion_degrees": {
+      "LeftKnee": [
+        1.87857,
+        2.88982
+      ],
+      "LeftElbow": [
+        3.5843,
+        3.95255
+      ]
+    },
+    "endpoint_max_joint_delta_m": 0.0
+  },
+  "Walk": {
+    "LeftToe": {
+      "low_toe_intervals": 24,
+      "median_backward_mps": 0.84272,
+      "p10_p90_backward_mps": [
+        0.58519,
+        1.04125
+      ],
+      "horizontal_contact_proxy_mps": [
+        -0.00642,
+        0.84272
+      ]
+    },
+    "RightToe": {
+      "low_toe_intervals": 21,
+      "median_backward_mps": 0.84064,
+      "p10_p90_backward_mps": [
+        0.75125,
+        0.85248
+      ],
+      "horizontal_contact_proxy_mps": [
+        0.00334,
+        0.84064
+      ]
+    },
+    "Hips": {
+      "vertical_excursion_m": 0.03491,
+      "sagittal_excursion_m": 0.0646
+    },
+    "LeftWrist": {
+      "vertical_excursion_m": 0.081,
+      "sagittal_excursion_m": 0.22014
+    },
+    "Head": {
+      "vertical_excursion_m": 0.03488,
+      "sagittal_excursion_m": 0.04047
+    },
+    "LeftCollar": {
+      "vertical_excursion_m": 0.03415,
+      "sagittal_excursion_m": 0.04319
+    },
+    "sole_height_range_m": [
+      -0.00091,
+      0.0003
+    ],
+    "head_pitch_degrees_positive_up": [
+      -8.90023,
+      -3.86372
+    ],
+    "left_joint_flexion_degrees": {
+      "LeftKnee": [
+        1.82467,
+        65.24135
+      ],
+      "LeftElbow": [
+        1.10818,
+        14.67249
+      ]
+    },
+    "endpoint_max_joint_delta_m": 0.0
+  },
+  "Run": {
+    "LeftToe": {
+      "low_toe_intervals": 7,
+      "median_backward_mps": 1.64284,
+      "p10_p90_backward_mps": [
+        1.26691,
+        2.17162
+      ],
+      "horizontal_contact_proxy_mps": [
+        -0.00552,
+        1.64284
+      ]
+    },
+    "RightToe": {
+      "low_toe_intervals": 7,
+      "median_backward_mps": 1.81551,
+      "p10_p90_backward_mps": [
+        1.68213,
+        1.98991
+      ],
+      "horizontal_contact_proxy_mps": [
+        0.00259,
+        1.81551
+      ]
+    },
+    "Hips": {
+      "vertical_excursion_m": 0.08528,
+      "sagittal_excursion_m": 0.04367
+    },
+    "LeftWrist": {
+      "vertical_excursion_m": 0.19746,
+      "sagittal_excursion_m": 0.1044
+    },
+    "Head": {
+      "vertical_excursion_m": 0.10139,
+      "sagittal_excursion_m": 0.0425
+    },
+    "LeftCollar": {
+      "vertical_excursion_m": 0.09819,
+      "sagittal_excursion_m": 0.03252
+    },
+    "sole_height_range_m": [
+      -0.00072,
+      0.0392
+    ],
+    "head_pitch_degrees_positive_up": [
+      -17.08792,
+      -11.69326
+    ],
+    "left_joint_flexion_degrees": {
+      "LeftKnee": [
+        11.89545,
+        66.59204
+      ],
+      "LeftElbow": [
+        102.13081,
+        127.2307
+      ]
+    },
+    "endpoint_max_joint_delta_m": 0.0
+  }
+}

@@ -1,0 +1,9 @@
+00:04.324  blend            | Read blend: "/workspace/scratch/pilot-tools/stage/b.blend"
+[INFO ] services.locationservice ...............: Not adding link to MakeHuman user data, since neither explicit path nor auto-discovery is set in preferences.
+[INFO ] mpfb.init ..............................: Build info 20261010
+[INFO ] mpfb.init ..............................: Online access preference is not enabled. Not checking if MakeHuman is online.
+[INFO ] mpfb.init ..............................: MPFB initialization has finished.
+@@JSON@@{"ok":true,"object":"MPFB_Game","action":"Walk","frames":[0,41],"loops":true,"pops":[],"hitches":[{"bone":"lowerarm_r","deg_per_frame_in":0.342,"deg_per_frame_out":0.343,"kind":"dip"},{"bone":"hand_r","deg_per_frame_in":0.588,"deg_per_frame_out":0.589,"kind":"dip"},{"bone":"index_01_r","deg_per_frame_in":0.588,"deg_per_frame_out":0.589,"kind":"dip"},{"bone":"index_02_r","deg_per_frame_in":0.588,"deg_per_frame_out":0.589,"kind":"dip"},{"bone":"index_03_r","deg_per_frame_in":0.588,"deg_per_frame_out":0.589,"kind":"dip"},{"bone":"middle_01_r","deg_per_frame_in":0.588,"deg_per_frame_out":0.589,"kind":"dip"},{"bone":"middle_02_r","deg_per_frame_in":0.588,"deg_per_frame_out":0.589,"kind":"dip"},{"bone":"middle_03_r","deg_per_frame_in":0.588,"deg_per_frame_out":0.589,"kind":"dip"},{"bone":"pinky_01_r","deg_per_frame_in":0.588,"deg_per_frame_out":0.589,"kind":"dip"},{"bone":"pinky_02_r","deg_per_frame_in":0.588,"deg_per_frame_out":0.589,"kind":"dip"}],"note":"speed changes across the seam: match the tangents (Graph Editor, auto-clamped/cyclic) or re-pose frame 2/N-1"}
+Blender 5.3.0 (hash 02f0899d78e3 built 2026-11-10 01:31:18)
+
+Blender quit

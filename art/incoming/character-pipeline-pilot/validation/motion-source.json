@@ -1,0 +1,161 @@
+{
+  "Idle": {
+    "file": "Neutral_ID",
+    "capture_frames_zero_based": [
+      899,
+      1379
+    ],
+    "source_speed_mps": 0.0013,
+    "baked_fps": 30,
+    "LeftToe": {
+      "low_toe_intervals": 240,
+      "median_backward_mps": -0.00111,
+      "p10_p90_backward_mps": [
+        -0.00635,
+        0.00264
+      ],
+      "horizontal_contact_proxy_mps": [
+        4e-05,
+        -0.00111
+      ]
+    },
+    "RightToe": {
+      "low_toe_intervals": 240,
+      "median_backward_mps": -0.00078,
+      "p10_p90_backward_mps": [
+        -0.00602,
+        0.00283
+      ],
+      "horizontal_contact_proxy_mps": [
+        -0.00025,
+        -0.00078
+      ]
+    },
+    "Hips": {
+      "vertical_excursion_m": 0.0,
+      "sagittal_excursion_m": 0.0
+    },
+    "LeftWrist": {
+      "vertical_excursion_m": 0.00354,
+      "sagittal_excursion_m": 0.01262
+    },
+    "Head": {
+      "vertical_excursion_m": 0.00217,
+      "sagittal_excursion_m": 0.02783
+    },
+    "LeftCollar": {
+      "vertical_excursion_m": 0.00065,
+      "sagittal_excursion_m": 0.02059
+    },
+    "head_pitch_degrees_positive_up": [
+      -20.4678,
+      -17.71008
+    ]
+  },
+  "Walk": {
+    "file": "Neutral_FW",
+    "capture_frames_zero_based": [
+      608,
+      690
+    ],
+    "source_speed_mps": 0.8575,
+    "baked_fps": 30,
+    "LeftToe": {
+      "low_toe_intervals": 24,
+      "median_backward_mps": 0.73364,
+      "p10_p90_backward_mps": [
+        -1.78927,
+        1.11128
+      ],
+      "horizontal_contact_proxy_mps": [
+        0.021,
+        0.73364
+      ]
+    },
+    "RightToe": {
+      "low_toe_intervals": 24,
+      "median_backward_mps": 0.77661,
+      "p10_p90_backward_mps": [
+        -2.56845,
+        1.02191
+      ],
+      "horizontal_contact_proxy_mps": [
+        -0.06472,
+        0.77661
+      ]
+    },
+    "Hips": {
+      "vertical_excursion_m": 0.0,
+      "sagittal_excursion_m": 0.0
+    },
+    "LeftWrist": {
+      "vertical_excursion_m": 0.06293,
+      "sagittal_excursion_m": 0.24595
+    },
+    "Head": {
+      "vertical_excursion_m": 0.00282,
+      "sagittal_excursion_m": 0.03975
+    },
+    "LeftCollar": {
+      "vertical_excursion_m": 0.00269,
+      "sagittal_excursion_m": 0.03019
+    },
+    "head_pitch_degrees_positive_up": [
+      -19.79915,
+      -14.86294
+    ]
+  },
+  "Run": {
+    "file": "Neutral_FR",
+    "capture_frames_zero_based": [
+      499,
+      547
+    ],
+    "source_speed_mps": 1.8698,
+    "baked_fps": 30,
+    "LeftToe": {
+      "low_toe_intervals": 3,
+      "median_backward_mps": 2.12775,
+      "p10_p90_backward_mps": [
+        1.89545,
+        2.20316
+      ],
+      "horizontal_contact_proxy_mps": [
+        0.02665,
+        2.12775
+      ]
+    },
+    "RightToe": {
+      "low_toe_intervals": 3,
+      "median_backward_mps": 1.94638,
+      "p10_p90_backward_mps": [
+        1.86762,
+        1.96012
+      ],
+      "horizontal_contact_proxy_mps": [
+        0.02214,
+        1.94638
+      ]
+    },
+    "Hips": {
+      "vertical_excursion_m": 0.0,
+      "sagittal_excursion_m": 0.0
+    },
+    "LeftWrist": {
+      "vertical_excursion_m": 0.11797,
+      "sagittal_excursion_m": 0.13267
+    },
+    "Head": {
+      "vertical_excursion_m": 0.01667,
+      "sagittal_excursion_m": 0.0614
+    },
+    "LeftCollar": {
+      "vertical_excursion_m": 0.01392,
+      "sagittal_excursion_m": 0.05066
+    },
+    "head_pitch_degrees_positive_up": [
+      -34.01562,
+      -28.43169
+    ]
+  }
+}

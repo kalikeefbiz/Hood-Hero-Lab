@@ -1,0 +1,6 @@
+00:04.463  blend            | Read blend: "/workspace/scratch/pilot-tools/stage/a.blend"
+@@JSON@@{"ok":true,"pass":true,"errors":[],"warnings":["Body: vertex groups without bones ['region_neck', 'region_torso', 'region_upper_arms', 'region_forearms', 'region_hands']","Body: ~95 sampled verts with asymmetric L/R weights (mirror weights?)"],"bones":36,"deform_bones":35,"profile":{},"skin":{"Body":{"verts":18875,"unweighted":0,"over_4":0,"not_normalized":0,"weights_on_root":0,"weights_on_nondeform":0,"groups_without_bone":["region_neck","region_torso","region_upper_arms","region_forearms","region_hands","region_upper_legs","region_lower_legs","region_feet"],"asymmetric_verts_sampled":95,"deform_bones_without_group":0}},"fixed":false}
+Blender 5.3.0 (hash 02f0899d78e3 built 2026-11-10 01:31:18)
+scripts disabled for "/workspace/scratch/pilot-tools/stage/a.blend", skipping 'RIG_Body_ui.py'
+
+Blender quit

@@ -1,0 +1,46 @@
+{
+  "id": "character-pipeline-pilot",
+  "status": "experimental",
+  "baseCommit": "7c36e25907e287e4116473a3cd951c8bc53c71c4",
+  "heightM": 1.78,
+  "currency": "USD",
+  "spend": 0,
+  "meshyCredits": 0,
+  "preview": "preview/index.html",
+  "validation": "validation/REPORT.md",
+  "provenance": "licensing/provenance.json",
+  "baseline": {
+    "body": "../protagonist-male/protagonist-male.glb",
+    "head": "../protagonist-male/heads/face-01.glb",
+    "complexion": "../protagonist-male/complexions/complexion-01.ktx2",
+    "bodySha256": "eb7cd60d1d3568824747ceca2579d753d2d926833b805f71d06502fdaadd7f0a",
+    "bind": "T",
+    "rig": "GAME_RIG_Body"
+  },
+  "testA": {
+    "runtime": "test-a/protagonist-mocap.glb",
+    "source": "source/test-a.blend",
+    "bind": "T",
+    "rig": "GAME_RIG_Body",
+    "clips": ["Idle", "Walk", "Run"]
+  },
+  "testB": {
+    "runtime": "test-b/mpfb-protagonist.glb",
+    "source": "source/test-b.blend",
+    "bind": "A",
+    "rig": "MPFB game_engine",
+    "joints": 53,
+    "clips": ["Idle", "Walk", "Run"]
+  },
+  "testC": {
+    "wardrobeCommit": "b113b4233325d5573b33a7ab805e77abb5e7b397",
+    "canonicalMask": "test-c/canonical-masks.json",
+    "canonicalGarments": [
+      "test-c/tee-white.glb",
+      "test-c/jeans-denim-standard.glb",
+      "test-c/court-sneakers-white.glb"
+    ],
+    "mpfbRuntime": "test-c/mpfb-outfit.glb",
+    "mpfbSource": "source/test-c.blend"
+  }
+}

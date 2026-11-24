@@ -1,0 +1,13 @@
+{
+  "nodes": true,
+  "meshes": true,
+  "skins": true,
+  "images": true,
+  "textures": true,
+  "materials": true,
+  "extensionsUsed": true,
+  "extensionsRequired": true,
+  "originalAccessorsPreserved": true,
+  "originalViewsPreserved": true,
+  "originalBinaryPrefixPreserved": true
+}

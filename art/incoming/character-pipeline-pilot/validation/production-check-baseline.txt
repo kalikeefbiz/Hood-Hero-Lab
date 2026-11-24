@@ -1,0 +1,90 @@
+ok    file protagonist-male.glb
+ok    file manifest.json
+ok    source/<id>_source.blend
+ok    previews/ (contact sheet, stress sheet, clip previews)
+ok    previews/threejs/ has the face and body sheets (node scripts/review-character.mjs art/incoming/protagonist-male)
+ok    manifest.id is "protagonist-male"
+ok    manifest.heightM in 1.2..2.2 (got 1.78)
+ok    manifest.bindPose is "T" or "A"
+ok    manifest.sourceArt lists the approved art used
+ok    manifest.approvedBy is "owner"
+ok    model size 591 KB <= 1367 KB
+ok    model uses meshopt compression
+ok    model uses KHR_mesh_quantization (run compress.mjs)
+ok    model textures are KTX2 (KHR_texture_basisu)
+ok    exactly one skin (got 1)
+ok    triangles 23934 in 8k..40k
+ok    materials 1 <= 2
+ok    rig has every body part
+ok    skin joints 36 in 20..100
+ok    no control/helper bones in the skin (game skeleton only)
+ok    image 0 is KTX2
+ok    image 0 1024x1024 <= 1024
+ok    model has exactly 3 animations (got 3: Idle, Run, Walk)
+ok    animation "Idle" present
+ok    Idle: every channel targets a model bone
+ok    Idle: root translation is constant (2 keys; in place, no root motion)
+ok    Idle: no animated bone scale
+ok    manifest.clips.Idle present
+ok    Idle: length 8.000 s matches manifest 8 s
+ok    idle: speedMps is 0
+ok    idle: loop 8.0 s in 4..12
+ok    animation "Walk" present
+ok    Walk: every channel targets a model bone
+ok    Walk: root translation is constant (2 keys; in place, no root motion)
+ok    Walk: no animated bone scale
+ok    manifest.clips.Walk present
+ok    Walk: length 1.200 s matches manifest 1.2 s
+ok    Walk: speedMps 0.79 in 0.3..6
+ok    walk: cycle 1.20 s in 0.8..1.6
+ok    animation "Run" present
+ok    Run: every channel targets a model bone
+ok    Run: root translation is constant (2 keys; in place, no root motion)
+ok    Run: no animated bone scale
+ok    manifest.clips.Run present
+ok    Run: length 0.733 s matches manifest 0.733 s
+ok    Run: speedMps 2.55 in 0.3..6
+ok    run: cycle 0.73 s in 0.5..0.9
+ok    manifest.modular present (heads and complexions listed)
+ok    heads/ has at least one head (got 2)
+ok    manifest.modular.defaultHead "face-01" is a listed head
+ok    heads/face-01.glb listed in manifest.modular.heads
+ok    heads/face-02.glb listed in manifest.modular.heads
+ok    complexions/complexion-01.ktx2 listed in manifest.modular.complexions
+ok    complexions/complexion-02.ktx2 listed in manifest.modular.complexions
+ok    head face-01: file heads/face-01.glb
+ok    head face-01: paired complexion "complexion-01" is listed
+ok    head face-01: meshyTaskId recorded
+ok    head face-01: three.js face sheet in previews/threejs/
+ok    head face-01: size 235 KB <= 342 KB
+ok    head face-01: meshopt + quantization
+ok    head face-01: KTX2 texture
+ok    head face-01: exactly one skin
+ok    head face-01: no animations (clips live in the body file)
+ok    head face-01: one material
+ok    head face-01: triangles 6932 in 1k..8k
+ok    head face-01: every joint is a body bone
+ok    head face-01: rest pose matches the body skeleton
+ok    head face-02: file heads/face-02.glb
+ok    head face-02: paired complexion "complexion-02" is listed
+ok    head face-02: meshyTaskId recorded
+ok    head face-02: three.js face sheet in previews/threejs/
+ok    head face-02: size 289 KB <= 342 KB
+ok    head face-02: meshopt + quantization
+ok    head face-02: KTX2 texture
+ok    head face-02: exactly one skin
+ok    head face-02: no animations (clips live in the body file)
+ok    head face-02: one material
+ok    head face-02: triangles 7238 in 1k..8k
+ok    head face-02: every joint is a body bone
+ok    head face-02: rest pose matches the body skeleton
+ok    complexion complexion-01: file complexions/complexion-01.ktx2
+ok    complexion complexion-01: is KTX2
+ok    complexion complexion-01: 1024x1024 <= 1024
+ok    complexion complexion-01: size 175 KB <= 293 KB
+ok    complexion complexion-02: file complexions/complexion-02.ktx2
+ok    complexion complexion-02: is KTX2
+ok    complexion complexion-02: 1024x1024 <= 1024
+ok    complexion complexion-02: size 185 KB <= 293 KB
+
+PASS  protagonist-male: 0 problems

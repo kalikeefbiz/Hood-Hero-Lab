@@ -1,0 +1,23 @@
+{
+  "status": "ok",
+  "protocol_version": 2,
+  "command": "get_status",
+  "result": {
+    "state": "ok",
+    "message": "MPFB is loaded and initialized.",
+    "candidate_modules": [
+      "bl_ext.user_default.mpfb"
+    ],
+    "package": "bl_ext.user_default.mpfb",
+    "enabled": true,
+    "version": "2.0.18",
+    "build_info": "20261010",
+    "bridge_version": "0.3.0",
+    "protocol_version": 2,
+    "min_supported_protocol_version": 2,
+    "blender": {
+      "version": "5.3.0",
+      "background": true
+    }
+  }
+}

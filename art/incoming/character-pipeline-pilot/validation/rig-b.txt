@@ -1,0 +1,5 @@
+00:04.494  blend            | Read blend: "/workspace/scratch/pilot-tools/stage/b.blend"
+@@JSON@@{"ok":true,"pass":false,"errors":["MPFB_Body: 981 verts > 4 influences"],"warnings":["root bone 'Root' not at world origin","MPFB_Body: vertex groups without bones ['HelperGeometry', 'JointCubes', 'Left', 'Mid', 'Right']","MPFB_Body: ~13 sampled verts with asymmetric L/R weights (mirror weights?)"],"bones":53,"deform_bones":53,"profile":{},"skin":{"MPFB_Body":{"verts":19158,"unweighted":0,"over_4":981,"not_normalized":0,"weights_on_root":0,"weights_on_nondeform":0,"groups_without_bone":["HelperGeometry","JointCubes","Left","Mid","Right","body","helper-genital","helper-hair","helper-l-eye","helper-l-eyelashes-1"],"asymmetric_verts_sampled":13,"deform_bones_without_group":1}},"fixed":false}
+Blender 5.3.0 (hash 02f0899d78e3 built 2026-11-10 01:31:18)
+
+Blender quit

@@ -1,0 +1,5 @@
+00:04.350  blend            | Read blend: "/workspace/scratch/pilot-tools/stage/b.blend"
+@@JSON@@{"ok":true,"pass":false,"errors":["MPFB_Body: 981 verts with >4 bone influences"],"warnings":[],"ground_z":0.0,"zfighting":[],"floating":[],"back_to_back":[],"enclosed":[],"objects":{"MPFB_Body":{"verts":13380,"faces":13378,"tris":26756,"ngons":0,"boundary_edges":0,"nonmanifold_edges":0,"wire_edges":0,"loose_verts":0,"degenerate_faces":0,"zero_length_edges":0,"inconsistent_normals_edges":0,"duplicate_verts":0,"islands":1,"inside_out_islands":0,"scale":[1.0,1.0,1.0],"materials":1,"unweighted_verts":0,"verts_over_4_influences":981,"uv_maps":1,"uv_oob_pct":0.0,"uv_zero_area_faces":0,"uv_overlap_pct":0.0,"uv_coverage_pct":63.7}}}
+Blender 5.3.0 (hash 02f0899d78e3 built 2026-11-10 01:31:18)
+
+Blender quit
