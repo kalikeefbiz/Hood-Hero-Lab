@@ -1,0 +1,157 @@
+<!doctype html>
+<!--
+  Character review sheets, rendered by three.js with the city's lighting (src/strip/main.ts).
+  Driven by scripts/review-character.mjs; not part of the build. See docs/CHARACTER_PIPELINE.md.
+-->
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  html, body { margin: 0; background: #222; font: 600 13px/1.2 system-ui, sans-serif; }
+  #labels div { position: absolute; color: #fff; background: rgba(0,0,0,.55); padding: 3px 6px; border-radius: 3px; }
+  #title { position: absolute; right: 8px; bottom: 6px; color: #fff; background: rgba(0,0,0,.55); padding: 3px 6px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas><div id="labels"></div><div id="title"></div>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
+import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+
+const q = new URLSearchParams(location.search);
+const CELL = 420, COLS = 3, ROWS = 2;
+const fail = (msg) => { window.reviewError = String(msg); throw new Error(msg); };
+window.addEventListener("error", (e) => { window.reviewError ??= e.message; });
+window.addEventListener("unhandledrejection", (e) => { window.reviewError ??= String(e.reason?.message ?? e.reason); });
+
+const canvas = document.getElementById("c");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(CELL * COLS, CELL * ROWS);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.AgXToneMapping;
+renderer.setScissorTest(true);
+
+// City lighting, day and night, with the same colours and intensities as src/strip/main.ts.
+// The sun comes from the camera's front-left so the face is lit the way it is when walking towards it.
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+const hemi = new THREE.HemisphereLight(), sun = new THREE.DirectionalLight();
+scene.add(hemi, sun, sun.target);
+function light(mode, yaw) {
+  const night = mode === "night";
+  sun.color.set(night ? 0x8fa6ff : 0xffb27a); sun.intensity = night ? 0.22 : 2.6;
+  hemi.color.set(night ? 0x2a3555 : 0x9fb6e0); hemi.groundColor.set(night ? 0x0c0b10 : 0x4a3428);
+  hemi.intensity = night ? 0.12 : 0.9;
+  renderer.toneMappingExposure = night ? 1.35 : 1.0;
+  scene.environmentIntensity = night ? 0.07 : 0.7;
+  const a = yaw - 0.6;
+  sun.position.set(Math.sin(a) * 10, night ? 14 : 6, Math.cos(a) * 10);
+  return new THREE.Color(night ? 0x1b1f33 : 0x8a95a6);
+}
+
+const ktx2 = new KTX2Loader().setTranscoderPath("/basis/").detectSupport(renderer);
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx2);
+const tryLoad = (u) => loader.loadAsync(u).catch(() => null);
+
+// ---------------------------------------------------------------- what to show
+const dir = q.get("dir"), raw = q.get("raw"), sheet = q.get("sheet") ?? "face";
+let root, clips = [], label;
+let H, faceY, faceDist, neckY, neckDist, bodyY, bodyDist;
+
+if (raw) {
+  // An unprocessed file straight from Meshy: no rig, any scale. Framed from its bounds.
+  const g = await loader.loadAsync(raw);
+  root = g.scene;
+  const bust = q.get("kind") === "bust";
+  const b = new THREE.Box3().setFromObject(root);
+  root.position.y -= b.min.y; root.position.x -= (b.min.x + b.max.x) / 2; root.position.z -= (b.min.z + b.max.z) / 2;
+  root.rotation.y = (+(q.get("yaw") ?? 0)) * Math.PI / 180;
+  H = b.max.y - b.min.y;
+  faceY = bust ? H * 0.62 : H * 0.925; faceDist = bust ? H * 1.1 : H * 0.32;
+  neckY = bust ? H * 0.35 : H * 0.83; neckDist = bust ? H * 1.4 : H * 0.42;
+  bodyY = H * 0.5; bodyDist = H * 2.7;
+  label = raw.split("/").pop() + " (raw)";
+} else {
+  if (!dir) fail("pass ?dir= or ?raw=");
+  const manifest = await (await fetch(`${dir}/manifest.json`)).json();
+  const id = manifest.id;
+  const body = await loader.loadAsync(`${dir}/${id}.glb`);
+  root = body.scene;
+  clips = body.animations;
+  if (!clips.length) for (const k of ["idle", "walk", "run"]) {
+    const c = await tryLoad(`${dir}/${id}-${k}.glb`);
+    if (c?.animations[0]) { c.animations[0].name = k[0].toUpperCase() + k.slice(1); clips.push(c.animations[0]); }
+  }
+  label = id;
+  const mod = manifest.modular;
+  if (mod) {
+    // Modular character: bind the head to the body's bones by name and swap the body texture.
+    const headId = q.get("head") ?? mod.defaultHead, head = mod.heads[headId];
+    if (!head) fail(`no head ${headId}`);
+    const skinId = q.get("skin") ?? head.complexion;
+    const [hg, tex] = await Promise.all([loader.loadAsync(`${dir}/${head.file}`), ktx2.loadAsync(`${dir}/${mod.complexions[skinId].file}`)]);
+    const bones = new Map(); root.traverse((o) => { if (o.isBone) bones.set(o.name, o); });
+    let bodyMesh, headMesh;
+    root.traverse((o) => { if (o.isSkinnedMesh && !bodyMesh) bodyMesh = o; });
+    hg.scene.traverse((o) => { if (o.isSkinnedMesh && !headMesh) headMesh = o; });
+    const missing = headMesh.skeleton.bones.filter((b) => !bones.has(b.name)).map((b) => b.name);
+    if (missing.length) fail(`head bones not in body: ${missing.join(", ")}`);
+    bodyMesh.parent.add(headMesh);
+    headMesh.bind(new THREE.Skeleton(headMesh.skeleton.bones.map((b) => bones.get(b.name)), headMesh.skeleton.boneInverses), headMesh.bindMatrix);
+    tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace;
+    bodyMesh.material.map = tex; bodyMesh.material.needsUpdate = true;
+    label += ` · ${headId} · ${skinId}`;
+  }
+  H = manifest.heightM;
+  faceY = H * 0.925; faceDist = 0.55 * H / 1.78;
+  neckY = H * 0.83; neckDist = 0.75 * H / 1.78;
+  bodyY = H * 0.5; bodyDist = 4.6 * H / 1.78;
+}
+root.traverse((o) => { if (o.isMesh) o.frustumCulled = false; });
+scene.add(root);
+const mixer = new THREE.AnimationMixer(root);
+function pose(name, t) {
+  mixer.stopAllAction();
+  const c = clips.find((x) => x.name === name);
+  if (!c) return false;
+  const a = mixer.clipAction(c); a.play(); mixer.setTime(t * c.duration);
+  return true;
+}
+
+// ---------------------------------------------------------------- views
+const V = (title, frame, yaw, mode = "day", clip = null, t = 0) => ({ title, frame, yaw, mode, clip, t });
+const views = sheet === "body"
+  ? [V("front", "body", 0), V("3/4", "body", 35), V("side", "body", 90),
+     V("back", "body", 180), V("walk, mid-stride", "body", 60, "day", "Walk", 0.25), V("night", "body", 20, "night")]
+  : [V("face · front", "face", 0), V("face · 3/4", "face", 40), V("face · night", "face", 15, "night"),
+     V("neck · front", "neck", 0), V("neck · back 3/4", "neck", 145), V("neck · run frame", "neck", 30, "day", "Run", 0.3)];
+if (raw && sheet === "face") views[5] = V("neck · side", "neck", 90);
+
+const cam = new THREE.PerspectiveCamera(sheet === "body" ? 32 : 24, 1, 0.01, 100);
+const labels = document.getElementById("labels");
+views.forEach((v, i) => {
+  const x = (i % COLS) * CELL, y = Math.floor(i / COLS) * CELL;
+  const yaw = v.yaw * Math.PI / 180;
+  if (v.clip) { if (!pose(v.clip, v.t)) v.title += " (clip missing)"; } else if (!pose("Idle", 0)) mixer.stopAllAction();
+  root.updateMatrixWorld(true);
+  const [ty, d] = v.frame === "face" ? [faceY, faceDist] : v.frame === "neck" ? [neckY, neckDist] : [bodyY, bodyDist];
+  cam.position.set(Math.sin(yaw) * d, ty + (v.frame === "body" ? 0.1 * H : 0.02 * H), Math.cos(yaw) * d);
+  cam.lookAt(0, ty, 0);
+  const bg = light(v.mode, yaw);
+  scene.background = bg;
+  renderer.setViewport(x, CELL * (ROWS - 1) - y, CELL, CELL);
+  renderer.setScissor(x, CELL * (ROWS - 1) - y, CELL, CELL);
+  renderer.render(scene, cam);
+  const div = document.createElement("div");
+  div.style.left = `${x + 6}px`; div.style.top = `${y + 6}px`; div.textContent = v.title;
+  labels.appendChild(div);
+});
+document.getElementById("title").textContent = `${label} · three.js, city lighting`;
+window.reviewDone = true;
+</script>
+</body>
+</html>
