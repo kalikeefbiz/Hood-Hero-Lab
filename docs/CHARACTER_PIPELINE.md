@@ -2,7 +2,7 @@
 
 **Why this exists:** Hood Hero needs 100+ rigged, animated characters. Claude should not build them one by one. This is the route Codex and Gemini follow to produce a character Claude can drop into the city after a short review. It's also a test of whether that works, so follow it exactly and report every place it didn't.
 
-Owner decision 2026-11-23. You deliver **only** into `art/incoming/<id>/` (AGENTS.md 00C). Claude reviews, places the file in `public/assets/models/characters/` and wires it up.
+Owner decision 2026-11-23. You deliver **only** into `art/incoming/<id>/` (AGENTS.md 00C). The male protagonist is modular (body, swappable heads and complexions) and has its own contract on top of this one: `docs/handoff/protagonist-male.md`. Claude reviews, places the file in `public/assets/models/characters/` and wires it up.
 
 ## Tools
 

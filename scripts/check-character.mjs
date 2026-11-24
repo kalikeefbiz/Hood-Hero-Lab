@@ -167,6 +167,59 @@ function main(dir) {
     }
   }
 
+  // -------------------------------------------------------------- modular parts (optional)
+  // A modular character (the protagonist) also ships swappable heads and body skin textures.
+  // Contract: docs/handoff/protagonist-male.md.
+  const headsDir = join(dir, "heads"), skinsDir = join(dir, "complexions");
+  if (existsSync(headsDir) || existsSync(skinsDir) || manifest.modular) {
+    const mod = manifest.modular ?? {};
+    ok(!!manifest.modular, "manifest.modular present (heads and complexions listed)");
+    const heads = mod.heads ?? {}, skins = mod.complexions ?? {};
+    const headFiles = existsSync(headsDir) ? readdirSync(headsDir).filter((f) => f.endsWith(".glb")) : [];
+    const skinFiles = existsSync(skinsDir) ? readdirSync(skinsDir).filter((f) => f.endsWith(".ktx2")) : [];
+    ok(headFiles.length >= 1, `heads/ has at least one head (got ${headFiles.length})`);
+    ok(!!heads[mod.defaultHead], `manifest.modular.defaultHead "${mod.defaultHead}" is a listed head`);
+    for (const f of headFiles) ok(Object.values(heads).some((h) => h.file === `heads/${f}`), `heads/${f} listed in manifest.modular.heads`);
+    for (const f of skinFiles) ok(Object.values(skins).some((s) => s.file === `complexions/${f}`), `complexions/${f} listed in manifest.modular.complexions`);
+    // Same skeleton, same rest pose: a head is bound to the body's bones by name at runtime.
+    const bodyNodes = new Map(mj.nodes.map((n) => [n.name ?? "", n]));
+    const near = (a = [0, 0, 0], b = [0, 0, 0]) => a.every((v, i) => Math.abs(v - b[i]) < 1e-4);
+    for (const [hid, h] of Object.entries(heads)) {
+      const p = join(dir, h.file ?? "");
+      if (!ok(!!h.file && existsSync(p), `head ${hid}: file ${h.file}`)) continue;
+      ok(!!skins[h.complexion], `head ${hid}: paired complexion "${h.complexion}" is listed`);
+      ok(typeof h.meshyTaskId === "string" && h.meshyTaskId.length > 0, `head ${hid}: meshyTaskId recorded`);
+      const hg = readGlb(p), hj = hg.json;
+      ok(hg.bytes <= 350_000, `head ${hid}: size ${(hg.bytes / 1024).toFixed(0)} KB <= 342 KB`);
+      ok((hj.extensionsUsed ?? []).some((e) => /meshopt_compression$/.test(e)) && (hj.extensionsUsed ?? []).includes("KHR_mesh_quantization"),
+        `head ${hid}: meshopt + quantization`);
+      ok((hj.extensionsUsed ?? []).includes("KHR_texture_basisu"), `head ${hid}: KTX2 texture`);
+      ok((hj.skins ?? []).length === 1, `head ${hid}: exactly one skin`);
+      ok((hj.animations ?? []).length === 0, `head ${hid}: no animations (clips live in the body file)`);
+      ok((hj.materials ?? []).length <= 1, `head ${hid}: one material`);
+      const ht = triangles(hj);
+      ok(ht >= 1000 && ht <= 8000, `head ${hid}: triangles ${ht} in 1k..8k`);
+      const hjoints = (hj.skins?.[0]?.joints ?? []).map((i) => hj.nodes[i]);
+      const stray = hjoints.filter((n) => !bodyNodes.has(n.name ?? "")).map((n) => n.name);
+      ok(stray.length === 0, `head ${hid}: every joint is a body bone${stray.length ? ` (unknown: ${stray.join(", ")})` : ""}`);
+      const moved = hjoints.filter((n) => {
+        const b = bodyNodes.get(n.name ?? "");
+        return b && !(near(n.translation, b.translation) && near(n.rotation ?? [0, 0, 0, 1], b.rotation ?? [0, 0, 0, 1]));
+      }).map((n) => n.name);
+      ok(moved.length === 0, `head ${hid}: rest pose matches the body skeleton${moved.length ? ` (differs: ${moved.join(", ")})` : ""}`);
+    }
+    for (const [cid, s] of Object.entries(skins)) {
+      const p = join(dir, s.file ?? "");
+      if (!ok(!!s.file && existsSync(p), `complexion ${cid}: file ${s.file}`)) continue;
+      const k = readFileSync(p);
+      if (ok(k[1] === 0x4b && k[2] === 0x54 && k[3] === 0x58, `complexion ${cid}: is KTX2`)) {
+        const w = k.readUInt32LE(20), h = k.readUInt32LE(24);
+        ok(w <= 1024 && h <= 1024, `complexion ${cid}: ${w}x${h} <= 1024`);
+      }
+      ok(k.length <= 300_000, `complexion ${cid}: size ${(k.length / 1024).toFixed(0)} KB <= 293 KB`);
+    }
+  }
+
   console.log(`\n${failed ? "FAIL" : "PASS"}  ${id}: ${failed} problem${failed === 1 ? "" : "s"}`);
   return failed ? 1 : 0;
 }
