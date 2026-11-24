@@ -1,7 +1,7 @@
 # Male Protagonist — Modular Production Contract & Handoff (Stages 1–3)
 
 - **Branch:** `gemini/male-protagonist-production`
-- **Handoff location:** `art/incoming/protagonist-male/`
+- **Handoff location:** `art/incoming/protagonist-male/` (accepted pilot moved 2026-11-24: game files to `public/assets/models/characters/protagonist-male/`, sources and previews here)
 - **Blender:** `5.3.0` (headless)
 - **Blender Skills (`EL4CTEO/blender-skills`):** pinned to `1a1cc6c49312f9f370aae86f52b7b907f29c94f6` (verified latest commit on `origin/main`, matching Hood Hero's documented baseline).
 - **Scope of current delivery:** **Stages 1–3 only** (Shared Male Body, Permanent Skeletal Foundation + Idle/Walk/Run Locomotion, Five Facial Variants + Matching Skin Complexion Presets). Clothing, footwear, and hairstyles are intentionally deferred until Stage 1–3 approval.

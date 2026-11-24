@@ -14,10 +14,10 @@
   },
   "animatedFrom": "retargeted from Quanny via quanny_to_rigify_fk.json, reworked for neutral grounded protagonist",
   "sourceArt": [
-    "art/incoming/protagonist-male/ref/body/t-pose-front.png",
-    "art/incoming/protagonist-male/ref/heads/face-02/front.png",
-    "art/incoming/protagonist-male/ref/heads/face-02/left.png",
-    "art/incoming/protagonist-male/ref/heads/face-02/rear.png"
+    "art/source/hood-hero/protagonist-male/ref/body/t-pose-front.png",
+    "art/source/hood-hero/protagonist-male/ref/heads/face-02/front.png",
+    "art/source/hood-hero/protagonist-male/ref/heads/face-02/left.png",
+    "art/source/hood-hero/protagonist-male/ref/heads/face-02/rear.png"
   ],
   "meshyTaskId": "01a20b45-e738-71c2-ba1b-871200f57913",
   "blender": "5.3",
