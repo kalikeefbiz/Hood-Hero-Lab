@@ -1,0 +1,139 @@
+{
+  "id": "protagonist-male-rework",
+  "displayName": "Male Protagonist (Round 5 Rework)",
+  "heightM": 1.78,
+  "bindPose": "T",
+  "facing": "+Z",
+  "triangles": 23934,
+  "texture": 1024,
+  "rig": "rigify-game",
+  "clips": {
+    "Idle": {
+      "seconds": 6.033,
+      "frames": 180,
+      "speedMps": 0
+    },
+    "Walk": {
+      "seconds": 1.033,
+      "frames": 30,
+      "speedMps": 1.45
+    },
+    "Run": {
+      "seconds": 0.7,
+      "frames": 20,
+      "speedMps": 3.8
+    }
+  },
+  "animatedFrom": "Independent ground-up protagonist animations authored in Blender 5.3 (zero Quanny reuse), tuned to player controller speeds (1.45 m/s Walk, 3.80 m/s Run)",
+  "sourceArt": [
+    "art/incoming/protagonist-male/ref/body/t-pose-front.png",
+    "art/incoming/protagonist-male/ref/heads/face-02/front.png",
+    "art/incoming/protagonist-male/ref/heads/face-02/left.png",
+    "art/incoming/protagonist-male/ref/heads/face-02/rear.png",
+    "art/incoming/protagonist-male/ref/heads/face-03/front.png",
+    "art/incoming/protagonist-male/ref/heads/face-03/left.png",
+    "art/incoming/protagonist-male/ref/heads/face-03/rear.png",
+    "art/incoming/protagonist-male/ref/heads/face-04/front.png",
+    "art/incoming/protagonist-male/ref/heads/face-04/left.png",
+    "art/incoming/protagonist-male/ref/heads/face-04/rear.png",
+    "art/incoming/protagonist-male/ref/heads/face-05/front.png",
+    "art/incoming/protagonist-male/ref/heads/face-05/left.png",
+    "art/incoming/protagonist-male/ref/heads/face-05/rear.png"
+  ],
+  "meshyTaskId": "01a20b45-e738-71c2-ba1b-871200f57913",
+  "blender": "5.3",
+  "skillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
+  "approvedBy": "owner",
+  "modular": {
+    "seam": "neck-base",
+    "defaultHead": "face-01",
+    "heads": {
+      "face-01": {
+        "file": "heads/face-01.glb",
+        "complexion": "complexion-01",
+        "label": "Black",
+        "meshyTaskId": "01a20b45-e738-71c2-ba1b-871200f57913",
+        "meshyMode": "image-to-3d",
+        "inputs": [
+          "ref/body/t-pose-front.png"
+        ]
+      },
+      "face-02": {
+        "file": "heads/face-02.glb",
+        "complexion": "complexion-02",
+        "label": "White",
+        "meshyTaskId": "01a20b45-e6c4-7415-a237-a2c7e5195dc5",
+        "meshyMode": "multi-image-to-3d",
+        "inputs": [
+          "ref/heads/face-02/front.png",
+          "ref/heads/face-02/left.png",
+          "ref/heads/face-02/rear.png"
+        ]
+      },
+      "face-03": {
+        "file": "heads/face-03.glb",
+        "complexion": "complexion-03",
+        "label": "Hispanic/Latino",
+        "meshyTaskId": "01a20d29-0949-72ac-9d16-b60dc89798da",
+        "meshyMode": "multi-image-to-3d",
+        "inputs": [
+          "ref/heads/face-03/front.png",
+          "ref/heads/face-03/left.png",
+          "ref/heads/face-03/rear.png"
+        ]
+      },
+      "face-04": {
+        "file": "heads/face-04.glb",
+        "complexion": "complexion-04",
+        "label": "Asian",
+        "meshyTaskId": "01a20d29-1217-712c-98dd-105f7b81cd6a",
+        "meshyMode": "multi-image-to-3d",
+        "inputs": [
+          "ref/heads/face-04/front.png",
+          "ref/heads/face-04/left.png",
+          "ref/heads/face-04/rear.png"
+        ]
+      },
+      "face-05": {
+        "file": "heads/face-05.glb",
+        "complexion": "complexion-05",
+        "label": "Mixed-heritage",
+        "meshyTaskId": "01a20d29-1a0f-7169-ac50-680571998cb2",
+        "meshyMode": "multi-image-to-3d",
+        "inputs": [
+          "ref/heads/face-05/front.png",
+          "ref/heads/face-05/left.png",
+          "ref/heads/face-05/rear.png"
+        ]
+      }
+    },
+    "complexions": {
+      "complexion-01": {
+        "file": "complexions/complexion-01.ktx2",
+        "label": "Black",
+        "hex": "#6c412b"
+      },
+      "complexion-02": {
+        "file": "complexions/complexion-02.ktx2",
+        "label": "White",
+        "hex": "#a6725e"
+      },
+      "complexion-03": {
+        "file": "complexions/complexion-03.ktx2",
+        "label": "Hispanic/Latino",
+        "hex": "#8e5e45"
+      },
+      "complexion-04": {
+        "file": "complexions/complexion-04.ktx2",
+        "label": "Asian",
+        "hex": "#a26e50"
+      },
+      "complexion-05": {
+        "file": "complexions/complexion-05.ktx2",
+        "label": "Mixed-heritage",
+        "hex": "#915f43"
+      }
+    }
+  },
+  "notes": "Round 5 experimental anatomical, skeletal, and animation rework branched from gemini/protagonist-male-round4 (ab5ca91). Preserves PR #75 untouched. Reworked upright thoracic/neck/shoulder anatomy, natural relaxed curved fingers, aligned 36-joint GAME_RIG_Body, all 5 heads & complexions synced at Z=1.538m, and independent Idle/Walk/Run clips."
+}
