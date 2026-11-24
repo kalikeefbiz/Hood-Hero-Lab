@@ -1,0 +1,227 @@
+{
+  "status": "reference-ready; paid generation conditional on technical QA",
+  "primary_body": "body/t-pose-front.png",
+  "primary_heads": "sheets/head-turnarounds-primary.png",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "33bee1b39abf78a527098b51a3b8b37bcc2ead2d5ddfe0dc618b8974abf848ac"
+    },
+    {
+      "path": "body/original-turnaround.jpeg",
+      "sha256": "f654e9d434fb7b5deaf95c11a3c6d3145842d7d5436f2fd46fd7332a8686a3a8",
+      "pixels": [
+        864,
+        1536
+      ]
+    },
+    {
+      "path": "body/t-pose-front.png",
+      "sha256": "59df3962d7fe9af36cf6e1226c89d2f8b9ddd63db0eba2abe5f2b8deae6260cb",
+      "pixels": [
+        1199,
+        1312
+      ]
+    },
+    {
+      "path": "heads/face-01/front.png",
+      "sha256": "540f5c3264f18a5dd0644ab0bcca4a57d92a6c6219e7500a90de897ac1b40b42",
+      "pixels": [
+        303,
+        352
+      ]
+    },
+    {
+      "path": "heads/face-01/left.png",
+      "sha256": "0c8cf461776241f3f177c94ca0d94b3b1104578f6ee2d574e3d2ef76dc64753e",
+      "pixels": [
+        303,
+        327
+      ]
+    },
+    {
+      "path": "heads/face-01/original.jpeg",
+      "sha256": "0bca84420cb4b1a627f0fd794394542a74362fc289c6289558e11ec91aec5011",
+      "pixels": [
+        864,
+        1536
+      ]
+    },
+    {
+      "path": "heads/face-01/rear.png",
+      "sha256": "4304aafee84296a46338913147d3f7ddfb5a04bc6e6a3bed1e94d4b321085177",
+      "pixels": [
+        303,
+        333
+      ]
+    },
+    {
+      "path": "heads/face-02/front.png",
+      "sha256": "89fcc805524abf2e92e03ef4e0a1700553e2e829a80e5046c71aeac4da53f355",
+      "pixels": [
+        304,
+        352
+      ]
+    },
+    {
+      "path": "heads/face-02/left.png",
+      "sha256": "84987af12c1260391c1a03bf095d950f56b001164177187fdb178f890657c06a",
+      "pixels": [
+        304,
+        327
+      ]
+    },
+    {
+      "path": "heads/face-02/original.jpeg",
+      "sha256": "ca844850b28e4d7604e8844e42ebcd1c7d10a5a205c8383511f87d95b668f537",
+      "pixels": [
+        864,
+        1536
+      ]
+    },
+    {
+      "path": "heads/face-02/rear.png",
+      "sha256": "2d887e4564a86a8c518148cc7f377358b81255fb6f4abad35c9d0533e05695b7",
+      "pixels": [
+        304,
+        333
+      ]
+    },
+    {
+      "path": "heads/face-03/front.png",
+      "sha256": "39b835bb7d1c1dd8dbad8c12be49af9d3c4b81f38880f0a6d6207ca88efb1f41",
+      "pixels": [
+        303,
+        352
+      ]
+    },
+    {
+      "path": "heads/face-03/left.png",
+      "sha256": "26bd300166449a8d03859d0febf448442a5aa850f0e752ddf45cfc41bdfbb4b5",
+      "pixels": [
+        303,
+        327
+      ]
+    },
+    {
+      "path": "heads/face-03/original.jpeg",
+      "sha256": "2429a644d8b29f4734bf821a4e4f179b47b3ef8ab9414157296503358d77577e",
+      "pixels": [
+        1170,
+        2054
+      ]
+    },
+    {
+      "path": "heads/face-03/rear.png",
+      "sha256": "44bd38fd5a114151cd88bd8a5361d91e37c8f443c12c6e92eb567537da0065e4",
+      "pixels": [
+        303,
+        333
+      ]
+    },
+    {
+      "path": "heads/face-04/front.png",
+      "sha256": "be0480d070110cb2d42366ce5d7ed52436648bdc999c047e2a13c420899d5bd6",
+      "pixels": [
+        303,
+        352
+      ]
+    },
+    {
+      "path": "heads/face-04/left.png",
+      "sha256": "764eecc1dec2d109492fd75cd20169b576cbba5cf8d0b2e070d015423327c7ba",
+      "pixels": [
+        303,
+        327
+      ]
+    },
+    {
+      "path": "heads/face-04/original.jpeg",
+      "sha256": "f843bc989b567f87582af662f5fa778bb0c8cb003324e0d7782b3a528ed66e6d",
+      "pixels": [
+        1170,
+        2072
+      ]
+    },
+    {
+      "path": "heads/face-04/rear.png",
+      "sha256": "befa2841a480e369be59811bde2ca7e79865763da8d22986c854c46cfcceaadf",
+      "pixels": [
+        303,
+        333
+      ]
+    },
+    {
+      "path": "heads/face-05/front.png",
+      "sha256": "46ce3b2245f12189432f90ebd435a9e51ea557b660cc530df7294581c263de94",
+      "pixels": [
+        303,
+        352
+      ]
+    },
+    {
+      "path": "heads/face-05/left.png",
+      "sha256": "1fa45c00b5116ca41248904bfe18470e0bc2765f020e71136d64f8066e81f76b",
+      "pixels": [
+        303,
+        327
+      ]
+    },
+    {
+      "path": "heads/face-05/original.jpeg",
+      "sha256": "fc00db92b247871e19bbec5bdb1f61977f606376572a0fb34586ef70c8cf8c70",
+      "pixels": [
+        1170,
+        2067
+      ]
+    },
+    {
+      "path": "heads/face-05/rear.png",
+      "sha256": "4dba72c14d1a8d0e2921dbef69d1206de2943941f34e218c235eabbf72e01683",
+      "pixels": [
+        303,
+        333
+      ]
+    },
+    {
+      "path": "sheets/body-complexion-study.png",
+      "sha256": "c753a9a0c4bcc060281a1032bc54f504d685b6a1865450165713c8dbedd9d406",
+      "pixels": [
+        1774,
+        887
+      ]
+    },
+    {
+      "path": "sheets/head-turnarounds-alternate-01.png",
+      "sha256": "42068f1200cccfaeccd2b3b2512807dca769bbcd9376638cbe5a2429537f80b6",
+      "pixels": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "sheets/head-turnarounds-alternate-02.png",
+      "sha256": "653253adcb993727610f29d4c4c1e4cfa082fefb8374347f319548ba71e1e65a",
+      "pixels": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "sheets/head-turnarounds-primary.png",
+      "sha256": "11aeec453190a0642edc2fa9d1988fbb1cf205a9a54d2d779fb6c5c109ac174f",
+      "pixels": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "sheets/master-style-guide.png",
+      "sha256": "e7f8764a40449d17a3b7a105036a3585e07f78a53c809b0cac0273d197ff50ca",
+      "pixels": [
+        1536,
+        1024
+      ]
+    }
+  ]
+}

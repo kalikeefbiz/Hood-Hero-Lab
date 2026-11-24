@@ -1,0 +1,65 @@
+{
+  "id": "protagonist-male",
+  "displayName": "Male Protagonist",
+  "heightM": 1.78,
+  "bindPose": "T",
+  "facing": "+Z",
+  "triangles": 23934,
+  "texture": 1024,
+  "rig": "rigify-game",
+  "clips": {
+    "Idle": { "seconds": 8.0, "frames": 240, "speedMps": 0 },
+    "Walk": { "seconds": 1.2, "frames": 36, "speedMps": 0.79 },
+    "Run":  { "seconds": 0.733, "frames": 22, "speedMps": 2.55 }
+  },
+  "animatedFrom": "retargeted from Quanny via quanny_to_rigify_fk.json, reworked for neutral grounded protagonist",
+  "sourceArt": [
+    "art/incoming/protagonist-male/ref/body/t-pose-front.png",
+    "art/incoming/protagonist-male/ref/heads/face-02/front.png",
+    "art/incoming/protagonist-male/ref/heads/face-02/left.png",
+    "art/incoming/protagonist-male/ref/heads/face-02/rear.png"
+  ],
+  "meshyTaskId": "01a20b45-e738-71c2-ba1b-871200f57913",
+  "blender": "5.3",
+  "skillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
+  "approvedBy": "owner",
+  "modular": {
+    "seam": "neck-base",
+    "defaultHead": "face-01",
+    "heads": {
+      "face-01": {
+        "file": "heads/face-01.glb",
+        "complexion": "complexion-01",
+        "label": "Black",
+        "meshyTaskId": "01a20b45-e738-71c2-ba1b-871200f57913",
+        "meshyMode": "image-to-3d",
+        "inputs": ["ref/body/t-pose-front.png"]
+      },
+      "face-02": {
+        "file": "heads/face-02.glb",
+        "complexion": "complexion-02",
+        "label": "White",
+        "meshyTaskId": "01a20b45-e6c4-7415-a237-a2c7e5195dc5",
+        "meshyMode": "multi-image-to-3d",
+        "inputs": [
+          "ref/heads/face-02/front.png",
+          "ref/heads/face-02/left.png",
+          "ref/heads/face-02/rear.png"
+        ]
+      }
+    },
+    "complexions": {
+      "complexion-01": {
+        "file": "complexions/complexion-01.ktx2",
+        "label": "Black",
+        "hex": "#6c412b"
+      },
+      "complexion-02": {
+        "file": "complexions/complexion-02.ktx2",
+        "label": "White",
+        "hex": "#a6725e"
+      }
+    }
+  },
+  "notes": "Pilot Round 3 delivery (body + face-01 + face-02 + complexion-01/02) per docs/handoff/protagonist-male.md. Job 2 used multi-image-to-3d meshy-7.1 + meshy-n1 (30 credits, owner-approved Option A) because multi-image-to-3d does not support meshy-t2.5. Total Meshy spend: 45 credits (0 new credits in Round 2/3). Body rebuilt from untouched Job 1 mesh cut cleanly at Z_SEAM=1.538m (above both shoulders, fixing the left shoulder flap and left upper arm cutout) with original Meshy custom normals and transferred 36-bone skinning. face-01 cut directly at Z_SEAM=1.538m with 620x940px front-face UV projection, zero-raycast UV-to-UV self-bake, and transferred Meshy custom normals. face-02 keeps Meshy's own UVs and texture untouched on the face, reduced to 7238 tris with UV-delimited face-protected DECIMATE and only the lowest neck band stitched and blended from complexion-02. Shared 94-vertex neck-seam loop at z=1.538m verified at 0.000mm pos diff, <=0.025 deg normal diff, 0.0000 weight diff, and 0.000mm animated gap across Idle/Walk/Run."
+}
