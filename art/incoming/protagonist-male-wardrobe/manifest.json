@@ -1,0 +1,626 @@
+{
+  "id": "protagonist-male-wardrobe",
+  "approvedBy": "owner",
+  "heightM": 1.78,
+  "bindPose": "T",
+  "sourceArt": [
+    "art/source/hood-hero/protagonist/male/ref/tops-master.PNG",
+    "art/source/hood-hero/protagonist/male/ref/bottoms-master.PNG",
+    "art/source/hood-hero/protagonist/male/ref/footwear-master.PNG",
+    "art/source/hood-hero/protagonist/male/ref/outwear-master.PNG"
+  ],
+  "blender": "5.3.0",
+  "blenderSkillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
+  "meshyCredits": 0,
+  "bodyVersion": "protagonist-male-body-round5",
+  "skeletonVersion": "protagonist-male-rig-round5",
+  "bodySha256": "06e7585513882d31ef28dd3233218231b6ced178da2087c15a3302bbafe71e74",
+  "source": "source/male-starter-outfit.blend",
+  "bodyMasks": "body-masks.json",
+  "modular": {
+    "wearables": {
+      "tee-white": {
+        "label": "Plain White T-Shirt",
+        "slot": "top",
+        "file": "models/tops/tee-white.glb",
+        "sourceArt": [
+          "ref/tee-white.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "tee-white",
+          "description": "Mask covered torso and upper-arm triangles. Keep the neck and a skin ring inside each cuff."
+        },
+        "materialVariantIds": [
+          "tee-stixx-black"
+        ],
+        "layerCompatibility": {
+          "validatedWith": [
+            "jeans-denim-standard",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The shoulders still read slightly boxy. The inner sleeve crease is sharp when the arm falls against the torso.",
+        "triangles": 2616,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 141528,
+        "roughness": 0.86
+      },
+      "jeans-denim-standard": {
+        "label": "Standard Denim Jeans",
+        "slot": "bottom",
+        "file": "models/bottoms/jeans-denim-standard.glb",
+        "sourceArt": [
+          "ref/jeans-denim-standard.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "jeans-denim-standard",
+          "description": "Mask covered pelvis and leg triangles. Retain skin at the waist and cuffs."
+        },
+        "materialVariantIds": [],
+        "layerCompatibility": {
+          "validatedWith": [
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The front crotch has a sharp shaded gusset, and the back of the knee can pinch during Run.",
+        "triangles": 3296,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 385740,
+        "roughness": 0.84
+      },
+      "court-sneakers-white": {
+        "label": "White Low-Top Court Sneakers",
+        "slot": "footwear",
+        "file": "models/footwear/court-sneakers-white.glb",
+        "sourceArt": [
+          "ref/court-sneakers-white.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "court-sneakers-white",
+          "description": "Mask the covered foot and retain the skin ring at the padded collar."
+        },
+        "materialVariantIds": [
+          "court-sneakers-black"
+        ],
+        "layerCompatibility": {
+          "validatedWith": [
+            "shorts-athletic",
+            "tee-white"
+          ]
+        },
+        "knownClippingLimitations": "The low sole stays aligned in bind pose. Some jeans combinations show a narrow skin ring above the shoe collar in stride.",
+        "triangles": 3960,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 144908,
+        "roughness": 0.69,
+        "groundOffsetMeters": 0
+      },
+      "tee-stixx-black": {
+        "label": "The Stixx Black Graphic T-Shirt",
+        "slot": "top",
+        "file": "models/tops/tee-stixx-black.glb",
+        "sourceArt": [
+          "ref/tee-stixx-black.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "tee-stixx-black",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "jeans-denim-standard",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The same inner sleeve crease reads as a dark notch, especially under rear lighting.",
+        "triangles": 2616,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 408804,
+        "sharedGeometry": "tee-white",
+        "roughness": 0.86
+      },
+      "tank-white": {
+        "label": "White Ribbed Tank Top",
+        "slot": "top",
+        "file": "models/tops/tank-white.glb",
+        "sourceArt": [
+          "ref/tank-white.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "tank-white",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "jeans-denim-standard",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "Small jagged spots remain at the side hem over the denim waistband, and the armhole binding deforms tightly in Run.",
+        "triangles": 2096,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 136112,
+        "roughness": 0.88
+      },
+      "flannel-long-sleeve": {
+        "label": "Long-Sleeve Flannel",
+        "slot": "top",
+        "file": "models/tops/flannel-long-sleeve.glb",
+        "sourceArt": [
+          "ref/flannel-long-sleeve.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "flannel-long-sleeve",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "jeans-denim-standard",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The rear collar still has a small angular fold. Bent elbows produce a sharp crease in the plaid.",
+        "triangles": 4864,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 485176,
+        "roughness": 0.85
+      },
+      "hoodie-gray-down": {
+        "label": "Gray Hoodie, Hood Down",
+        "slot": "outerwear",
+        "file": "models/outerwear/hoodie-gray-down.glb",
+        "sourceArt": [
+          "ref/hoodie-gray-down.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "hoodie-gray-down",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": true,
+          "validatedWith": [
+            "jeans-denim-standard",
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The lowered hood has a sharp lower fold. The kangaroo pocket lower lip and elbow folds still read stiff.",
+        "triangles": 4896,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 175996,
+        "garmentFamily": "hoodie-gray",
+        "hood": "down",
+        "sharedMaterials": "hoodie-gray-down",
+        "roughness": 0.88
+      },
+      "hoodie-gray-up": {
+        "label": "Gray Hoodie, Hood Up",
+        "slot": "outerwear",
+        "file": "models/outerwear/hoodie-gray-up.glb",
+        "sourceArt": [
+          "ref/hoodie-gray-up.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "hoodie-gray-up",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": true,
+          "hair": "Hide hair unless the style has been tested inside the raised hood.",
+          "validatedWith": [
+            "jeans-denim-standard",
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The hood opening sits wide near the cheeks. The kangaroo pocket lower lip reads stiff and Run compresses the inner elbows.",
+        "triangles": 4896,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 177268,
+        "garmentFamily": "hoodie-gray",
+        "hood": "up",
+        "sharedMaterials": "hoodie-gray-down",
+        "roughness": 0.88
+      },
+      "windbreaker-black-open": {
+        "label": "Open Black Windbreaker",
+        "slot": "outerwear",
+        "file": "models/outerwear/windbreaker-black-open.glb",
+        "sourceArt": [
+          "ref/windbreaker-black-open.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "windbreaker-black-open",
+          "description": "Mask covered shoulder and arm geometry. Keep the skin or shirt in the front opening."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "topIds": [
+            "tee-white",
+            "tee-stixx-black",
+            "tank-white"
+          ],
+          "validatedWith": [
+            "jeans-denim-standard",
+            "tee-white",
+            "court-sneakers-white"
+          ],
+          "underlayIds": [
+            "tee-white",
+            "tee-stixx-black"
+          ]
+        },
+        "knownClippingLimitations": "A small undershirt fleck remains near one placket edge. The lower-back shading and elbow folds are angular in motion.",
+        "triangles": 3778,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 157624,
+        "roughness": 0.54
+      },
+      "puffer-black-closed": {
+        "label": "Closed Black Puffer Jacket",
+        "slot": "outerwear",
+        "file": "models/outerwear/puffer-black-closed.glb",
+        "sourceArt": [
+          "ref/puffer-black-closed.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "puffer-black-closed",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": true,
+          "validatedWith": [
+            "jeans-denim-standard",
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "Bright angular shading remains on the lower back even with the body hidden. The hand grazes or enters the side hem at peak Run flex.",
+        "triangles": 4000,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 159600,
+        "roughness": 0.58
+      },
+      "jeans-black-skinny": {
+        "label": "Black Skinny Jeans",
+        "slot": "bottom",
+        "file": "models/bottoms/jeans-black-skinny.glb",
+        "sourceArt": [
+          "ref/jeans-black-skinny.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "jeans-black-skinny",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The tight fit amplifies folds around the inner knee and calf. A small ankle ring shows in stride.",
+        "triangles": 3296,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 361984,
+        "roughness": 0.86
+      },
+      "jeans-denim-baggy": {
+        "label": "Baggy Denim Jeans",
+        "slot": "bottom",
+        "file": "models/bottoms/jeans-denim-baggy.glb",
+        "sourceArt": [
+          "ref/jeans-denim-baggy.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "jeans-denim-baggy",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The stacked cuffs have some angular folds and can touch the shoe collars at large ankle angles.",
+        "triangles": 3296,
+        "materials": 1,
+        "textureResolution": [
+          512,
+          512
+        ],
+        "bytes": 385560,
+        "roughness": 0.87
+      },
+      "cargo-black": {
+        "label": "Black Cargo Pants",
+        "slot": "bottom",
+        "file": "models/bottoms/cargo-black.glb",
+        "sourceArt": [
+          "ref/cargo-black.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "cargo-black",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The inner leg pinches in Run. A small ankle ring shows between the cuff and court shoe.",
+        "triangles": 3712,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 165640,
+        "roughness": 0.86
+      },
+      "sweats-gray": {
+        "label": "Gray Sweatpants",
+        "slot": "bottom",
+        "file": "models/bottoms/sweats-gray.glb",
+        "sourceArt": [
+          "ref/sweats-gray.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "sweats-gray",
+          "description": "Mask the covered body triangles. Preserve the visible skin and the opening margins."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The softer cuff still shows polygonal gathers in close-up. Some ankle remains visible above the shoes.",
+        "triangles": 3560,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 159456,
+        "roughness": 0.9
+      },
+      "shorts-athletic": {
+        "label": "Navy Athletic Shorts",
+        "slot": "bottom",
+        "file": "models/bottoms/shorts-athletic.glb",
+        "sourceArt": [
+          "ref/shorts-athletic.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "shorts-athletic",
+          "description": "Preserve lower legs and a ring of thigh at the cuff."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The turned cuff is angular at high knee lift, and the front gusset reads as a dark wedge from some angles.",
+        "triangles": 2104,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 119168,
+        "roughness": 0.78
+      },
+      "flip-flops": {
+        "label": "Flip-Flops",
+        "slot": "footwear",
+        "file": "models/footwear/flip-flops.glb",
+        "sourceArt": [
+          "ref/flip-flops.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "flip-flops",
+          "description": "Preserve the entire foot and lower leg."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "shorts-athletic",
+            "tee-white"
+          ]
+        },
+        "knownClippingLimitations": "The toe post and straps follow the foot and have limited flex. The heel stays attached to the sole in Run.",
+        "triangles": 1648,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 75920,
+        "groundOffsetMeters": 0.0168,
+        "roughness": 0.81
+      },
+      "slides-black": {
+        "label": "Black Slides",
+        "slot": "footwear",
+        "file": "models/footwear/slides-black.glb",
+        "sourceArt": [
+          "ref/slides-black.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "slides-black",
+          "description": "Preserve the entire foot and lower leg."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "shorts-athletic",
+            "tee-white"
+          ]
+        },
+        "knownClippingLimitations": "The molded band remains stiff in forefoot flex. The heel stays with the sole through Run.",
+        "triangles": 1496,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 72352,
+        "groundOffsetMeters": 0.0172,
+        "roughness": 0.79
+      },
+      "court-sneakers-black": {
+        "label": "Black Low-Top Court Sneakers",
+        "slot": "footwear",
+        "file": "models/footwear/court-sneakers-black.glb",
+        "sourceArt": [
+          "ref/court-sneakers-black.jpg"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "court-sneakers-black",
+          "description": "Mask the covered foot. Keep a ring of skin inside the collar."
+        },
+        "layerCompatibility": {
+          "coversTop": false,
+          "validatedWith": [
+            "shorts-athletic",
+            "tee-white"
+          ]
+        },
+        "knownClippingLimitations": "The same collar clearance applies as with the white shoe. The outsole and toe flex remain visibly rigid during the fastest stride.",
+        "triangles": 3960,
+        "materials": 1,
+        "textureResolution": [
+          256,
+          256
+        ],
+        "bytes": 142440,
+        "sharedGeometry": "court-sneakers-white",
+        "groundOffsetMeters": 0,
+        "roughness": 0.69
+      }
+    }
+  },
+  "starterOutfit": {
+    "top": "tee-white",
+    "bottom": "jeans-denim-standard",
+    "footwear": "court-sneakers-white",
+    "referenceHead": "face-01",
+    "referenceComplexion": "complexion-01",
+    "visibleTriangles": 25824,
+    "visibleBodyTriangles": 9020,
+    "garmentAssetBytes": 672176,
+    "equippedAssetBytes": 1695167,
+    "estimatedMaterialDraws": 5
+  },
+  "catalogSource": "source/male-wardrobe-catalog.blend",
+  "fittingAuthority": "art/incoming/protagonist-male-rework/protagonist-male-rework.glb"
+}

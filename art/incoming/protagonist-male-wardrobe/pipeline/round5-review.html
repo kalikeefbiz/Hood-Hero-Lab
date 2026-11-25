@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Round 5 wardrobe review</title>
+<style>html,body{margin:0;overflow:hidden;background:#353d48}canvas{display:block}</style>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { createWardrobe, findSkin } from './assemble.mjs';
+
+const root = '/art/incoming/protagonist-male-rework';
+const before = new URLSearchParams(location.search).has('before');
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.AgXToneMapping;
+document.body.append(renderer.domElement);
+
+const ktx = new KTX2Loader().setWorkerLimit(1).setTranscoderPath('/basis/').detectSupport(renderer);
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx);
+const manifest = await fetch('../manifest.json').then(response => response.json());
+const masks = await fetch(before ? '/baseline/body-masks.json' : '../body-masks.json').then(response => response.json());
+const bytes = await fetch(`${root}/protagonist-male-rework.glb`).then(response => response.arrayBuffer());
+const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
+const hash = Array.from(digest, byte => byte.toString(16).padStart(2, '0')).join('');
+const [avatar, head, map] = await Promise.all([
+  loader.parseAsync(bytes, ''),
+  loader.loadAsync(`${root}/heads/face-01.glb`),
+  ktx.loadAsync(`${root}/complexions/complexion-01.ktx2`),
+]);
+const body = findSkin(avatar.scene, 'Body');
+const headMesh = findSkin(head.scene);
+const liveBones = new Map(body.skeleton.bones.map(bone => [bone.name, bone]));
+const headBones = headMesh.skeleton.bones.map(bone => liveBones.get(bone.name));
+if (headBones.some(bone => !bone)) throw Error('Head skin does not match Round 5');
+body.parent.add(headMesh);
+headMesh.bind(new THREE.Skeleton(headBones, headMesh.skeleton.boneInverses), headMesh.bindMatrix.clone());
+headMesh.frustumCulled = false;
+body.frustumCulled = false;
+map.colorSpace = THREE.SRGBColorSpace;
+map.flipY = false;
+body.material.map = map;
+const wardrobe = createWardrobe(body, masks, hash);
+const fullIndexCount = body.geometry.index.count;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#353d48');
+scene.add(avatar.scene, new THREE.HemisphereLight(0xe4eeff, 0xad998a, 2.2));
+for (const [color, intensity, x, y, z] of [[0xffecda, 2.7, -2, 4, 3], [0xd6e7ff, 2, 2, 3, -2]]) {
+  const light = new THREE.DirectionalLight(color, intensity);
+  light.position.set(x, y, z);
+  scene.add(light);
+}
+const camera = new THREE.PerspectiveCamera(31, innerWidth / innerHeight, .03, 15);
+const mixer = new THREE.AnimationMixer(avatar.scene);
+const clips = Object.fromEntries(avatar.animations.map(clip => [clip.name, clip]));
+const equipped = new Map();
+
+window.equip = async (ids) => {
+  for (const slot of equipped.keys()) wardrobe.remove(slot);
+  equipped.clear();
+  if (body.geometry.index.count !== fullIndexCount) throw Error('Removing slots did not restore the body');
+  const records = {};
+  for (const id of ids) {
+    const record = manifest.modular.wearables[id];
+    const glb = await loader.loadAsync(`${before ? '/baseline/' : '../'}${record.file}`);
+    const previous = equipped.get(record.slot);
+    const mesh = wardrobe.equip(id, glb);
+    if (previous?.mesh.parent) throw Error(`Replacing ${previous.id} did not detach it`);
+    equipped.set(record.slot, { id, mesh });
+    const weights = mesh.geometry.getAttribute('skinWeight');
+    const joints = mesh.geometry.getAttribute('skinIndex');
+    let maxWeightError = 0;
+    for (let i = 0; i < weights.count; i++) {
+      const components = [weights.getX(i), weights.getY(i), weights.getZ(i), weights.getW(i)];
+      maxWeightError = Math.max(maxWeightError, Math.abs(components.reduce((a,b) => a+b, 0)-1));
+      if (components.some(w => !Number.isFinite(w) || w < 0) ||
+          [joints.getX(i), joints.getY(i), joints.getZ(i), joints.getW(i)].some(j => j >= mesh.skeleton.bones.length))
+        throw Error(`Invalid skin palette for ${id}`);
+    }
+    records[id] = {
+      bytes: glb.parser.json.buffers[0].byteLength,
+      triangleCount: mesh.geometry.index.count / 3,
+      joints: mesh.skeleton.bones.length,
+      maxWeightError,
+      baseColor: mesh.material.map?.isCompressedTexture ?? false,
+      normal: mesh.material.normalMap?.isCompressedTexture ?? false,
+      roughness: mesh.material.roughness,
+      roughnessTexture: Boolean(mesh.material.roughnessMap),
+    };
+    if (glb.animations.length || maxWeightError > .0001 || !records[id].baseColor || !records[id].normal)
+      throw Error(`Invalid exported skin or material for ${id}`);
+  }
+  const top = equipped.get('top');
+  const outerwear = equipped.get('outerwear');
+  const covered = outerwear && masks.wearables[outerwear.id].coversTop;
+  if (top && top.mesh.visible === Boolean(covered)) throw Error('Outerwear visibility mismatch');
+  const hidden = new Set();
+  for (const {id, mesh} of equipped.values()) {
+    if (!mesh.visible) continue;
+    for (const [start, count] of masks.wearables[id].ranges) {
+      for (let tri = start; tri < start + count; tri++) hidden.add(tri);
+    }
+  }
+  const triangles = body.geometry.index.count / 3;
+  if (triangles !== fullIndexCount / 3 - hidden.size) throw Error('Body mask union mismatch');
+  const visibleTopTriangles = top?.mesh.visible ? top.mesh.geometry.index.count / 3 : 0;
+  if (outerwear && top) {
+    wardrobe.remove('outerwear');
+    if (!top.mesh.visible || top.mesh.geometry.index.count / 3 !== records[top.id].triangleCount)
+      throw Error('Removing outerwear did not restore the top');
+    const record = manifest.modular.wearables[outerwear.id];
+    const glb = await loader.loadAsync(`${before ? '/baseline/' : '../'}${record.file}`);
+    outerwear.mesh = wardrobe.equip(outerwear.id, glb);
+    const ranges = masks.wearables[outerwear.id].visibleTopRanges?.[top.id];
+    if (ranges && ranges.reduce((sum, [, count]) => sum + count, 0) !== visibleTopTriangles)
+      throw Error('Open jacket did not preserve its visible top panel');
+  }
+  return { garments: records, visibleBodyTriangles: triangles, coveredTop: Boolean(covered), visibleTopTriangles };
+};
+
+const views = {
+  body: [0, .90, 3.60, .18],
+  neckline: [0, 1.44, 1.23, .12],
+  shoulders: [0, 1.42, 1.43, .10],
+  torsoHem: [0, 1.02, 1.32, .06],
+  torso: [0, 1.24, 1.87, .08],
+  legs: [0, .54, 2.26, .06],
+  stride: [0, .39, 2.08, .10],
+  ankles: [0, .11, 1.22, .12],
+  knees: [0, .56, 1.62, .06],
+  sleeve: [.14, 1.12, 1.47, .10],
+};
+
+function pose(name, time) {
+  const clip = clips[name];
+  mixer.stopAllAction();
+  const action = mixer.clipAction(clip);
+  action.setLoop(THREE.LoopOnce, 1);
+  action.clampWhenFinished = true;
+  action.play();
+  mixer.setTime(time);
+  scene.updateMatrixWorld(true);
+}
+
+function render(angle, view) {
+  const [x, y, distance, up] = views[view];
+  camera.position.set(x + Math.sin(angle) * distance, y + up, Math.cos(angle) * distance);
+  camera.lookAt(x, y, 0);
+  renderer.render(scene, camera);
+}
+window.draw = (name, time, angle, view) => {
+  pose(name, time);
+  render(angle, view);
+};
+window.recordingSize = (width, height, paired) => {
+  renderer.setSize(paired ? 2 * width : width, height);
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+  renderer.setScissorTest(paired);
+};
+window.drawPair = (name, time, view, width, height) => {
+  pose(name, time);
+  for (const [i, angle] of [.55, 2.70].entries()) {
+    renderer.setViewport(i * width, 0, width, height);
+    renderer.setScissor(i * width, 0, width, height);
+    render(angle, view);
+  }
+  return renderer.domElement.toDataURL('image/jpeg', .86).split(',')[1];
+};
+window.clips = Object.fromEntries(Object.entries(clips).map(([name, clip]) => [name, clip.duration]));
+window.round5Ready = true;
+</script>

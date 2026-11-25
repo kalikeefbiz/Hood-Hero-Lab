@@ -1,0 +1,5260 @@
+{
+  "rest": [
+    {
+      "frame": 0,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4213,
+            "poke_verts": 19,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 510,
+            "poke_verts": 20,
+            "poke_max_m": 0.09991
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4816,
+            "poke_verts": 9,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 479,
+            "poke_verts": 0,
+            "poke_max_m": 0.0
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3301,
+            "poke_verts": 173,
+            "poke_max_m": 0.09899
+          },
+          "masked": {
+            "covered_verts": 448,
+            "poke_verts": 106,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    }
+  ],
+  "Idle": [
+    {
+      "frame": 0,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4616,
+            "poke_verts": 690,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1156,
+            "poke_verts": 544,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9702,
+            "poke_verts": 2901,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5371,
+            "poke_verts": 2891,
+            "poke_max_m": 0.09977
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09973
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09694
+          }
+        }
+      }
+    },
+    {
+      "frame": 4,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4627,
+            "poke_verts": 692,
+            "poke_max_m": 0.09951
+          },
+          "masked": {
+            "covered_verts": 1167,
+            "poke_verts": 554,
+            "poke_max_m": 0.09951
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9668,
+            "poke_verts": 2803,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 5337,
+            "poke_verts": 2793,
+            "poke_max_m": 0.1
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09972
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09696
+          }
+        }
+      }
+    },
+    {
+      "frame": 8,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4637,
+            "poke_verts": 715,
+            "poke_max_m": 0.09968
+          },
+          "masked": {
+            "covered_verts": 1177,
+            "poke_verts": 571,
+            "poke_max_m": 0.09968
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9657,
+            "poke_verts": 2704,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 5327,
+            "poke_verts": 2694,
+            "poke_max_m": 0.09993
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09972
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09698
+          }
+        }
+      }
+    },
+    {
+      "frame": 12,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4651,
+            "poke_verts": 727,
+            "poke_max_m": 0.09957
+          },
+          "masked": {
+            "covered_verts": 1192,
+            "poke_verts": 585,
+            "poke_max_m": 0.09957
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9625,
+            "poke_verts": 2607,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 5295,
+            "poke_verts": 2597,
+            "poke_max_m": 0.09994
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 188,
+            "poke_max_m": 0.09971
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09699
+          }
+        }
+      }
+    },
+    {
+      "frame": 16,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4661,
+            "poke_verts": 731,
+            "poke_max_m": 0.09964
+          },
+          "masked": {
+            "covered_verts": 1201,
+            "poke_verts": 590,
+            "poke_max_m": 0.09964
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9597,
+            "poke_verts": 2540,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5267,
+            "poke_verts": 2530,
+            "poke_max_m": 0.09962
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09976
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09701
+          }
+        }
+      }
+    },
+    {
+      "frame": 20,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4668,
+            "poke_verts": 741,
+            "poke_max_m": 0.09979
+          },
+          "masked": {
+            "covered_verts": 1207,
+            "poke_verts": 600,
+            "poke_max_m": 0.09979
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9560,
+            "poke_verts": 2487,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5230,
+            "poke_verts": 2477,
+            "poke_max_m": 0.09978
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09981
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09702
+          }
+        }
+      }
+    },
+    {
+      "frame": 24,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4675,
+            "poke_verts": 747,
+            "poke_max_m": 0.09957
+          },
+          "masked": {
+            "covered_verts": 1214,
+            "poke_verts": 606,
+            "poke_max_m": 0.09957
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9549,
+            "poke_verts": 2437,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5218,
+            "poke_verts": 2427,
+            "poke_max_m": 0.09979
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 187,
+            "poke_max_m": 0.09984
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 120,
+            "poke_max_m": 0.09702
+          }
+        }
+      }
+    },
+    {
+      "frame": 28,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4679,
+            "poke_verts": 752,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 1218,
+            "poke_verts": 612,
+            "poke_max_m": 0.09995
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9556,
+            "poke_verts": 2425,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5225,
+            "poke_verts": 2415,
+            "poke_max_m": 0.09977
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 187,
+            "poke_max_m": 0.09984
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 120,
+            "poke_max_m": 0.09703
+          }
+        }
+      }
+    },
+    {
+      "frame": 32,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4678,
+            "poke_verts": 753,
+            "poke_max_m": 0.09999
+          },
+          "masked": {
+            "covered_verts": 1217,
+            "poke_verts": 613,
+            "poke_max_m": 0.09999
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9559,
+            "poke_verts": 2451,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5228,
+            "poke_verts": 2441,
+            "poke_max_m": 0.0998
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 187,
+            "poke_max_m": 0.09985
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 120,
+            "poke_max_m": 0.09703
+          }
+        }
+      }
+    },
+    {
+      "frame": 36,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4679,
+            "poke_verts": 751,
+            "poke_max_m": 0.09997
+          },
+          "masked": {
+            "covered_verts": 1218,
+            "poke_verts": 611,
+            "poke_max_m": 0.09997
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9596,
+            "poke_verts": 2491,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 5265,
+            "poke_verts": 2481,
+            "poke_max_m": 0.1
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 187,
+            "poke_max_m": 0.09988
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 120,
+            "poke_max_m": 0.09704
+          }
+        }
+      }
+    },
+    {
+      "frame": 40,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4669,
+            "poke_verts": 742,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 1208,
+            "poke_verts": 604,
+            "poke_max_m": 0.09994
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9660,
+            "poke_verts": 2632,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 5329,
+            "poke_verts": 2622,
+            "poke_max_m": 0.0999
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 186,
+            "poke_max_m": 0.09957
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 120,
+            "poke_max_m": 0.09707
+          }
+        }
+      }
+    },
+    {
+      "frame": 44,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4661,
+            "poke_verts": 745,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1202,
+            "poke_verts": 600,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9711,
+            "poke_verts": 2811,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5379,
+            "poke_verts": 2801,
+            "poke_max_m": 0.09979
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 189,
+            "poke_max_m": 0.09978
+          },
+          "masked": {
+            "covered_verts": 439,
+            "poke_verts": 123,
+            "poke_max_m": 0.09711
+          }
+        }
+      }
+    },
+    {
+      "frame": 48,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4656,
+            "poke_verts": 735,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 1196,
+            "poke_verts": 591,
+            "poke_max_m": 0.0999
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9722,
+            "poke_verts": 2883,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5389,
+            "poke_verts": 2873,
+            "poke_max_m": 0.09984
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 190,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 125,
+            "poke_max_m": 0.0985
+          }
+        }
+      }
+    },
+    {
+      "frame": 52,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4650,
+            "poke_verts": 731,
+            "poke_max_m": 0.09988
+          },
+          "masked": {
+            "covered_verts": 1188,
+            "poke_verts": 585,
+            "poke_max_m": 0.09988
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9712,
+            "poke_verts": 2983,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5381,
+            "poke_verts": 2973,
+            "poke_max_m": 0.09922
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 190,
+            "poke_max_m": 0.09932
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 126,
+            "poke_max_m": 0.09849
+          }
+        }
+      }
+    },
+    {
+      "frame": 56,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4632,
+            "poke_verts": 716,
+            "poke_max_m": 0.09986
+          },
+          "masked": {
+            "covered_verts": 1171,
+            "poke_verts": 571,
+            "poke_max_m": 0.09986
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9725,
+            "poke_verts": 3008,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5394,
+            "poke_verts": 2998,
+            "poke_max_m": 0.09978
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 190,
+            "poke_max_m": 0.09932
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 126,
+            "poke_max_m": 0.09847
+          }
+        }
+      }
+    },
+    {
+      "frame": 60,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4618,
+            "poke_verts": 710,
+            "poke_max_m": 0.09985
+          },
+          "masked": {
+            "covered_verts": 1158,
+            "poke_verts": 562,
+            "poke_max_m": 0.09985
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9698,
+            "poke_verts": 3008,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 5367,
+            "poke_verts": 2998,
+            "poke_max_m": 0.09998
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 189,
+            "poke_max_m": 0.09933
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 126,
+            "poke_max_m": 0.09846
+          }
+        }
+      }
+    },
+    {
+      "frame": 64,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4606,
+            "poke_verts": 691,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1147,
+            "poke_verts": 546,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9652,
+            "poke_verts": 3044,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5322,
+            "poke_verts": 3034,
+            "poke_max_m": 0.09981
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 189,
+            "poke_max_m": 0.09934
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 125,
+            "poke_max_m": 0.09845
+          }
+        }
+      }
+    },
+    {
+      "frame": 68,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4588,
+            "poke_verts": 671,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1129,
+            "poke_verts": 527,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9573,
+            "poke_verts": 3083,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 5243,
+            "poke_verts": 3073,
+            "poke_max_m": 0.09996
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3292,
+            "poke_verts": 191,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 125,
+            "poke_max_m": 0.09844
+          }
+        }
+      }
+    },
+    {
+      "frame": 72,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4579,
+            "poke_verts": 663,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 1122,
+            "poke_verts": 518,
+            "poke_max_m": 0.1
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9550,
+            "poke_verts": 3151,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5220,
+            "poke_verts": 3141,
+            "poke_max_m": 0.09892
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3292,
+            "poke_verts": 191,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 125,
+            "poke_max_m": 0.09843
+          }
+        }
+      }
+    },
+    {
+      "frame": 76,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4573,
+            "poke_verts": 652,
+            "poke_max_m": 0.09987
+          },
+          "masked": {
+            "covered_verts": 1116,
+            "poke_verts": 508,
+            "poke_max_m": 0.09987
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9506,
+            "poke_verts": 3162,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 5176,
+            "poke_verts": 3152,
+            "poke_max_m": 0.09998
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3292,
+            "poke_verts": 191,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 125,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    },
+    {
+      "frame": 80,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4567,
+            "poke_verts": 651,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 1111,
+            "poke_verts": 506,
+            "poke_max_m": 0.09989
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9485,
+            "poke_verts": 3142,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 5154,
+            "poke_verts": 3132,
+            "poke_max_m": 0.09993
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3292,
+            "poke_verts": 191,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 125,
+            "poke_max_m": 0.09841
+          }
+        }
+      }
+    },
+    {
+      "frame": 84,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4563,
+            "poke_verts": 648,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 1107,
+            "poke_verts": 504,
+            "poke_max_m": 0.09991
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9467,
+            "poke_verts": 3148,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5135,
+            "poke_verts": 3138,
+            "poke_max_m": 0.0998
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 190,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 125,
+            "poke_max_m": 0.09841
+          }
+        }
+      }
+    },
+    {
+      "frame": 88,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4560,
+            "poke_verts": 644,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 1105,
+            "poke_verts": 500,
+            "poke_max_m": 0.09994
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9466,
+            "poke_verts": 3139,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5134,
+            "poke_verts": 3129,
+            "poke_max_m": 0.09947
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 189,
+            "poke_max_m": 0.09987
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 124,
+            "poke_max_m": 0.09841
+          }
+        }
+      }
+    },
+    {
+      "frame": 92,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4562,
+            "poke_verts": 644,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1107,
+            "poke_verts": 500,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9469,
+            "poke_verts": 3141,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5137,
+            "poke_verts": 3131,
+            "poke_max_m": 0.09971
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09984
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 123,
+            "poke_max_m": 0.09841
+          }
+        }
+      }
+    },
+    {
+      "frame": 96,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4560,
+            "poke_verts": 643,
+            "poke_max_m": 0.0998
+          },
+          "masked": {
+            "covered_verts": 1104,
+            "poke_verts": 498,
+            "poke_max_m": 0.0998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9498,
+            "poke_verts": 3151,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5166,
+            "poke_verts": 3141,
+            "poke_max_m": 0.09949
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 187,
+            "poke_max_m": 0.09986
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 122,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    },
+    {
+      "frame": 100,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4567,
+            "poke_verts": 647,
+            "poke_max_m": 0.09987
+          },
+          "masked": {
+            "covered_verts": 1111,
+            "poke_verts": 503,
+            "poke_max_m": 0.09987
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9517,
+            "poke_verts": 3129,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5186,
+            "poke_verts": 3119,
+            "poke_max_m": 0.09987
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 189,
+            "poke_max_m": 0.09975
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 124,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    },
+    {
+      "frame": 104,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4568,
+            "poke_verts": 645,
+            "poke_max_m": 0.09939
+          },
+          "masked": {
+            "covered_verts": 1112,
+            "poke_verts": 500,
+            "poke_max_m": 0.09939
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9553,
+            "poke_verts": 3077,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5221,
+            "poke_verts": 3067,
+            "poke_max_m": 0.09986
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 189,
+            "poke_max_m": 0.09959
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 124,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    },
+    {
+      "frame": 108,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4573,
+            "poke_verts": 649,
+            "poke_max_m": 0.0998
+          },
+          "masked": {
+            "covered_verts": 1117,
+            "poke_verts": 507,
+            "poke_max_m": 0.0998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9615,
+            "poke_verts": 3042,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5284,
+            "poke_verts": 3032,
+            "poke_max_m": 0.09973
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09964
+          },
+          "masked": {
+            "covered_verts": 439,
+            "poke_verts": 122,
+            "poke_max_m": 0.09686
+          }
+        }
+      }
+    },
+    {
+      "frame": 112,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4578,
+            "poke_verts": 657,
+            "poke_max_m": 0.09939
+          },
+          "masked": {
+            "covered_verts": 1121,
+            "poke_verts": 511,
+            "poke_max_m": 0.09939
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9703,
+            "poke_verts": 3023,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5372,
+            "poke_verts": 3013,
+            "poke_max_m": 0.0993
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 189,
+            "poke_max_m": 0.09972
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 122,
+            "poke_max_m": 0.09682
+          }
+        }
+      }
+    },
+    {
+      "frame": 116,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4585,
+            "poke_verts": 661,
+            "poke_max_m": 0.0997
+          },
+          "masked": {
+            "covered_verts": 1128,
+            "poke_verts": 517,
+            "poke_max_m": 0.0997
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9736,
+            "poke_verts": 2988,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5405,
+            "poke_verts": 2978,
+            "poke_max_m": 0.09973
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 189,
+            "poke_max_m": 0.09974
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 122,
+            "poke_max_m": 0.09681
+          }
+        }
+      }
+    },
+    {
+      "frame": 120,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4602,
+            "poke_verts": 677,
+            "poke_max_m": 0.09999
+          },
+          "masked": {
+            "covered_verts": 1144,
+            "poke_verts": 537,
+            "poke_max_m": 0.09999
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9733,
+            "poke_verts": 2945,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 5401,
+            "poke_verts": 2935,
+            "poke_max_m": 0.09995
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 187,
+            "poke_max_m": 0.09974
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.0968
+          }
+        }
+      }
+    },
+    {
+      "frame": 124,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4616,
+            "poke_verts": 689,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 1157,
+            "poke_verts": 550,
+            "poke_max_m": 0.09994
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9695,
+            "poke_verts": 2867,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5363,
+            "poke_verts": 2857,
+            "poke_max_m": 0.09986
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 187,
+            "poke_max_m": 0.09975
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09679
+          }
+        }
+      }
+    },
+    {
+      "frame": 128,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4625,
+            "poke_verts": 699,
+            "poke_max_m": 0.09949
+          },
+          "masked": {
+            "covered_verts": 1166,
+            "poke_verts": 556,
+            "poke_max_m": 0.09949
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9671,
+            "poke_verts": 2794,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5339,
+            "poke_verts": 2784,
+            "poke_max_m": 0.09977
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 187,
+            "poke_max_m": 0.09976
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09679
+          }
+        }
+      }
+    },
+    {
+      "frame": 132,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4641,
+            "poke_verts": 708,
+            "poke_max_m": 0.09953
+          },
+          "masked": {
+            "covered_verts": 1181,
+            "poke_verts": 563,
+            "poke_max_m": 0.09953
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9648,
+            "poke_verts": 2768,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5315,
+            "poke_verts": 2758,
+            "poke_max_m": 0.0998
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 187,
+            "poke_max_m": 0.09976
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09678
+          }
+        }
+      }
+    },
+    {
+      "frame": 136,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4635,
+            "poke_verts": 701,
+            "poke_max_m": 0.09944
+          },
+          "masked": {
+            "covered_verts": 1175,
+            "poke_verts": 559,
+            "poke_max_m": 0.09944
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9616,
+            "poke_verts": 2726,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 5285,
+            "poke_verts": 2716,
+            "poke_max_m": 0.09995
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 188,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09677
+          }
+        }
+      }
+    },
+    {
+      "frame": 140,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4642,
+            "poke_verts": 700,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 1181,
+            "poke_verts": 561,
+            "poke_max_m": 0.09995
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9561,
+            "poke_verts": 2672,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5230,
+            "poke_verts": 2662,
+            "poke_max_m": 0.0998
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 187,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09677
+          }
+        }
+      }
+    },
+    {
+      "frame": 144,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4652,
+            "poke_verts": 712,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 1192,
+            "poke_verts": 572,
+            "poke_max_m": 0.09994
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9536,
+            "poke_verts": 2645,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5205,
+            "poke_verts": 2635,
+            "poke_max_m": 0.09955
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 188,
+            "poke_max_m": 0.09987
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09676
+          }
+        }
+      }
+    },
+    {
+      "frame": 148,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4652,
+            "poke_verts": 713,
+            "poke_max_m": 0.09983
+          },
+          "masked": {
+            "covered_verts": 1192,
+            "poke_verts": 571,
+            "poke_max_m": 0.09983
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9508,
+            "poke_verts": 2633,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5177,
+            "poke_verts": 2623,
+            "poke_max_m": 0.09971
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 188,
+            "poke_max_m": 0.09984
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09676
+          }
+        }
+      }
+    },
+    {
+      "frame": 152,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4651,
+            "poke_verts": 706,
+            "poke_max_m": 0.09982
+          },
+          "masked": {
+            "covered_verts": 1192,
+            "poke_verts": 564,
+            "poke_max_m": 0.09982
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9463,
+            "poke_verts": 2620,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5132,
+            "poke_verts": 2610,
+            "poke_max_m": 0.09953
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 188,
+            "poke_max_m": 0.09983
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09675
+          }
+        }
+      }
+    },
+    {
+      "frame": 156,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4648,
+            "poke_verts": 700,
+            "poke_max_m": 0.09971
+          },
+          "masked": {
+            "covered_verts": 1188,
+            "poke_verts": 559,
+            "poke_max_m": 0.09971
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9455,
+            "poke_verts": 2625,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 5124,
+            "poke_verts": 2615,
+            "poke_max_m": 0.09995
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 188,
+            "poke_max_m": 0.09986
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09673
+          }
+        }
+      }
+    },
+    {
+      "frame": 160,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4644,
+            "poke_verts": 685,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 1183,
+            "poke_verts": 546,
+            "poke_max_m": 0.09993
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9468,
+            "poke_verts": 2623,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5138,
+            "poke_verts": 2613,
+            "poke_max_m": 0.09948
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 185,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 118,
+            "poke_max_m": 0.09669
+          }
+        }
+      }
+    },
+    {
+      "frame": 164,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4637,
+            "poke_verts": 684,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 1177,
+            "poke_verts": 544,
+            "poke_max_m": 0.09991
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9475,
+            "poke_verts": 2630,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5145,
+            "poke_verts": 2620,
+            "poke_max_m": 0.09988
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3288,
+            "poke_verts": 184,
+            "poke_max_m": 0.0993
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 118,
+            "poke_max_m": 0.09666
+          }
+        }
+      }
+    },
+    {
+      "frame": 168,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4623,
+            "poke_verts": 677,
+            "poke_max_m": 0.09953
+          },
+          "masked": {
+            "covered_verts": 1163,
+            "poke_verts": 538,
+            "poke_max_m": 0.09953
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9503,
+            "poke_verts": 2671,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 5174,
+            "poke_verts": 2661,
+            "poke_max_m": 0.09994
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3288,
+            "poke_verts": 184,
+            "poke_max_m": 0.09932
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 118,
+            "poke_max_m": 0.09665
+          }
+        }
+      }
+    },
+    {
+      "frame": 172,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4615,
+            "poke_verts": 666,
+            "poke_max_m": 0.09953
+          },
+          "masked": {
+            "covered_verts": 1156,
+            "poke_verts": 523,
+            "poke_max_m": 0.09953
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9514,
+            "poke_verts": 2688,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5185,
+            "poke_verts": 2678,
+            "poke_max_m": 0.09954
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3286,
+            "poke_verts": 184,
+            "poke_max_m": 0.09936
+          },
+          "masked": {
+            "covered_verts": 435,
+            "poke_verts": 118,
+            "poke_max_m": 0.09665
+          }
+        }
+      }
+    },
+    {
+      "frame": 176,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4602,
+            "poke_verts": 656,
+            "poke_max_m": 0.09999
+          },
+          "masked": {
+            "covered_verts": 1144,
+            "poke_verts": 516,
+            "poke_max_m": 0.09999
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9535,
+            "poke_verts": 2716,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 5204,
+            "poke_verts": 2706,
+            "poke_max_m": 0.1
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3287,
+            "poke_verts": 184,
+            "poke_max_m": 0.09941
+          },
+          "masked": {
+            "covered_verts": 435,
+            "poke_verts": 118,
+            "poke_max_m": 0.09665
+          }
+        }
+      }
+    },
+    {
+      "frame": 180,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4591,
+            "poke_verts": 662,
+            "poke_max_m": 0.09997
+          },
+          "masked": {
+            "covered_verts": 1135,
+            "poke_verts": 520,
+            "poke_max_m": 0.09997
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9538,
+            "poke_verts": 2749,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5206,
+            "poke_verts": 2739,
+            "poke_max_m": 0.09986
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3287,
+            "poke_verts": 184,
+            "poke_max_m": 0.09948
+          },
+          "masked": {
+            "covered_verts": 435,
+            "poke_verts": 118,
+            "poke_max_m": 0.09665
+          }
+        }
+      }
+    },
+    {
+      "frame": 184,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4579,
+            "poke_verts": 657,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 1123,
+            "poke_verts": 514,
+            "poke_max_m": 0.09996
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9525,
+            "poke_verts": 2795,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5193,
+            "poke_verts": 2785,
+            "poke_max_m": 0.09954
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3288,
+            "poke_verts": 185,
+            "poke_max_m": 0.09955
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 119,
+            "poke_max_m": 0.09665
+          }
+        }
+      }
+    },
+    {
+      "frame": 188,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4571,
+            "poke_verts": 640,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 1115,
+            "poke_verts": 499,
+            "poke_max_m": 0.09995
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9518,
+            "poke_verts": 2807,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5186,
+            "poke_verts": 2797,
+            "poke_max_m": 0.09979
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3288,
+            "poke_verts": 185,
+            "poke_max_m": 0.09962
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 119,
+            "poke_max_m": 0.09666
+          }
+        }
+      }
+    },
+    {
+      "frame": 192,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4559,
+            "poke_verts": 632,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 1104,
+            "poke_verts": 489,
+            "poke_max_m": 0.09992
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9494,
+            "poke_verts": 2809,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5162,
+            "poke_verts": 2799,
+            "poke_max_m": 0.09944
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3288,
+            "poke_verts": 184,
+            "poke_max_m": 0.09968
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 119,
+            "poke_max_m": 0.09667
+          }
+        }
+      }
+    },
+    {
+      "frame": 196,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4552,
+            "poke_verts": 628,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 1097,
+            "poke_verts": 484,
+            "poke_max_m": 0.09992
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9497,
+            "poke_verts": 2839,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 5165,
+            "poke_verts": 2829,
+            "poke_max_m": 0.09998
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3288,
+            "poke_verts": 185,
+            "poke_max_m": 0.09974
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 119,
+            "poke_max_m": 0.09668
+          }
+        }
+      }
+    },
+    {
+      "frame": 200,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4551,
+            "poke_verts": 623,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 1096,
+            "poke_verts": 479,
+            "poke_max_m": 0.09992
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9515,
+            "poke_verts": 2865,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5183,
+            "poke_verts": 2855,
+            "poke_max_m": 0.09976
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3288,
+            "poke_verts": 187,
+            "poke_max_m": 0.09981
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 121,
+            "poke_max_m": 0.09669
+          }
+        }
+      }
+    },
+    {
+      "frame": 204,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4547,
+            "poke_verts": 624,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 1092,
+            "poke_verts": 478,
+            "poke_max_m": 0.09992
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9509,
+            "poke_verts": 2892,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5175,
+            "poke_verts": 2882,
+            "poke_max_m": 0.09974
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 188,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 121,
+            "poke_max_m": 0.09672
+          }
+        }
+      }
+    },
+    {
+      "frame": 208,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4545,
+            "poke_verts": 619,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 1089,
+            "poke_verts": 473,
+            "poke_max_m": 0.09993
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9501,
+            "poke_verts": 2909,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5168,
+            "poke_verts": 2899,
+            "poke_max_m": 0.09972
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 187,
+            "poke_max_m": 0.09987
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09677
+          }
+        }
+      }
+    },
+    {
+      "frame": 212,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4545,
+            "poke_verts": 619,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 1090,
+            "poke_verts": 472,
+            "poke_max_m": 0.09995
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9506,
+            "poke_verts": 2932,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5174,
+            "poke_verts": 2922,
+            "poke_max_m": 0.09979
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 188,
+            "poke_max_m": 0.09979
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 121,
+            "poke_max_m": 0.09682
+          }
+        }
+      }
+    },
+    {
+      "frame": 216,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4547,
+            "poke_verts": 622,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 1092,
+            "poke_verts": 475,
+            "poke_max_m": 0.09996
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9536,
+            "poke_verts": 2968,
+            "poke_max_m": 0.09997
+          },
+          "masked": {
+            "covered_verts": 5205,
+            "poke_verts": 2958,
+            "poke_max_m": 0.09997
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09977
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09685
+          }
+        }
+      }
+    },
+    {
+      "frame": 220,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4552,
+            "poke_verts": 622,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1096,
+            "poke_verts": 477,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9596,
+            "poke_verts": 3003,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 5264,
+            "poke_verts": 2993,
+            "poke_max_m": 0.09996
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09984
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09686
+          }
+        }
+      }
+    },
+    {
+      "frame": 224,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4557,
+            "poke_verts": 624,
+            "poke_max_m": 0.09973
+          },
+          "masked": {
+            "covered_verts": 1101,
+            "poke_verts": 480,
+            "poke_max_m": 0.09973
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9634,
+            "poke_verts": 3034,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 5302,
+            "poke_verts": 3024,
+            "poke_max_m": 0.09995
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 188,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09688
+          }
+        }
+      }
+    },
+    {
+      "frame": 228,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4564,
+            "poke_verts": 632,
+            "poke_max_m": 0.0996
+          },
+          "masked": {
+            "covered_verts": 1108,
+            "poke_verts": 489,
+            "poke_max_m": 0.0996
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9675,
+            "poke_verts": 3065,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5343,
+            "poke_verts": 3055,
+            "poke_max_m": 0.09984
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09999
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09689
+          }
+        }
+      }
+    },
+    {
+      "frame": 232,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4588,
+            "poke_verts": 659,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 1131,
+            "poke_verts": 516,
+            "poke_max_m": 0.09996
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9705,
+            "poke_verts": 3077,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5373,
+            "poke_verts": 3067,
+            "poke_max_m": 0.09974
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09974
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09691
+          }
+        }
+      }
+    },
+    {
+      "frame": 236,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4604,
+            "poke_verts": 677,
+            "poke_max_m": 0.09972
+          },
+          "masked": {
+            "covered_verts": 1146,
+            "poke_verts": 535,
+            "poke_max_m": 0.09972
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9719,
+            "poke_verts": 3000,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5388,
+            "poke_verts": 2990,
+            "poke_max_m": 0.09979
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09974
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09693
+          }
+        }
+      }
+    },
+    {
+      "frame": 240,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4616,
+            "poke_verts": 690,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1156,
+            "poke_verts": 544,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 9702,
+            "poke_verts": 2902,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 5371,
+            "poke_verts": 2892,
+            "poke_max_m": 0.09978
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 188,
+            "poke_max_m": 0.09973
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 121,
+            "poke_max_m": 0.09694
+          }
+        }
+      }
+    }
+  ],
+  "Walk": [
+    {
+      "frame": 0,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4345,
+            "poke_verts": 303,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 908,
+            "poke_verts": 183,
+            "poke_max_m": 0.09994
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5266,
+            "poke_verts": 180,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 962,
+            "poke_verts": 173,
+            "poke_max_m": 0.09991
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3283,
+            "poke_verts": 195,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 429,
+            "poke_verts": 122,
+            "poke_max_m": 0.09768
+          }
+        }
+      }
+    },
+    {
+      "frame": 1,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4384,
+            "poke_verts": 342,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 944,
+            "poke_verts": 217,
+            "poke_max_m": 0.09995
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5288,
+            "poke_verts": 183,
+            "poke_max_m": 0.09845
+          },
+          "masked": {
+            "covered_verts": 973,
+            "poke_verts": 176,
+            "poke_max_m": 0.0956
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3284,
+            "poke_verts": 185,
+            "poke_max_m": 0.09971
+          },
+          "masked": {
+            "covered_verts": 430,
+            "poke_verts": 114,
+            "poke_max_m": 0.09779
+          }
+        }
+      }
+    },
+    {
+      "frame": 2,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4403,
+            "poke_verts": 365,
+            "poke_max_m": 0.09982
+          },
+          "masked": {
+            "covered_verts": 964,
+            "poke_verts": 237,
+            "poke_max_m": 0.09982
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5395,
+            "poke_verts": 281,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 1081,
+            "poke_verts": 274,
+            "poke_max_m": 0.09991
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3294,
+            "poke_verts": 186,
+            "poke_max_m": 0.09977
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 114,
+            "poke_max_m": 0.09994
+          }
+        }
+      }
+    },
+    {
+      "frame": 3,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4423,
+            "poke_verts": 414,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 987,
+            "poke_verts": 278,
+            "poke_max_m": 0.09989
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5492,
+            "poke_verts": 417,
+            "poke_max_m": 0.09959
+          },
+          "masked": {
+            "covered_verts": 1169,
+            "poke_verts": 409,
+            "poke_max_m": 0.09959
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3299,
+            "poke_verts": 179,
+            "poke_max_m": 0.09969
+          },
+          "masked": {
+            "covered_verts": 442,
+            "poke_verts": 105,
+            "poke_max_m": 0.09898
+          }
+        }
+      }
+    },
+    {
+      "frame": 4,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4454,
+            "poke_verts": 478,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 1014,
+            "poke_verts": 339,
+            "poke_max_m": 0.1
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5646,
+            "poke_verts": 548,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 1325,
+            "poke_verts": 540,
+            "poke_max_m": 0.09989
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3298,
+            "poke_verts": 181,
+            "poke_max_m": 0.09968
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 106,
+            "poke_max_m": 0.0988
+          }
+        }
+      }
+    },
+    {
+      "frame": 5,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4450,
+            "poke_verts": 486,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1014,
+            "poke_verts": 340,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5885,
+            "poke_verts": 642,
+            "poke_max_m": 0.09967
+          },
+          "masked": {
+            "covered_verts": 1576,
+            "poke_verts": 635,
+            "poke_max_m": 0.09967
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3294,
+            "poke_verts": 189,
+            "poke_max_m": 0.09933
+          },
+          "masked": {
+            "covered_verts": 434,
+            "poke_verts": 112,
+            "poke_max_m": 0.09819
+          }
+        }
+      }
+    },
+    {
+      "frame": 6,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4465,
+            "poke_verts": 480,
+            "poke_max_m": 0.09997
+          },
+          "masked": {
+            "covered_verts": 1026,
+            "poke_verts": 342,
+            "poke_max_m": 0.09997
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6248,
+            "poke_verts": 980,
+            "poke_max_m": 0.09984
+          },
+          "masked": {
+            "covered_verts": 1963,
+            "poke_verts": 972,
+            "poke_max_m": 0.09984
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3306,
+            "poke_verts": 207,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 434,
+            "poke_verts": 119,
+            "poke_max_m": 0.0977
+          }
+        }
+      }
+    },
+    {
+      "frame": 7,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4448,
+            "poke_verts": 446,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 1005,
+            "poke_verts": 310,
+            "poke_max_m": 0.09995
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6886,
+            "poke_verts": 1349,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 2620,
+            "poke_verts": 1340,
+            "poke_max_m": 0.09991
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3314,
+            "poke_verts": 225,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 429,
+            "poke_verts": 126,
+            "poke_max_m": 0.09839
+          }
+        }
+      }
+    },
+    {
+      "frame": 8,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4416,
+            "poke_verts": 398,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 966,
+            "poke_verts": 273,
+            "poke_max_m": 0.09993
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 7468,
+            "poke_verts": 1403,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 3197,
+            "poke_verts": 1388,
+            "poke_max_m": 0.09988
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3316,
+            "poke_verts": 228,
+            "poke_max_m": 0.09946
+          },
+          "masked": {
+            "covered_verts": 430,
+            "poke_verts": 131,
+            "poke_max_m": 0.09874
+          }
+        }
+      }
+    },
+    {
+      "frame": 9,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4403,
+            "poke_verts": 355,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 952,
+            "poke_verts": 247,
+            "poke_max_m": 0.09991
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 8079,
+            "poke_verts": 1558,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 3814,
+            "poke_verts": 1545,
+            "poke_max_m": 0.1
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3316,
+            "poke_verts": 228,
+            "poke_max_m": 0.09943
+          },
+          "masked": {
+            "covered_verts": 430,
+            "poke_verts": 129,
+            "poke_max_m": 0.09877
+          }
+        }
+      }
+    },
+    {
+      "frame": 10,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4411,
+            "poke_verts": 331,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 949,
+            "poke_verts": 238,
+            "poke_max_m": 0.09993
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 8320,
+            "poke_verts": 1634,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 4054,
+            "poke_verts": 1619,
+            "poke_max_m": 0.09969
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3314,
+            "poke_verts": 226,
+            "poke_max_m": 0.09982
+          },
+          "masked": {
+            "covered_verts": 429,
+            "poke_verts": 125,
+            "poke_max_m": 0.09857
+          }
+        }
+      }
+    },
+    {
+      "frame": 11,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4403,
+            "poke_verts": 324,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 938,
+            "poke_verts": 240,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 8482,
+            "poke_verts": 1916,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 4214,
+            "poke_verts": 1907,
+            "poke_max_m": 0.09982
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3312,
+            "poke_verts": 226,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 434,
+            "poke_verts": 125,
+            "poke_max_m": 0.09946
+          }
+        }
+      }
+    },
+    {
+      "frame": 12,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4374,
+            "poke_verts": 288,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 907,
+            "poke_verts": 208,
+            "poke_max_m": 0.09992
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 7666,
+            "poke_verts": 1869,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 3395,
+            "poke_verts": 1859,
+            "poke_max_m": 0.09993
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3297,
+            "poke_verts": 223,
+            "poke_max_m": 0.09941
+          },
+          "masked": {
+            "covered_verts": 430,
+            "poke_verts": 127,
+            "poke_max_m": 0.09872
+          }
+        }
+      }
+    },
+    {
+      "frame": 13,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4382,
+            "poke_verts": 272,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 924,
+            "poke_verts": 193,
+            "poke_max_m": 0.09994
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6608,
+            "poke_verts": 882,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 2330,
+            "poke_verts": 873,
+            "poke_max_m": 0.09982
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3287,
+            "poke_verts": 216,
+            "poke_max_m": 0.099
+          },
+          "masked": {
+            "covered_verts": 429,
+            "poke_verts": 124,
+            "poke_max_m": 0.09802
+          }
+        }
+      }
+    },
+    {
+      "frame": 14,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4372,
+            "poke_verts": 225,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 916,
+            "poke_verts": 150,
+            "poke_max_m": 0.09996
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5792,
+            "poke_verts": 405,
+            "poke_max_m": 0.09999
+          },
+          "masked": {
+            "covered_verts": 1508,
+            "poke_verts": 396,
+            "poke_max_m": 0.09999
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3287,
+            "poke_verts": 215,
+            "poke_max_m": 0.09976
+          },
+          "masked": {
+            "covered_verts": 430,
+            "poke_verts": 128,
+            "poke_max_m": 0.09971
+          }
+        }
+      }
+    },
+    {
+      "frame": 15,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4349,
+            "poke_verts": 224,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 888,
+            "poke_verts": 146,
+            "poke_max_m": 0.09994
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5307,
+            "poke_verts": 147,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 1012,
+            "poke_verts": 137,
+            "poke_max_m": 0.09962
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 211,
+            "poke_max_m": 0.09939
+          },
+          "masked": {
+            "covered_verts": 433,
+            "poke_verts": 128,
+            "poke_max_m": 0.09865
+          }
+        }
+      }
+    },
+    {
+      "frame": 16,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4350,
+            "poke_verts": 235,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 889,
+            "poke_verts": 145,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5214,
+            "poke_verts": 142,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 914,
+            "poke_verts": 132,
+            "poke_max_m": 0.09962
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 212,
+            "poke_max_m": 0.09988
+          },
+          "masked": {
+            "covered_verts": 433,
+            "poke_verts": 128,
+            "poke_max_m": 0.09776
+          }
+        }
+      }
+    },
+    {
+      "frame": 17,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4346,
+            "poke_verts": 255,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 889,
+            "poke_verts": 149,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5200,
+            "poke_verts": 163,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 900,
+            "poke_verts": 154,
+            "poke_max_m": 0.09996
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 202,
+            "poke_max_m": 0.09965
+          },
+          "masked": {
+            "covered_verts": 433,
+            "poke_verts": 121,
+            "poke_max_m": 0.09711
+          }
+        }
+      }
+    },
+    {
+      "frame": 18,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4348,
+            "poke_verts": 304,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 888,
+            "poke_verts": 188,
+            "poke_max_m": 0.09996
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5230,
+            "poke_verts": 191,
+            "poke_max_m": 0.09996
+          },
+          "masked": {
+            "covered_verts": 930,
+            "poke_verts": 183,
+            "poke_max_m": 0.09996
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 204,
+            "poke_max_m": 0.09896
+          },
+          "masked": {
+            "covered_verts": 434,
+            "poke_verts": 122,
+            "poke_max_m": 0.09704
+          }
+        }
+      }
+    },
+    {
+      "frame": 19,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4371,
+            "poke_verts": 336,
+            "poke_max_m": 0.09997
+          },
+          "masked": {
+            "covered_verts": 907,
+            "poke_verts": 215,
+            "poke_max_m": 0.09997
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5299,
+            "poke_verts": 235,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 994,
+            "poke_verts": 226,
+            "poke_max_m": 0.09964
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3295,
+            "poke_verts": 192,
+            "poke_max_m": 0.09987
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 118,
+            "poke_max_m": 0.09855
+          }
+        }
+      }
+    },
+    {
+      "frame": 20,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4397,
+            "poke_verts": 374,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 933,
+            "poke_verts": 252,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5367,
+            "poke_verts": 354,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 1058,
+            "poke_verts": 345,
+            "poke_max_m": 0.0987
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 173,
+            "poke_max_m": 0.09826
+          },
+          "masked": {
+            "covered_verts": 438,
+            "poke_verts": 104,
+            "poke_max_m": 0.09886
+          }
+        }
+      }
+    },
+    {
+      "frame": 21,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4432,
+            "poke_verts": 425,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 967,
+            "poke_verts": 295,
+            "poke_max_m": 0.09991
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5471,
+            "poke_verts": 503,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 1158,
+            "poke_verts": 494,
+            "poke_max_m": 0.09831
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3295,
+            "poke_verts": 184,
+            "poke_max_m": 0.09896
+          },
+          "masked": {
+            "covered_verts": 440,
+            "poke_verts": 112,
+            "poke_max_m": 0.09912
+          }
+        }
+      }
+    },
+    {
+      "frame": 22,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4443,
+            "poke_verts": 470,
+            "poke_max_m": 0.09982
+          },
+          "masked": {
+            "covered_verts": 981,
+            "poke_verts": 335,
+            "poke_max_m": 0.09982
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5594,
+            "poke_verts": 502,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 1276,
+            "poke_verts": 493,
+            "poke_max_m": 0.09959
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3292,
+            "poke_verts": 187,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 436,
+            "poke_verts": 115,
+            "poke_max_m": 0.09924
+          }
+        }
+      }
+    },
+    {
+      "frame": 23,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4463,
+            "poke_verts": 474,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 1006,
+            "poke_verts": 338,
+            "poke_max_m": 0.1
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5769,
+            "poke_verts": 606,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 1466,
+            "poke_verts": 596,
+            "poke_max_m": 0.09974
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 192,
+            "poke_max_m": 0.09987
+          },
+          "masked": {
+            "covered_verts": 434,
+            "poke_verts": 119,
+            "poke_max_m": 0.09944
+          }
+        }
+      }
+    },
+    {
+      "frame": 24,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4474,
+            "poke_verts": 485,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 1017,
+            "poke_verts": 349,
+            "poke_max_m": 0.09993
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6160,
+            "poke_verts": 926,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 1873,
+            "poke_verts": 914,
+            "poke_max_m": 0.09968
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3298,
+            "poke_verts": 212,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 435,
+            "poke_verts": 131,
+            "poke_max_m": 0.09969
+          }
+        }
+      }
+    },
+    {
+      "frame": 25,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4452,
+            "poke_verts": 427,
+            "poke_max_m": 0.09999
+          },
+          "masked": {
+            "covered_verts": 999,
+            "poke_verts": 301,
+            "poke_max_m": 0.09999
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6736,
+            "poke_verts": 1245,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 2466,
+            "poke_verts": 1235,
+            "poke_max_m": 0.09993
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3304,
+            "poke_verts": 222,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 431,
+            "poke_verts": 129,
+            "poke_max_m": 0.09996
+          }
+        }
+      }
+    },
+    {
+      "frame": 26,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4452,
+            "poke_verts": 406,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 993,
+            "poke_verts": 287,
+            "poke_max_m": 0.09989
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 7278,
+            "poke_verts": 1334,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 3007,
+            "poke_verts": 1322,
+            "poke_max_m": 0.09931
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3305,
+            "poke_verts": 227,
+            "poke_max_m": 0.09973
+          },
+          "masked": {
+            "covered_verts": 426,
+            "poke_verts": 126,
+            "poke_max_m": 0.09824
+          }
+        }
+      }
+    },
+    {
+      "frame": 27,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4408,
+            "poke_verts": 357,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 948,
+            "poke_verts": 249,
+            "poke_max_m": 0.09993
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 7927,
+            "poke_verts": 1530,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 3659,
+            "poke_verts": 1519,
+            "poke_max_m": 0.09998
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3302,
+            "poke_verts": 217,
+            "poke_max_m": 0.09986
+          },
+          "masked": {
+            "covered_verts": 425,
+            "poke_verts": 122,
+            "poke_max_m": 0.09831
+          }
+        }
+      }
+    },
+    {
+      "frame": 28,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4427,
+            "poke_verts": 347,
+            "poke_max_m": 0.09977
+          },
+          "masked": {
+            "covered_verts": 966,
+            "poke_verts": 254,
+            "poke_max_m": 0.09977
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 8221,
+            "poke_verts": 1735,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 3952,
+            "poke_verts": 1725,
+            "poke_max_m": 0.09994
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3300,
+            "poke_verts": 217,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 428,
+            "poke_verts": 121,
+            "poke_max_m": 0.09841
+          }
+        }
+      }
+    },
+    {
+      "frame": 29,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4402,
+            "poke_verts": 329,
+            "poke_max_m": 0.09976
+          },
+          "masked": {
+            "covered_verts": 942,
+            "poke_verts": 241,
+            "poke_max_m": 0.09976
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 8341,
+            "poke_verts": 1961,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 4061,
+            "poke_verts": 1952,
+            "poke_max_m": 0.09945
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3295,
+            "poke_verts": 217,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 428,
+            "poke_verts": 122,
+            "poke_max_m": 0.09868
+          }
+        }
+      }
+    },
+    {
+      "frame": 30,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4385,
+            "poke_verts": 294,
+            "poke_max_m": 0.09974
+          },
+          "masked": {
+            "covered_verts": 932,
+            "poke_verts": 215,
+            "poke_max_m": 0.09974
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 7571,
+            "poke_verts": 1839,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 3292,
+            "poke_verts": 1830,
+            "poke_max_m": 0.09992
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3291,
+            "poke_verts": 211,
+            "poke_max_m": 0.09949
+          },
+          "masked": {
+            "covered_verts": 433,
+            "poke_verts": 123,
+            "poke_max_m": 0.09991
+          }
+        }
+      }
+    },
+    {
+      "frame": 31,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4369,
+            "poke_verts": 266,
+            "poke_max_m": 0.09972
+          },
+          "masked": {
+            "covered_verts": 919,
+            "poke_verts": 189,
+            "poke_max_m": 0.09972
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6661,
+            "poke_verts": 829,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 2379,
+            "poke_verts": 820,
+            "poke_max_m": 0.0996
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3282,
+            "poke_verts": 205,
+            "poke_max_m": 0.09956
+          },
+          "masked": {
+            "covered_verts": 429,
+            "poke_verts": 124,
+            "poke_max_m": 0.09982
+          }
+        }
+      }
+    },
+    {
+      "frame": 32,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4382,
+            "poke_verts": 225,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 936,
+            "poke_verts": 144,
+            "poke_max_m": 0.09995
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5882,
+            "poke_verts": 407,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 1593,
+            "poke_verts": 398,
+            "poke_max_m": 0.09977
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3280,
+            "poke_verts": 203,
+            "poke_max_m": 0.09981
+          },
+          "masked": {
+            "covered_verts": 427,
+            "poke_verts": 123,
+            "poke_max_m": 0.09987
+          }
+        }
+      }
+    },
+    {
+      "frame": 33,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4365,
+            "poke_verts": 225,
+            "poke_max_m": 0.09969
+          },
+          "masked": {
+            "covered_verts": 923,
+            "poke_verts": 141,
+            "poke_max_m": 0.09969
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5389,
+            "poke_verts": 153,
+            "poke_max_m": 0.09986
+          },
+          "masked": {
+            "covered_verts": 1092,
+            "poke_verts": 144,
+            "poke_max_m": 0.09981
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3278,
+            "poke_verts": 198,
+            "poke_max_m": 0.0996
+          },
+          "masked": {
+            "covered_verts": 427,
+            "poke_verts": 123,
+            "poke_max_m": 0.0999
+          }
+        }
+      }
+    },
+    {
+      "frame": 34,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4344,
+            "poke_verts": 236,
+            "poke_max_m": 0.09953
+          },
+          "masked": {
+            "covered_verts": 903,
+            "poke_verts": 139,
+            "poke_max_m": 0.09953
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5298,
+            "poke_verts": 164,
+            "poke_max_m": 0.09987
+          },
+          "masked": {
+            "covered_verts": 1007,
+            "poke_verts": 157,
+            "poke_max_m": 0.09987
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3282,
+            "poke_verts": 194,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 430,
+            "poke_verts": 122,
+            "poke_max_m": 0.09986
+          }
+        }
+      }
+    },
+    {
+      "frame": 35,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4338,
+            "poke_verts": 261,
+            "poke_max_m": 0.09975
+          },
+          "masked": {
+            "covered_verts": 903,
+            "poke_verts": 152,
+            "poke_max_m": 0.09975
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5219,
+            "poke_verts": 168,
+            "poke_max_m": 0.09945
+          },
+          "masked": {
+            "covered_verts": 936,
+            "poke_verts": 162,
+            "poke_max_m": 0.09897
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3276,
+            "poke_verts": 195,
+            "poke_max_m": 0.09935
+          },
+          "masked": {
+            "covered_verts": 426,
+            "poke_verts": 123,
+            "poke_max_m": 0.09758
+          }
+        }
+      }
+    },
+    {
+      "frame": 36,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4345,
+            "poke_verts": 303,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 908,
+            "poke_verts": 183,
+            "poke_max_m": 0.09994
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5266,
+            "poke_verts": 180,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 962,
+            "poke_verts": 173,
+            "poke_max_m": 0.09991
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3283,
+            "poke_verts": 195,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 429,
+            "poke_verts": 122,
+            "poke_max_m": 0.09768
+          }
+        }
+      }
+    }
+  ],
+  "Run": [
+    {
+      "frame": 0,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5239,
+            "poke_verts": 1142,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 1777,
+            "poke_verts": 994,
+            "poke_max_m": 0.1
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6404,
+            "poke_verts": 1036,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 2123,
+            "poke_verts": 1030,
+            "poke_max_m": 0.0999
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3303,
+            "poke_verts": 210,
+            "poke_max_m": 0.09976
+          },
+          "masked": {
+            "covered_verts": 431,
+            "poke_verts": 119,
+            "poke_max_m": 0.09779
+          }
+        }
+      }
+    },
+    {
+      "frame": 1,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5252,
+            "poke_verts": 1041,
+            "poke_max_m": 0.09997
+          },
+          "masked": {
+            "covered_verts": 1776,
+            "poke_verts": 890,
+            "poke_max_m": 0.09997
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6882,
+            "poke_verts": 1219,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 2608,
+            "poke_verts": 1208,
+            "poke_max_m": 0.09831
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3315,
+            "poke_verts": 231,
+            "poke_max_m": 0.09999
+          },
+          "masked": {
+            "covered_verts": 424,
+            "poke_verts": 129,
+            "poke_max_m": 0.09864
+          }
+        }
+      }
+    },
+    {
+      "frame": 2,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5218,
+            "poke_verts": 992,
+            "poke_max_m": 0.09994
+          },
+          "masked": {
+            "covered_verts": 1738,
+            "poke_verts": 838,
+            "poke_max_m": 0.09994
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6774,
+            "poke_verts": 1277,
+            "poke_max_m": 0.09976
+          },
+          "masked": {
+            "covered_verts": 2525,
+            "poke_verts": 1237,
+            "poke_max_m": 0.09976
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3315,
+            "poke_verts": 261,
+            "poke_max_m": 0.09835
+          },
+          "masked": {
+            "covered_verts": 417,
+            "poke_verts": 146,
+            "poke_max_m": 0.09757
+          }
+        }
+      }
+    },
+    {
+      "frame": 3,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5187,
+            "poke_verts": 1065,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1718,
+            "poke_verts": 898,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6433,
+            "poke_verts": 1222,
+            "poke_max_m": 0.0994
+          },
+          "masked": {
+            "covered_verts": 2163,
+            "poke_verts": 1129,
+            "poke_max_m": 0.0994
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3317,
+            "poke_verts": 277,
+            "poke_max_m": 0.09988
+          },
+          "masked": {
+            "covered_verts": 409,
+            "poke_verts": 152,
+            "poke_max_m": 0.09988
+          }
+        }
+      }
+    },
+    {
+      "frame": 4,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5164,
+            "poke_verts": 1156,
+            "poke_max_m": 0.09999
+          },
+          "masked": {
+            "covered_verts": 1697,
+            "poke_verts": 988,
+            "poke_max_m": 0.09999
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5355,
+            "poke_verts": 587,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 1040,
+            "poke_verts": 341,
+            "poke_max_m": 0.09993
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3344,
+            "poke_verts": 291,
+            "poke_max_m": 0.0995
+          },
+          "masked": {
+            "covered_verts": 414,
+            "poke_verts": 154,
+            "poke_max_m": 0.09864
+          }
+        }
+      }
+    },
+    {
+      "frame": 5,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5024,
+            "poke_verts": 1074,
+            "poke_max_m": 0.09942
+          },
+          "masked": {
+            "covered_verts": 1561,
+            "poke_verts": 897,
+            "poke_max_m": 0.09942
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4853,
+            "poke_verts": 301,
+            "poke_max_m": 0.09987
+          },
+          "masked": {
+            "covered_verts": 508,
+            "poke_verts": 13,
+            "poke_max_m": 0.09637
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3396,
+            "poke_verts": 272,
+            "poke_max_m": 0.09917
+          },
+          "masked": {
+            "covered_verts": 425,
+            "poke_verts": 147,
+            "poke_max_m": 0.09917
+          }
+        }
+      }
+    },
+    {
+      "frame": 6,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4908,
+            "poke_verts": 1033,
+            "poke_max_m": 0.0996
+          },
+          "masked": {
+            "covered_verts": 1448,
+            "poke_verts": 869,
+            "poke_max_m": 0.0996
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4741,
+            "poke_verts": 83,
+            "poke_max_m": 0.09982
+          },
+          "masked": {
+            "covered_verts": 514,
+            "poke_verts": 4,
+            "poke_max_m": 0.07189
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3315,
+            "poke_verts": 250,
+            "poke_max_m": 0.09985
+          },
+          "masked": {
+            "covered_verts": 421,
+            "poke_verts": 142,
+            "poke_max_m": 0.09978
+          }
+        }
+      }
+    },
+    {
+      "frame": 7,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4812,
+            "poke_verts": 952,
+            "poke_max_m": 0.09956
+          },
+          "masked": {
+            "covered_verts": 1341,
+            "poke_verts": 777,
+            "poke_max_m": 0.09956
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4682,
+            "poke_verts": 22,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 460,
+            "poke_verts": 1,
+            "poke_max_m": 0.00272
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3317,
+            "poke_verts": 227,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 430,
+            "poke_verts": 125,
+            "poke_max_m": 0.09859
+          }
+        }
+      }
+    },
+    {
+      "frame": 8,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4788,
+            "poke_verts": 778,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 1308,
+            "poke_verts": 621,
+            "poke_max_m": 0.09993
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4699,
+            "poke_verts": 10,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 448,
+            "poke_verts": 1,
+            "poke_max_m": 0.00168
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3288,
+            "poke_verts": 207,
+            "poke_max_m": 0.0992
+          },
+          "masked": {
+            "covered_verts": 428,
+            "poke_verts": 123,
+            "poke_max_m": 0.09855
+          }
+        }
+      }
+    },
+    {
+      "frame": 9,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4807,
+            "poke_verts": 692,
+            "poke_max_m": 0.0996
+          },
+          "masked": {
+            "covered_verts": 1334,
+            "poke_verts": 536,
+            "poke_max_m": 0.0996
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4876,
+            "poke_verts": 42,
+            "poke_max_m": 0.09993
+          },
+          "masked": {
+            "covered_verts": 584,
+            "poke_verts": 31,
+            "poke_max_m": 0.09972
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3281,
+            "poke_verts": 201,
+            "poke_max_m": 0.09899
+          },
+          "masked": {
+            "covered_verts": 427,
+            "poke_verts": 126,
+            "poke_max_m": 0.09824
+          }
+        }
+      }
+    },
+    {
+      "frame": 10,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5085,
+            "poke_verts": 952,
+            "poke_max_m": 0.0998
+          },
+          "masked": {
+            "covered_verts": 1610,
+            "poke_verts": 805,
+            "poke_max_m": 0.0998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5498,
+            "poke_verts": 381,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 1200,
+            "poke_verts": 371,
+            "poke_max_m": 0.09977
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3290,
+            "poke_verts": 202,
+            "poke_max_m": 0.09959
+          },
+          "masked": {
+            "covered_verts": 433,
+            "poke_verts": 123,
+            "poke_max_m": 0.09917
+          }
+        }
+      }
+    },
+    {
+      "frame": 11,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5211,
+            "poke_verts": 1134,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 1736,
+            "poke_verts": 981,
+            "poke_max_m": 0.1
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6305,
+            "poke_verts": 994,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 2024,
+            "poke_verts": 983,
+            "poke_max_m": 0.09989
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3299,
+            "poke_verts": 215,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 431,
+            "poke_verts": 128,
+            "poke_max_m": 0.09917
+          }
+        }
+      }
+    },
+    {
+      "frame": 12,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5238,
+            "poke_verts": 1051,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 1764,
+            "poke_verts": 904,
+            "poke_max_m": 0.09992
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6708,
+            "poke_verts": 1266,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 2445,
+            "poke_verts": 1251,
+            "poke_max_m": 0.09638
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3307,
+            "poke_verts": 244,
+            "poke_max_m": 0.09997
+          },
+          "masked": {
+            "covered_verts": 431,
+            "poke_verts": 139,
+            "poke_max_m": 0.09929
+          }
+        }
+      }
+    },
+    {
+      "frame": 13,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5201,
+            "poke_verts": 1002,
+            "poke_max_m": 0.09979
+          },
+          "masked": {
+            "covered_verts": 1725,
+            "poke_verts": 854,
+            "poke_max_m": 0.09979
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6738,
+            "poke_verts": 1350,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 2489,
+            "poke_verts": 1315,
+            "poke_max_m": 0.09984
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3304,
+            "poke_verts": 261,
+            "poke_max_m": 0.09966
+          },
+          "masked": {
+            "covered_verts": 423,
+            "poke_verts": 148,
+            "poke_max_m": 0.09912
+          }
+        }
+      }
+    },
+    {
+      "frame": 14,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5174,
+            "poke_verts": 1042,
+            "poke_max_m": 0.09978
+          },
+          "masked": {
+            "covered_verts": 1694,
+            "poke_verts": 898,
+            "poke_max_m": 0.09978
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6372,
+            "poke_verts": 1219,
+            "poke_max_m": 0.09997
+          },
+          "masked": {
+            "covered_verts": 2097,
+            "poke_verts": 1122,
+            "poke_max_m": 0.0986
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3337,
+            "poke_verts": 296,
+            "poke_max_m": 0.09981
+          },
+          "masked": {
+            "covered_verts": 430,
+            "poke_verts": 160,
+            "poke_max_m": 0.09942
+          }
+        }
+      }
+    },
+    {
+      "frame": 15,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5124,
+            "poke_verts": 1085,
+            "poke_max_m": 0.09998
+          },
+          "masked": {
+            "covered_verts": 1651,
+            "poke_verts": 941,
+            "poke_max_m": 0.09998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5330,
+            "poke_verts": 538,
+            "poke_max_m": 0.09985
+          },
+          "masked": {
+            "covered_verts": 1023,
+            "poke_verts": 295,
+            "poke_max_m": 0.09962
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3367,
+            "poke_verts": 309,
+            "poke_max_m": 0.0995
+          },
+          "masked": {
+            "covered_verts": 437,
+            "poke_verts": 163,
+            "poke_max_m": 0.09785
+          }
+        }
+      }
+    },
+    {
+      "frame": 16,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4996,
+            "poke_verts": 1052,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 1525,
+            "poke_verts": 883,
+            "poke_max_m": 0.09992
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4846,
+            "poke_verts": 301,
+            "poke_max_m": 0.09995
+          },
+          "masked": {
+            "covered_verts": 522,
+            "poke_verts": 15,
+            "poke_max_m": 0.09995
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3404,
+            "poke_verts": 278,
+            "poke_max_m": 0.09912
+          },
+          "masked": {
+            "covered_verts": 435,
+            "poke_verts": 149,
+            "poke_max_m": 0.09877
+          }
+        }
+      }
+    },
+    {
+      "frame": 17,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4903,
+            "poke_verts": 1026,
+            "poke_max_m": 0.09918
+          },
+          "masked": {
+            "covered_verts": 1432,
+            "poke_verts": 857,
+            "poke_max_m": 0.09861
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4737,
+            "poke_verts": 80,
+            "poke_max_m": 0.09918
+          },
+          "masked": {
+            "covered_verts": 507,
+            "poke_verts": 6,
+            "poke_max_m": 0.07372
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3301,
+            "poke_verts": 247,
+            "poke_max_m": 0.09946
+          },
+          "masked": {
+            "covered_verts": 421,
+            "poke_verts": 134,
+            "poke_max_m": 0.09949
+          }
+        }
+      }
+    },
+    {
+      "frame": 18,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4792,
+            "poke_verts": 961,
+            "poke_max_m": 0.09991
+          },
+          "masked": {
+            "covered_verts": 1331,
+            "poke_verts": 782,
+            "poke_max_m": 0.09991
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4693,
+            "poke_verts": 22,
+            "poke_max_m": 0.09815
+          },
+          "masked": {
+            "covered_verts": 456,
+            "poke_verts": 3,
+            "poke_max_m": 0.07073
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3289,
+            "poke_verts": 208,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 419,
+            "poke_verts": 115,
+            "poke_max_m": 0.09838
+          }
+        }
+      }
+    },
+    {
+      "frame": 19,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4810,
+            "poke_verts": 821,
+            "poke_max_m": 0.09999
+          },
+          "masked": {
+            "covered_verts": 1347,
+            "poke_verts": 650,
+            "poke_max_m": 0.09999
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4722,
+            "poke_verts": 10,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 464,
+            "poke_verts": 2,
+            "poke_max_m": 0.07121
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3279,
+            "poke_verts": 194,
+            "poke_max_m": 0.09964
+          },
+          "masked": {
+            "covered_verts": 420,
+            "poke_verts": 115,
+            "poke_max_m": 0.09869
+          }
+        }
+      }
+    },
+    {
+      "frame": 20,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4860,
+            "poke_verts": 746,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 1384,
+            "poke_verts": 575,
+            "poke_max_m": 0.09992
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4873,
+            "poke_verts": 28,
+            "poke_max_m": 0.09937
+          },
+          "masked": {
+            "covered_verts": 586,
+            "poke_verts": 21,
+            "poke_max_m": 0.09937
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3276,
+            "poke_verts": 182,
+            "poke_max_m": 0.09968
+          },
+          "masked": {
+            "covered_verts": 420,
+            "poke_verts": 110,
+            "poke_max_m": 0.09995
+          }
+        }
+      }
+    },
+    {
+      "frame": 21,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5176,
+            "poke_verts": 1064,
+            "poke_max_m": 0.09977
+          },
+          "masked": {
+            "covered_verts": 1716,
+            "poke_verts": 915,
+            "poke_max_m": 0.09977
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 5721,
+            "poke_verts": 569,
+            "poke_max_m": 0.09944
+          },
+          "masked": {
+            "covered_verts": 1418,
+            "poke_verts": 563,
+            "poke_max_m": 0.09944
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3282,
+            "poke_verts": 180,
+            "poke_max_m": 0.09945
+          },
+          "masked": {
+            "covered_verts": 426,
+            "poke_verts": 107,
+            "poke_max_m": 0.097
+          }
+        }
+      }
+    },
+    {
+      "frame": 22,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 5239,
+            "poke_verts": 1142,
+            "poke_max_m": 0.1
+          },
+          "masked": {
+            "covered_verts": 1777,
+            "poke_verts": 994,
+            "poke_max_m": 0.1
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 6404,
+            "poke_verts": 1036,
+            "poke_max_m": 0.0999
+          },
+          "masked": {
+            "covered_verts": 2123,
+            "poke_verts": 1030,
+            "poke_max_m": 0.0999
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3303,
+            "poke_verts": 210,
+            "poke_max_m": 0.09976
+          },
+          "masked": {
+            "covered_verts": 431,
+            "poke_verts": 119,
+            "poke_max_m": 0.09779
+          }
+        }
+      }
+    }
+  ],
+  "stress": [
+    {
+      "frame": 1,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4213,
+            "poke_verts": 19,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 510,
+            "poke_verts": 20,
+            "poke_max_m": 0.09991
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4816,
+            "poke_verts": 9,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 479,
+            "poke_verts": 0,
+            "poke_max_m": 0.0
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3301,
+            "poke_verts": 173,
+            "poke_max_m": 0.09899
+          },
+          "masked": {
+            "covered_verts": 448,
+            "poke_verts": 106,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    },
+    {
+      "frame": 10,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4173,
+            "poke_verts": 33,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 525,
+            "poke_verts": 21,
+            "poke_max_m": 0.09991
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4816,
+            "poke_verts": 9,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 479,
+            "poke_verts": 0,
+            "poke_max_m": 0.0
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3301,
+            "poke_verts": 173,
+            "poke_max_m": 0.09899
+          },
+          "masked": {
+            "covered_verts": 448,
+            "poke_verts": 106,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    },
+    {
+      "frame": 20,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 8040,
+            "poke_verts": 2630,
+            "poke_max_m": 0.09997
+          },
+          "masked": {
+            "covered_verts": 4576,
+            "poke_verts": 2630,
+            "poke_max_m": 0.09997
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4816,
+            "poke_verts": 9,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 479,
+            "poke_verts": 0,
+            "poke_max_m": 0.0
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3301,
+            "poke_verts": 173,
+            "poke_max_m": 0.09899
+          },
+          "masked": {
+            "covered_verts": 448,
+            "poke_verts": 106,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    },
+    {
+      "frame": 30,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4278,
+            "poke_verts": 31,
+            "poke_max_m": 0.09992
+          },
+          "masked": {
+            "covered_verts": 544,
+            "poke_verts": 19,
+            "poke_max_m": 0.09991
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4809,
+            "poke_verts": 227,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 545,
+            "poke_verts": 13,
+            "poke_max_m": 0.09541
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3301,
+            "poke_verts": 173,
+            "poke_max_m": 0.09899
+          },
+          "masked": {
+            "covered_verts": 448,
+            "poke_verts": 106,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    },
+    {
+      "frame": 40,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4392,
+            "poke_verts": 68,
+            "poke_max_m": 0.09382
+          },
+          "masked": {
+            "covered_verts": 578,
+            "poke_verts": 18,
+            "poke_max_m": 0.08537
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4868,
+            "poke_verts": 682,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 597,
+            "poke_verts": 44,
+            "poke_max_m": 0.07946
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3301,
+            "poke_verts": 173,
+            "poke_max_m": 0.09899
+          },
+          "masked": {
+            "covered_verts": 448,
+            "poke_verts": 106,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    },
+    {
+      "frame": 50,
+      "assets": {
+        "tee-white": {
+          "unmasked": {
+            "covered_verts": 4221,
+            "poke_verts": 26,
+            "poke_max_m": 0.09981
+          },
+          "masked": {
+            "covered_verts": 522,
+            "poke_verts": 27,
+            "poke_max_m": 0.0998
+          }
+        },
+        "jeans-denim-standard": {
+          "unmasked": {
+            "covered_verts": 4817,
+            "poke_verts": 9,
+            "poke_max_m": 0.09989
+          },
+          "masked": {
+            "covered_verts": 479,
+            "poke_verts": 0,
+            "poke_max_m": 0.0
+          }
+        },
+        "court-sneakers-white": {
+          "unmasked": {
+            "covered_verts": 3301,
+            "poke_verts": 173,
+            "poke_max_m": 0.09899
+          },
+          "masked": {
+            "covered_verts": 448,
+            "poke_verts": 106,
+            "poke_max_m": 0.09842
+          }
+        }
+      }
+    }
+  ]
+}
