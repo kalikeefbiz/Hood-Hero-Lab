@@ -1,0 +1,808 @@
+{
+  "tee-white": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "asset lowest point z=0.9658 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.9658,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "tee-white": {
+        "verts": 1372,
+        "faces": 1308,
+        "tris": 2616,
+        "ngons": 0,
+        "boundary_edges": 132,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 4.18,
+        "uv_coverage_pct": 52.6
+      }
+    }
+  },
+  "jeans-denim-standard": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "asset lowest point z=0.0826 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0826,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "jeans-denim-standard": {
+        "verts": 1695,
+        "faces": 1648,
+        "tris": 3296,
+        "ngons": 0,
+        "boundary_edges": 96,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 1.77,
+        "uv_coverage_pct": 82.8
+      }
+    }
+  },
+  "court-sneakers-white": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "court-sneakers-white: ~100.0% UV overlap (ok only if mirrored/stacked on purpose; bakes break)"
+    ],
+    "ground_z": 0,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "court-sneakers-white": {
+        "verts": 2154,
+        "faces": 2020,
+        "tris": 3960,
+        "ngons": 0,
+        "boundary_edges": 344,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 24,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 100,
+        "uv_coverage_pct": 61.4
+      }
+    }
+  },
+  "tee-stixx-black": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "asset lowest point z=0.9658 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.9658,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "tee-stixx-black": {
+        "verts": 1372,
+        "faces": 1308,
+        "tris": 2616,
+        "ngons": 0,
+        "boundary_edges": 132,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 4.18,
+        "uv_coverage_pct": 52.6
+      }
+    }
+  },
+  "tank-white": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "tank-white: ~9.63% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+      "asset lowest point z=0.9658 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.9658,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "tank-white": {
+        "verts": 1122,
+        "faces": 1048,
+        "tris": 2096,
+        "ngons": 0,
+        "boundary_edges": 152,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 9.63,
+        "uv_coverage_pct": 30.4
+      }
+    }
+  },
+  "flannel-long-sleeve": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "flannel-long-sleeve: ~19.77% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+      "asset lowest point z=0.9249 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.9249,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "flannel-long-sleeve": {
+        "verts": 2594,
+        "faces": 2432,
+        "tris": 4864,
+        "ngons": 0,
+        "boundary_edges": 320,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 12,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 19.77,
+        "uv_coverage_pct": 55.3
+      }
+    }
+  },
+  "hoodie-gray-down": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "hoodie-gray-down: ~36.66% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+      "hidden back-to-back faces: hoodie-gray-down (1 pairs) - delete to save tris",
+      "asset lowest point z=0.9409 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.9409,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [
+      {
+        "where": "hoodie-gray-down",
+        "tri_pairs": 1
+      }
+    ],
+    "enclosed": [],
+    "objects": {
+      "hoodie-gray-down": {
+        "verts": 2543,
+        "faces": 2468,
+        "tris": 4896,
+        "ngons": 0,
+        "boundary_edges": 192,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 4,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 36.66,
+        "uv_coverage_pct": 56.6
+      }
+    }
+  },
+  "hoodie-gray-up": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "hoodie-gray-up: ~36.66% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+      "asset lowest point z=0.9407 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.9407,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "hoodie-gray-up": {
+        "verts": 2543,
+        "faces": 2468,
+        "tris": 4896,
+        "ngons": 0,
+        "boundary_edges": 192,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 4,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 36.66,
+        "uv_coverage_pct": 56.6
+      }
+    }
+  },
+  "windbreaker-black-open": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "windbreaker-black-open: ~6.57% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+      "asset lowest point z=0.9409 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.9409,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "windbreaker-black-open": {
+        "verts": 1972,
+        "faces": 1889,
+        "tris": 3778,
+        "ngons": 0,
+        "boundary_edges": 168,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 6.57,
+        "uv_coverage_pct": 46.6
+      }
+    }
+  },
+  "puffer-black-closed": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "asset lowest point z=0.9643 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.9643,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "puffer-black-closed": {
+        "verts": 2064,
+        "faces": 2000,
+        "tris": 4000,
+        "ngons": 0,
+        "boundary_edges": 132,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 4.25,
+        "uv_coverage_pct": 51.7
+      }
+    }
+  },
+  "jeans-black-skinny": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "asset lowest point z=0.0806 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0806,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "jeans-black-skinny": {
+        "verts": 1695,
+        "faces": 1648,
+        "tris": 3296,
+        "ngons": 0,
+        "boundary_edges": 96,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 1.77,
+        "uv_coverage_pct": 82.8
+      }
+    }
+  },
+  "jeans-denim-baggy": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "asset lowest point z=0.0767 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0767,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "jeans-denim-baggy": {
+        "verts": 1695,
+        "faces": 1648,
+        "tris": 3296,
+        "ngons": 0,
+        "boundary_edges": 96,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 1.77,
+        "uv_coverage_pct": 82.8
+      }
+    }
+  },
+  "cargo-black": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "cargo-black: ~6.63% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+      "asset lowest point z=0.0966 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0966,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "cargo-black": {
+        "verts": 1951,
+        "faces": 1856,
+        "tris": 3712,
+        "ngons": 0,
+        "boundary_edges": 184,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 5,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 6.63,
+        "uv_coverage_pct": 82.8
+      }
+    }
+  },
+  "sweats-gray": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "asset lowest point z=0.0937 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0937,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "sweats-gray": {
+        "verts": 1839,
+        "faces": 1780,
+        "tris": 3560,
+        "ngons": 0,
+        "boundary_edges": 120,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 3,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 3.1,
+        "uv_coverage_pct": 82.8
+      }
+    }
+  },
+  "shorts-athletic": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "asset lowest point z=0.5468 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.5468,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "shorts-athletic": {
+        "verts": 1111,
+        "faces": 1052,
+        "tris": 2104,
+        "ngons": 0,
+        "boundary_edges": 120,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 3,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 3.1,
+        "uv_coverage_pct": 82.8
+      }
+    }
+  },
+  "flip-flops": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "flip-flops: ~97.37% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+      "asset lowest point z=-0.0168 (not resting on ground plane z=0)"
+    ],
+    "ground_z": -0.0168,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "flip-flops": {
+        "verts": 872,
+        "faces": 896,
+        "tris": 1648,
+        "ngons": 0,
+        "boundary_edges": 88,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 8,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 97.37,
+        "uv_coverage_pct": 47.8
+      }
+    }
+  },
+  "slides-black": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "slides-black: ~97.46% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+      "asset lowest point z=-0.0172 (not resting on ground plane z=0)"
+    ],
+    "ground_z": -0.0172,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "slides-black": {
+        "verts": 808,
+        "faces": 820,
+        "tris": 1496,
+        "ngons": 0,
+        "boundary_edges": 108,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 4,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 97.46,
+        "uv_coverage_pct": 49.5
+      }
+    }
+  },
+  "court-sneakers-black": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "court-sneakers-black: ~100.0% UV overlap (ok only if mirrored/stacked on purpose; bakes break)"
+    ],
+    "ground_z": 0,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "court-sneakers-black": {
+        "verts": 2154,
+        "faces": 2020,
+        "tris": 3960,
+        "ngons": 0,
+        "boundary_edges": 344,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 24,
+        "inside_out_islands": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 100,
+        "uv_coverage_pct": 61.4
+      }
+    }
+  }
+}

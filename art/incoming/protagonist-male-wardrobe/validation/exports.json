@@ -1,0 +1,59 @@
+[
+  {
+    "id": "tee-white",
+    "bytes": 136948,
+    "triangles": 2616,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000017421214187907097,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "jeans-denim-standard",
+    "bytes": 385728,
+    "triangles": 3296,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000020918739231934325,
+    "materialCount": 1,
+    "textures": [
+      [
+        512,
+        512
+      ],
+      [
+        512,
+        512
+      ]
+    ]
+  },
+  {
+    "id": "court-sneakers-white",
+    "bytes": 144360,
+    "triangles": 3960,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000015878389305681861,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  }
+]

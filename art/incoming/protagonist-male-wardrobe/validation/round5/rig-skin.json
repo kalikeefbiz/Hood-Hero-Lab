@@ -1,0 +1,200 @@
+{
+  "tee-white": {
+    "verts": 1372,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 1,
+    "deform_bones_without_group": 0
+  },
+  "jeans-denim-standard": {
+    "verts": 1695,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 5,
+    "deform_bones_without_group": 0
+  },
+  "court-sneakers-white": {
+    "verts": 2154,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 2,
+    "deform_bones_without_group": 0
+  },
+  "tee-stixx-black": {
+    "verts": 1372,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 1,
+    "deform_bones_without_group": 0
+  },
+  "tank-white": {
+    "verts": 1122,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 2,
+    "deform_bones_without_group": 0
+  },
+  "flannel-long-sleeve": {
+    "verts": 2594,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 33,
+    "deform_bones_without_group": 0
+  },
+  "hoodie-gray-down": {
+    "verts": 2543,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 26,
+    "deform_bones_without_group": 0
+  },
+  "hoodie-gray-up": {
+    "verts": 2543,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 23,
+    "deform_bones_without_group": 0
+  },
+  "windbreaker-black-open": {
+    "verts": 1972,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 33,
+    "deform_bones_without_group": 0
+  },
+  "puffer-black-closed": {
+    "verts": 2064,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 38,
+    "deform_bones_without_group": 0
+  },
+  "jeans-black-skinny": {
+    "verts": 1695,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 2,
+    "deform_bones_without_group": 0
+  },
+  "jeans-denim-baggy": {
+    "verts": 1695,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 3,
+    "deform_bones_without_group": 0
+  },
+  "cargo-black": {
+    "verts": 1951,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 18,
+    "deform_bones_without_group": 0
+  },
+  "sweats-gray": {
+    "verts": 1839,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 5,
+    "deform_bones_without_group": 0
+  },
+  "shorts-athletic": {
+    "verts": 1111,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 0,
+    "deform_bones_without_group": 0
+  },
+  "flip-flops": {
+    "verts": 872,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 2,
+    "deform_bones_without_group": 0
+  },
+  "slides-black": {
+    "verts": 808,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 2,
+    "deform_bones_without_group": 0
+  },
+  "court-sneakers-black": {
+    "verts": 2154,
+    "unweighted": 0,
+    "over_4": 0,
+    "not_normalized": 0,
+    "weights_on_root": 0,
+    "weights_on_nondeform": 0,
+    "groups_without_bone": [],
+    "asymmetric_verts_sampled": 2,
+    "deform_bones_without_group": 0
+  }
+}

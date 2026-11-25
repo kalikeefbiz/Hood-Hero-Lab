@@ -1,0 +1,287 @@
+[
+  {
+    "id": "tee-stixx-black",
+    "bytes": 416176,
+    "triangles": 2616,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000017421214187907097,
+    "materialCount": 1,
+    "textures": [
+      [
+        512,
+        512
+      ],
+      [
+        512,
+        512
+      ]
+    ]
+  },
+  {
+    "id": "tank-white",
+    "bytes": 129128,
+    "triangles": 2096,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000012502194937646927,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "flannel-long-sleeve",
+    "bytes": 483952,
+    "triangles": 4864,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.000003205916446646917,
+    "materialCount": 1,
+    "textures": [
+      [
+        512,
+        512
+      ],
+      [
+        512,
+        512
+      ]
+    ]
+  },
+  {
+    "id": "hoodie-gray-down",
+    "bytes": 171632,
+    "triangles": 4896,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000031500146255858397,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "hoodie-gray-up",
+    "bytes": 172884,
+    "triangles": 4896,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.000003211747492071204,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "windbreaker-black-open",
+    "bytes": 158028,
+    "triangles": 3778,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000031500146255858397,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "puffer-black-closed",
+    "bytes": 160080,
+    "triangles": 4000,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.000003214426944841975,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "jeans-black-skinny",
+    "bytes": 363484,
+    "triangles": 3296,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.000002052433481170013,
+    "materialCount": 1,
+    "textures": [
+      [
+        512,
+        512
+      ],
+      [
+        512,
+        512
+      ]
+    ]
+  },
+  {
+    "id": "jeans-denim-baggy",
+    "bytes": 385288,
+    "triangles": 3296,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000021128661700231532,
+    "materialCount": 1,
+    "textures": [
+      [
+        512,
+        512
+      ],
+      [
+        512,
+        512
+      ]
+    ]
+  },
+  {
+    "id": "cargo-black",
+    "bytes": 165896,
+    "triangles": 3712,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000020620710026730826,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "sweats-gray",
+    "bytes": 158696,
+    "triangles": 3560,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000020699571752769153,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "shorts-athletic",
+    "bytes": 118976,
+    "triangles": 2104,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000013818548997290847,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "flip-flops",
+    "bytes": 75740,
+    "triangles": 1648,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000016136626036569734,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "slides-black",
+    "bytes": 73116,
+    "triangles": 1496,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000016446931755190186,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  },
+  {
+    "id": "court-sneakers-black",
+    "bytes": 142812,
+    "triangles": 3960,
+    "jointCount": 36,
+    "maxRestTransformDiff": 0,
+    "maxBindResidual": 0.0000015878389305681861,
+    "materialCount": 1,
+    "textures": [
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ]
+    ]
+  }
+]
