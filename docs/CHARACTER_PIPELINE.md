@@ -26,9 +26,19 @@ You have Meshy, Blender and Node in your environment. Use them directly.
 
   It prints the script's JSON result. **Keep that output for each step; it goes in your PR.**
 - **Meshy** for the base mesh only. Don't use Meshy's auto-rig or stock animations: that's how Mega was made, and he ended up with a 24-bone rig and no idle.
-- **Node**, for the final compression with `art/source/hood-hero/quanny/pipeline/compress.mjs`. Install its packages in a scratch folder outside the repo: `npm i @gltf-transform/core @gltf-transform/extensions @gltf-transform/functions ktx2-encoder meshoptimizer sharp`.
+- **Node**, for the final compression with `art/source/hood-hero/quanny/pipeline/compress.mjs`. Install its packages in a scratch folder outside the repo: `npm i @gltf-transform/core @gltf-transform/extensions @gltf-transform/functions ktx2-encoder meshoptimizer sharp`. Since 2026-11-25 it **keeps PBR**: base colour and emissive as sRGB KTX2, normal, metallic-roughness and occlusion as linear KTX2, authored metallic and roughness values untouched. It prints which slots survived for each material. Never edit the script to get a delivery through; report the loss.
 - **Checker:** `node scripts/check-character.mjs art/incoming/<id>` must print `PASS` before you open a PR.
 - **Review sheets:** `node scripts/review-character.mjs` renders the model in **three.js, the game's renderer, with the city's day and night lighting**: face and neck close-ups, a run frame and full-body views. Claude reviews from these same sheets. Blender renders (Cycles, EEVEE, Workbench) hide texture tears and seams that three.js shows, so a delivery checked only in Blender isn't checked. It needs the repo's packages (`npm ci`) and a Chromium for Playwright (`npx playwright install chromium`, or set `CHROMIUM_PATH`); no GPU needed.
+
+### Visual quality standard (owner decision 2026-11-25)
+
+Hood Hero is a flagship Black House title, not an arcade experiment. Optimization follows a visual standard; it doesn't set one. Limits that were chosen before anyone measured a device are provisional.
+
+- **Two profiles**, set in the manifest (`"profile": "standard" | "hero"`, default `standard`). `standard` keeps the original budgets for existing characters. `hero` is for flagship characters and wardrobe: PBR maps required (normal, roughness/metallic), textures up to 2048, higher triangle, material and size ceilings. The hero ceilings in `scripts/check-character.mjs` are placeholders to be tightened from on-device profiling once the benchmark outfit is approved.
+- **Keep a high-quality source independent of the runtime file.** Author at 2K or higher in `source/<id>_source.blend` with textures packed. The runtime GLB is a derived copy; never optimize the source in place.
+- **PBR maps carry the detail.** Fabric weave, stitching, seams and folds go in the normal map, distinct material response (denim, cotton, leather, nylon) in roughness/metallic, contact shading in occlusion. Don't paint fake folds into base colour if the normal map can carry them.
+- **Inspect at full size.** Contact sheets spot animation problems; they can't show texture quality. Every delivery also needs individual renders (one view per image, 1080p or larger, three.js with the city lighting), material close-ups, and an in-engine capture on a phone.
+- **Approve the look before fitting, rigging or optimizing.** A new garment type or character look is approved from renders by the owner before the fitting and optimization work spends effort on it.
 
 ### Why the review sheets exist (2026-11-24)
 
@@ -64,7 +74,7 @@ Gate: Blender 5.2 or newer is reported. Read `blender-core/SKILL.md`, in particu
 
 ### 1. Base mesh (Meshy, then import)
 
-- Meshy image-to-3D from the approved front view: `meshy-t2.5`, **T-pose** (arms straight out, palms down), PBR off, 2k texture. T-pose matters: step 5 reuses Quanny's clips, and retargeting needs matching rest poses.
+- Meshy image-to-3D from the approved front view: `meshy-t2.5`, **T-pose** (arms straight out, palms down), 2k texture, **PBR on for the `hero` profile** (it generates normal, roughness and metallic maps; `standard` may keep it off). T-pose matters: step 5 reuses Quanny's clips, and retargeting needs matching rest poses.
 - Check it against the art: face, clothes, colours, accessories. If it's wrong, regenerate; don't fix likeness in Blender.
 - **Before shot:** `node scripts/review-character.mjs --raw <meshy model.glb> --out <scratch>/review` (add `--bust` for a head-only model and `--yaw 180` if it faces away). Open `*_raw_face.png`. If the raw face is torn, blotchy or smeared, Meshy made it: regenerate. Keep these sheets; they go in the PR.
 - **Credits:** Meshy gives each task **4 free retries**. Use them whenever the output is wrong, without asking. A **new** task (different input images or mode) costs credits: quote the exact cost and get the owner's approval first.
@@ -138,7 +148,8 @@ All clips: 30 fps, first frame equals last, root not moving, no animated scale.
 
 1. `export_asset.py -- --preset web --objects GAME_RIG_Body Body --set export_animation_mode=ACTIONS export_def_bones=False --out //<id>_raw.glb`. List `Body` explicitly, and turn off `export_def_bones`: the preset's deform-only setting drops the unweighted `root` bone, which the city needs. This writes meshopt geometry and WebP textures. Keep WebP; `compress.mjs` can't read KTX2 input.
    Gate: the returned summary shows 1 skin, 3 animations named `Idle`/`Walk`/`Run` and nothing else, and the expected triangle count.
-2. `node compress.mjs <id>_raw.glb <id>.glb 1024 0` (`art/source/hood-hero/quanny/pipeline/compress.mjs`). This gives KTX2 base colour at 1024, no normal map, quantized, meshopt. Budget: **≤ 1.4 MB** for the one file.
+   `hero` profile: before compressing, confirm `<id>_raw.glb` contains the normal, roughness/metallic and occlusion maps. If the exporter dropped them, fix the Blender material nodes and re-export; don't patch the compressor.
+2. `node compress.mjs <id>_raw.glb <id>.glb 1024` for `standard` (KTX2 at 1024, quantized, meshopt, **PBR maps kept**; pass `0` as a fourth argument only to strip the normal map to save size), or `node compress.mjs <id>_raw.glb <id>.glb 2048` for `hero`. Read its per-material output and list any slot that was lost in your PR. Budget: **≤ 1.4 MB** for the one file on `standard`; see the profile table in `scripts/check-character.mjs` for `hero`.
 
 You ship **one file**, `<id>.glb`, with mesh, skin and the three named clips. Quanny's four-file layout is also accepted, but don't use it for new characters.
 
@@ -212,7 +223,7 @@ All of these must hold.
 
 **Checked by `scripts/check-character.mjs`:**
 - Folder, manifest and source as above. The manifest `id` matches; height is 1.2–2.2 m; bind pose is T or A; source art is listed; `approvedBy` is `"owner"`.
-- Model:
+- Model (`standard` profile; `hero` uses the ceilings and PBR requirements in the script):
   - ≤ 1.4 MB, 8k–40k triangles, ≤ 2 materials
   - meshopt, `KHR_mesh_quantization` and KTX2 textures ≤ 1024 px
   - one skin with 20–100 joints and every body part present (root, hips, chest, neck, head; each side's upper arm, forearm, hand, thigh, shin and foot)

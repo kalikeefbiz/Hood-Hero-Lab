@@ -66,11 +66,11 @@ Suggested ids are in the canon doc.
 
 The full route is `docs/CHARACTER_PIPELINE.md`. The contract:
 
-- **Tools:** Meshy (base mesh only: `meshy-t2.5`, **T-pose**, PBR off, 2k texture; never Meshy's rig or animations), Blender **5.3** headless, `EL4CTEO/blender-skills` pinned to **`1a1cc6c49312f9f370aae86f52b7b907f29c94f6`**, and `art/source/hood-hero/quanny/pipeline/compress.mjs` for the final pass.
+- **Tools:** Meshy (base mesh only: `meshy-t2.5`, **T-pose**, 2k texture, PBR on for the `hero` profile (off is fine for `standard`); never Meshy's rig or animations), Blender **5.3** headless, `EL4CTEO/blender-skills` pinned to **`1a1cc6c49312f9f370aae86f52b7b907f29c94f6`**, and `art/source/hood-hero/quanny/pipeline/compress.mjs` for the final pass.
 - **Inputs:** a canonical character id that exists in the engine, owner-approved front art, and a height from the owner (default 1.78 m).
 - **Scale and orientation:** metres, real height, feet on the ground (z = 0 in Blender), centred, facing −Y in Blender (exports as +Z, which the city expects), transforms applied.
 - **Mesh budget:** 8k–40k triangles (target 30k–38k, `auto_retopo --method decimate` keeps Meshy's UVs), at most 2 materials. Model file **≤ 1.4 MB** (one-file) or ≤ 1.1 MB (four-file).
-- **Textures:** KTX2 (ETC1S) base colour, **≤ 1024 px**, no normal map (`compress.mjs <in> <out> 1024 0`), quantized and meshopt-compressed.
+- **Textures:** KTX2, quantized and meshopt-compressed with `compress.mjs`. `standard` profile: **≤ 1024 px**, PBR maps kept (add a fourth argument `0` only to strip the normal map). `hero` profile: ≤ 2048 px with normal and roughness/metallic maps required. See `docs/CHARACTER_PIPELINE.md`, "Visual quality standard".
 - **Rig:** Rigify `basic_human --no-face` → **game skeleton** (`root` + deform bones, `DEF-` stripped: `spine…`, `thigh.L`, `upper_arm.L`…), 20–100 joints, no `MCH-`/`ORG-`/`DEF-` helper bones, ≤ 4 influences per vertex, normalized, head and hair rigid.
 - **Clips:** exactly **`Idle`**, **`Walk`**, **`Run`**, at 30 fps, looping (first frame equals last), **in place** (root doesn't travel), no animated scale.
   - Walk 0.8–1.6 s, run 0.5–0.9 s, idle 4–12 s.
