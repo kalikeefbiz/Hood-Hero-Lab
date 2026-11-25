@@ -30,6 +30,8 @@ const PROFILES = {
   },
 };
 const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
+// Licences we accept for borrowed assets (docs/CHARACTER_PIPELINE.md, "Reuse before you build").
+const LICENSES = ["CC0-1.0", "CC-BY-4.0", "CC-BY-3.0", "MIT", "Apache-2.0", "Unlicense"];
 
 // Body parts every rig needs, each matched by name (Rigify game skeleton or Mixamo-style).
 const SIDES = { L: [/[._]l(\.\d+)?$/i, /^left/i], R: [/[._]r(\.\d+)?$/i, /^right/i] };
@@ -107,6 +109,16 @@ function main(dir) {
   ok(manifest.bindPose === "T" || manifest.bindPose === "A", `manifest.bindPose is "T" or "A"`);
   ok(Array.isArray(manifest.sourceArt) && manifest.sourceArt.length > 0, "manifest.sourceArt lists the approved art used");
   ok(manifest.approvedBy === "owner", 'manifest.approvedBy is "owner"');
+  const third = manifest.thirdParty ?? [];
+  if (!Array.isArray(third)) ok(false, "manifest.thirdParty is a list");
+  else if (third.length) {
+    ok(existsSync(join(dir, "CREDITS.md")), "CREDITS.md exists (manifest.thirdParty lists borrowed assets)");
+    for (const t of third) {
+      const label = t?.name ?? "(unnamed)";
+      ok(!!(t && t.name && /^https?:\/\//.test(t.url ?? "") && t.usedFor), `thirdParty "${label}": has name, url and usedFor`);
+      ok(LICENSES.includes(t?.license), `thirdParty "${label}": licence "${t?.license}" is accepted (${LICENSES.join(", ")})`);
+    }
+  }
   const profileName = manifest.profile ?? "standard";
   ok(!!PROFILES[profileName], `manifest.profile is "standard" or "hero" (got "${profileName}")`);
   const P = PROFILES[profileName] ?? PROFILES.standard;

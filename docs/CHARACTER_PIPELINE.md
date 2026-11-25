@@ -40,6 +40,14 @@ Hood Hero is a flagship Black House title, not an arcade experiment. Optimizatio
 - **Inspect at full size.** Contact sheets spot animation problems; they can't show texture quality. Every delivery also needs individual renders (one view per image, 1080p or larger, three.js with the city lighting), material close-ups, and an in-engine capture on a phone.
 - **Approve the look before fitting, rigging or optimizing.** A new garment type or character look is approved from renders by the owner before the fitting and optimization work spends effort on it.
 
+### Reuse before you build (owner decision 2026-11-25)
+
+We aren't a AAA studio. Before generating, modelling or painting anything, search for an existing free asset and use it when it fits: PBR fabric, denim, leather and nylon materials, trim sheets, normal and roughness maps, and any ready-made geometry. Meshy credits are for geometry that can't be found or reused, and only up to the amount the owner has approved for the task.
+
+- **Licence first.** Hood-Hero-Lab is a public repo and the game ships commercially, so every borrowed asset must allow commercial use and redistribution. Accepted: CC0, CC-BY (credited), MIT, Apache-2.0, Unlicense. Rejected: non-commercial, no-derivatives, engine-locked, "free for personal use", or an unclear licence. Read the asset's own licence page; a site-wide claim isn't enough.
+- **Record it.** List every borrowed asset in `manifest.thirdParty` as `{ "name", "url", "license", "usedFor" }` and add a line to `art/incoming/<id>/CREDITS.md`. `check-character` fails on a missing CREDITS file or a licence outside the accepted list.
+- **Reuse doesn't replace fitting.** A borrowed material or mesh still has to be fitted to the frozen body and pass every check below.
+
 ### Why the review sheets exist (2026-11-24)
 
 Mr. Lewis, Flacco and the protagonist's face-01 all shipped or were delivered with **torn, shard-like texture round the eyes, mouth and jaw**. It's visible only up close, and none of the Blender previews showed it. Quanny, built by hand, is clean. The likely causes are low face resolution in a full-body Meshy image and step 2's decimation collapsing across UV seams, where the eyes and mouth are densest. Which of the two it is hasn't been settled, because nobody kept a render of Meshy's raw output. The before/after shots in steps 1 and 2 settle it for every new character.
@@ -213,6 +221,7 @@ With no GPU (`env_report` shows `gpu.backend: NONE`), headless EEVEE won't rende
   "blender": "5.3",
   "skillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
   "approvedBy": "owner",
+  "thirdParty": [{ "name": "Fabric 026", "url": "https://…", "license": "CC0-1.0", "usedFor": "denim base colour, normal, roughness" }],
   "notes": "Deviations, known issues."
 }
 ```
