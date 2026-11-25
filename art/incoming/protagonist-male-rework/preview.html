@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>Male Protagonist — Round 5 Rework Preview</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #181c24; color: #f3f5f8; font: 500 14px/1.3 system-ui, -apple-system, sans-serif; overflow: hidden; }
+  #c { width: 100%; height: 100%; display: block; touch-action: none; }
+  #bar { position: fixed; left: 8px; right: 8px; bottom: 10px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; background: rgba(15,18,25,.82); padding: 8px; border-radius: 12px; backdrop-filter: blur(8px); }
+  button, select { min-height: 44px; padding: 0 12px; border: 1px solid #3c4658; border-radius: 8px; background: #262d3a; color: #fff; font: 600 13px/1 system-ui, sans-serif; }
+  button.active { background: #3b82f6; border-color: #60a5fa; }
+  #hud { position: fixed; top: 8px; left: 8px; background: rgba(15,18,25,.75); padding: 6px 10px; border-radius: 8px; font-size: 12px; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">Drag to orbit · Pinch to zoom · Round 5 Rework</div>
+<div id="bar">
+  <button data-clip="Idle" class="active">Idle</button>
+  <button data-clip="Walk">Walk (1.45)</button>
+  <button data-clip="Run">Run (3.80)</button>
+  <select id="headSel">
+    <option value="face-01">face-01 (Black)</option>
+    <option value="face-02">face-02 (White)</option>
+    <option value="face-03">face-03 (Hispanic/Latino)</option>
+    <option value="face-04">face-04 (Asian)</option>
+    <option value="face-05">face-05 (Mixed)</option>
+  </select>
+  <button id="speedBtn">1.0x</button>
+  <button id="lightBtn">Day</button>
+</div>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const canvas = document.getElementById("c");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.AgXToneMapping;
+
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+const hemi = new THREE.HemisphereLight(0x9fb6e0, 0x4a3428, 0.9);
+const sun = new THREE.DirectionalLight(0xffb27a, 2.6);
+sun.position.set(4, 6, 8);
+scene.add(hemi, sun);
+const ground = new THREE.Mesh(new THREE.CircleGeometry(2.2, 48), new THREE.MeshStandardMaterial({ color: 0x4a505c, roughness: 0.9 }));
+ground.rotation.x = -Math.PI / 2;
+scene.add(ground);
+
+const camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, 0.05, 50);
+camera.position.set(0.9, 1.15, 3.2);
+const controls = new OrbitControls(camera, canvas);
+controls.target.set(0, 0.92, 0);
+controls.enableDamping = true;
+
+const ktx2 = new KTX2Loader().setTranscoderPath("https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/basis/").detectSupport(renderer);
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx2);
+const manifest = await (await fetch("./manifest.json")).json();
+const bodyGltf = await loader.loadAsync(`./${manifest.id}.glb`);
+const root = bodyGltf.scene;
+scene.add(root);
+
+const bones = new Map();
+let bodyMesh;
+root.traverse((o) => { if (o.isBone) bones.set(o.name, o); if (o.isSkinnedMesh && !bodyMesh) bodyMesh = o; if (o.isMesh) o.frustumCulled = false; });
+
+const mixer = new THREE.AnimationMixer(root);
+let activeClip = "Idle", speedMode = 0, nightMode = false, headMesh = null;
+function play(name) {
+  activeClip = name;
+  mixer.stopAllAction();
+  const c = bodyGltf.animations.find((a) => a.name === name);
+  if (c) {
+    const act = mixer.clipAction(c);
+    act.timeScale = speedMode === 1 ? (name === "Walk" ? 1.6 / 1.45 : name === "Run" ? 4.2 / 3.8 : 1.0) : 1.0;
+    act.reset().play();
+  }
+}
+async function setHead(hid) {
+  const h = manifest.modular.heads[hid];
+  const [hg, tex] = await Promise.all([loader.loadAsync(`./${h.file}`), ktx2.loadAsync(`./${manifest.modular.complexions[h.complexion].file}`)]);
+  if (headMesh) headMesh.parent.remove(headMesh);
+  hg.scene.traverse((o) => { if (o.isSkinnedMesh) headMesh = o; });
+  bodyMesh.parent.add(headMesh);
+  headMesh.bind(new THREE.Skeleton(headMesh.skeleton.bones.map((b) => bones.get(b.name)), headMesh.skeleton.boneInverses), headMesh.bindMatrix);
+  headMesh.frustumCulled = false;
+  tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace;
+  bodyMesh.material.map = tex; bodyMesh.material.needsUpdate = true;
+}
+
+await setHead(manifest.modular.defaultHead);
+play("Idle");
+
+document.querySelectorAll("button[data-clip]").forEach((b) => b.onclick = () => {
+  document.querySelectorAll("button[data-clip]").forEach((x) => x.classList.remove("active"));
+  b.classList.add("active");
+  play(b.dataset.clip);
+});
+document.getElementById("headSel").onchange = (e) => setHead(e.target.value);
+document.getElementById("speedBtn").onclick = (e) => {
+  speedMode = 1 - speedMode;
+  e.target.textContent = speedMode ? "Ctrl Speed" : "1.0x";
+  play(activeClip);
+};
+document.getElementById("lightBtn").onclick = (e) => {
+  nightMode = !nightMode;
+  e.target.textContent = nightMode ? "Night" : "Day";
+  sun.color.set(nightMode ? 0x8fa6ff : 0xffb27a); sun.intensity = nightMode ? 0.25 : 2.6;
+  hemi.intensity = nightMode ? 0.14 : 0.9;
+  scene.background = new THREE.Color(nightMode ? 0x1b1f33 : 0x8a95a6);
+};
+scene.background = new THREE.Color(0x8a95a6);
+addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+const clock = new THREE.Clock();
+(function loop() { requestAnimationFrame(loop); mixer.update(clock.getDelta()); controls.update(); renderer.render(scene, camera); })();
+</script>
+</body>
+</html>
