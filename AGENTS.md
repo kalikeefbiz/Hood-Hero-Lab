@@ -51,6 +51,8 @@ Every save in Hood-Hero-Lab belongs to the owner's own playtesting. None needs p
 
 Codex and Gemini build character models (mesh, rig, idle/walk/run) by following `docs/CHARACTER_PIPELINE.md` exactly, using Meshy, Blender 5.3 and the pinned `EL4CTEO/blender-skills` agent skills. They write **only** to `art/incoming/<id>/`, which is an exception to Claude's `art/**` ownership for that folder alone. They never edit `public/assets/**`, `src/**` or `characterModels.ts`. A delivery must pass `node scripts/check-character.mjs art/incoming/<id>`. Claude reviews it in the city, moves it into place and wires it up. Only canonical character ids with owner-approved art.
 
+**Protagonist body is a frozen base (owner decision 2026-11-24).** Clothes and heads are fitted to the male protagonist's body, rig and animations. Once the owner adopts a body version, nobody edits its mesh, rig or animation timing. Fit your part to it, never the reverse. If the body has to change, get owner approval first and, in the same task, refit every dependent part (heads, wardrobe) and rerun `check-character`. Clothing must be fitted to the body surface (derived from it, weights transferred, no floating shells), not placed over it. Check idle, walk and jog for poke-through and for gaps or shards at the neckline, shoulders, hems and ankles before opening a PR.
+
 ## 0. The city comes first (read this before designing anything)
 
 The Actions menu is being retired. Players do things **in the city**: at a
