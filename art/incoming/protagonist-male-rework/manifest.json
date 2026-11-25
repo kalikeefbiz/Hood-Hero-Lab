@@ -16,12 +16,12 @@
     "Walk": {
       "seconds": 1.033,
       "frames": 30,
-      "speedMps": 1.45
+      "speedMps": 1.08
     },
     "Run": {
       "seconds": 0.7,
       "frames": 20,
-      "speedMps": 3.8
+      "speedMps": 3.3
     }
   },
   "animatedFrom": "Independent ground-up protagonist animations authored in Blender 5.3 (zero Quanny reuse), tuned to player controller speeds (1.45 m/s Walk, 3.80 m/s Run)",
