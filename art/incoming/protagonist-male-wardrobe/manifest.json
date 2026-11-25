@@ -1,0 +1,148 @@
+{
+  "id": "protagonist-male-wardrobe",
+  "heightM": 1.78,
+  "bindPose": "T",
+  "sourceArt": [
+    "art/source/hood-hero/protagonist/male/ref/tops-master.PNG",
+    "art/source/hood-hero/protagonist/male/ref/bottoms-master.PNG",
+    "art/source/hood-hero/protagonist/male/ref/footwear-master.PNG"
+  ],
+  "blender": "5.3.0",
+  "blenderSkillsCommit": "1a1cc6c49312f9f370aae86f52b7b907f29c94f6",
+  "meshyCredits": 0,
+  "bodyVersion": "protagonist-male-body-round5",
+  "skeletonVersion": "protagonist-male-rig-round5",
+  "bodySha256": "06e7585513882d31ef28dd3233218231b6ced178da2087c15a3302bbafe71e74",
+  "source": "source/protagonist-male-wardrobe_source.blend",
+  "bodyMasks": "body-masks.json",
+  "modular": {
+    "wearables": {
+      "tee-white": {
+        "label": "Plain White T-Shirt",
+        "slot": "top",
+        "file": "models/tops/tee-white.glb",
+        "sourceArt": [
+          "art/source/hood-hero/protagonist/male/ref/tops-master.PNG"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "tee-white",
+          "description": "Mask covered torso and upper-arm triangles. Keep the neck and a skin ring inside each cuff."
+        },
+        "materialVariantIds": [],
+        "layerCompatibility": {
+          "validatedWith": [
+            "jeans-denim-standard",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The sleeve caps remain boxy. The inside armhole creases sharply and the back hem flares in profile.",
+        "triangles": 2616,
+        "materials": 1,
+        "textureResolution": [
+          1024,
+          1024
+        ],
+        "bytes": 1955780
+      },
+      "jeans-denim-standard": {
+        "label": "Standard Denim Jeans",
+        "slot": "bottom",
+        "file": "models/bottoms/jeans-denim-standard.glb",
+        "sourceArt": [
+          "art/source/hood-hero/protagonist/male/ref/bottoms-master.PNG"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "jeans-denim-standard",
+          "description": "Mask covered pelvis and leg triangles. Retain skin at the waist and cuffs."
+        },
+        "materialVariantIds": [],
+        "layerCompatibility": {
+          "validatedWith": [
+            "tee-white",
+            "court-sneakers-white"
+          ]
+        },
+        "knownClippingLimitations": "The crotch shades as a wedge and the bent knee pinches in Run. The hand grazes the hip on the counter-swing.",
+        "triangles": 3296,
+        "materials": 1,
+        "textureResolution": [
+          1024,
+          1024
+        ],
+        "bytes": 1889548
+      },
+      "court-sneakers-white": {
+        "label": "White Low-Top Court Sneakers",
+        "slot": "footwear",
+        "file": "models/footwear/court-sneakers-white.glb",
+        "sourceArt": [
+          "art/source/hood-hero/protagonist/male/ref/footwear-master.PNG"
+        ],
+        "bodyVersion": "protagonist-male-body-round5",
+        "skeletonVersion": "protagonist-male-rig-round5",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "court-sneakers-white",
+          "description": "Mask the covered foot and retain the skin ring at the padded collar."
+        },
+        "materialVariantIds": [],
+        "layerCompatibility": {
+          "validatedWith": [
+            "tee-white",
+            "jeans-denim-standard"
+          ]
+        },
+        "knownClippingLimitations": "The cuff rides above the collar at some Run poses. Several baked eyelets do not align with the lace ends. Toe flex stays stiff.",
+        "triangles": 3960,
+        "materials": 1,
+        "textureResolution": [
+          1024,
+          1024
+        ],
+        "bytes": 2087652,
+        "groundOffsetMeters": 0
+      }
+    }
+  },
+  "starterOutfit": {
+    "top": "tee-white",
+    "bottom": "jeans-denim-standard",
+    "footwear": "court-sneakers-white",
+    "referenceHead": "face-01",
+    "referenceComplexion": "complexion-01",
+    "visibleTriangles": 25824,
+    "visibleBodyTriangles": 9020,
+    "garmentAssetBytes": 5932980,
+    "equippedAssetBytes": 6955971,
+    "estimatedMaterialDraws": 5
+  },
+  "fittingAuthority": "art/incoming/protagonist-male-rework/protagonist-male-rework.glb",
+  "profile": "hero",
+  "meshyTaskIds": [],
+  "thirdParty": [
+    {
+      "name": "Cotton Jersey",
+      "url": "https://polyhaven.com/a/cotton_jersey",
+      "license": "CC0-1.0",
+      "usedFor": "tee-white colour, normal, roughness and occlusion"
+    },
+    {
+      "name": "Denim Fabric 03",
+      "url": "https://polyhaven.com/a/denim_fabric_03",
+      "license": "CC0-1.0",
+      "usedFor": "jeans-denim-standard colour, normal, roughness and occlusion"
+    },
+    {
+      "name": "Leather White",
+      "url": "https://polyhaven.com/a/leather_white",
+      "license": "CC0-1.0",
+      "usedFor": "court-sneakers-white colour, normal, roughness and occlusion"
+    }
+  ]
+}

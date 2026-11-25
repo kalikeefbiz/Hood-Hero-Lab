@@ -1,0 +1,105 @@
+{
+  "report": {
+    "garments": {
+      "tee-white": {
+        "bytes": 1945204,
+        "triangleCount": 2616,
+        "joints": 36,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": true,
+        "normal": true,
+        "roughness": 1,
+        "roughnessTexture": true,
+        "metalnessTexture": true,
+        "occlusionTexture": true
+      },
+      "jeans-denim-standard": {
+        "bytes": 1878948,
+        "triangleCount": 3296,
+        "joints": 36,
+        "maxWeightError": 2.220446049250313e-16,
+        "baseColor": true,
+        "normal": true,
+        "roughness": 1,
+        "roughnessTexture": true,
+        "metalnessTexture": true,
+        "occlusionTexture": true
+      },
+      "court-sneakers-white": {
+        "bytes": 2077040,
+        "triangleCount": 3960,
+        "joints": 36,
+        "maxWeightError": 0,
+        "baseColor": true,
+        "normal": true,
+        "roughness": 1,
+        "roughnessTexture": true,
+        "metalnessTexture": true,
+        "occlusionTexture": true
+      }
+    },
+    "visibleBodyTriangles": 9020,
+    "coveredTop": false,
+    "visibleTopTriangles": 2616
+  },
+  "slots": {
+    "tee-white": {
+      "garments": {
+        "tee-white": {
+          "bytes": 1945204,
+          "triangleCount": 2616,
+          "joints": 36,
+          "maxWeightError": 2.220446049250313e-16,
+          "baseColor": true,
+          "normal": true,
+          "roughness": 1,
+          "roughnessTexture": true,
+          "metalnessTexture": true,
+          "occlusionTexture": true
+        }
+      },
+      "visibleBodyTriangles": 18450,
+      "coveredTop": false,
+      "visibleTopTriangles": 2616
+    },
+    "jeans-denim-standard": {
+      "garments": {
+        "jeans-denim-standard": {
+          "bytes": 1878948,
+          "triangleCount": 3296,
+          "joints": 36,
+          "maxWeightError": 2.220446049250313e-16,
+          "baseColor": true,
+          "normal": true,
+          "roughness": 1,
+          "roughnessTexture": true,
+          "metalnessTexture": true,
+          "occlusionTexture": true
+        }
+      },
+      "visibleBodyTriangles": 17593,
+      "coveredTop": false,
+      "visibleTopTriangles": 0
+    },
+    "court-sneakers-white": {
+      "garments": {
+        "court-sneakers-white": {
+          "bytes": 2077040,
+          "triangleCount": 3960,
+          "joints": 36,
+          "maxWeightError": 0,
+          "baseColor": true,
+          "normal": true,
+          "roughness": 1,
+          "roughnessTexture": true,
+          "metalnessTexture": true,
+          "occlusionTexture": true
+        }
+      },
+      "visibleBodyTriangles": 20840,
+      "coveredTop": false,
+      "visibleTopTriangles": 0
+    }
+  },
+  "clips": {}
+}

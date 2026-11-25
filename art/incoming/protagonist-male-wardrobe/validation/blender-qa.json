@@ -1,0 +1,315 @@
+{
+  "stats": {
+    "ok": true,
+    "objects": {
+      "tee-white": {
+        "tris": 2616,
+        "verts": 1372,
+        "materials": 1,
+        "modifiers": [
+          "ARMATURE"
+        ],
+        "uv_maps": 1,
+        "shape_keys": 0
+      },
+      "jeans-denim-standard": {
+        "tris": 3296,
+        "verts": 1695,
+        "materials": 1,
+        "modifiers": [
+          "ARMATURE"
+        ],
+        "uv_maps": 1,
+        "shape_keys": 0
+      },
+      "court-sneakers-white": {
+        "tris": 3960,
+        "verts": 2154,
+        "materials": 1,
+        "modifiers": [
+          "ARMATURE"
+        ],
+        "uv_maps": 1,
+        "shape_keys": 0
+      }
+    },
+    "total_tris": 9872,
+    "total_verts": 5221,
+    "draw_calls_est": 3,
+    "unique_materials": 3,
+    "textures": [
+      {
+        "name": "basecolor.png",
+        "size": [
+          2048,
+          2048
+        ],
+        "mb": 21.3
+      },
+      {
+        "name": "normal.png",
+        "size": [
+          2048,
+          2048
+        ],
+        "mb": 21.3
+      },
+      {
+        "name": "basecolor.png.002",
+        "size": [
+          2048,
+          2048
+        ],
+        "mb": 21.3
+      },
+      {
+        "name": "basecolor.png.001",
+        "size": [
+          2048,
+          2048
+        ],
+        "mb": 21.3
+      },
+      {
+        "name": "orm.png.001",
+        "size": [
+          2048,
+          2048
+        ],
+        "mb": 21.3
+      },
+      {
+        "name": "orm.png",
+        "size": [
+          2048,
+          2048
+        ],
+        "mb": 21.3
+      },
+      {
+        "name": "normal.png.001",
+        "size": [
+          2048,
+          2048
+        ],
+        "mb": 21.3
+      },
+      {
+        "name": "orm.png.002",
+        "size": [
+          2048,
+          2048
+        ],
+        "mb": 21.3
+      },
+      {
+        "name": "normal.png.002",
+        "size": [
+          2048,
+          2048
+        ],
+        "mb": 21.3
+      }
+    ],
+    "texture_vram_mb_uncompressed": 192.0,
+    "bones": 36,
+    "kind": "character",
+    "budget": {
+      "name": "web",
+      "limits": {
+        "char_tris": 30000,
+        "prop_tris": 10000,
+        "materials": 2,
+        "tex": 2048,
+        "bones": 100
+      },
+      "over": [
+        "materials 3 > 2 (merge/atlas)"
+      ],
+      "pass": false
+    }
+  },
+  "rig": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "tee-white: ~1 sampled verts with asymmetric L/R weights (mirror weights?)",
+      "jeans-denim-standard: ~7 sampled verts with asymmetric L/R weights (mirror weights?)",
+      "court-sneakers-white: ~2 sampled verts with asymmetric L/R weights (mirror weights?)"
+    ],
+    "bones": 36,
+    "deform_bones": 35,
+    "profile": {},
+    "skin": {
+      "tee-white": {
+        "verts": 1372,
+        "unweighted": 0,
+        "over_4": 0,
+        "not_normalized": 0,
+        "weights_on_root": 0,
+        "weights_on_nondeform": 0,
+        "groups_without_bone": [],
+        "asymmetric_verts_sampled": 1,
+        "deform_bones_without_group": 0
+      },
+      "jeans-denim-standard": {
+        "verts": 1695,
+        "unweighted": 0,
+        "over_4": 0,
+        "not_normalized": 0,
+        "weights_on_root": 0,
+        "weights_on_nondeform": 0,
+        "groups_without_bone": [],
+        "asymmetric_verts_sampled": 7,
+        "deform_bones_without_group": 0
+      },
+      "court-sneakers-white": {
+        "verts": 2154,
+        "unweighted": 0,
+        "over_4": 0,
+        "not_normalized": 0,
+        "weights_on_root": 0,
+        "weights_on_nondeform": 0,
+        "groups_without_bone": [],
+        "asymmetric_verts_sampled": 2,
+        "deform_bones_without_group": 0
+      }
+    },
+    "fixed": false
+  },
+  "mesh": {
+    "tee-white": {
+      "ok": true,
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "asset lowest point z=0.9651 (not resting on ground plane z=0)"
+      ],
+      "ground_z": 0.9651,
+      "zfighting": [],
+      "floating": [],
+      "back_to_back": [],
+      "enclosed": [],
+      "objects": {
+        "tee-white": {
+          "verts": 1372,
+          "faces": 1308,
+          "tris": 2616,
+          "ngons": 0,
+          "boundary_edges": 132,
+          "nonmanifold_edges": 0,
+          "wire_edges": 0,
+          "loose_verts": 0,
+          "degenerate_faces": 0,
+          "zero_length_edges": 0,
+          "inconsistent_normals_edges": 0,
+          "duplicate_verts": 0,
+          "islands": 1,
+          "inside_out_islands": 0,
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "materials": 1,
+          "unweighted_verts": 0,
+          "verts_over_4_influences": 0,
+          "uv_maps": 1,
+          "uv_oob_pct": 0.0,
+          "uv_zero_area_faces": 0,
+          "uv_overlap_pct": 4.18,
+          "uv_coverage_pct": 52.6
+        }
+      }
+    },
+    "jeans-denim-standard": {
+      "ok": true,
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "asset lowest point z=0.0824 (not resting on ground plane z=0)"
+      ],
+      "ground_z": 0.0824,
+      "zfighting": [],
+      "floating": [],
+      "back_to_back": [],
+      "enclosed": [],
+      "objects": {
+        "jeans-denim-standard": {
+          "verts": 1695,
+          "faces": 1648,
+          "tris": 3296,
+          "ngons": 0,
+          "boundary_edges": 96,
+          "nonmanifold_edges": 0,
+          "wire_edges": 0,
+          "loose_verts": 0,
+          "degenerate_faces": 0,
+          "zero_length_edges": 0,
+          "inconsistent_normals_edges": 0,
+          "duplicate_verts": 0,
+          "islands": 1,
+          "inside_out_islands": 0,
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "materials": 1,
+          "unweighted_verts": 0,
+          "verts_over_4_influences": 0,
+          "uv_maps": 1,
+          "uv_oob_pct": 0.0,
+          "uv_zero_area_faces": 0,
+          "uv_overlap_pct": 1.77,
+          "uv_coverage_pct": 82.8
+        }
+      }
+    },
+    "court-sneakers-white": {
+      "ok": true,
+      "pass": true,
+      "errors": [],
+      "warnings": [
+        "court-sneakers-white: ~100.0% UV overlap (ok only if mirrored/stacked on purpose; bakes break)"
+      ],
+      "ground_z": -0.0,
+      "zfighting": [],
+      "floating": [],
+      "back_to_back": [],
+      "enclosed": [],
+      "objects": {
+        "court-sneakers-white": {
+          "verts": 2154,
+          "faces": 2020,
+          "tris": 3960,
+          "ngons": 0,
+          "boundary_edges": 344,
+          "nonmanifold_edges": 0,
+          "wire_edges": 0,
+          "loose_verts": 0,
+          "degenerate_faces": 0,
+          "zero_length_edges": 0,
+          "inconsistent_normals_edges": 0,
+          "duplicate_verts": 0,
+          "islands": 24,
+          "inside_out_islands": 0,
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "materials": 1,
+          "unweighted_verts": 0,
+          "verts_over_4_influences": 0,
+          "uv_maps": 1,
+          "uv_oob_pct": 0.0,
+          "uv_zero_area_faces": 0,
+          "uv_overlap_pct": 100.0,
+          "uv_coverage_pct": 61.4
+        }
+      }
+    }
+  }
+}

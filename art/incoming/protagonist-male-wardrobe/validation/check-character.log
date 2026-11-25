@@ -1,0 +1,7 @@
+FAIL  file protagonist-male-wardrobe.glb
+ok    file manifest.json
+ok    source/<id>_source.blend
+ok    previews/ (contact sheet, stress sheet, clip previews)
+FAIL  previews/threejs/ has the face and body sheets (node scripts/review-character.mjs art/incoming/protagonist-male-wardrobe)
+
+FAIL (missing files)
