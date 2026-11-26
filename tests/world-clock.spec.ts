@@ -2,11 +2,18 @@ import { expect, test, type Page } from "@playwright/test";
 import { AUTO_KEY, serialize } from "../src/persistence/SaveSystem";
 import type { GameState } from "../src/core/GameState";
 import { newGame } from "../src/core/Simulation";
+import { tapUntil } from "./helpers";
 const state = (page: Page): Promise<GameState> =>
   page.evaluate(
     (key) => JSON.parse(localStorage.getItem(key)!).state,
     AUTO_KEY,
   );
+
+async function resumeCampaign(page: Page) {
+  const resume = page.getByRole("button", { name: "Resume saved game" });
+  const ap = page.locator(".ap b");
+  await tapUntil(page, resume, () => ap.isVisible());
+}
 
 test("City stays active at zero AP, then saves and resumes the dawn refill", async ({
   page,
@@ -21,7 +28,7 @@ test("City stays active at zero AP, then saves and resumes the dawn refill", asy
   );
   await page.clock.install();
   await page.goto("./");
-  await page.getByRole("button", { name: "Resume saved game" }).tap();
+  await resumeCampaign(page);
   await expect(page.locator(".ap b")).toHaveText("0/3");
   // Wait for the foreground timer to start before changing the browser clock.
   await expect
@@ -39,7 +46,7 @@ test("City stays active at zero AP, then saves and resumes the dawn refill", asy
   await expect.poll(async () => (await state(page)).day).toBe(2);
 
   await page.reload();
-  await page.getByRole("button", { name: "Resume saved game" }).tap();
+  await resumeCampaign(page);
   await expect(page.locator(".ap b")).toHaveText("3/3");
   expect((await state(page)).day).toBe(2);
   expect((await state(page)).incidents["the-chains"]).toBeUndefined();
