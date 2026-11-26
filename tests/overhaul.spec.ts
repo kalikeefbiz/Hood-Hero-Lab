@@ -81,7 +81,7 @@ test("all approved scenes load; every home starts independent and map selection 
     );
     await expect(page.locator(".affiliation")).toHaveText("Independent");
     await expect(page.locator(".cash-resource strong")).toHaveText("$125");
-    await expect(page.locator(".ap b")).toHaveText("2/2");
+    await expect(page.locator(".ap b")).toHaveText("3/3");
     expect(await page.evaluate(() => scrollY)).toBe(0);
     await expect(page.locator(".zone-details h3")).toHaveText(z.name);
     for (const zone of Object.values(ZONES)) {
@@ -155,7 +155,7 @@ for (const faction of [
     await expect(page.locator(".affiliation")).toHaveText(
       state.factions[faction].name,
     );
-    await expect(page.locator(".ap b")).toHaveText("1/2");
+    await expect(page.locator(".ap b")).toHaveText("2/3");
     await page.getByRole("button", { name: "Save game", exact: true }).click();
     await page.reload();
     await page.getByRole("button", { name: "Resume saved game" }).click();
@@ -164,7 +164,7 @@ for (const faction of [
       "data-theme",
       faction,
     );
-    await expect(page.locator(".ap b")).toHaveText("1/2");
+    await expect(page.locator(".ap b")).toHaveText("2/3");
     await expect(page.locator(".home-label")).toContainText("Downtown");
   });
 }
@@ -217,7 +217,7 @@ test("Actions update cash/AP, explain disabled prerequisites, and autosave", asy
   expect(actionBox.y + actionBox.height).toBeLessThanOrEqual(dockBox.y);
   await button.click();
   await expect(page.locator(".cash-resource strong")).toHaveText("$163");
-  await expect(page.locator(".ap b")).toHaveText("1/2");
+  await expect(page.locator(".ap b")).toHaveText("2/3");
   await expect(card.getByRole("button")).toBeDisabled();
   await expect(card.locator(".disabled-reason")).toContainText(
     "already done a gig today",
@@ -230,7 +230,7 @@ test("Actions update cash/AP, explain disabled prerequisites, and autosave", asy
     (key) => JSON.parse(localStorage.getItem(key)!).state,
     AUTO_KEY,
   );
-  expect(auto.ap).toBe(1);
+  expect(auto.ap).toBe(2);
   expect(auto.characters.player.wallet.clean).toBe(163);
 });
 

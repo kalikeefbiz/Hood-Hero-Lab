@@ -189,18 +189,11 @@ describe("Quanny first intentional contact", () => {
     ).toBeTruthy();
     expect(a.balance).toBe(a.original);
   });
-  it("migrates established peaceful customers' known location without revealing it for hostile introductions", () => {
+  it("persists a disclosed meeting place and keeps hostile introductions undisclosed", () => {
     const s = respond(start(), "claim:unaffiliated");
-    const raw = JSON.parse(serialize(s));
-    delete raw.state.quanny.knownLocation;
-    expect(deserialize(JSON.stringify(raw)).quanny.knownLocation).toBe(
-      QUANNY_HOME,
-    );
-    const hostile = JSON.parse(serialize(respond(start(), "claim:blocks")));
-    delete hostile.state.quanny.knownLocation;
-    expect(
-      deserialize(JSON.stringify(hostile)).quanny.knownLocation,
-    ).toBeUndefined();
+    expect(deserialize(serialize(s)).quanny.knownLocation).toBe(QUANNY_HOME);
+    const hostile = respond(start(), "claim:blocks");
+    expect(deserialize(serialize(hostile)).quanny.knownLocation).toBeUndefined();
   });
   it.each([null, "blocks", "angels", "backstreet", "muds", "blips"] as const)(
     "offers only true membership and two permitted false identities: %s",
@@ -276,7 +269,7 @@ describe("Quanny first intentional contact", () => {
         if (s.quanny.shooting === "escape")
           expect(s.danger.injuries).toHaveLength(0);
         if (s.quanny.shooting === "minor") {
-          expect(s.ap).toBe(1);
+          expect(s.ap).toBe(2);
           expect(hospitalStay(s)).toBeUndefined();
         }
         if (s.quanny.shooting === "hospital") {
@@ -300,9 +293,9 @@ describe("Quanny first intentional contact", () => {
       };
       if (category === "minor") {
         s = advanceDay(s);
-        expect(s.ap).toBe(1);
-        s = advanceDay(s);
         expect(s.ap).toBe(2);
+        s = advanceDay(s);
+        expect(s.ap).toBe(3);
       } else {
         const due = hospitalStay(s)!.releaseDay;
         s = recoverInHospital(s);
@@ -510,7 +503,7 @@ describe("directional consignment, collection and persistent relationships", () 
     }
     expect(defeated).toBe(true);
   });
-  it("damaged transfers and fabricated history are rejected; older v8 saves migrate additively", () => {
+  it("damaged transfers and fabricated history are rejected", () => {
     const s = agreement();
     const raw = JSON.parse(serialize(s));
     raw.state.street.lots[0].remaining++;
@@ -518,23 +511,6 @@ describe("directional consignment, collection and persistent relationships", () 
     const bad = structuredClone(s);
     bad.quanny.history.push("fabricated");
     expect(() => deserialize(serialize(bad))).toThrow();
-    const old = JSON.parse(serialize(newGame("Old", "south")));
-    old.version = old.state.version = 8;
-    delete old.state.quanny;
-    delete old.state.characters.quanny;
-    delete old.state.characters["mr-lewis"];
-    for (const c of Object.values(
-      old.state.characters,
-    ) as GameState["characters"][string][]) {
-      c.known = c.known.filter((id) => !["quanny", "mr-lewis"].includes(id));
-      c.connections = c.connections.filter(
-        (id) => !["quanny", "mr-lewis"].includes(id),
-      );
-    }
-    const migrated = deserialize(JSON.stringify(old));
-    expect(migrated.quanny.met).toBe(false);
-    expect(migrated.characters.quanny.connections).toContain("contact-blocks");
-    expect(migrated.characters.quanny.known).toContain("mega");
   });
   it("arrival blocks queued activity and deferring preserves a resumable introduction", () => {
     const s = start();

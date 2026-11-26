@@ -1,11 +1,11 @@
-# Hood Hero Lab · Stixx City strategy board
+# Hood Hero Lab · Stixx City
 
-**Experimental.** This repository publishes the strategy-board experiment so it can be playtested next to the production game without touching it.
+Hood-Hero-Lab `main` is the official home of the bigger, walkable Stixx City. The Reservoir is the first neighborhood in the walkable build.
 
 - Play: https://kalikeefbiz.github.io/Hood-Hero-Lab/
-- Source branch: `strategy-board` in kalikeefbiz/Hood-Hero (this repo's `main` is a snapshot of it)
-- Design and integration guide: [docs/STRATEGY_BOARD.md](docs/STRATEGY_BOARD.md)
-- Saves are separate from the production game (`blackhouse.hoodhero-lab.v1`).
+- City plan and clock integration: [City plan](docs/CITY_PLAN.md), [World clock V3](docs/WORLD_CLOCK_V3.md).
+- Lab saves use `blackhouse.hoodhero-lab.v3` (schema 13), separate from production saves.
+- To start a fresh campaign past The Chains opening, load the game with `?playtest=open-city` and select **Enter Stixx City**.
 
 ---
 
@@ -22,7 +22,7 @@ npm ci
 npm run dev
 ```
 
-Open the localhost URL displayed by Vite. Choose a name and any of the five neighborhoods. You begin unaffiliated with $125, 2 AP and Flacco in your personal Set.
+Open the localhost URL displayed by Vite. Choose a home neighborhood, enter a name or leave it blank to play as Resident, then select **Enter Stixx City**. You begin unaffiliated with $125, 3 AP and Flacco in your personal Set. The clock runs during active City play on a 12-minute cycle (5 minutes of daylight and 7 minutes of night), with a refill to 3 AP at dawn (06:00) under normal conditions.
 
 ```sh
 npm test                    # simulation fixtures and automated playthroughs
@@ -36,11 +36,13 @@ On systems without browser dependencies or install privileges, Chromium may work
 
 ## First moves
 
-The City screen contains Cuzzo’s message about The Chains. Open **Actions → The Chains** and reach out to him or ask around. Then work toward payment, negotiate, contact Pablo about a settlement, request Mega’s support, or attempt abstract recovery. A shift earns $96 for 2 AP; a gig earns $38 for 1 AP. Day advancement charges $18 in living expenses, so one gig followed by a night does **not** quite cover the original $150 demand. Another gig, a full shift, or a successful negotiation can bridge the gap.
+In a regular new campaign, Cuzzo’s opening conversation introduces **The Chains**. If you close the conversation, select **The Chains** on the **City** screen to reopen it. You can ask around, work toward payment, negotiate, contact Pablo about a settlement, request Mega’s support, or attempt recovery. A shift earns $96 for 2 AP and a gig earns $38 for 1 AP. Both fit within the 3 AP daily allowance. Dawn charges $18 in living expenses, so starting cash plus one gig leaves you $5 short of the original $150 demand after dawn.
 
-There is no obligation to help. End Day runs NPC decisions and the incident’s own rules. Once the dispute concludes, the same work, purchases, relationships, membership requests, recruitment, crew errands and city activity remain available. There is no campaign day limit.
+Helping is optional. Dawn advances NPC decisions and incident deadlines and normally refills AP to 3. Work, purchases, relationships, membership requests, recruitment, crew errands and city activity remain available after the dispute. There is no campaign day limit.
 
-**People** shows both directions of trust. **Actions → People** provides social and organizational interactions. **Set** lets you assign lawful errands, remove members and recruit trusted contacts when capacity allows. Influence expands capacity at 5, 15, 30 and 50, to a maximum of five members. Your Set never becomes a sixth gang.
+Use **City** for actions. Open a contact’s card on the City map for the social and crew actions available with that person. **People** shows both directions of trust. In the separate walkable Reservoir preview (`strip.html`), approach a mapped door and tap **Go in**, or approach someone at an interactive location and tap **Talk to** when it appears. The place panel shows the available actions. The Chains opening and the campaign clock are currently in the main game.
+
+**Set** lets you manage crew membership and assign lawful errands. Influence expands capacity at 5, 15, 30 and 50, to a maximum of five members. Your Set never becomes a sixth gang.
 
 ## Save and resume
 

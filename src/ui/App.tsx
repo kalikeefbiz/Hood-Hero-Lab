@@ -35,6 +35,7 @@ import {
 } from "../core/GameState";
 import { newGame, enterGameplay } from "../core/Simulation";
 import {
+  advanceActiveTime,
   advanceDay,
   recoverInHospital,
   serveSentence,
@@ -75,7 +76,6 @@ import {
   saveGame,
   SAVE_KEY,
   AUTO_KEY,
-  adoptPreviewSaves,
 } from "../persistence/SaveSystem";
 import { BoardBackdrop } from "../board/ui/Board";
 import {
@@ -279,8 +279,6 @@ export function App() {
   ]);
   useEffect(() => {
     try {
-      if (adoptPreviewSaves(localStorage))
-        setNotice("The Stixx has grown. Your saved game carries over.");
       setHasSave(
         !!(localStorage.getItem(SAVE_KEY) || localStorage.getItem(AUTO_KEY)),
       );
@@ -301,16 +299,61 @@ export function App() {
     if (s && (s.end || hospitalStay(s) || player(s).status === "arrested"))
       setPanelOpen(true);
   }, [s]);
+  const worldActive =
+    !!s &&
+    screen === "City" &&
+    !s.end &&
+    !lookOpen &&
+    !historyEncounterId &&
+    !currentEncounter(s) &&
+    !hospitalStay(s) &&
+    player(s).status !== "arrested";
+  useEffect(() => {
+    if (!worldActive) return;
+    let last = performance.now();
+    let paused = false;
+    const reset = () => { last = performance.now(); };
+    const pause = () => {
+      paused = true;
+      reset();
+    };
+    const resume = () => {
+      paused = false;
+      reset();
+    };
+    const tick = window.setInterval(() => {
+      const now = performance.now();
+      const elapsed = now - last;
+      last = now;
+      if (!document.hidden && !paused)
+        setState((current) => current && advanceActiveTime(current, elapsed));
+    }, 1000);
+    document.addEventListener("visibilitychange", reset);
+    window.addEventListener("hh:pause", pause);
+    window.addEventListener("hh:resume", resume);
+    return () => {
+      window.clearInterval(tick);
+      document.removeEventListener("visibilitychange", reset);
+      window.removeEventListener("hh:pause", pause);
+      window.removeEventListener("hh:resume", resume);
+    };
+  }, [worldActive]);
   function start() {
     window.scrollTo(0, 0);
     setActionFeedback(null);
-    const next = enterGameplay(newGame(name, home));
+    const openCity =
+      new URLSearchParams(location.search).get("playtest") === "open-city";
+    const next = enterGameplay(newGame(name, home, undefined, { openCity }));
     setState(next);
     setSelected(home);
     setBoard({ zone: home, block: null, place: null });
     setScreen("City");
     setHistoryEncounterId(null);
-    setNotice("You’re home. Find work, check on Cuzzo, or see who’s around.");
+    setNotice(
+      openCity
+        ? "You’re home. Find work or see who’s around."
+        : "You’re home. Find work, check on Cuzzo, or see who’s around.",
+    );
   }
   function load(resume = false) {
     setActionFeedback(null);
@@ -969,7 +1012,7 @@ export function App() {
         {screen === "City" && dayTransition !== null && (
           <div className="day-transition" aria-hidden="true">
             DAY {dayTransition.toString().padStart(2, "0")} · The city has
-            moved. Two AP restored.
+            moved. {s.ap} AP available.
           </div>
         )}
         {screen === "City" &&

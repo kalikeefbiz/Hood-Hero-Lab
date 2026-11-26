@@ -25,6 +25,7 @@ import { performAction, validateAction } from "../core/ActionEngine";
 import { acknowledgeEvent, record } from "../core/EventLog";
 import { promiseHelp } from "./Commitments";
 import type { EncounterResponse } from "../core/Encounter";
+import type { DayEndDecision, TimedActionResult } from "../core/ActionTiming";
 export function responseError(
   s: GameState,
   e: EncounterInstance,
@@ -43,7 +44,9 @@ export function respondEncounter(
   state: GameState,
   id: string,
   responseId: string,
-): { state: GameState; error: string | null } {
+  decision?: DayEndDecision,
+): TimedActionResult {
+  if (decision === "cancel") return { state, error: null };
   const original = state.encounters.find((e) => e.id === id);
   const response =
     original &&
@@ -55,6 +58,14 @@ export function respondEncounter(
   const error = responseError(state, original, response);
   if (error) return { state, error };
   const startEvent = state.events.length;
+  const recordResponse = (next: GameState) => {
+    next.encounters.find((e) => e.id === id)!.selectedResponses.push({
+      id: responseId,
+      day: next.day,
+      eventIds: next.events.slice(startEvent).map((e) => e.id),
+    });
+    syncEncounters(next);
+  };
   let s = structuredClone(state);
   const effect = response.effect;
   if (effect.type === "life") {
@@ -147,9 +158,12 @@ export function respondEncounter(
     syncEncounters(s);
     return { state: s, error: null };
   } else if (effect.type === "action") {
-    const result = performAction(s, effect.action);
-    if (result.error) return { state, error: result.error };
-    s = result.state;
+    const result = performAction(s, effect.action, {
+      inPlace: true,
+      decision,
+      afterEffects: recordResponse,
+    });
+    return result.error || result.confirmation ? { ...result, state } : result;
   } else {
     const e = s.encounters.find((e) => e.id === id)!;
     const incident = e.incidentId ? s.incidents[e.incidentId] : undefined;
@@ -190,13 +204,6 @@ export function respondEncounter(
       else e.status = "acknowledged";
     }
   }
-  s.encounters
-    .find((e) => e.id === id)!
-    .selectedResponses.push({
-      id: responseId,
-      day: s.day,
-      eventIds: s.events.slice(startEvent).map((e) => e.id),
-    });
-  syncEncounters(s);
+  recordResponse(s);
   return { state: s, error: null };
 }

@@ -9,7 +9,7 @@ import { newQuannyState } from "../systems/QuannyState";
 import { newDangerState } from "../systems/DangerState";
 import { syncTerritory, newStrategy } from "../systems/Territory";
 import { newStreetState } from "../systems/StreetEconomy";
-import { player, type GameState, type ZoneId } from "./GameState";
+import { GAME_SAVE_VERSION, player, type GameState, type ZoneId } from "./GameState";
 import { ZONES } from "../content/city";
 import { FACTIONS } from "../content/factions";
 import {
@@ -21,7 +21,12 @@ import { initializeRelationships } from "../systems/Relationships";
 import { openingIncident } from "../content/openingIncident";
 import { syncEncounters } from "../systems/EncounterLifecycle";
 import { BALANCE } from "../content/balance";
-export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
+export function newGame(
+  name: string,
+  home: ZoneId,
+  seed = 2026,
+  { openCity = false } = {},
+): GameState {
   if (!ZONES[home]) throw new Error("Unknown neighborhood");
   const p = character(
     "player",
@@ -36,17 +41,19 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
     },
   );
   const s: GameState = {
-    version: 12,
+    version: GAME_SAVE_VERSION,
     robberyCareer: newRobberyCareer(),
     inventory: newInventoryState(),
     residences: {},
-    streetLife: newStreetLife(),
+    streetLife: newStreetLife(openCity),
     quanny: newQuannyState(),
     danger: newDangerState(seed),
     strategic: newStrategy({ zones: ZONES, factions: FACTIONS }),
     street: newStreetState(),
     day: 1,
     ap: BALANCE.dailyAP,
+    cycleElapsedMs: 0,
+    skipEndDayWarning: false,
     rng: seed >>> 0,
     nextId: 1,
     playerId: "player",
@@ -83,7 +90,7 @@ export function newGame(name: string, home: ZoneId, seed = 2026): GameState {
   for (const z of Object.values(s.zones)) syncTerritory(s, z.id);
   for (const c of Object.values(s.characters)) { skillsOf(c); equipmentOf(c); c.inventory = {slots: []}; }
   initializeRelationships(s);
-  openingIncident(s);
+  if (!openCity) openingIncident(s);
   syncEncounters(s);
   return s;
 }

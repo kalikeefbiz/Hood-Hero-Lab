@@ -172,7 +172,7 @@ describe("Reservoir location gameplay without rendering", () => {
       expect(s.employmentSearch.player?.offeredJob).toBe(jobId);
       s = run(s, c, { type: "acceptJob", targetId: jobId }).state;
       expect(currentEmployment(s)).toMatchObject({ jobId, employer });
-      blocked(s, c, { type: "work", targetId: jobId }, /AP/);
+      blocked(s, c, { type: "work", targetId: jobId }, /shift/);
       // Advance through canonical attendance generation and normal world simulation.
       for (let attempts = 0; !shiftToday(s) && attempts < 7; attempts++)
         s = advanceDay(s);

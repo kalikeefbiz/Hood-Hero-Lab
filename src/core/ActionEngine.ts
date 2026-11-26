@@ -1,3 +1,9 @@
+import {
+  executeTimedAction,
+  type ActionTiming,
+  type DayEndDecision,
+  type TimedActionResult,
+} from "./ActionTiming";
 import { gain, gainError, receivePhysical } from "../systems/Inventory";
 import { completeWorkIntro } from "../systems/StreetLife";
 import { awardSkill, proficiency, skillsOf } from "../systems/Skills";
@@ -65,6 +71,8 @@ export const ACTIONS = {
   quanny: {
     label: "Talk business with Quanny",
     ap: 0,
+    durationMinutes: 0,
+    endsDay: false,
     risk: "Social",
     description:
       "Find Quanny outside Lil Jay’s and talk business.",
@@ -73,6 +81,8 @@ export const ACTIONS = {
   apply: {
     label: "Apply for work",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "None",
     description:
       "Talk to whoever does the hiring. Applying is unpaid; you can look over any offer before you take it.",
@@ -81,6 +91,8 @@ export const ACTIONS = {
   acceptJob: {
     label: "Take the job",
     ap: 0,
+    durationMinutes: 5,
+    endsDay: false,
     risk: "None",
     description:
       "Take the job and its weekly schedule. Your first shift is after today.",
@@ -89,6 +101,8 @@ export const ACTIONS = {
   timeOff: {
     label: "Ask for a day off",
     ap: 0,
+    durationMinutes: 5,
+    endsDay: false,
     risk: "None",
     description:
       "Ask to skip today’s shift without pay. You can do this once a week.",
@@ -97,6 +111,8 @@ export const ACTIONS = {
   resign: {
     label: "Quit",
     ap: 0,
+    durationMinutes: 5,
+    endsDay: false,
     risk: "None",
     description:
       "Quit this job. You can apply elsewhere after three days, and here again after seven.",
@@ -105,6 +121,8 @@ export const ACTIONS = {
   contact: {
     label: "Reach out",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "None",
     description: "Introduce yourself and start building trust.",
     outcomes: ["A little trust"],
@@ -112,6 +130,8 @@ export const ACTIONS = {
   inquire: {
     label: "Ask around",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "None",
     description: "Ask what they know about who’s who and what happened to Cuzzo’s chains.",
     outcomes: ["What they know, and maybe new names"],
@@ -119,6 +139,8 @@ export const ACTIONS = {
   introduce: {
     label: "Ask for an introduction",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "None",
     description: "Ask them to put you in touch with people they know.",
     outcomes: ["New people to meet"],
@@ -126,6 +148,8 @@ export const ACTIONS = {
   socialize: {
     label: "Spend time together",
     ap: 1,
+    durationMinutes: 30,
+    endsDay: false,
     risk: "None",
     description: "Hang out. What builds trust depends on what they care about.",
     outcomes: ["Trust, respect and a lighter mood"],
@@ -133,6 +157,8 @@ export const ACTIONS = {
   favor: {
     label: "Ask for help",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "Social",
     description: "Ask someone who trusts you to back you up over the chains.",
     outcomes: ["Someone in your corner"],
@@ -141,6 +167,8 @@ export const ACTIONS = {
     label: "Offer support · $20",
     amount: 20,
     ap: 1,
+    durationMinutes: 5,
+    endsDay: false,
     risk: "None",
     description: "Help them out with some money. Where it came from goes with it.",
     outcomes: ["$20 given; trust built"],
@@ -149,6 +177,8 @@ export const ACTIONS = {
     label: "Give $25",
     amount: 25,
     ap: 1,
+    durationMinutes: 5,
+    endsDay: false,
     risk: "None",
     description: "Give them $25.",
     outcomes: ["$25 given"],
@@ -156,6 +186,8 @@ export const ACTIONS = {
   negotiate: {
     label: "Negotiate buyback",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "Social",
     description: "Try to talk their price down. You only get one shot.",
     outcomes: ["A lower price, or a flat no"],
@@ -163,6 +195,8 @@ export const ACTIONS = {
   settlement: {
     label: "Discuss settlement",
     ap: 1,
+    durationMinutes: 30,
+    endsDay: false,
     risk: "Social",
     description: "Let the people running things know their young members acted on their own.",
     outcomes: ["Leadership may step in, in their own time"],
@@ -170,6 +204,8 @@ export const ACTIONS = {
   buyback: {
     label: "Pay for the chains",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "None",
     description:
       "Pay what they’re asking and get Cuzzo’s chains back to him.",
@@ -178,6 +214,8 @@ export const ACTIONS = {
   recover: {
     label: "Take the chains back",
     ap: 2,
+    durationMinutes: 60,
+    endsDay: false,
     risk: "High",
     description:
       "Take the chains back yourself. It might not go your way, and failing brings police and trouble with the crew.",
@@ -186,6 +224,8 @@ export const ACTIONS = {
   work: {
     label: "Work a full shift",
     ap: 2,
+    durationMinutes: 240,
+    endsDay: false,
     risk: "None",
     description:
       "Clock in for today’s scheduled shift. Steady work builds your skills and your name.",
@@ -194,6 +234,8 @@ export const ACTIONS = {
   gig: {
     label: "Take a local gig",
     ap: 1,
+    durationMinutes: 60,
+    endsDay: false,
     risk: "None",
     description:
       "Earn $38 helping out a local business. One gig a day, no strings attached.",
@@ -202,6 +244,8 @@ export const ACTIONS = {
   crime: {
     label: "Work the street",
     ap: 1,
+    durationMinutes: 30,
+    endsDay: false,
     risk: "High",
     description:
       "Move the product you’re carrying. Whatever you owe your supplier is still owed.",
@@ -212,6 +256,8 @@ export const ACTIONS = {
   buy: {
     label: "Buy item",
     ap: 1,
+    durationMinutes: 5,
+    endsDay: false,
     risk: "None",
     description: "Treat yourself and take the edge off.",
     outcomes: ["Cash spent; stress relieved"],
@@ -219,6 +265,8 @@ export const ACTIONS = {
   recruit: {
     label: "Invite to your Set",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "Social",
     description: "Ask them to roll with you. They need room in your Set, trust in you, and to want it.",
     outcomes: ["A new member of your Set"],
@@ -226,6 +274,8 @@ export const ACTIONS = {
   remove: {
     label: "Remove from Set",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "Social",
     description: "Cut ties with them. They’ll remember how it ended.",
     outcomes: ["They leave; trust falls"],
@@ -233,6 +283,8 @@ export const ACTIONS = {
   assign: {
     label: "Assign a paid errand",
     ap: 1,
+    durationMinutes: 15,
+    endsDay: false,
     risk: "Low",
     description:
       "Send a free member on an honest errand, done by tomorrow.",
@@ -243,6 +295,8 @@ export const ACTIONS = {
   standing: {
     label: "Build a local connection",
     ap: 1,
+    durationMinutes: 30,
+    endsDay: false,
     risk: "None",
     description:
       "Help out in a member’s neighborhood. People notice who shows up.",
@@ -251,6 +305,8 @@ export const ACTIONS = {
   affiliate: {
     label: "Ask to get put on",
     ap: 1,
+    durationMinutes: 30,
+    endsDay: false,
     risk: "Social",
     description: "Ask a member who trusts you to vouch for you.",
     outcomes: ["Membership, if they vouch for you"],
@@ -258,6 +314,8 @@ export const ACTIONS = {
   rest: {
     label: "Take a quiet afternoon",
     ap: 1,
+    durationMinutes: 120,
+    endsDay: false,
     risk: "None",
     description: "Slow down for a few hours. Costs nothing.",
     outcomes: ["Takes the edge off"],
@@ -858,10 +916,41 @@ export function actionExecutionError(state: GameState, a: Action) {
 export function performAction(
   state: GameState,
   a: Action,
-  { inPlace = false } = {},
-): { state: GameState; error: string | null; event?: GameEvent } {
+  {
+    inPlace = false,
+    decision,
+    afterEffects,
+  }: {
+    inPlace?: boolean;
+    decision?: DayEndDecision;
+    /** Record the initiating scene's response before a duration can cross dawn. */
+    afterEffects?: (state: GameState) => void;
+  } = {},
+): TimedActionResult {
   const error = actionExecutionError(state, a);
   if (error) return { state, error };
+  const resolve = () => {
+    const result = resolvePlayerOrNpcAction(state, a, inPlace);
+    afterEffects?.(result.state);
+    return result;
+  };
+  if (a.actor !== state.playerId) return resolve();
+  const timing: ActionTiming = ACTIONS[a.type];
+  return executeTimedAction(
+    state,
+    ACTIONS[a.type].ap,
+    timing,
+    null,
+    resolve,
+    { inPlace, decision },
+  );
+}
+
+function resolvePlayerOrNpcAction(state: GameState, a: Action, inPlace: boolean): {
+  state: GameState;
+  error: string | null;
+  event?: GameEvent;
+} {
   const previousAP = state.ap;
   const next = inPlace ? state : structuredClone(state);
   const crewActivity = crewActivityFor(state, a);

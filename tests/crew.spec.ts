@@ -1,7 +1,8 @@
+import { AUTO_KEY } from "../src/persistence/SaveSystem";
 import { honest, connects, storyline, storyAction, navigate } from "./helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { dismissEncounter } from "./helpers";
-const key = "blackhouse.hoodhero-lab.v1.auto";
+const key = AUTO_KEY;
 async function state(page: Page) {
   return page.evaluate((k) => JSON.parse(localStorage.getItem(k)!).state, key);
 }
@@ -65,7 +66,7 @@ test("Flacco cooperation, paid work, refusal, natural second recruitment and sav
     .scrollIntoViewIfNeeded();
   await snap(page, "03-accepted-assignment");
   const accepted = await state(page);
-  expect(accepted.ap).toBe(1);
+  expect(accepted.ap).toBe(2);
   expect(accepted.characters.player.wallet.clean).toBe(113);
   await interact(page);
   await modal.getByRole("button", { name: /^Spend time together/ }).click();
@@ -76,7 +77,7 @@ test("Flacco cooperation, paid work, refusal, natural second recruitment and sav
     .last()
     .scrollIntoViewIfNeeded();
   await snap(page, "04-refused-request");
-  expect((await state(page)).ap).toBe(1);
+  expect((await state(page)).ap).toBe(2);
   await day(page);
   await nav(page, "Set");
   await expect(page.locator("main")).toContainText("Paid local work:");

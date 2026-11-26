@@ -46,7 +46,7 @@ Day advancement:
 4. Advance active property disputes and leadership responses.
 5. Evaluate police and rival risks, then ease pressure and stress.
 6. Credit qualifying recurring lawful income and charge basic living costs.
-7. Expand Set capacity if earned, evaluate permanent end conditions, restore 2 AP and log the new day.
+7. Expand Set capacity if earned, evaluate permanent end conditions, refill to 3 AP at dawn (06:00) under normal conditions, and log the new day.
 
 No maximum day, mandatory incident completion, energy meter or consumable gate exists.
 

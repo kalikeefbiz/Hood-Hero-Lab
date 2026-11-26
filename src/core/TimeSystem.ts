@@ -18,6 +18,7 @@ import { processCrewActivities } from "../systems/CrewAgency";
 import { cash, clamp, player, type GameState } from "./GameState";
 import { record } from "./EventLog";
 import { BALANCE } from "../content/balance";
+import { CYCLE_MS, MINUTES_PER_DAY, WORLD_CLOCK } from "../content/worldClock";
 import { earn, expense } from "../systems/Economy";
 import { evaluatePromises } from "../systems/Commitments";
 import { syncEncounters } from "../systems/EncounterLifecycle";
@@ -29,6 +30,77 @@ import { progress } from "../systems/Progression";
 
 import { settleAttendance, generateShifts } from "../systems/Employment";
 import { settleWorkplaceScenes } from "../systems/Workplace";
+const { dawnMinute, duskMinute, daylightMs, nighttimeMs } = WORLD_CLOCK;
+const daylightMinutes = duskMinute - dawnMinute;
+const nighttimeMinutes = MINUTES_PER_DAY - daylightMinutes;
+
+function minutesFromDawn(elapsedMs: number) {
+  return elapsedMs < daylightMs
+    ? elapsedMs * daylightMinutes / daylightMs
+    : daylightMinutes + (elapsedMs - daylightMs) * nighttimeMinutes / nighttimeMs;
+}
+
+function cycleOffset(minutes: number) {
+  return minutes < daylightMinutes
+    ? minutes * daylightMs / daylightMinutes
+    : daylightMs + (minutes - daylightMinutes) * nighttimeMs / nighttimeMinutes;
+}
+
+/** The calendar day changes at dawn. Midnight only wraps the civil clock. */
+export function worldTime(s: Pick<GameState, "day" | "cycleElapsedMs">) {
+  return {
+    day: s.day,
+    minuteOfDay: (dawnMinute + minutesFromDawn(s.cycleElapsedMs)) % MINUTES_PER_DAY,
+    isDaytime: s.cycleElapsedMs < daylightMs,
+  };
+}
+
+export type WorldTime = ReturnType<typeof worldTime>;
+
+function advanceTo(state: GameState, days: number, offset: number, inPlace: boolean) {
+  if (!Number.isSafeInteger(state.day + days))
+    throw new RangeError("World day is out of range.");
+  // Clock-only updates can share world records. Daily transitions mutate them.
+  let next = state;
+  if (!inPlace) next = days ? structuredClone(state) : { ...state };
+  for (let d = 0; d < days && !next.end; d++) advanceDay(next, { inPlace: true });
+  if (!next.end) next.cycleElapsedMs = offset;
+  return next;
+}
+
+/** Pass foreground, unpaused wall-clock time. AP and movement do not gate this. */
+export function advanceActiveTime(
+  state: GameState,
+  elapsedMs: number,
+  { inPlace = false } = {},
+) {
+  if (state.end || !Number.isFinite(elapsedMs) || elapsedMs <= 0) return state;
+  const total = state.cycleElapsedMs + elapsedMs;
+  return advanceTo(state, Math.floor(total / CYCLE_MS), total % CYCLE_MS, inPlace);
+}
+
+/** Advance an in-world duration, e.g. route.hours * 60 for a train ride. */
+export function advanceWorldTime(
+  state: GameState,
+  minutes: number,
+  { inPlace = false } = {},
+) {
+  if (state.end || !Number.isFinite(minutes) || minutes <= 0) return state;
+  const total = minutesFromDawn(state.cycleElapsedMs) + minutes;
+  // Converting a saved millisecond offset back to minutes can put an exact
+  // dawn just below the boundary. Snap only within floating-point precision.
+  const nearestDay = Math.round(total / MINUTES_PER_DAY);
+  const dawn = nearestDay * MINUTES_PER_DAY;
+  if (nearestDay > 0 && Math.abs(total - dawn) <= 2 * Number.EPSILON * total)
+    return advanceTo(state, nearestDay, 0, inPlace);
+  return advanceTo(
+    state,
+    Math.floor(total / MINUTES_PER_DAY),
+    cycleOffset(total % MINUTES_PER_DAY),
+    inPlace,
+  );
+}
+
 /** By default the caller's state is preserved. Use inPlace only with exclusively owned state. */
 export function advanceDay(state: GameState, { inPlace = false } = {}): GameState {
   if (state.end) return state;
@@ -37,6 +109,7 @@ export function advanceDay(state: GameState, { inPlace = false } = {}): GameStat
   settleWorkplaceScenes(s);
   settleAttendance(s);
   s.day++;
+  s.cycleElapsedMs = 0;
   tickRobberyCareer(s);
   advanceConflicts(s);
   advanceQuanny(s);
@@ -62,6 +135,7 @@ export function advanceDay(state: GameState, { inPlace = false } = {}): GameStat
   advancePressure(s);
   expose(s, presenceOf(s).location, "linger");
   if (s.end) {
+    s.ap = 0;
     syncEncounters(s);
     return s;
   }

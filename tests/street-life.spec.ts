@@ -201,7 +201,7 @@ test("fresh promise → physical application → queued Day 3 six → real Lot s
   await click(
     page,
     page.locator('[data-action="work"]').getByRole("button"),
-    async () => (await state(page)).ap === 0,
+    async () => (await state(page)).ap === 1,
   );
   await close(page);
   await endDay(page);

@@ -63,7 +63,7 @@ describe("character-driven Chains playthroughs", () => {
       expect(currentEncounter(s)?.definitionId).toBe("mega-chains-request");
       const before = structuredClone(s.characters.mega.relationships.player);
       s = answer(s, "promise");
-      expect(s.ap).toBe(2);
+      expect(s.ap).toBe(3);
       expect(cash(player(s))).toBe(125);
       expect(s.characters.mega.relationships.player).toEqual(
         expect.objectContaining({
@@ -77,7 +77,7 @@ describe("character-driven Chains playthroughs", () => {
       const promise = incidentPromise(s, "the-chains")!;
       expect(promise.status).toBe("fulfilled");
       expect(promise.evidence.length).toBeGreaterThan(0);
-      expect(s.ap).toBe(0);
+      expect(s.ap).toBe(1);
       expect(cash(player(s))).toBe(13);
       expect(s.properties.chains.possession).toEqual({
         kind: "character",
@@ -113,7 +113,7 @@ describe("character-driven Chains playthroughs", () => {
     for (let seed = 1; seed <= 12; seed++) {
       let s = answer(fresh(seed), "promise");
       s = answer(s, "recover");
-      expect(s.ap).toBe(0);
+      expect(s.ap).toBe(1);
       expect(cash(player(s))).toBe(125);
       expect(player(s).police).toBeGreaterThan(0);
       const recovered = s.incidents["the-chains"].resolution === "recovered";
@@ -184,33 +184,6 @@ describe("character-driven Chains playthroughs", () => {
     expect(s.day).toBe(8);
     expect(incident().resolvedEventId).toBe(outcome.id);
     expect(s.events.filter((e) => e.id === outcome.id)).toEqual([outcome]);
-  });
-
-  it("migrates an active legacy save and resolves overdue Chains before resuming", () => {
-    let s = answer(fresh(2), "promise");
-    s.incidents["the-chains"].deadline = 8;
-    incidentPromise(s, "the-chains")!.dueDay = 9;
-    intro(s).dueDay = 9;
-
-    const early = deserialize(serialize(s));
-    expect(incidentDueDay(early.incidents["the-chains"])).toBe(7);
-    expect(incidentPromise(early, "the-chains")?.dueDay).toBe(7);
-    expect(intro(early).dueDay).toBe(9); // The completed conversation is history.
-
-    const unopened = fresh();
-    unopened.incidents["the-chains"].deadline = 8;
-    intro(unopened).dueDay = 9;
-    expect(intro(deserialize(serialize(unopened))).dueDay).toBe(7);
-
-    s.day = 8;
-    const overdue = deserialize(serialize(s));
-    expect(overdue.day).toBe(8);
-    expect(overdue.incidents["the-chains"].resolution).toBe("sold");
-    expect(incidentPromise(overdue, "the-chains")?.status).toBe("broken");
-    expect(intro(overdue).status).toBe("acknowledged");
-    unopened.day = 8;
-    expect(intro(deserialize(serialize(unopened))).status).toBe("closed");
-    expect(deserialize(serialize(overdue))).toEqual(overdue);
   });
 
   it("evaluates a final-day autonomous settlement before expiring the promise", () => {

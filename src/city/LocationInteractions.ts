@@ -1,3 +1,12 @@
+import {
+  dayEndWarning,
+  finishActionTiming,
+  INSTANT_ACTION,
+  type ActionTiming,
+  type DayEndDecision,
+  type DayEndWarning,
+} from "../core/ActionTiming";
+import { worldTime } from "../core/TimeSystem";
 import { presenceOf } from "../board/presence";
 import { ITEMS } from "../content/economy";
 import { robberyTarget, ROBBERY_TARGETS } from "../content/robberyCareer";
@@ -71,6 +80,7 @@ const socialActions = [
   "transfer",
   "affiliate",
 ] as const;
+const deliveryTiming: ActionTiming = { durationMinutes: 60, endsDay: false };
 const businessActions = ["buy", "maintain", "sell", "close"] as const;
 type BusinessAction = (typeof businessActions)[number];
 type LocationActionType =
@@ -101,13 +111,21 @@ export interface LocationAction {
   label: string;
   /** Player AP and quoted cash flow. NPCs use the engine's daily action availability. */
   cost: { ap: number; cash?: number };
+  timing: ActionTiming;
+  confirmation: DayEndWarning | null;
   proceeds?: number;
   detail?: string;
   error: string | null;
 }
 
-type EngineResult = { state: GameState; error: string | null };
-type Binding = LocationAction & { run: () => EngineResult };
+type EngineResult = {
+  state: GameState;
+  error: string | null;
+  confirmation?: DayEndWarning;
+};
+type Binding = LocationAction & {
+  run: (decision?: DayEndDecision) => EngineResult;
+};
 const fromState = (state: GameState): EngineResult => ({ state, error: null });
 const fromOutcome = (
   state: GameState,
@@ -138,6 +156,7 @@ function inspect(state: GameState, context: LocationContext) {
     ? null
     : "Actor must be at this location.";
   const actions: Binding[] = [];
+  const daytime = worldTime(state).isDaytime;
   const people = new Set(peopleHere);
   // Story state can relocate Quanny during an active scene. Lewis runs the market.
   if (quannyLocation(state) !== locationId) people.delete("quanny");
@@ -149,15 +168,29 @@ function inspect(state: GameState, context: LocationContext) {
     ap: number,
     validate: () => string | null,
     run: Binding["run"],
-    quote: { cash?: number; proceeds?: number; detail?: string } = {},
+    quote: {
+      cash?: number;
+      proceeds?: number;
+      detail?: string;
+      timing?: ActionTiming;
+      daytimeOnly?: boolean;
+    } = {},
   ) => {
-    const { cash, ...details } = quote;
+    const { cash, timing = INSTANT_ACTION, daytimeOnly, ...details } = quote;
+    const error =
+      presenceError ??
+      (daytimeOnly && !daytime
+        ? "This service is closed after dark."
+        : validate());
     actions.push({
       command,
       label,
       cost: { ap, ...(cash === undefined ? {} : { cash }) },
       ...details,
-      error: presenceError ?? validate(),
+      timing,
+      confirmation:
+        error || !isPlayer ? null : dayEndWarning(state, ap, timing),
+      error,
       run,
     });
   };
@@ -168,13 +201,18 @@ function inspect(state: GameState, context: LocationContext) {
     quote?: Parameters<typeof add>[5],
   ) => {
     const action: Action = { type, actor: actorId, ...fields };
+    const { durationMinutes, endsDay } = ACTIONS[type];
     add(
       { type, targetId },
       ACTIONS[type].label,
       isPlayer ? ACTIONS[type].ap : 0,
       () => actionExecutionError(state, action),
-      () => performAction(state, action),
-      quote,
+      (decision) => performAction(state, action, { decision }),
+      {
+        ...quote,
+        timing: isPlayer ? { durationMinutes, endsDay } : INSTANT_ACTION,
+        daytimeOnly: type === "buy" || type === "apply" || type === "work",
+      },
     );
   };
 
@@ -235,9 +273,13 @@ function inspect(state: GameState, context: LocationContext) {
       () => {
         const next = structuredClone(state);
         lawfulLewis(next);
-        return fromState(next);
+        return fromState(finishActionTiming(next, deliveryTiming, true));
       },
-      { proceeds: LEWIS_DELIVERY_WAGE },
+      {
+        proceeds: LEWIS_DELIVERY_WAGE,
+        timing: deliveryTiming,
+        daytimeOnly: true,
+      },
     );
   }
   if (locationId === QUANNY_HOME && people.has("quanny")) {
@@ -307,17 +349,21 @@ function inspect(state: GameState, context: LocationContext) {
       );
     else
       for (const response of definition.responses(state, encounter)) {
-        const ap =
+        const { ap, durationMinutes, endsDay } =
           response.effect.type === "action"
-            ? ACTIONS[response.effect.action.type].ap
-            : 0;
+            ? ACTIONS[response.effect.action.type]
+            : { ...INSTANT_ACTION, ap: 0 };
         add(
           { type: "respondEncounter", targetId, responseId: response.id },
           response.label,
           ap,
           () => responseError(state, encounter, response),
-          () => respondEncounter(state, targetId, response.id),
-          { detail: response.detail ?? detail },
+          (decision) =>
+            respondEncounter(state, targetId, response.id, decision),
+          {
+            detail: response.detail ?? detail,
+            timing: { durationMinutes, endsDay },
+          },
         );
       }
   }
@@ -350,7 +396,7 @@ function inspect(state: GameState, context: LocationContext) {
           0,
           () => dispositionError(state, slot.id),
           () => fromOutcome(state, sellProperty(state, slot.id)),
-          { proceeds: quote.price, detail: slot.itemId },
+          { proceeds: quote.price, detail: slot.itemId, daytimeOnly: true },
         );
     }
   }
@@ -493,9 +539,15 @@ export function executeLocationAction(
   state: GameState,
   context: LocationContext,
   command: LocationCommand,
+  decision?: DayEndDecision,
 ) {
   const { action, error } = findCommand(state, context, command);
-  const result = error || !action ? { state, error } : action.run();
+  const result =
+    decision === "cancel"
+      ? { state, error: null }
+      : error || !action
+        ? { state, error }
+        : action.run(decision);
   const { actorId } = context;
   const next = result.state;
   const before = Object.hasOwn(state.characters, actorId)
@@ -507,7 +559,8 @@ export function executeLocationAction(
     command,
     changed: next !== state,
     changes: {
-      apSpent: state.ap - next.ap,
+      apSpent:
+        next.day !== state.day ? (action?.cost.ap ?? 0) : state.ap - next.ap,
       daysElapsed: next.day - state.day,
       actorActionDay: after?.lastActionDay ?? null,
       wallet:

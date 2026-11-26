@@ -219,12 +219,14 @@ export interface Asset {
   provenance: "clean" | "illicit";
   recurringIncome: number;
 }
+export const GAME_SAVE_VERSION = 13;
+
 export interface GameState {
   /** Strategy-board lab: the player's physical presence in the city. */
   quanny: import("../systems/QuannyState").QuannyState;
   danger: import("../systems/DangerState").DangerState;
   presence?: import("../board/presence").Presence;
-  version: 8 | 9 | 10 | 11 | 12;
+  version: typeof GAME_SAVE_VERSION;
   robberyCareer?: import("../systems/RobberyCareerState").RobberyCareer;
   inventory?: import("../systems/Inventory").InventoryState;
   residences?: Record<string, import("../systems/Residences").Residence>;
@@ -238,6 +240,9 @@ export interface GameState {
   crewOffers: CrewOffer[];
   day: number;
   ap: number;
+  /** Active-play milliseconds from dawn, including equivalent time from activities. */
+  cycleElapsedMs: number;
+  skipEndDayWarning: boolean;
   rng: number;
   nextId: number;
   playerId: ID;

@@ -9,7 +9,7 @@ import { deserialize, serialize } from "../persistence/SaveSystem";
 
 it.each([
   ["fresh", newGame],
-  ["migrated v9", legacyGame],
+  ["onboarding bypass", legacyGame],
 ] as const)(
   "%s campaign can fund the Chains and resume lawful gigs",
   (_, create) => {
@@ -32,7 +32,7 @@ it.each([
       expect(earned.error).toBeNull();
       s = earned.state;
       expect(s.day).toBe(day);
-      expect(s.ap).toBe(1);
+      expect(s.ap).toBe(2);
       expect(s.presence?.location).toBe("downtown.docks");
       expect(s.employmentSearch.player.lastGigDay).toBe(day);
       const saved = serialize(s);
@@ -40,7 +40,7 @@ it.each([
       expect(duplicate.error).toMatch(/already done a gig today/);
       expect(serialize(duplicate.state)).toBe(saved);
       s = advanceDay(deserialize(saved));
-      expect(s.ap).toBe(2);
+      expect(s.ap).toBe(3);
     }
     const contact = performActionAt(
       s,
@@ -49,7 +49,7 @@ it.each([
     );
     expect(contact.error).toBeNull();
     s = contact.state;
-    expect(s.ap).toBe(1);
+    expect(s.ap).toBe(2);
     const noAP = { ...s, ap: 0 };
     expect(performActionAt(noAP, buyback, "south.towers")).toEqual({
       state: noAP,
@@ -59,7 +59,7 @@ it.each([
     expect(paid.error).toBeNull();
     s = paid.state;
     expect(s.day).toBe(3);
-    expect(s.ap).toBe(0);
+    expect(s.ap).toBe(1);
     expect(s.incidents["the-chains"].paidDemand).toBe(165);
     expect(cash(player(s))).toBe(0);
     expect(s.properties.chains.possession).toEqual({
@@ -74,7 +74,7 @@ it.each([
     expect(continued.error).toBeNull();
     s = continued.state;
     expect(s.day).toBe(4);
-    expect(s.ap).toBe(1);
+    expect(s.ap).toBe(2);
     expect(player(s).wallet).toEqual({ clean: 38, illicit: 0 });
     expect(s.progression.cleanEarned).toBe(114);
     expect(s.end).toBeNull();

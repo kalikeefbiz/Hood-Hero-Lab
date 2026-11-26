@@ -128,7 +128,7 @@ test("hire, scheduled wages, save and a thirty-day employment playthrough", asyn
     if (due) {
       // A street conversation can meet the player on the way in, before the
       // shift starts; put it aside and clock in again until the shift lands.
-      for (let attempt = 0; attempt < 3 && (await state(page)).ap > 0; attempt++) {
+      for (let attempt = 0; attempt < 3 && (await state(page)).ap >= 2; attempt++) {
         await nav(page, "Actions");
         await click(page, "work");
         // A workplace scene may follow the shift: decline the extra and keep regular pay.
@@ -139,7 +139,7 @@ test("hire, scheduled wages, save and a thirty-day employment playthrough", asyn
         await close(page);
       }
       s = await state(page);
-      expect(s.ap).toBe(0);
+      expect(s.ap).toBe(1);
       expect(s.employment[0].attendance.at(-1)?.status).toBe("worked");
       if (day === 2) {
         await nav(page, "Wallet");
