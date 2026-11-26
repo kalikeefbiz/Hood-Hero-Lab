@@ -166,6 +166,27 @@ for key,s in (("hemL","L"),("hemR","R")):
     L=LP[key]; c=V[L].mean(0); rad=V[L]-c; rad[:,2]=0; rad/=np.linalg.norm(rad,axis=1)[:,None]
     xy=np.c_[c[0]+rad[:,0]*CFG["R_HEM"],c[1]+rad[:,1]*CFG["R_HEM"]]; V[L]=np.c_[xy,zh(xy[:,1])]
 rimset=set(v for l in LP.values() for v in l)
+# clearance over the sneaker: radial table (z, angle) of the shoe's extent around each ankle; the jeans stay outside it
+_sd=np.load("/home/claude/work/shoeL_v1.npz",allow_pickle=True); _SV=_sd["V"]; _SP=_sd["parts"]; _SF=[tuple(int(x) for x in f if x>=0) for f in _sd["F"]]
+_sv=sorted(set(v for f,pp in zip(_SF,_SP) if pp in ("upper","collar","tongue","laces","sole") for v in f)); SHOE={1:_SV[_sv]}; SHOE[-1]=SHOE[1]*np.array([-1,1,1])
+ZB=np.arange(0.0,0.20,0.005); AB=np.radians(np.arange(-180,180,6))
+SHT={}
+for sg,pts in SHOE.items():
+    c=np.array([sg*0.106,0.030]); rel=pts[:,:2]-c; r=np.linalg.norm(rel,axis=1); a=np.arctan2(rel[:,1],rel[:,0])
+    tab=np.zeros((len(ZB),len(AB)))
+    zi=np.clip((pts[:,2]/0.005).astype(int),0,len(ZB)-1); ai=((a+np.pi)/np.radians(6)).astype(int)%len(AB)
+    for k in range(len(pts)): tab[zi[k],ai[k]]=max(tab[zi[k],ai[k]],r[k])
+    tab=np.maximum.accumulate(tab[::-1],axis=0)[::-1]        # jeans above a height must also clear everything above... keep per-slab max downward
+    from scipy.ndimage import maximum_filter, gaussian_filter1d as _g1
+    tab=maximum_filter(tab,size=(3,3),mode=("nearest","wrap")); SHT[sg]=(c,tab)
+def shoe_clear(p,margin=0.005):
+    if p[2]>0.19: return p
+    sg=1 if p[0]>0 else -1; c,tab=SHT[sg]; rel=p[:2]-c; r=np.linalg.norm(rel); a=np.arctan2(rel[1],rel[0])
+    zi=min(int(max(p[2],0)/0.005),len(ZB)-1); ai=int((a+np.pi)/np.radians(6))%len(AB); need=tab[zi,ai]+margin
+    w=1.0 if p[2]<0.15 else (0.19-p[2])/0.04
+    if r<need: q=p.copy(); q[:2]=c+rel/r*(r+(need-r)*w); return q
+    return p
+V=np.array([shoe_clear(p) for p in V])
 nb=neighbors_from_faces(F,len(V)); bvh=make_bvh(P,[f for f in bp.faces if not np.all(rid[list(f)]==7)])
 crotch=np.array([CFG["CROTCH"]-0.08<p[2]<CFG["CROTCH"]+0.08 for p in V])
 for it in range(40):
@@ -180,6 +201,8 @@ for it in range(40):
         if i in rimset: continue
         sd,loc,n=signed_dist(bvh,V[i]); fl=0.005
         if sd<fl: V[i]=V[i]+n*(fl-sd)
+        V[i]=shoe_clear(V[i])
+V=np.array([shoe_clear(p) for p in V])
 sd=np.array([signed_dist(bvh,x)[0] for x in V]); print("signed dist min %.4f median %.4f"%(sd.min(),np.median(sd))); bad=np.argsort(sd)[:5]; print("deepest",np.round(V[bad],3).tolist(),[i in rimset for i in bad])
 np.savez("/home/claude/work/jeans_v2.npz",V=V,F=np.array([list(f) for f in F]),**{k:np.array(v) for k,v in LP.items()})
 print("verts",len(V),"faces",len(F))

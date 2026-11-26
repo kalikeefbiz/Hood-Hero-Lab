@@ -137,8 +137,9 @@ for i in range(len(V)):
     z=Vl[i][2]; w=1-sstep(sole_top(Vl[i][1]),sole_top(Vl[i][1])+0.020,z)
     if w<=0: continue
     xy=Vl[i][:2]; dd,k=kdw.query(xy)
-    if wall_path.contains_point(xy):
-        tgt=inner_wall[k]; Vl[i][:2]=xy+(tgt-xy)*w
+    tgt=inner_wall[k]
+    if wall_path.contains_point(xy): Vl[i][:2]=xy+(tgt-xy)*w
+    else: Vl[i][:2]=xy+(tgt-xy)*min(1.0,w*1.5)
 base=LP["base"]
 ys=O[:,1]
 def ring(off,dz_fun):
@@ -196,9 +197,10 @@ for a,y in enumerate(ysT):
 # raise the top end above the collar front and tilt forward
 cf_z=zc(np.array([np.pi]))[0]+0.0
 for a,y in enumerate(ysT):
-    lift=0.020*sstep(-0.03,-0.005,y); TG[a,:,2]+=lift; TG[a,:,1]+=-0.004*sstep(-0.02,-0.005,y)
+    lift=0.010*sstep(-0.03,-0.0,y); TG[a,:,2]+=lift
 tong={}
 def grid_faces(G,part,flip=False):
+    parts=parts_
     base_=len(Vl2); ids=np.zeros(G.shape[:2],int)
     for a in range(G.shape[0]):
         for b in range(G.shape[1]): Vl2.append(G[a,b]); ids[a,b]=len(Vl2)-1
@@ -206,7 +208,7 @@ def grid_faces(G,part,flip=False):
         for b in range(G.shape[1]-1):
             q=(ids[a,b],ids[a,b+1],ids[a+1,b+1],ids[a+1,b]); F2.append(q[::-1] if flip else q); parts.append(part)
     return ids
-Vl2=list(V); F2=list(F)
+Vl2=list(V); F2=list(F); parts_=parts
 tid=grid_faces(TG,"tongue")
 # orient tongue faces upward
 q=F2[-1]; p_=np.array([Vl2[v] for v in q]); nn=np.cross(p_[1]-p_[0],p_[3]-p_[0])
@@ -232,32 +234,34 @@ for k,y in enumerate(np.linspace(-0.088,-0.022,6)):
         x=xm(y)+s_*(TW+0.006); p,nn=drape(x,y)
         row.append((p+nn*0.0030,nn))
     EY.append(row)
-def strip(p0,p1,n0,n1,lift=0.0075,w=0.0095,th=0.0026,segs=6,part="laces"):
+def strip(p0,p1,n0,n1,lift=0.0030,w=0.0072,th=0.0016,segs=8,part="laces"):
     d=p1-p0; L_=np.linalg.norm(d); d/=L_
     rows=[]
     for k in range(segs+1):
-        t=k/segs; nn=(1-t)*n0+t*n1; nn/=np.linalg.norm(nn); p=p0+(p1-p0)*t+nn*(lift*np.sin(np.pi*t)+0.0012)
+        t=k/segs; nn=(1-t)*n0+t*n1; nn/=np.linalg.norm(nn); p=p0+(p1-p0)*t+nn*(lift*np.sin(np.pi*t)+0.0010)
         side=np.cross(nn,d); side/=np.linalg.norm(side)
-        rows.append([p-side*w/2,p+side*w/2,p+side*w/2-nn*th,p-side*w/2-nn*th])
+        rows.append(([p-side*w/2+nn*th/2,p+side*w/2+nn*th/2,p+side*w/2-nn*th/2,p-side*w/2-nn*th/2],nn))
     ids=[]
-    for r in rows:
+    for r,_ in rows:
         ii=[]
         for pnt in r: Vl2.append(pnt); ii.append(len(Vl2)-1)
         ids.append(ii)
     for k in range(segs):
-        A,B=ids[k],ids[k+1]
-        for e in range(4):
-            q=(A[e],A[(e+1)%4],B[(e+1)%4],B[e]); F2.append(q[::-1]); parts.append(part)
+        A,B=ids[k],ids[k+1]; nn=rows[k][1]
+        for e,outdir in ((0,nn),(1,np.cross(nn,d)),(2,-nn),(3,-np.cross(nn,d))):
+            q=[A[e],A[(e+1)%4],B[(e+1)%4],B[e]]; pq=np.array([Vl2[v] for v in q]); fn=np.cross(pq[1]-pq[0],pq[3]-pq[0])
+            if fn@outdir<0: q=q[::-1]
+            F2.append(tuple(q)); parts_.append(part)
 for k in range(len(EY)-1):
     (pl0,nl0),(pr0,nr0)=EY[k]; (pl1,nl1),(pr1,nr1)=EY[k+1]
     strip(pl0,pr1,nl0,nr1); strip(pr0,pl1,nr0,nl1,lift=0.0055)
 (plt,nlt),(prt,nrt)=EY[-1]
-knot=(plt+prt)/2+np.array([0,0.004,0.012]); nk=(nlt+nrt)/2; nk/=np.linalg.norm(nk)
-strip(plt,knot,nlt,nk,lift=0.002,segs=3); strip(prt,knot,nrt,nk,lift=0.002,segs=3)
-for s_ in (-1,1):   # bow loops and ends
-    a1=knot+np.array([s_*0.028,-0.010,0.004]); strip(knot,a1,nk,nk,lift=0.010,segs=6); strip(a1,knot,nk,nk,lift=0.004,segs=6)
-    e1=knot+np.array([s_*0.012,-0.030,-0.014]); strip(knot,e1,nk,nk,lift=0.004,segs=5)
-V=np.array(Vl2); F=F2; parts=np.array(parts)
+nk=(nlt+nrt)/2; nk/=np.linalg.norm(nk); knot=(plt+prt)/2+nk*0.004
+strip(plt,knot,nlt,nk,lift=0.001,segs=3); strip(prt,knot,nrt,nk,lift=0.001,segs=3)
+for s_ in (-1,1):   # a small flat bow lying on the tongue, and the lace ends
+    a1=knot+np.array([s_*0.022,-0.012,0.0])+nk*0.002; strip(knot,a1,nk,nk,lift=0.006,segs=6); strip(a1,knot,nk,nk,lift=0.002,segs=6)
+    e1=knot+np.array([s_*0.010,-0.034,0.0]); loc,nn_,_,_=bvhU.find_nearest(Vector(e1)); e1=np.array(loc)+np.array(nn_)*0.007; strip(knot,e1,nk,np.array(nn_),lift=0.002,segs=6)
+V=np.array(Vl2); F=F2; parts=np.array(parts_)
 sd=np.array([signed_dist(bvhF,x)[0] for x in V]); print("foot clearance: min %.4f  verts inside foot %d (sole/insole expected)"%(sd.min(),(sd<0).sum()))
 from collections import Counter; print(Counter(parts.tolist()))
 np.savez("/home/claude/work/shoeL_v1.npz",V=V,F=np.array([list(f)+[-1]*(4-len(f)) for f in F]),parts=parts,collar=np.array(collar,dtype=object),

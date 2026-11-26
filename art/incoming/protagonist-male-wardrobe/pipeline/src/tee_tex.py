@@ -64,6 +64,7 @@ g[vm]=0.6*fbm3(Pv,0.0016,2,41,aniso=(1,1,2.5))+0.4*fbm3(Pv,0.0007,1,43)
 Hd+=0.00006*g.reshape(RES,RES)*shell
 # ---- detail height -> tangent normal (texel size ~0.58 mm)
 px=1/1720.0
+_d,(_iy,_ix)=ndimage.distance_transform_edt(~valid,return_indices=True); Hd=Hd[_iy,_ix]
 gy,gx=np.gradient(Hd)
 nd=np.stack([-gx/px,gy/px,np.ones_like(Hd)],-1); nd/=np.linalg.norm(nd,axis=-1,keepdims=True)
 NBf=NB.copy()

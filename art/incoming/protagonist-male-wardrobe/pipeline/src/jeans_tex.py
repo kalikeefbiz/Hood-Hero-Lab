@@ -137,6 +137,7 @@ edge=np.minimum(pw/2-np.abs(X-cx),ph_/2-np.abs(Z-cz)); Hm+=leather*(0.0008*np.cl
 # ---------------- compose normal
 px=1/1470.0
 H=Hd+Hm+0.00005*n_streak
+_d,(_iy,_ix)=ndimage.distance_transform_edt(~valid,return_indices=True); H=H[_iy,_ix]
 gy,gx=np.gradient(H); nd=np.stack([-gx/px,gy/px,np.ones_like(H)],-1); nd/=np.linalg.norm(nd,axis=-1,keepdims=True)
 NBf=NB.copy(); NBf[(T>=1)|band|loops]=[0,0,1]
 fadeN=np.clip((hemd-0.015)/0.02,0,1)[...,None]; NBf=NBf*fadeN+np.array([0,0,1.0])*(1-fadeN); NBf/=np.linalg.norm(NBf,axis=-1,keepdims=True)
