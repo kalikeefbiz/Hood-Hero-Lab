@@ -19,7 +19,9 @@ for k,f in enumerate(F[:nL]):
     pts=[(uv[lp+j,0]*RES,(1-uv[lp+j,1])*RES) for j in range(len(f))]; lp+=len(f)
     dl.polygon(pts,fill=pid[lab[k]])
     if lab[k]=="collar" and sum(v in cin for v in f)>=3: dc.polygon(pts,fill=255)
-L=np.array(Lr); valid=L>=0; lining=np.array(CL)>0
+L=np.array(Lr)
+_lm=ndimage.binary_dilation(L==6,iterations=2)&(L<0); L[_lm]=6
+valid=L>=0; lining=np.array(CL)>0
 X,Y,Z=POS[...,0],POS[...,1],POS[...,2]; P=POS.reshape(-1,3); vm=valid.ravel(); Pv=P[vm]
 def full(a,fill=0.0): o=np.full(P.shape[0],fill,np.float32); o[vm]=a; return o.reshape(RES,RES)
 def sstep(a,b,t): u=np.clip((t-a)/(b-a),0,1); return u*u*(3-2*u)
@@ -88,10 +90,11 @@ col[lining]=np.array([0.42,0.43,0.45]); col[laces]=np.array([0.86,0.86,0.84])
 col[sole]=np.array([0.78,0.76,0.70]); col[tread]=np.array([0.60,0.58,0.54]); col[insole]=np.array([0.10,0.10,0.11])
 col*=(1+0.03*full(fbm3(Pv,0.03,2,95)))[...,None]
 col=col*(1-0.35*dark[...,None]); col=col*(1-thread[...,None])+np.array([0.72,0.72,0.70])*thread[...,None]
-rough=np.full((RES,RES),0.5,np.float32); rough[upper|tongue]=0.46+0.06*g2[upper|tongue]; rough[lining]=0.9; rough[laces]=0.85; rough[sole]=0.68; rough[tread]=0.8; rough[insole]=0.9
+rough=np.full((RES,RES),0.5,np.float32); rough[upper|tongue]=0.60+0.05*g2[upper|tongue]; rough[lining]=0.9; rough[laces]=0.85; rough[sole]=0.68; rough[tread]=0.8; rough[insole]=0.9
 rough=rough*(1-thread)+0.75*thread
 AOs=ndimage.gaussian_filter(np.where(valid,AO,0),2)/np.maximum(ndimage.gaussian_filter(valid.astype(np.float32),2),1e-3)
 AOf=np.where(valid,0.35+0.65*AOs,1)*(1-0.4*dark)
+AOf[laces]=np.clip(0.75+0.25*AOf[laces],0.85,1.0); AOf[tongue]=np.maximum(AOf[tongue],0.8)
 dist_,(iy,ix)=ndimage.distance_transform_edt(~valid,return_indices=True)
 pad=lambda a:a[iy,ix]
 col,n,AOf,rough=map(pad,(col,n,AOf,rough))
