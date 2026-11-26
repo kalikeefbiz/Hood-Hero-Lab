@@ -172,7 +172,7 @@ _sv=sorted(set(v for f,pp in zip(_SF,_SP) if pp in ("upper","collar","tongue","l
 ZB=np.arange(0.0,0.20,0.005); AB=np.radians(np.arange(-180,180,6))
 SHT={}
 for sg,pts in SHOE.items():
-    c=np.array([sg*0.106,0.030]); rel=pts[:,:2]-c; r=np.linalg.norm(rel,axis=1); a=np.arctan2(rel[:,1],rel[:,0])
+    c=np.array([sg*0.106,0.030]); rel=pts[:,:2]-c; r=np.linalg.norm(rel,axis=1); keep=r<0.09; pts=pts[keep]; rel=rel[keep]; r=r[keep]; a=np.arctan2(rel[:,1],rel[:,0])
     tab=np.zeros((len(ZB),len(AB)))
     zi=np.clip((pts[:,2]/0.005).astype(int),0,len(ZB)-1); ai=((a+np.pi)/np.radians(6)).astype(int)%len(AB)
     for k in range(len(pts)): tab[zi[k],ai[k]]=max(tab[zi[k],ai[k]],r[k])
@@ -203,6 +203,10 @@ for it in range(40):
         if sd<fl: V[i]=V[i]+n*(fl-sd)
         V[i]=shoe_clear(V[i])
 V=np.array([shoe_clear(p) for p in V])
+for key in ("hemL","hemR"):
+    L=LP[key]
+    for _ in range(20):
+        Q=V[L].copy(); S_=0.5*Q+0.25*(np.roll(Q,1,0)+np.roll(Q,-1,0)); V[L]=np.array([shoe_clear(p) for p in S_])
 sd=np.array([signed_dist(bvh,x)[0] for x in V]); print("signed dist min %.4f median %.4f"%(sd.min(),np.median(sd))); bad=np.argsort(sd)[:5]; print("deepest",np.round(V[bad],3).tolist(),[i in rimset for i in bad])
 np.savez("/home/claude/work/jeans_v2.npz",V=V,F=np.array([list(f) for f in F]),**{k:np.array(v) for k,v in LP.items()})
 print("verts",len(V),"faces",len(F))

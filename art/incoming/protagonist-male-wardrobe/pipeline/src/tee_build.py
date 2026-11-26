@@ -235,8 +235,9 @@ from scipy.spatial import cKDTree as _KD
 _kd=_KD(P[:,:2]); req=np.zeros(len(nr_))
 for a_,v in enumerate(nr_):
     ids=_kd.query_ball_point(V[v,:2],0.012); req[a_]=(P[ids,2].max() if ids else V[v,2])+0.003
+req=gaussian_filter1d(req,5,mode='wrap')
 zr=np.maximum(V[nr_,2],req)
-for _ in range(12):
+for _ in range(40):
     zr=np.maximum(0.5*zr+0.25*(np.roll(zr,1)+np.roll(zr,-1)),req)
 print("neckline raised: max %.4f m, verts %d"%((zr-V[nr_,2]).max(),int(((zr-V[nr_,2])>0.002).sum())))
 V[nr_,2]=zr

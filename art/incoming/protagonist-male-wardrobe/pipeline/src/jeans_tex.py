@@ -140,7 +140,7 @@ H=Hd+Hm+0.00005*n_streak
 _d,(_iy,_ix)=ndimage.distance_transform_edt(~valid,return_indices=True); H=H[_iy,_ix]
 gy,gx=np.gradient(H); nd=np.stack([-gx/px,gy/px,np.ones_like(H)],-1); nd/=np.linalg.norm(nd,axis=-1,keepdims=True)
 NBf=NB.copy(); NBf[(T>=1)|band|loops]=[0,0,1]
-fadeN=np.clip((hemd-0.015)/0.02,0,1)[...,None]; NBf=NBf*fadeN+np.array([0,0,1.0])*(1-fadeN); NBf/=np.linalg.norm(NBf,axis=-1,keepdims=True)
+fadeN=np.clip((hemd-0.05)/0.04,0,1)[...,None]; NBf=NBf*fadeN+np.array([0,0,1.0])*(1-fadeN); NBf/=np.linalg.norm(NBf,axis=-1,keepdims=True)
 twill=tnrm.copy(); twill[...,:2]*=0.6*(1-metal[...,None])*(1-leather[...,None]*1.0)
 n=np.concatenate([NBf[...,:2]+nd[...,:2]+twill[...,:2],NBf[...,2:3]],-1); n/=np.linalg.norm(n,axis=-1,keepdims=True)
 # ---------------- base colour (linear)

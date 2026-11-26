@@ -47,6 +47,12 @@ back=np.clip((R0[:,1]-0.03)/0.08,0,1)[:,None]   # 0 front .. 1 back
 Hh=H-0.004*back; so=0.002*back
 rings=[R0+U*0.007+Nn*(0.0025+so), R0+U*(Hh-0.003)+Nn*(0.0022+so), R0+U*Hh+Nn*(0.0005+so), R0+U*(Hh-0.002)-Nn*(T-0.0012-so), R0+U*0.003-Nn*(T-0.001-so)]
 collar=add_band(L,rings)
+# smooth every collar ring along its loop (removes kinks where the neckline was lifted over the trapezius)
+for r_ in range(1,len(collar)):
+    ids=collar[r_]
+    for _ in range(8):
+        Q=np.array([Vl[i] for i in ids]); Q=0.5*Q+0.25*(np.roll(Q,1,0)+np.roll(Q,-1,0))
+        for i,q in zip(ids,Q): Vl[i]=q
 # ---- sleeve hems (folded edge, facing turned inside)
 AX={s:bp.arm_axis(s) for s in "LR"}
 hems={}
@@ -61,6 +67,18 @@ dn=np.array([0,0,-1.0])
 rings=[R0+dn*0.0018-rad*0.0008, R0+dn*0.0022-rad*0.0028, R0-rad*0.0034, R0-dn*0.022-rad*0.0030]
 hems["hem"]=add_band(L,rings)
 V=np.array(Vl); F=Fl
+# untangle outer faces that fold over near the neck rim
+nbs=neighbors_from_faces(F,len(V)); rimfix=set(LP["neck"])|set(v for r_ in collar for v in r_)
+for rnd in range(6):
+    VNn=vertex_normals(V,F[:nshell]); badv=set()
+    for f in F[:nshell]:
+        p_=V[list(f)]; fn=np.cross(p_[1]-p_[0],p_[2]-p_[0]); fn=fn/(np.linalg.norm(fn)+1e-12)
+        if np.mean([fn@VNn[v] for v in f])<0.5: badv.update(f)
+    badv-=rimfix
+    if not badv: break
+    for _ in range(10):
+        for i in badv: V[i]=V[nbs[i]].mean(0)
+    print("collar-area untangle",rnd,len(badv))
 # inner facings must sit just inside the actual outer shell, not at a fixed radius
 shellF=F[:nshell]; bvhSh=make_bvh(V[:nshell_v],shellF)
 def tuck(ids,depth):

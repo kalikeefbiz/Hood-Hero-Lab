@@ -90,8 +90,8 @@ from noise3 import fbm3, value_noise3
 # 1) torso drape: irregular, vertically stretched folds that grow toward the hem
 ang=np.arctan2(y,x); cyl=np.stack([np.cos(ang)*0.17,np.sin(ang)*0.17,z],1)
 dn=fbm3(cyl,0.05,3,11,aniso=(1,1,4.0))
-ridge=1-2*np.abs(dn)                                   # soft ridged folds
-H+=torso*0.0034*ridge*sstep(1.20,0.92,z)*(0.6+0.4*fbm3(Ph,0.12,2,3))
+ridge=np.tanh(1.8*dn)                                   # soft rounded folds (no sharp creases)
+H+=torso*0.0030*ridge*sstep(1.20,0.95,z)*(0.6+0.4*fbm3(Ph,0.12,2,3))
 # 2) armpit creases: a fan of 4-5 creases running down/forward and down/back from each armpit
 for sgn in (1,-1):
     aw=U["seam_armscye"]; idx=np.unique(aw.ravel()); side=idx[np.sign(VA[idx,0])==sgn]

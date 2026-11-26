@@ -197,7 +197,7 @@ for a,y in enumerate(ysT):
 # raise the top end above the collar front and tilt forward
 cf_z=zc(np.array([np.pi]))[0]+0.0
 for a,y in enumerate(ysT):
-    lift=0.010*sstep(-0.03,-0.0,y); TG[a,:,2]+=lift
+    lift=0.004*sstep(-0.03,-0.0,y); TG[a,:,2]+=lift
 tong={}
 def grid_faces(G,part,flip=False):
     parts=parts_
@@ -234,27 +234,42 @@ for k,y in enumerate(np.linspace(-0.088,-0.022,6)):
         x=xm(y)+s_*(TW+0.006); p,nn=drape(x,y)
         row.append((p+nn*0.0030,nn))
     EY.append(row)
-def strip(p0,p1,n0,n1,lift=0.0030,w=0.0072,th=0.0016,segs=8,part="laces"):
+# laces conform to the tongue/upper (BVH of everything built so far) and are rounded 6-sided tubes,
+# so straight chords never sink into the curved tongue and leave floating fragments
+_bv=BVHTree.FromPolygons([Vector(v) for v in Vl2],[tuple(f) for f in F2])
+def strip(p0,p1,n0,n1,lift=0.0030,w=0.0062,th=0.0024,segs=8,part="laces",conform=True):
     d=p1-p0; L_=np.linalg.norm(d); d/=L_
-    rows=[]
+    rows=[]; NS=6
     for k in range(segs+1):
-        t=k/segs; nn=(1-t)*n0+t*n1; nn/=np.linalg.norm(nn); p=p0+(p1-p0)*t+nn*(lift*np.sin(np.pi*t)+0.0010)
+        t=k/segs; nn=(1-t)*n0+t*n1; nn/=np.linalg.norm(nn); p=p0+(p1-p0)*t
+        if conform and 0<k<segs:
+            loc,sn,_,_=_bv.find_nearest(Vector(p))
+            if loc is not None:
+                sn=np.array(sn); sn=sn if sn@nn>0 else -sn; nn=sn; p=np.array(loc)
+        p=p+nn*(lift*np.sin(np.pi*t)+th*0.5+0.0006)
         side=np.cross(nn,d); side/=np.linalg.norm(side)
-        rows.append(([p-side*w/2+nn*th/2,p+side*w/2+nn*th/2,p+side*w/2-nn*th/2,p-side*w/2-nn*th/2],nn))
+        ring=[p+side*np.cos(2*np.pi*j/NS)*w/2+nn*np.sin(2*np.pi*j/NS)*th/2 for j in range(NS)]
+        rows.append((ring,nn,p))
     ids=[]
-    for r,_ in rows:
+    for r,_,_ in rows:
         ii=[]
         for pnt in r: Vl2.append(pnt); ii.append(len(Vl2)-1)
         ids.append(ii)
     for k in range(segs):
-        A,B=ids[k],ids[k+1]; nn=rows[k][1]
-        for e,outdir in ((0,nn),(1,np.cross(nn,d)),(2,-nn),(3,-np.cross(nn,d))):
-            q=[A[e],A[(e+1)%4],B[(e+1)%4],B[e]]; pq=np.array([Vl2[v] for v in q]); fn=np.cross(pq[1]-pq[0],pq[3]-pq[0])
-            if fn@outdir<0: q=q[::-1]
+        A,B=ids[k],ids[k+1]; c=rows[k][2]
+        for e in range(NS):
+            q=[A[e],A[(e+1)%NS],B[(e+1)%NS],B[e]]; pq=np.array([Vl2[v] for v in q]); fn=np.cross(pq[1]-pq[0],pq[3]-pq[0])
+            if fn@(pq.mean(0)-c)<0: q=q[::-1]
+            F2.append(tuple(q)); parts_.append(part)
+    for k,cap in ((0,True),(segs,False)):   # end caps
+        c=rows[k][2]; Vl2.append(c); ci=len(Vl2)-1; A=ids[k]
+        for e in range(NS):
+            q=[A[e],A[(e+1)%NS],ci]; pq=np.array([Vl2[v] for v in q]); fn=np.cross(pq[1]-pq[0],pq[2]-pq[0])
+            if fn@(d if not cap else -d)<0: q=q[::-1]
             F2.append(tuple(q)); parts_.append(part)
 for k in range(len(EY)-1):
     (pl0,nl0),(pr0,nr0)=EY[k]; (pl1,nl1),(pr1,nr1)=EY[k+1]
-    strip(pl0,pr1,nl0,nr1); strip(pr0,pl1,nr0,nl1,lift=0.0055)
+    strip(pl0,pr1,nl0,nr1,lift=0.0004); strip(pr0,pl1,nr0,nl1,lift=0.0030)
 (plt,nlt),(prt,nrt)=EY[-1]
 nk=(nlt+nrt)/2; nk/=np.linalg.norm(nk); knot=(plt+prt)/2+nk*0.004
 strip(plt,knot,nlt,nk,lift=0.001,segs=3); strip(prt,knot,nrt,nk,lift=0.001,segs=3)

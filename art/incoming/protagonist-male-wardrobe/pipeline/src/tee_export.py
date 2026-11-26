@@ -34,6 +34,25 @@ v3=np.load(V3,allow_pickle=True)
 me=ob.data; F=[tuple(p.vertices) for p in me.polygons]; ft=face_types(F,v3,keys=KEYS,collar_keys=CKEYS)
 V=np.array([v.co for v in me.vertices])
 Nout=vertex_normals(V,[f for f,t in zip(F,ft) if t<=1]); Nin=vertex_normals(V,[f for f,t in zip(F,ft) if t>=2])
+# normal-field smoothing on the visible surface: light everywhere (soft drape creases), strong near the collar
+# (shell/band junction kinks read as dark teeth and a bright corner spot under the band)
+from scipy.sparse import coo_matrix, diags
+of=[f for f,t in zip(F,ft) if t<=1]; I=[];J=[]
+for f in of:
+    for a in range(len(f)):
+        I+= [f[a],f[(a+1)%len(f)]]; J+=[f[(a+1)%len(f)],f[a]]
+nV=len(V); A=coo_matrix((np.ones(len(I)),(I,J)),shape=(nV,nV)).tocsr(); A.data[:]=1
+deg=np.asarray(A.sum(1)).ravel(); Wn=diags(1/np.maximum(deg,1))@A
+w=np.full(nV,0.35)
+if "collar" in v3 and "collar" in CKEYS:
+    cr=np.array([int(v) for v in v3["collar"][0]]); from scipy.spatial import cKDTree
+    d=cKDTree(V[cr]).query(V)[0]; w=np.where(d<0.045,0.85,w)
+    iters=int(os.environ.get("NSM_ITERS","10"))
+else: iters=int(os.environ.get("NSM_ITERS","3"))
+act=deg>0
+for _ in range(iters):
+    Ns=Wn@Nout; Nn=Nout.copy(); Nn[act]=(1-w[act,None])*Nout[act]+w[act,None]*Ns[act]
+    Nout=Nn/np.maximum(np.linalg.norm(Nn,axis=1,keepdims=True),1e-9)
 ln=[]
 for p,t in zip(me.polygons,ft):
     for l in p.loop_indices: ln.append(tuple((Nout if t<=1 else Nin)[me.loops[l].vertex_index]))
