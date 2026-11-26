@@ -1,3 +1,4 @@
+import { canWalkReservoir, clearReservoirApproach, INTERACTION_RANGE, MARKET, type StreetTarget } from "./reservoirWalk";
 import { PerfHud } from "./perfHud";
 import { SessionVisitors, type SessionVisitor } from "./SessionVisitors";
 import * as THREE from "three";
@@ -596,7 +597,7 @@ export class BoardRenderer {
     this.rebuildFocus();
     this.markHome(focus.target);
     if (this.view && prev.zone !== focus.zone) this.rebuildDynamic();
-    if (fly) {
+    if (fly && !this.street) {
       const place = focus.place
         ? LOCATIONS.find((l) => l.id === focus.place)
         : null;
@@ -687,6 +688,89 @@ export class BoardRenderer {
     }
     this.shadowDirty = true;
     this.wake();
+  }
+  private street = false;
+  private streetX = 0;
+  private streetZ = 0;
+  private streetCameraSettling = false;
+  private streetTarget = new THREE.Vector3();
+  private streetSavedView = { yaw: 0, far: 1400, pixelRatio: 1 };
+  onStreetFrame: () => void = () => {};
+
+  setStreet(enabled: boolean, place: string) {
+    if (enabled === this.street) return;
+    this.street = enabled;
+    this.setStreetInput(0, 0);
+    this.token.children[2].visible = !enabled;
+    this.tokenBody.position.y = 0;
+    this.tokenBody.scale.setScalar(enabled ? 1 : 0.85);
+    if (enabled) {
+      this.finishWalk(true);
+      this.flight = null;
+      this.streetSavedView = {
+        yaw: this.yaw,
+        far: this.camera.far,
+        pixelRatio: this.renderer.getPixelRatio(),
+      };
+      this.pointers.clear();
+      this.gesture = null;
+      this.yaw = 0;
+      this.distance = 12;
+      this.camera.far = 78;
+      this.renderer.setPixelRatio(1);
+      const [x, z] = BoardRenderer.frontOf(MARKET);
+      this.token.position.set(x - 4.5, 0, z + 1);
+      this.target.set(x - 4.5, 0.8, z);
+      this.streetCameraSettling = true;
+    } else {
+      this.target.y = 0;
+      this.yaw = this.streetSavedView.yaw;
+      this.camera.far = this.streetSavedView.far;
+      this.renderer.setPixelRatio(this.eco ? 1 : this.streetSavedView.pixelRatio);
+      this.placeToken(place);
+      this.setFocus(this.focus);
+    }
+    this.resize();
+    this.wake();
+  }
+
+  setStreetInput(x: number, z: number) {
+    this.streetX = x;
+    this.streetZ = z;
+    if (x || z) this.wake();
+  }
+
+  streetDistance(target: StreetTarget, requireClear = true) {
+    const spot = target.slot === undefined
+      ? BoardRenderer.frontOf(target.placeId)
+      : this.personSpot(target.placeId, target.slot);
+    const x = Array.isArray(spot) ? spot[0] : spot.x;
+    const z = Array.isArray(spot) ? spot[1] : spot.z;
+    const from = this.token.position;
+    const distance = Math.hypot(x - from.x, z - from.z);
+    return requireClear && distance <= INTERACTION_RANGE &&
+      !clearReservoirApproach(from.x, from.z, x, z) ? Infinity : distance;
+  }
+
+  private updateStreet(dt: number) {
+    const pos = this.token.position;
+    const dx = this.streetX * 5 * dt;
+    const dz = this.streetZ * 5 * dt;
+    // Substep even on a slow device so a dropped frame cannot skip a barrier.
+    const steps = Math.max(1, Math.ceil(Math.hypot(dx, dz) / 0.12));
+    const startX = pos.x, startZ = pos.z;
+    for (let i = 0; i < steps; i++) {
+      if (canWalkReservoir(pos.x + dx / steps, pos.z)) pos.x += dx / steps;
+      if (canWalkReservoir(pos.x, pos.z + dz / steps)) pos.z += dz / steps;
+    }
+    const moving = Math.hypot(pos.x - startX, pos.z - startZ) > 0.001;
+    this.faceToward(pos.x - startX, pos.z - startZ);
+    this.tokenBody.position.y = moving && !this.reducedMotion
+      ? Math.abs(Math.sin(this.clock * 17)) * 0.065 : 0;
+    this.streetTarget.set(pos.x, 0.8, pos.z - 1);
+    this.target.lerp(this.streetTarget, this.reducedMotion ? 1 : 1 - Math.exp(-dt * 11));
+    this.streetCameraSettling = this.target.distanceToSquared(this.streetTarget) > 0.0004;
+    this.onStreetFrame();
   }
   /** Where a place's front door is: the piece and people stand here. */
   static frontOf(placeId: string): [number, number] {
@@ -936,6 +1020,7 @@ export class BoardRenderer {
       insets: this.insets,
       focus: this.focus,
       flight: !!this.flight,
+      ...(this.street ? { street: this.token.position.toArray(), draws: this.renderer.info.render.calls } : {}),
     };
   }
   get cameraDistance() {
@@ -2737,7 +2822,7 @@ export class BoardRenderer {
     this.camera.updateProjectionMatrix();
   }
   private updateCamera() {
-    const p = this.pitch();
+    const p = this.street ? 0.94 : this.pitch();
     const off = new THREE.Vector3(
       Math.sin(this.yaw) * Math.cos(p),
       Math.sin(p),
@@ -2767,6 +2852,7 @@ export class BoardRenderer {
   private bindInput(el: HTMLCanvasElement) {
     el.style.touchAction = "none";
     el.addEventListener("pointerdown", (e) => {
+      if (this.street) return;
       el.setPointerCapture(e.pointerId);
       this.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       this.flight = null;
@@ -2849,6 +2935,7 @@ export class BoardRenderer {
       "wheel",
       (e) => {
         e.preventDefault();
+        if (this.street) return;
         this.flight = null;
         this.distance = THREE.MathUtils.clamp(
           this.distance * Math.exp(e.deltaY * 0.0012),
@@ -2964,6 +3051,7 @@ export class BoardRenderer {
       now - this.lastActive < 1200 ||
       this.pointers.size > 0 ||
       !!this.flight ||
+      (this.street && (!!this.streetX || !!this.streetZ || this.streetCameraSettling)) ||
       !!this.tokenWalk || (this.sessionVisitors.active && !this.reducedMotion);
     if (!active && (this.lite || this.eco || this.reducedMotion)) {
       this.running = false;
@@ -2998,6 +3086,7 @@ export class BoardRenderer {
     for (const a of this.animated) a(this.clock, dt);
     for (const a of this.dynamicAnimated) a(this.clock, dt);
     for (const a of this.focusAnimated) a(this.clock, dt);
+    if (this.street) this.updateStreet(dt);
     this.updateCamera();
     this.renderer.render(this.scene, this.camera);
     this.perf?.frame(now, interval, active);
