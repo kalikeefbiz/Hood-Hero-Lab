@@ -258,6 +258,26 @@ describe("authoritative clock", () => {
     expect(overnight.ap).toBe(3);
   });
 
+  it("settles an exact dawn once when a fractional duration is restored from a save", () => {
+    const offset = 1024.012;
+    const before = deserialize(serialize(advanceWorldTime(openCity(), offset)));
+    const remaining = 1440 - offset;
+    const stillNight = advanceWorldTime(before, remaining - 0.000001);
+    expect(worldTime(stillNight)).toMatchObject({ day: 1, isDaytime: false });
+
+    const atDawn = advanceWorldTime(before, remaining);
+    expect(worldTime(atDawn)).toEqual({
+      day: 2,
+      minuteOfDay: 360,
+      isDaytime: true,
+    });
+    const after = advanceActiveTime(deserialize(serialize(atDawn)), 1);
+    expect(after.day).toBe(2);
+    expect(
+      after.ledger.filter((row) => row.reason === "Daily living expenses"),
+    ).toHaveLength(1);
+  });
+
   it("runs deadlines once across natural dawns, including after reload", () => {
     let s = newGame("Test", "south");
     const intro = s.encounters.find(

@@ -87,6 +87,12 @@ export function advanceWorldTime(
 ) {
   if (state.end || !Number.isFinite(minutes) || minutes <= 0) return state;
   const total = minutesFromDawn(state.cycleElapsedMs) + minutes;
+  // Converting a saved millisecond offset back to minutes can put an exact
+  // dawn just below the boundary. Snap only within floating-point precision.
+  const nearestDay = Math.round(total / MINUTES_PER_DAY);
+  const dawn = nearestDay * MINUTES_PER_DAY;
+  if (nearestDay > 0 && Math.abs(total - dawn) <= 2 * Number.EPSILON * total)
+    return advanceTo(state, nearestDay, 0, inPlace);
   return advanceTo(
     state,
     Math.floor(total / MINUTES_PER_DAY),
