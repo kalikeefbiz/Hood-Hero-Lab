@@ -10,9 +10,28 @@
 // Bones are recognised by body part, so Rigify game-skeleton names (thigh.L, upper_arm.L...) and
 // Mixamo-style names (LeftUpLeg, LeftArm...) both pass.
 //
+// Quality profile: manifest.profile is "standard" (default; the original budgets, unchanged) or
+// "hero" (flagship characters: PBR maps required, 2K textures, higher ceilings). The hero numbers
+// are PROVISIONAL ceilings, not measured budgets: tighten them from device profiling once the
+// benchmark outfit is approved (docs/CHARACTER_PIPELINE.md, "Visual quality standard").
+//
 // Prints one line per check and PASS or FAIL at the end (exit code 1 on FAIL).
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
+
+const PROFILES = {
+  standard: {
+    modelBytes: 1_400_000, modelBytesSplit: 1_100_000, tris: [8000, 40000], materials: 2, tex: 1024,
+    headBytes: 350_000, headTris: [1000, 8000], headMaterials: 1, skinBytes: 300_000, skinTex: 1024, requirePbr: false,
+  },
+  hero: {
+    modelBytes: 8_000_000, modelBytesSplit: 8_000_000, tris: [8000, 80000], materials: 6, tex: 2048,
+    headBytes: 2_500_000, headTris: [1000, 20000], headMaterials: 2, skinBytes: 2_500_000, skinTex: 2048, requirePbr: true,
+  },
+};
+const kb = (n) => `${(n / 1024).toFixed(0)} KB`;
+// Licences we accept for borrowed assets (docs/CHARACTER_PIPELINE.md, "Reuse before you build").
+const LICENSES = ["CC0-1.0", "CC-BY-4.0", "CC-BY-3.0", "MIT", "Apache-2.0", "Unlicense"];
 
 // Body parts every rig needs, each matched by name (Rigify game skeleton or Mixamo-style).
 const SIDES = { L: [/[._]l(\.\d+)?$/i, /^left/i], R: [/[._]r(\.\d+)?$/i, /^right/i] };
@@ -77,6 +96,10 @@ function main(dir) {
   ok(existsSync(manifestPath), "file manifest.json");
   ok(existsSync(join(dir, "source")) && readdirSync(join(dir, "source")).some((f) => f.endsWith(".blend")), "source/<id>_source.blend");
   ok(existsSync(join(dir, "previews")) && readdirSync(join(dir, "previews")).length >= 3, "previews/ (contact sheet, stress sheet, clip previews)");
+  const sheetsDir = join(dir, "previews", "threejs");
+  const sheets = existsSync(sheetsDir) ? readdirSync(sheetsDir) : [];
+  ok(sheets.some((f) => f.endsWith("_face.png")) && sheets.some((f) => f.endsWith("_body.png")),
+    "previews/threejs/ has the face and body sheets (node scripts/review-character.mjs " + dir + ")");
   if (failed) { console.log("\nFAIL (missing files)"); return 1; }
 
   let manifest = {};
@@ -86,19 +109,39 @@ function main(dir) {
   ok(manifest.bindPose === "T" || manifest.bindPose === "A", `manifest.bindPose is "T" or "A"`);
   ok(Array.isArray(manifest.sourceArt) && manifest.sourceArt.length > 0, "manifest.sourceArt lists the approved art used");
   ok(manifest.approvedBy === "owner", 'manifest.approvedBy is "owner"');
+  const third = manifest.thirdParty ?? [];
+  if (!Array.isArray(third)) ok(false, "manifest.thirdParty is a list");
+  else if (third.length) {
+    ok(existsSync(join(dir, "CREDITS.md")), "CREDITS.md exists (manifest.thirdParty lists borrowed assets)");
+    for (const t of third) {
+      const label = t?.name ?? "(unnamed)";
+      ok(!!(t && t.name && /^https?:\/\//.test(t.url ?? "") && t.usedFor), `thirdParty "${label}": has name, url and usedFor`);
+      ok(LICENSES.includes(t?.license), `thirdParty "${label}": licence "${t?.license}" is accepted (${LICENSES.join(", ")})`);
+    }
+  }
+  const profileName = manifest.profile ?? "standard";
+  ok(!!PROFILES[profileName], `manifest.profile is "standard" or "hero" (got "${profileName}")`);
+  const P = PROFILES[profileName] ?? PROFILES.standard;
+  console.log(`      profile: ${PROFILES[profileName] ? profileName : "standard"}`);
 
   // -------------------------------------------------------------- model
   const model = readGlb(modelFile);
   const mj = model.json;
-  const sizeCap = fourFiles ? 1_100_000 : 1_400_000;
-  ok(model.bytes <= sizeCap, `model size ${(model.bytes / 1024).toFixed(0)} KB <= ${(sizeCap / 1024).toFixed(0)} KB`);
+  const sizeCap = fourFiles ? P.modelBytesSplit : P.modelBytes;
+  ok(model.bytes <= sizeCap, `model size ${kb(model.bytes)} <= ${kb(sizeCap)}`);
   ok((mj.extensionsUsed ?? []).some((e) => /meshopt_compression$/.test(e)), "model uses meshopt compression");
   ok((mj.extensionsUsed ?? []).includes("KHR_mesh_quantization"), "model uses KHR_mesh_quantization (run compress.mjs)");
   ok((mj.extensionsUsed ?? []).includes("KHR_texture_basisu"), "model textures are KTX2 (KHR_texture_basisu)");
   ok((mj.skins ?? []).length === 1, `exactly one skin (got ${(mj.skins ?? []).length})`);
   const tris = triangles(mj);
-  ok(tris >= 8000 && tris <= 40000, `triangles ${tris} in 8k..40k`);
-  ok((mj.materials ?? []).length <= 2, `materials ${(mj.materials ?? []).length} <= 2`);
+  ok(tris >= P.tris[0] && tris <= P.tris[1], `triangles ${tris} in ${P.tris[0]}..${P.tris[1]}`);
+  ok((mj.materials ?? []).length <= P.materials, `materials ${(mj.materials ?? []).length} <= ${P.materials}`);
+  if (P.requirePbr) {
+    // The runtime copy must still carry the authored PBR maps (compress.mjs prints what survived).
+    const mats = mj.materials ?? [];
+    ok(mats.some((m) => m.normalTexture), "PBR: a material keeps its normal map");
+    ok(mats.some((m) => m.pbrMetallicRoughness?.metallicRoughnessTexture), "PBR: a material keeps its metallic-roughness map");
+  }
   const jointNames = (mj.skins?.[0]?.joints ?? []).map((i) => mj.nodes[i].name ?? "");
   const allNodeNames = mj.nodes.map((n) => n.name ?? "");
   const miss = missingParts(allNodeNames);
@@ -112,7 +155,7 @@ function main(dir) {
     const k = model.bin.subarray(at, at + 32);
     if (ok(k[1] === 0x4b && k[2] === 0x54 && k[3] === 0x58, `image ${i} is KTX2`)) {
       const w = k.readUInt32LE(20), h = k.readUInt32LE(24);
-      ok(w <= 1024 && h <= 1024, `image ${i} ${w}x${h} <= 1024`);
+      ok(w <= P.tex && h <= P.tex, `image ${i} ${w}x${h} <= ${P.tex}`);
     }
   }
 
@@ -164,6 +207,61 @@ function main(dir) {
     for (const [key, name] of Object.entries(NAMES)) {
       const a = anims.find((x) => x.name === name);
       if (ok(!!a, `animation "${name}" present`)) checkClip(key, mj, a, name);
+    }
+  }
+
+  // -------------------------------------------------------------- modular parts (optional)
+  // A modular character (the protagonist) also ships swappable heads and body skin textures.
+  // Contract: docs/handoff/protagonist-male.md.
+  const headsDir = join(dir, "heads"), skinsDir = join(dir, "complexions");
+  if (existsSync(headsDir) || existsSync(skinsDir) || manifest.modular) {
+    const mod = manifest.modular ?? {};
+    ok(!!manifest.modular, "manifest.modular present (heads and complexions listed)");
+    const heads = mod.heads ?? {}, skins = mod.complexions ?? {};
+    const headFiles = existsSync(headsDir) ? readdirSync(headsDir).filter((f) => f.endsWith(".glb")) : [];
+    const skinFiles = existsSync(skinsDir) ? readdirSync(skinsDir).filter((f) => f.endsWith(".ktx2")) : [];
+    ok(headFiles.length >= 1, `heads/ has at least one head (got ${headFiles.length})`);
+    ok(!!heads[mod.defaultHead], `manifest.modular.defaultHead "${mod.defaultHead}" is a listed head`);
+    for (const f of headFiles) ok(Object.values(heads).some((h) => h.file === `heads/${f}`), `heads/${f} listed in manifest.modular.heads`);
+    for (const f of skinFiles) ok(Object.values(skins).some((s) => s.file === `complexions/${f}`), `complexions/${f} listed in manifest.modular.complexions`);
+    // Same skeleton, same rest pose: a head is bound to the body's bones by name at runtime.
+    const bodyNodes = new Map(mj.nodes.map((n) => [n.name ?? "", n]));
+    const near = (a = [0, 0, 0], b = [0, 0, 0]) => a.every((v, i) => Math.abs(v - b[i]) < 1e-4);
+    for (const [hid, h] of Object.entries(heads)) {
+      const p = join(dir, h.file ?? "");
+      if (!ok(!!h.file && existsSync(p), `head ${hid}: file ${h.file}`)) continue;
+      ok(!!skins[h.complexion], `head ${hid}: paired complexion "${h.complexion}" is listed`);
+      ok(typeof h.meshyTaskId === "string" && h.meshyTaskId.length > 0, `head ${hid}: meshyTaskId recorded`);
+      ok(sheets.some((f) => f.endsWith(`_${hid}_face.png`)), `head ${hid}: three.js face sheet in previews/threejs/`);
+      const hg = readGlb(p), hj = hg.json;
+      ok(hg.bytes <= P.headBytes, `head ${hid}: size ${kb(hg.bytes)} <= ${kb(P.headBytes)}`);
+      ok((hj.extensionsUsed ?? []).some((e) => /meshopt_compression$/.test(e)) && (hj.extensionsUsed ?? []).includes("KHR_mesh_quantization"),
+        `head ${hid}: meshopt + quantization`);
+      ok((hj.extensionsUsed ?? []).includes("KHR_texture_basisu"), `head ${hid}: KTX2 texture`);
+      ok((hj.skins ?? []).length === 1, `head ${hid}: exactly one skin`);
+      ok((hj.animations ?? []).length === 0, `head ${hid}: no animations (clips live in the body file)`);
+      ok((hj.materials ?? []).length <= P.headMaterials, `head ${hid}: materials ${(hj.materials ?? []).length} <= ${P.headMaterials}`);
+      if (P.requirePbr) ok((hj.materials ?? []).some((m) => m.normalTexture), `head ${hid}: PBR: a material keeps its normal map`);
+      const ht = triangles(hj);
+      ok(ht >= P.headTris[0] && ht <= P.headTris[1], `head ${hid}: triangles ${ht} in ${P.headTris[0]}..${P.headTris[1]}`);
+      const hjoints = (hj.skins?.[0]?.joints ?? []).map((i) => hj.nodes[i]);
+      const stray = hjoints.filter((n) => !bodyNodes.has(n.name ?? "")).map((n) => n.name);
+      ok(stray.length === 0, `head ${hid}: every joint is a body bone${stray.length ? ` (unknown: ${stray.join(", ")})` : ""}`);
+      const moved = hjoints.filter((n) => {
+        const b = bodyNodes.get(n.name ?? "");
+        return b && !(near(n.translation, b.translation) && near(n.rotation ?? [0, 0, 0, 1], b.rotation ?? [0, 0, 0, 1]));
+      }).map((n) => n.name);
+      ok(moved.length === 0, `head ${hid}: rest pose matches the body skeleton${moved.length ? ` (differs: ${moved.join(", ")})` : ""}`);
+    }
+    for (const [cid, s] of Object.entries(skins)) {
+      const p = join(dir, s.file ?? "");
+      if (!ok(!!s.file && existsSync(p), `complexion ${cid}: file ${s.file}`)) continue;
+      const k = readFileSync(p);
+      if (ok(k[1] === 0x4b && k[2] === 0x54 && k[3] === 0x58, `complexion ${cid}: is KTX2`)) {
+        const w = k.readUInt32LE(20), h = k.readUInt32LE(24);
+        ok(w <= P.skinTex && h <= P.skinTex, `complexion ${cid}: ${w}x${h} <= ${P.skinTex}`);
+      }
+      ok(k.length <= P.skinBytes, `complexion ${cid}: size ${kb(k.length)} <= ${kb(P.skinBytes)}`);
     }
   }
 
