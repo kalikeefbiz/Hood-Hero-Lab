@@ -113,7 +113,11 @@ test("simulation-resolved control change and successor appointment", async ({
   await expect(appointment).toBeEnabled();
   await shot(page, ".organization-panel", "07-underlord-successor");
   await tapUntil(page, appointment, () => ending.isVisible());
-  await expect(ending).toContainText("underlord");
+  await expect(ending).toContainText("You made it to the top");
+  await expect.poll(() => page.evaluate(
+    (key) => JSON.parse(localStorage.getItem(key)!).state.end,
+    AUTO_KEY,
+  )).toBe("underlord");
 });
 test("earned affiliation authority restriction and advancement use existing sponsorship", async ({
   page,
@@ -130,9 +134,11 @@ test("earned affiliation authority restriction and advancement use existing spon
   s.characters.justice.relationships.player.trust = 60;
   await seed(page, s);
   await nav(page, "Set");
-  await page
-    .getByRole("button", { name: "Ask to move up · 1 AP" })
-    .click();
+  const promote = page.getByRole("button", { name: "Ask to move up · 1 AP" });
+  await tapUntil(page, promote, () => page.evaluate(
+    (key) => JSON.parse(localStorage.getItem(key)!).state.characters.player.authority === 25,
+    AUTO_KEY,
+  ));
   await expect(page.locator(".organization-panel")).toContainText(
     "Soldier",
   );
