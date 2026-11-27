@@ -7,7 +7,7 @@ import { underlordReady, consolidate } from "../src/tests/strategicFixtures";
 import { businessAction } from "../src/systems/Businesses";
 import { politicalAction } from "../src/systems/Politics";
 import { connect } from "../src/systems/Relationships";
-import type { GameState } from "../src/core/GameState";
+import { GAME_SAVE_VERSION, type GameState } from "../src/core/GameState";
 import { dismissEncounter } from "./helpers";
 const base = process.env.PLAYWRIGHT_BASE_PATH || "/";
 async function nav(page: Page, name: string) {
@@ -42,7 +42,7 @@ async function verifyBuild(page: Page) {
     const b = await r.json();
     expect(b.commit).toBe(process.env.PLAYWRIGHT_EXPECTED_COMMIT);
     expect(b.milestone).toBe("GOAL 011");
-    expect(b.saveSchema).toBe(10);
+    expect(b.saveSchema).toBe(GAME_SAVE_VERSION);
   }
 }
 test.beforeEach(async ({ page }) => verifyBuild(page));
@@ -93,7 +93,7 @@ test("actual local investment, contested map, autonomous decisions and persisted
   await dismissEncounter(page);
   await expect(page.locator(".game-shell")).toBeVisible();
 });
-test("simulation-resolved control change and council succession progression", async ({
+test("simulation-resolved control change and successor appointment", async ({
   page,
 }) => {
   const s = underlordReady();
