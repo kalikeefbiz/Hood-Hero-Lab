@@ -8,7 +8,7 @@ import { businessAction } from "../src/systems/Businesses";
 import { politicalAction } from "../src/systems/Politics";
 import { connect } from "../src/systems/Relationships";
 import { GAME_SAVE_VERSION, type GameState } from "../src/core/GameState";
-import { dismissEncounter, tapUntil } from "./helpers";
+import { dismissEncounter, navigate, tapUntil } from "./helpers";
 const base = process.env.PLAYWRIGHT_BASE_PATH || "/";
 async function nav(page: Page, name: string) {
   await page
@@ -26,7 +26,8 @@ async function seed(page: Page, s: GameState) {
     { key: SAVE_KEY, raw: serialize(s) },
   );
   await page.reload();
-  await page.getByRole("button", { name: "Resume saved game" }).click();
+  const resume = page.getByRole("button", { name: "Resume saved game" });
+  await tapUntil(page, resume, () => page.locator(".game-shell").isVisible());
   await dismissEncounter(page);
 }
 async function shot(page: Page, selector: string, name: string) {
@@ -96,14 +97,14 @@ test("actual local investment, contested map, autonomous decisions and persisted
 test("simulation-resolved control change and successor appointment", async ({
   page,
 }) => {
-  const s = underlordReady();
+  const s = underlordReady({ openCity: true });
   await seed(page, s);
   await page
     .getByRole("button", { name: "Select Downtown", exact: true })
     .click();
   await expect(page.locator(".control-label")).toContainText("Gabriel");
   await shot(page, ".city-layout", "03-control-change");
-  await nav(page, "Set");
+  await navigate(page, "Set");
   await expect(page.locator(".organization-panel")).toContainText(
     "hold 4 of 4 neighborhoods",
   );
@@ -122,7 +123,7 @@ test("simulation-resolved control change and successor appointment", async ({
 test("earned affiliation authority restriction and advancement use existing sponsorship", async ({
   page,
 }) => {
-  let s = newGame("Test(7) Advancement", "south");
+  const s = newGame("Test(7) Advancement", "south", undefined, { openCity: true });
   s.day = 15;
   s.characters.player.affiliation = "backstreet";
   s.characters.player.authority = 10;
@@ -133,7 +134,7 @@ test("earned affiliation authority restriction and advancement use existing spon
   connect(s, "player", "justice");
   s.characters.justice.relationships.player.trust = 60;
   await seed(page, s);
-  await nav(page, "Set");
+  await navigate(page, "Set");
   const promote = page.getByRole("button", { name: "Ask to move up · 1 AP" });
   await tapUntil(page, promote, () => page.evaluate(
     (key) => JSON.parse(localStorage.getItem(key)!).state.characters.player.authority === 25,
