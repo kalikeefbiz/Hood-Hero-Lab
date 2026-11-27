@@ -1,3 +1,4 @@
+import { setImmediate as yieldToRunner } from "node:timers/promises";
 import { it, expect } from "vitest";
 import { base, at, person, ok, input } from "./robberyFixtures";
 import { player, cash, type GameState } from "../core/GameState";
@@ -38,7 +39,7 @@ import { acquire, supplierError } from "../systems/StreetEconomy";
 import { arrest } from "../systems/Incarceration";
 
 for (const days of [30, 60, 180])
-  it(`economy ${days} real days: supplies, opportunity limits, shares, pawn, storage, trapping, arrest and legal fallback`, () => {
+  it(`economy ${days} real days: supplies, opportunity limits, shares, pawn, storage, trapping, arrest and legal fallback`, async () => {
     let s = base(101),
       attempts = 0,
       homes = 0,
@@ -251,6 +252,8 @@ for (const days of [30, 60, 180])
       }
       s = deserialize(serialize(s));
       s = advanceDay(s);
+      // Let Vitest process progress messages while replaying the full campaign.
+      if ((d + 1) % 10 === 0) await yieldToRunner();
     }
     const p = skillsOf(player(s));
     console.log(

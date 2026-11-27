@@ -1,3 +1,4 @@
+import { setImmediate as yieldToRunner } from "node:timers/promises";
 import { describe, expect, it } from "vitest";
 import { newGame } from "../core/Simulation";
 import { advanceDay } from "../core/TimeSystem";
@@ -146,9 +147,12 @@ describe("living rivalry consequences", () => {
 
 it.each([17, 2026, 31415])(
   "passive campaign seed %i has autonomous territorial competition",
-  (seed) => {
+  async (seed) => {
     let s = newGame("Passive resident", "south", seed);
-    for (let d = 0; d < 365; d++) s = advanceDay(s);
+    for (let d = 0; d < 365; d++) {
+      s = advanceDay(s);
+      if ((d + 1) % 25 === 0) await yieldToRunner();
+    }
     expect(s.day).toBe(366);
     expect(s.end).toBeNull();
     const changes = Object.entries(s.strategic.territories).flatMap(
