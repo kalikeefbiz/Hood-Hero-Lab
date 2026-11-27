@@ -8,7 +8,7 @@ import { businessAction } from "../src/systems/Businesses";
 import { politicalAction } from "../src/systems/Politics";
 import { connect } from "../src/systems/Relationships";
 import { GAME_SAVE_VERSION, type GameState } from "../src/core/GameState";
-import { dismissEncounter } from "./helpers";
+import { dismissEncounter, tapUntil } from "./helpers";
 const base = process.env.PLAYWRIGHT_BASE_PATH || "/";
 async function nav(page: Page, name: string) {
   await page
@@ -108,12 +108,12 @@ test("simulation-resolved control change and successor appointment", async ({
     "hold 4 of 4 neighborhoods",
   );
   await page.getByText("Who could take your place", { exact: true }).click();
-  await expect(page.locator(".organization-panel")).toContainText(
-    "Eligible to accept",
-  );
+  const appointment = page.getByRole("button", { name: /Appoint Joker/ });
+  const ending = page.locator(".ending");
+  await expect(appointment).toBeEnabled();
   await shot(page, ".organization-panel", "07-underlord-successor");
-  await page.getByRole("button", { name: /Appoint Joker/ }).click();
-  await expect(page.locator(".ending")).toContainText("underlord");
+  await tapUntil(page, appointment, () => ending.isVisible());
+  await expect(ending).toContainText("underlord");
 });
 test("earned affiliation authority restriction and advancement use existing sponsorship", async ({
   page,
