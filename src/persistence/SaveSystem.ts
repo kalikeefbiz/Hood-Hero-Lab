@@ -1,3 +1,9 @@
+import {
+  campaignSimulationSnapshot,
+  withSimulationSnapshot,
+} from "./SimulationSnapshot";
+import { eventPlace } from "../core/WorldEvents";
+import { registerReservoirResidents } from "../core/Simulation";
 import { BALANCE } from "../content/balance";
 import { CYCLE_MS } from "../content/worldClock";
 import { validateRobberyCareer } from "../systems/RobberyCareer";
@@ -68,6 +74,7 @@ const character = z.object({
   home: zone,
   affiliation: faction.nullable(),
   status: z.enum(["active", "arrested", "dead", "laying-low"]),
+  hospitalizationEventId: id.optional(),
   availableDay: integer,
   lastActionDay: integer,
   traits: z.object({ loyalty: n, ambition: n, risk: n, lawful: n }),
@@ -131,6 +138,7 @@ const presenceSchema = z.object({
   }),
 });
 const schema = z.object({
+  sim: z.unknown().optional(),
   robberyCareer: robberyCareerSchema,
   inventory: inventoryStateSchema,
   residences: record(residenceSchema),
@@ -253,6 +261,16 @@ const schema = z.object({
       factionId: faction.optional(),
       presentationKey: id.optional(),
       expiresOnIncidentClose: z.boolean().optional(),
+      world: z.object({
+        kind: z.enum(["crime", "disturbance", "violence", "injury", "death", "arrest", "release", "faction-development", "territory-change"]),
+        zone: zone.optional(),
+        locationId: id.optional(),
+        subjectId: id.optional(),
+        sourceEventId: id.optional(),
+        transition: z.enum(["hospital-admission", "hospital-discharge", "custody-start", "custody-end"]).optional(),
+        previousController: faction.nullable().optional(),
+        controller: faction.nullable().optional(),
+      }).optional(),
     }),
   ),
   commitments: z.array(
@@ -424,6 +442,11 @@ const schema = z.object({
     .enum(["legitimate-exit", "underlord", "arrested", "killed"])
     .nullable(),
 });
+const saveEnvelope = z.object({
+  format: z.literal("syndicate"),
+  version: z.literal(GAME_SAVE_VERSION),
+  state: schema,
+});
 // The strategy-board lab keeps its own slots so it can never touch saves from
 // the production game, even on the same web origin.
 // The /next/ preview build sets VITE_SAVE_SUFFIX so it never reads or
@@ -433,7 +456,8 @@ export const SAVE_KEY =
   ((import.meta.env?.VITE_SAVE_SUFFIX as string | undefined) ?? "");
 export const AUTO_KEY = SAVE_KEY + ".auto";
 export function serialize(s: GameState): string {
-  return JSON.stringify({ format: "syndicate", version: s.version, state: s });
+  const state = s.sim === undefined ? s : withSimulationSnapshot(s, s.sim);
+  return JSON.stringify({ format: "syndicate", version: s.version, state });
 }
 export function deserialize(raw: string): GameState {
   let parsed: unknown;
@@ -444,20 +468,16 @@ export function deserialize(raw: string): GameState {
       "Save could not be read. Your existing game has not been changed.",
     );
   }
-  const envelope = z
-    .object({
-      format: z.literal("syndicate"),
-      version: z.literal(GAME_SAVE_VERSION),
-      state: schema,
-    })
-    .safeParse(parsed);
+  const envelope = saveEnvelope.safeParse(parsed);
   if (!envelope.success)
     throw new Error(
       `Incompatible or damaged save. Expected Hood Hero Lab save version ${GAME_SAVE_VERSION}. Start a new test run from the new game menu.`,
     );
-  const s: GameState = envelope.data.state;
+  const { sim, ...data } = envelope.data.state;
+  const s: GameState = data;
+  const eventIds = new Set(s.events.map(({ id }) => id));
   validateRobberyReferences(s);
-  const life = envelope.data.state.streetLife;
+  const life = data.streetLife;
   if (
     [life.giftLot, life.starterLot].some(
       (id) =>
@@ -466,14 +486,14 @@ export function deserialize(raw: string): GameState {
           (l) => l.id === id && l.owner === s.playerId && l.received === 6,
         ),
     ) ||
-    (life.workEvent && !s.events.some((e) => e.id === life.workEvent)) ||
+    (life.workEvent && !eventIds.has(life.workEvent)) ||
     life.tribute.some(
       (t) =>
         t.throughDay !== t.day + 2 ||
         t.day > s.day ||
-        !s.events.some((e) => e.id === t.eventId),
+        !eventIds.has(t.eventId),
     ) ||
-    (life.aftermathEvent && !s.events.some((e) => e.id === life.aftermathEvent))
+    (life.aftermathEvent && !eventIds.has(life.aftermathEvent))
   )
     throw new Error("Invalid street-life records.");
   validateDangerReferences(s);
@@ -502,15 +522,15 @@ export function deserialize(raw: string): GameState {
       ([zone, t]) =>
         t.controller !== s.zones[zone as keyof typeof s.zones].controller ||
         t.controlSince > s.day ||
-        !t.changes.every((c) => s.events.some((e) => e.id === c.eventId)),
+        !t.changes.every((c) => eventIds.has(c.eventId)),
     ) ||
     strategy.effects.some(
       (x) =>
-        !s.events.some((e) => e.id === x.eventId) ||
+        !eventIds.has(x.eventId) ||
         (!exists(x.actor) && !s.factions[x.actor as keyof typeof s.factions]),
     ) ||
     Object.values(strategy.strategies).some(
-      (x) => !x.history.every((h) => s.events.some((e) => e.id === h.eventId)),
+      (x) => !x.history.every((h) => eventIds.has(h.eventId)),
     ) ||
     new Set(strategy.businesses.map((b) => b.id)).size !==
       strategy.businesses.length ||
@@ -528,7 +548,7 @@ export function deserialize(raw: string): GameState {
           )),
     ) ||
     (strategy.ending &&
-      !s.events.some((e) => e.id === strategy.ending!.eventId))
+      !eventIds.has(strategy.ending.eventId))
   )
     throw new Error("Save contains invalid strategic or business references.");
   const invalidStreet =
@@ -597,7 +617,7 @@ export function deserialize(raw: string): GameState {
         (a.createdDay !== undefined &&
           a.reserve !== (a.status === "pending" ? a.balance : 0)) ||
         a.collections?.some(
-          (c) => c.day > s.day || !s.events.some((e) => e.id === c.eventId),
+          (c) => c.day > s.day || !eventIds.has(c.eventId),
         ) ||
         (a.createdDay !== undefined &&
           (a.createdDay > s.day ||
@@ -620,21 +640,21 @@ export function deserialize(raw: string): GameState {
             c.actor === a.debtor &&
             c.requester === a.supplier,
         ) ||
-        !a.history.every((id) => s.events.some((e) => e.id === id)),
+        !a.history.every((id) => eventIds.has(id)),
     ) ||
     st.transactions.some(
       (t) =>
         !exists(t.actor) ||
         (t.partner && !exists(t.partner)) ||
         !st.lots.some((l) => l.id === t.lotId && l.owner === t.actor) ||
-        !s.events.some((e) => e.id === t.eventId),
+        !eventIds.has(t.eventId),
     ) ||
     st.custody.some(
       (r) =>
         !exists(r.character) ||
         (r.releaseDay !== null &&
           (r.releaseDay < r.arrestDay ||
-            !s.events.some((e) => e.id === r.eventId))),
+            !eventIds.has(r.eventId))),
     ) ||
     Object.keys(st.exposure).some((id) => !exists(id));
   if (invalidStreet)
@@ -644,8 +664,9 @@ export function deserialize(raw: string): GameState {
     new Set(s.crew.members).size !== s.crew.members.length ||
     s.crew.members.length > s.crew.capacity ||
     !s.crew.members.every(exists) ||
-    Object.values(s.characters).some(
-      (c) =>
+    Object.entries(s.characters).some(
+      ([id, c]) =>
+        id !== c.id ||
         !c.known.every(exists) ||
         new Set(c.connections).size !== c.connections.length ||
         !c.connections.every((id) => exists(id) && c.known.includes(id)),
@@ -670,7 +691,7 @@ export function deserialize(raw: string): GameState {
         !JOBS.some((j) => j.id === e.jobId) ||
         new Set(e.attendance.map((a) => a.day)).size !== e.attendance.length ||
         ![...e.eventIds, ...e.attendance.map((a) => a.eventId)].every((id) =>
-          s.events.some((x) => x.id === id),
+          eventIds.has(id),
         ),
     ) ||
     new Set(
@@ -694,7 +715,7 @@ export function deserialize(raw: string): GameState {
             (c) => c.id === a.commitmentId && c.kind === "crew-activity",
           )) ||
         (a.offerId && !s.crewOffers.some((o) => o.id === a.offerId)) ||
-        !a.eventIds.every((id) => s.events.some((e) => e.id === id)),
+        !a.eventIds.every((id) => eventIds.has(id)),
     ) ||
     s.crewOffers.some(
       (o) =>
@@ -707,7 +728,7 @@ export function deserialize(raw: string): GameState {
         !ENCOUNTERS.some((d) => d.id === e.definitionId) ||
         !e.participants.every(exists) ||
         (e.crewOfferId && !s.crewOffers.some((o) => o.id === e.crewOfferId)) ||
-        (e.sourceEventId && !s.events.some((x) => x.id === e.sourceEventId)) ||
+        (e.sourceEventId && !eventIds.has(e.sourceEventId)) ||
         (e.incidentId && !s.incidents[e.incidentId]),
     ) ||
     new Set(
@@ -726,7 +747,18 @@ export function deserialize(raw: string): GameState {
         s.crewOffers.length
   )
     throw new Error("Save contains missing or invalid world references.");
+  if (s.events.some(({ world }) => world && (
+      (world.sourceEventId && !eventIds.has(world.sourceEventId)) ||
+      (world.subjectId && !Object.hasOwn(s.characters, world.subjectId)) ||
+      (world.locationId && (!world.zone || eventPlace(world.locationId).zone !== world.zone))
+    )) || Object.values(s.characters).some((actor) =>
+      actor.hospitalizationEventId && !eventIds.has(actor.hospitalizationEventId)
+    ))
+    throw new Error("Save contains missing or invalid world event references.");
   validateRobberyCareer(s);
+  registerReservoirResidents(s);
+  const snapshot = campaignSimulationSnapshot(s, sim);
+  if (snapshot) s.sim = snapshot;
   return s;
 }
 export function saveGame(storage: Storage, s: GameState, key = SAVE_KEY) {

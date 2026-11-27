@@ -2,8 +2,7 @@ import { interruptSession } from "./SessionLifecycle";
 import { type GameState, player } from "../core/GameState";
 import { BALANCE } from "../content/balance";
 import { STRATEGY_BALANCE as B } from "../content/strategy";
-import { stabilizedControl } from "./Territory";
-import { successorError } from "./Politics";
+import { underlordProgress } from "./gang/Authority";
 import { record } from "../core/EventLog";
 export function legitimateProgress(s: GameState) {
   const p = player(s),
@@ -65,14 +64,7 @@ export function evaluateEnd(s: GameState): GameState["end"] {
   if (p.status === "dead") return "killed";
   if (s.progression.retired && !legitimateProgress(s).missing.length)
     return "legitimate-exit";
-  if (
-    p.affiliation &&
-    p.authority >= BALANCE.underlordAuthority &&
-    stabilizedControl(s, p.affiliation) >= BALANCE.underlordZones &&
-    s.crew.successor &&
-    !successorError(s, s.crew.successor)
-  )
-    return "underlord";
+  if (underlordProgress(s).eligible) return "underlord";
   return null;
 }
 export function finalizeEnding(s: GameState) {

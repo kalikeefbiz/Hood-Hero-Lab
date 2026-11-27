@@ -30,12 +30,10 @@ export function advancePressure(s: GameState) {
         `${c.name} was killed in the fighting with a rival set.`,
         [c.id],
         ["player", c.id],
-        s.crew.members.includes(c.id)
-          ? {
-              importance: "critical",
-              title: `${c.name} is gone`,
-            }
-          : {},
+        {
+          ...(s.crew.members.includes(c.id) ? { importance: "critical", title: `${c.name} is gone` } : {}),
+          world: { kind: "death", subjectId: c.id },
+        },
       );
     }
     c.police = clamp(c.police - B.policeDecay);

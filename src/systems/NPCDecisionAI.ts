@@ -1,3 +1,4 @@
+import { isReservoirResidentAddition } from "../content/reservoirResidents";
 import { proficiency } from "./Skills";
 import { considerCrewOffer } from "./CrewAgency";
 import { shiftToday } from "./Employment";
@@ -8,11 +9,12 @@ import {
   validateAction,
   type Action,
 } from "../core/ActionEngine";
-// Utility scores derive from goals, needs, values, memories and obligations.
-function decide(s: GameState, c: Character): Action | null {
-  if (
+export function npcCanTakeDailyAction(s: GameState, c: Character) {
+  return !(
     c.status !== "active" ||
     c.availableDay > s.day ||
+    c.lastActionDay >= s.day ||
+    c.agency.lastAssignmentDay === s.day ||
     s.commitments.some(
       (o) =>
         o.actor === c.id &&
@@ -22,25 +24,32 @@ function decide(s: GameState, c: Character): Action | null {
         o.kind !== "recover-property" &&
         (o.kind !== "crew-activity" || o.dueDay === s.day),
     )
-  )
-    return null;
+  );
+}
+
+// The expanded cast gets deterministic draws without rerolling existing actors
+// or the opening story's shared stream when new options become available.
+function residentDraw(s: GameState, id: string) {
+  let rng = s.rng ^ s.day;
+  for (const code of id) rng = Math.imul(rng ^ code.charCodeAt(0), 16777619);
+  return { rng: rng >>> 0 };
+}
+
+// Utility scores derive from goals, needs, values, memories and obligations.
+function decide(s: GameState, c: Character, expandedResident: boolean): Action | null {
+  if (!npcCanTakeDailyAction(s, c)) return null;
   if (shiftToday(s, c.id)) return { actor: c.id, type: "work" };
   const options: { action: Action; score: number }[] = [];
   const add = (action: Action, score: number) => {
-    if (!validateAction(s, action))
-      options.push({
-        action,
-        score:
-          score +
-          random(
-            action.target === "contact-angels"
-              ? (s.streetLife ?? s.quanny)
-              : action.target && ["quanny", "mr-lewis"].includes(action.target)
-                ? s.quanny
-                : s,
-          ) *
-            5,
-      });
+    if (validateAction(s, action)) return;
+    const target = action.target;
+    let stream: Pick<GameState, "rng"> = s;
+    if (!expandedResident && target) {
+      if (target === "contact-angels") stream = s.streetLife ?? s.quanny;
+      else if (target === "quanny" || target === "mr-lewis") stream = s.quanny;
+      else if (isReservoirResidentAddition(target)) stream = residentDraw(s, target);
+    }
+    options.push({ action, score: score + random(stream) * 5 });
   };
   add(
     { actor: c.id, type: "gig" },
@@ -84,22 +93,23 @@ export function advanceNPCs(s: GameState) {
   )) {
     if (c.id === s.playerId) continue;
     const authored = ["quanny", "mr-lewis", "contact-angels"].includes(c.id),
+      resident = isReservoirResidentAddition(c.id),
       previousRng = s.rng;
     if (authored)
       s.rng =
         c.id === "contact-angels" ? (s.streetLife?.rng ?? 11011) : s.quanny.rng;
+    if (resident) s.rng = residentDraw(s, c.id).rng;
     try {
       considerCrewOffer(s, c);
-      if (c.agency.lastAssignmentDay === s.day) continue;
-      const action = decide(s, c);
+      const action = decide(s, c, resident);
       if (action) resolveAction(s, action);
     } finally {
       if (authored) {
         if (c.id === "contact-angels") {
           if (s.streetLife) s.streetLife.rng = s.rng;
         } else s.quanny.rng = s.rng;
-        s.rng = previousRng;
       }
+      if (authored || resident) s.rng = previousRng;
     }
   }
 }

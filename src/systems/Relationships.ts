@@ -43,27 +43,57 @@ export function change(
       100,
     );
 }
+function seedRelationship(s: GameState, a: Character, b: Character) {
+  if (a.id === b.id) return;
+  if (a.affiliation && a.affiliation === b.affiliation) {
+    change(a, b.id, {
+      trust: 18 + a.traits.loyalty / 10,
+      respect: b.influence / 5,
+    });
+    a.known.push(b.id);
+  } else if (a.home === b.home) {
+    change(a, b.id, { trust: 8 });
+    a.known.push(b.id);
+  } else if (
+    a.affiliation &&
+    b.affiliation &&
+    s.factions[a.affiliation].enemies.includes(b.affiliation)
+  ) {
+    change(a, b.id, { trust: -20, grievance: 15 });
+  }
+}
+
+/** Seed only pairs involving a newly registered resident. Existing ties stay intact. */
+export function initializeResidentRelationships(s: GameState, added: ReadonlySet<string>) {
+  if (!added.size) return;
+  const residents = [...added].map((id) => s.characters[id]);
+  const existing = Object.values(s.characters);
+  for (const resident of residents) {
+    for (const other of existing) seedRelationship(s, resident, other);
+    // New residents know their local network. Let introductions still establish
+    // player access instead of making the whole expanded cast immediate contacts.
+    resident.connections = resident.known.filter((id) => id !== s.playerId);
+  }
+  for (const [contactId, residentId, trust, affection] of [
+    ["quanny", "baby-reek", 18, 35],
+    ["contact-blocks", "ty-ty", 0, 0],
+    ["resident-reservoir", "miss-denise", 0, 0],
+  ] as const) {
+    const contact = s.characters[contactId];
+    const resident = s.characters[residentId];
+    if (!contact || !resident || !added.has(residentId)) continue;
+    if (contactId === "quanny" && contact.affiliation !== resident.affiliation) continue;
+    seedRelationship(s, contact, resident);
+    connect(s, contact.id, resident.id);
+    change(contact, resident.id, { trust, affection });
+    change(resident, contact.id, { trust, affection });
+  }
+}
+
 export function initializeRelationships(s: GameState) {
   const chars = Object.values(s.characters);
   for (const a of chars)
-    for (const b of chars) {
-      if (a.id === b.id) continue;
-      if (a.affiliation && a.affiliation === b.affiliation) {
-        change(a, b.id, {
-          trust: 18 + a.traits.loyalty / 10,
-          respect: b.influence / 5,
-        });
-        a.known.push(b.id);
-      } else if (a.home === b.home) {
-        change(a, b.id, { trust: 8 });
-        a.known.push(b.id);
-      } else if (
-        a.affiliation &&
-        b.affiliation &&
-        s.factions[a.affiliation].enemies.includes(b.affiliation)
-      )
-        change(a, b.id, { trust: -20, grievance: 15 });
-    }
+    for (const b of chars) seedRelationship(s, a, b);
   for (const [a, b] of [
     ["player", "mega"],
     ["mega", "player"],

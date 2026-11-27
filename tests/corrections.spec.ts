@@ -1,3 +1,4 @@
+import { GAME_SAVE_VERSION } from "../src/core/GameState";
 import { newGame as legacyGame } from "../src/tests/legacyGame";
 import { AUTO_KEY, SAVE_KEY, serialize } from "../src/persistence/SaveSystem";
 import { openJournal } from "./journal";
@@ -80,7 +81,7 @@ test.beforeEach(async ({ page }) => {
     const b = await r.json();
     expect(b.commit).toBe(process.env.PLAYWRIGHT_EXPECTED_COMMIT);
     expect(b.milestone).toBe("GOAL 011");
-    expect(b.saveSchema).toBe(10);
+    expect(b.saveSchema).toBe(GAME_SAVE_VERSION);
   }
 });
 test("Actions separate Streets, Honest and Connects; completed reach-out returns to Streets", async ({

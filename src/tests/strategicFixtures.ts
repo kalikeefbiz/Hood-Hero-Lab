@@ -46,8 +46,8 @@ export function consolidate(
   }
   return s;
 }
-export function underlordReady() {
-  const s = newGame("Test(7) Council", "rio");
+export function underlordReady({ openCity = false } = {}) {
+  const s = newGame("Test(7) Council", "rio", undefined, { openCity });
   s.characters.player.affiliation = "angels";
   s.characters.player.authority = 70;
   s.day = 90;

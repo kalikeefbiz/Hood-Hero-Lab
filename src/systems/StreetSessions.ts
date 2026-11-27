@@ -1,7 +1,7 @@
+import { eventPlace } from "../core/WorldEvents";
 import { carriedLotQuantity } from "./Inventory";
 import { lessonError, workIntroError } from "./StreetAccess";
-import { progress } from "./Progression";
-import { finalizeEnding } from "./EndConditions";
+import { settlePlayerProgress } from "./Progression";
 import { finishSessionPartner, interruptSession } from "./SessionLifecycle";
 import { z } from "zod";
 import { player, type GameState } from "../core/GameState";
@@ -257,13 +257,15 @@ export function advanceStreetSession(
     addExposure(s, s.playerId, session.zone, 4, true);
     session.lastText =
       "Word’s getting around that you’re working this block.";
-    record(s, "risk", session.lastText, [s.playerId]);
+    record(s, "risk", session.lastText, [s.playerId], undefined,
+      { world: { kind: "crime", ...eventPlace(session.location) } });
   } else if (beat.kind === "patrol") {
     session.lastText =
       "A police patrol rolls up.";
-    record(s, "risk", session.lastText, [s.playerId]);
+    const patrol = record(s, "risk", session.lastText, [s.playerId], undefined,
+      { world: { kind: "disturbance", ...eventPlace(session.location) } });
     if (random(s) < transactionArrestChance(s, s.playerId, session.zone))
-      arrest(s, s.playerId, "police patrol during street work", 1);
+      arrest(s, s.playerId, "police patrol during street work", 1, patrol.id);
   } else if (beat.kind === "rival") {
     expose(s, session.location, "activity", key);
     session.lastText =
@@ -274,8 +276,7 @@ export function advanceStreetSession(
   session.totals.heat += Math.max(0, player(s).police - heat);
   session.settled.push(key);
   session.cursor++;
-  progress(s);
-  finalizeEnding(s);
+  settlePlayerProgress(s);
   syncEncounters(s);
   const reason = interruption(s);
   if (reason || session.cursor === session.beats.length || !saleLot(s)) {

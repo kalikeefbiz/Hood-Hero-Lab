@@ -1,3 +1,4 @@
+import { QUANNY_HOME } from "./QuannyState";
 import { gain, gainError, receivePhysical } from "./Inventory";
 import { awardSkill } from "./Skills";
 import { player, cash, type GameState, type Incident } from "../core/GameState";
@@ -264,7 +265,9 @@ export function payTribute(s: GameState) {
 export const LEWIS_DELIVERY_WAGE = 38;
 export function lawfulLewisError(s: GameState) {
   if (!s.streetLife || s.streetLife.scenes.lewis) return "This delivery is unavailable.";
-  if (!atPerson(s, "mr-lewis")) return "Find Mr. Lewis at the market.";
+  const lewis = s.characters["mr-lewis"];
+  if (presenceOf(s).location !== QUANNY_HOME || lewis?.status !== "active" || lewis.availableDay > s.day)
+    return "Find Mr. Lewis at the market.";
   if (!safeStory(s)) return "Finish what you’re doing first.";
   return s.ap < 1 ? "You need 1 AP." : null;
 }

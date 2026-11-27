@@ -15,7 +15,7 @@ export const STRATEGY_BALANCE = {
 export const AUTHORITY_STAGES = [
   {
     authority: 10,
-    name: "Member",
+    name: "Recruit",
     standing: 35,
     contribution: 0,
     days: 0,
@@ -24,7 +24,7 @@ export const AUTHORITY_STAGES = [
   },
   {
     authority: 25,
-    name: "Contributor",
+    name: "Soldier",
     standing: 50,
     contribution: 100,
     days: 10,
@@ -33,7 +33,7 @@ export const AUTHORITY_STAGES = [
   },
   {
     authority: 45,
-    name: "Organizer",
+    name: "Big Homie",
     standing: 65,
     contribution: 300,
     days: 30,
@@ -42,14 +42,14 @@ export const AUTHORITY_STAGES = [
   },
   {
     authority: 70,
-    name: "Succession council",
+    name: "King Pin",
     standing: 80,
     contribution: 700,
     days: 60,
     trust: 60,
     permission: "Name someone to take your place",
   },
-];
+] as const;
 export const BUSINESSES = [
   {
     id: "repair",

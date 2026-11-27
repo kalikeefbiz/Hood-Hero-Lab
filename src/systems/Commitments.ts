@@ -1,3 +1,4 @@
+import { applyFactionConsequences } from "./gang/Consequences";
 import { applyInfluence } from "./Territory";
 import type {
   Commitment,
@@ -76,6 +77,7 @@ export function finishCommitment(
   if (
     c.actor === s.playerId &&
     status === "fulfilled" &&
+    (c.kind === "recover-property" || c.kind === "supplier-debt") &&
     requester.affiliation
   ) {
     applyInfluence(s, {
@@ -88,7 +90,7 @@ export function finishCommitment(
       cause: "A fulfilled commitment reinforced organizational reliability.",
     });
     if (s.characters[c.actor].affiliation === requester.affiliation)
-      s.strategic.contributions[requester.affiliation] += 8;
+      applyFactionConsequences(s, requester.affiliation, { contribution: 8 });
   }
   c.evidence = [...new Set(evidence)];
   const fulfilled = status === "fulfilled",

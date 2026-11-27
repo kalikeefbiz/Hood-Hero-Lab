@@ -1,3 +1,4 @@
+import { applyFactionConsequences } from "./gang/Consequences";
 import {
   clamp,
   type GameState,
@@ -10,6 +11,7 @@ import { STRATEGY_BALANCE as B } from "../content/strategy";
 import { EFFECT_KINDS } from "./StrategicTypes";
 import type {
   InfluenceEffect,
+  Foothold,
   StrategicState,
   Territory,
 } from "./StrategicTypes";
@@ -76,6 +78,18 @@ export function newStrategy(
     ending: null,
   };
 }
+/** Existing local adjustments that change a foothold without recognizing control. */
+export function adjustFoothold(
+  s: GameState,
+  zone: ZoneId,
+  faction: FactionId,
+  key: keyof Foothold,
+  delta: number,
+) {
+  const foothold = s.strategic.territories[zone].factions[faction];
+  foothold[key] = clamp(foothold[key] + delta);
+}
+
 // The small integration boundary: validates first, applies bounded deltas, and records evidence.
 // Controller writes are deliberately excluded; only resolveTerritories can recognize control.
 export function applyInfluence(s: GameState, effect: InfluenceEffect) {
@@ -94,11 +108,10 @@ export function applyInfluence(s: GameState, effect: InfluenceEffect) {
     throw new Error("Invalid influence effect");
   const magnitude = clamp(effect.magnitude, 0, B.effectCap),
     t = s.strategic.territories[effect.zone];
-  const q = effect.faction ? t.factions[effect.faction] : null;
-  if (q) {
-    const add = (key: keyof typeof q, n: number) => {
-      q[key] = clamp(q[key] + n);
-    };
+  const faction = effect.faction;
+  if (faction) {
+    const add = (key: keyof Foothold, n: number) =>
+      adjustFoothold(s, effect.zone, faction, key, n);
     switch (effect.kind) {
       case "economic":
         add("presence", magnitude * 0.3);
@@ -148,6 +161,7 @@ export function applyInfluence(s: GameState, effect: InfluenceEffect) {
       factionId: effect.faction ?? undefined,
       title: "Around the neighborhood",
       importance: "routine",
+      world: effect.faction ? { kind: "faction-development", zone: effect.zone } : undefined,
     },
   );
   s.strategic.effects.push({ ...effect, magnitude, day: s.day, eventId: e.id });
@@ -209,17 +223,8 @@ function changeControl(s: GameState, zone: ZoneId, to: FactionId | null) {
     from = t.controller;
   // Displaced local networks lose working capital; victories fund the new foothold.
   // Applied once per recognized transition, never again during load or inspection.
-  if (from) {
-    s.factions[from].resources = Math.max(0, s.factions[from].resources - 60);
-    s.factions[from].instability = clamp(s.factions[from].instability + 6);
-  }
-  if (to) {
-    s.factions[to].resources = Math.min(
-      B.resourceCap,
-      s.factions[to].resources + 40,
-    );
-    s.factions[to].instability = clamp(s.factions[to].instability - 2);
-  }
+  if (from) applyFactionConsequences(s, from, { resources: -60, instability: 6 });
+  if (to) applyFactionConsequences(s, to, { resources: 40, instability: -2 });
   const e = record(
     s,
     "city",
@@ -230,6 +235,7 @@ function changeControl(s: GameState, zone: ZoneId, to: FactionId | null) {
       title: to ? "Control changed" : "Control lost",
       importance: "major",
       factionId: to ?? from ?? undefined,
+      world: { kind: "territory-change", zone, previousController: from, controller: to },
     },
   );
   t.controller = to;
@@ -316,6 +322,7 @@ export function resolveTerritories(s: GameState) {
           title: `${z.name}: Rival pressure`,
           importance: "major",
           factionId: challenger,
+          world: { kind: "faction-development", zone: z.id },
         },
       );
     t.lawfulEconomy = clamp(

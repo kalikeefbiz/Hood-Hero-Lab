@@ -1,3 +1,4 @@
+import { applyFactionConsequences } from "./gang/Consequences";
 import { lessonError } from "./StreetAccess";
 import { awardSkill, proficiency, skillRank } from "./Skills";
 import { applyInfluence } from "./Territory";
@@ -452,20 +453,18 @@ export function resolveAssignment(s: GameState, a: CrewAssignment) {
       ? shareInformation(s, a)
       : `${c.name}: “I asked around. Nothing solid yet. I’ll keep my ears open.”`;
   if (a.success) {
+    const lawfulWork = a.activity === "work" || a.activity === "partner-gig";
+    const faction = !lawfulWork && c.affiliation === p.affiliation ? p.affiliation : null;
     applyInfluence(s, {
       actor: c.id,
       participants: [p.id],
-      faction: c.affiliation === p.affiliation ? p.affiliation : null,
+      faction,
       zone: c.home,
-      kind:
-        a.activity === "work" || a.activity === "partner-gig"
-          ? "economic"
-          : "community",
+      kind: lawfulWork ? "economic" : "community",
       magnitude: 1,
       cause: `${c.name} came through on what you planned, and the neighborhood noticed.`,
     });
-    if (p.affiliation && c.affiliation === p.affiliation)
-      s.strategic.contributions[p.affiliation] += 5;
+    if (faction) applyFactionConsequences(s, faction, { contribution: 5 });
     a.experience = Math.min(
       1,
       Math.max(0, CREW_BALANCE.growthCap - c.skills[a.skill]),

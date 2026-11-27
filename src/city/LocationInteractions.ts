@@ -56,6 +56,11 @@ import {
   validateStartStreetSession,
 } from "../systems/StreetSessions";
 import { resolveReservoirLocation } from "./reservoirLocations";
+import {
+  isCurrentPresenceTime,
+  STREET_SOCIAL_ACTIONS,
+  type PresenceTime,
+} from "./StreetInteractions";
 
 export {
   resolveReservoirLocation,
@@ -69,17 +74,12 @@ export interface LocationContext {
   propertyId?: string;
   /** Verified people at this location. Include the actor when acting as an NPC. */
   peopleHere?: readonly string[];
+  /** The integrated host includes authoritative campaign time with its observation. */
+  time?: PresenceTime;
 }
 
-const socialActions = [
-  "contact",
-  "socialize",
-  "inquire",
-  "introduce",
-  "offer",
-  "transfer",
-  "affiliate",
-] as const;
+const socialActions = [...STREET_SOCIAL_ACTIONS, "affiliate"] as const;
+const npcSettlementError = "The daily gameplay resolver settles NPC actions.";
 const deliveryTiming: ActionTiming = { durationMinutes: 60, endsDay: false };
 const businessActions = ["buy", "maintain", "sell", "close"] as const;
 type BusinessAction = (typeof businessActions)[number];
@@ -147,20 +147,22 @@ function inspect(state: GameState, context: LocationContext) {
       ? "Unknown property at this location."
       : !actor
         ? "Unknown actor."
-        : null;
+        : context.time !== undefined && !isCurrentPresenceTime(state, context.time)
+          ? "That observation is out of date."
+          : peopleHere !== undefined && !Array.isArray(peopleHere)
+            ? "That observation has no valid character list."
+            : null;
+  const observedPeople = Array.isArray(peopleHere) ? peopleHere : [];
   const presenceError = (
     isPlayer
       ? presenceOf(state).location === locationId
-      : peopleHere?.includes(actorId)
+      : observedPeople.includes(actorId)
   )
     ? null
     : "Actor must be at this location.";
   const actions: Binding[] = [];
   const daytime = worldTime(state).isDaytime;
-  const people = new Set(peopleHere);
-  // Story state can relocate Quanny during an active scene. Lewis runs the market.
-  if (quannyLocation(state) !== locationId) people.delete("quanny");
-  if (locationId !== QUANNY_HOME) people.delete("mr-lewis");
+  const people = new Set<string>(observedPeople);
 
   const add = (
     command: LocationCommand,
@@ -207,7 +209,15 @@ function inspect(state: GameState, context: LocationContext) {
       ACTIONS[type].label,
       isPlayer ? ACTIONS[type].ap : 0,
       () => actionExecutionError(state, action),
-      (decision) => performAction(state, action, { decision }),
+      (decision) =>
+        performAction(state, action, {
+          decision,
+          observedSocialContext:
+            location && targetId && isPlayer && context.time &&
+            (socialActions as readonly string[]).includes(type)
+              ? { zone: location.zone, locationId, peopleHere: observedPeople }
+              : undefined,
+        }),
       {
         ...quote,
         timing: isPlayer ? { durationMinutes, endsDay } : INSTANT_ACTION,
@@ -282,7 +292,11 @@ function inspect(state: GameState, context: LocationContext) {
       },
     );
   }
-  if (locationId === QUANNY_HOME && people.has("quanny")) {
+  if (
+    locationId === QUANNY_HOME &&
+    quannyLocation(state) === locationId &&
+    people.has("quanny")
+  ) {
     if (state.quanny.met) {
       engine("quanny", "quanny", { target: "quanny" });
     } else {
@@ -330,7 +344,7 @@ function inspect(state: GameState, context: LocationContext) {
     if (
       !here ||
       !encounter.participants.every(
-        (id) => id === actorId || peopleHere?.includes(id),
+        (id) => id === actorId || people.has(id),
       )
     )
       continue;
@@ -542,11 +556,15 @@ export function executeLocationAction(
   decision?: DayEndDecision,
 ) {
   const { action, error } = findCommand(state, context, command);
+  const blocked =
+    context.time !== undefined && context.actorId !== state.playerId
+      ? npcSettlementError
+      : null;
   const result =
     decision === "cancel"
       ? { state, error: null }
-      : error || !action
-        ? { state, error }
+      : error || blocked || !action
+        ? { state, error: error ?? blocked }
         : action.run(decision);
   const { actorId } = context;
   const next = result.state;
@@ -579,4 +597,39 @@ export function executeLocationAction(
         .map((tx) => tx.id),
     },
   };
+}
+
+export interface NpcPresenceObservation {
+  locationId: string;
+  propertyId?: string;
+  time: PresenceTime;
+  peopleHere: readonly string[];
+}
+
+export interface NpcLocationIntent {
+  actorId: string;
+  command: LocationCommand;
+  day: number;
+}
+
+/** Reserved for future integration. Physical routines do not settle gameplay actions. */
+export function executeNpcLocationIntent(
+  state: GameState,
+  intent: NpcLocationIntent,
+  presence: NpcPresenceObservation,
+) {
+  const { actorId, day } = intent;
+  const rejected = (error: string) => ({ state, error, eventIds: [] as string[] });
+  if (!Object.hasOwn(state.characters, actorId) || actorId === state.playerId)
+    return rejected("Choose a simulated character.");
+  if (day !== state.day || !isCurrentPresenceTime(state, presence.time))
+    return rejected("That observation is out of date.");
+  const location = resolveReservoirLocation(presence.locationId);
+  if (!location) return rejected("Unknown Reservoir location.");
+  if (presence.propertyId !== undefined &&
+      !location.properties.some(({ id }) => id === presence.propertyId)
+  ) return rejected("Unknown property at this location.");
+  if (!Array.isArray(presence.peopleHere) || !presence.peopleHere.includes(actorId))
+    return rejected("Actor must be at this location.");
+  return rejected(npcSettlementError);
 }

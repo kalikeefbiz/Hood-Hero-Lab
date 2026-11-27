@@ -1,3 +1,4 @@
+import { eventPlace } from "../core/WorldEvents";
 import { gain, gainError } from "./Inventory";
 import { lessonError } from "./StreetAccess";
 import {
@@ -234,6 +235,7 @@ export function resolveQuanny(
       const event = note(
         "“You see the wings, homie. Angels!” Quanny reaches for his gun and fires.",
       );
+      event.world = { kind: "violence", subjectId: p.id, ...eventPlace(state.location ?? undefined) };
       const c = addGrievance(
         s,
         q.id,

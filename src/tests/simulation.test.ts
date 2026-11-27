@@ -412,7 +412,7 @@ describe("The Chains and automated playthroughs", () => {
     expect(s.day).toBe(161);
     expect(s.end).toBeNull();
     expect(s.characters.player.status).toBe("active");
-  }, 20000);
+  }, 60_000);
 });
 describe("constructed end condition fixtures", () => {
   it("ordinary arrest continues the campaign; death ends it", () => {

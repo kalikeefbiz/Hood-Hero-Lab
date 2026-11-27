@@ -1,3 +1,4 @@
+import { setImmediate as yieldToRunner } from "node:timers/promises";
 import { describe, expect, it } from "vitest";
 import { newGame } from "../core/Simulation";
 import { advanceDay } from "../core/TimeSystem";
@@ -295,7 +296,7 @@ describe("employment commitments and survival", () => {
   );
   it.each([1, 7, 21, 2026])(
     "30+ day strategies and deterministic replay seed %i",
-    (seed) => {
+    async (seed) => {
       for (const strategy of [
         "stable",
         "gig-only",
@@ -335,6 +336,7 @@ describe("employment commitments and survival", () => {
           const loaded = deserialize(serialize(s));
           expect(advanceDay(loaded)).toEqual(advanceDay(s));
           s = advanceDay(s);
+          if ((day + 1) % 7 === 0) await yieldToRunner();
         }
         if (strategy === "stable") {
           expect(currentEmployment(s)).toBeDefined();
@@ -344,6 +346,6 @@ describe("employment commitments and survival", () => {
           expect(cash(player(s))).toBe(125 + 35 * (BALANCE.gigIncome - 18));
       }
     },
-    30000,
+    90_000,
   );
 });

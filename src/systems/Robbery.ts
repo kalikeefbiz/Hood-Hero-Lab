@@ -1,3 +1,4 @@
+import { eventPlace } from "../core/WorldEvents";
 import { ROBBERY_BALANCE } from "../content/robberyCareer";
 import { careerSessionSchema } from "./RobberyCareerState";
 import {
@@ -530,7 +531,7 @@ export function robberyInput(
     `${d.name}: ${success ? (partial ? "you left early with part of it" : "you got the payment") : "it went wrong and you got nothing"}${loot ? `, $${loot} in dirty cash` : ""}. People saw you.`,
     [s.playerId, j.source],
     undefined,
-    { importance: "major", title: "How the job went" },
+    { importance: "major", title: "How the job went", world: { kind: "crime", ...eventPlace(j.location) } },
   );
   s.robberies!.history.push({
     id: a.id,
@@ -606,7 +607,7 @@ export function robberyInput(
       ? " You earned Certified Combat."
       : "");
   if (!success && risk < d.risk) {
-    arrest(s, s.playerId, "witness report after robbery", 1);
+    arrest(s, s.playerId, "witness report after robbery", 1, e.id);
     a.text += " The police showed up.";
   } else if (!success && risk < d.risk + 0.18) {
     hospitalize(s, "assault", e.id);

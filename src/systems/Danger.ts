@@ -1,3 +1,4 @@
+import { eventCause, eventPlace } from "../core/WorldEvents";
 import { interruptSession } from "./SessionLifecycle";
 import { awardSkill, awardCombat, awardRobbery, proficiency, skillsOf, skillRank } from "./Skills";
 import { equipmentBonus } from "./Equipment";
@@ -179,6 +180,7 @@ export function violence(
   npc: Character,
   c: Conflict | undefined,
   war: boolean,
+  location = presenceOf(s).location,
 ) {
   const p = player(s),
     canKill = war || !!c?.lethal;
@@ -188,7 +190,7 @@ export function violence(
     s,
     "risk",
     fatal
-      ? `${name(npc)} recognized you in an active conflict. You were fatally shot at ${locationById(presenceOf(s).location)?.name}.`
+      ? `${name(npc)} recognized you in an active conflict. You were fatally shot at ${locationById(location)?.name}.`
       : shooting
         ? `${name(npc)} opened fire. You survived a shooting and were taken to hospital.`
         : `${name(npc)} assaulted you. You were taken to hospital to recover.`,
@@ -197,6 +199,7 @@ export function violence(
     {
       importance: "critical",
       title: fatal ? "Killed" : "In the hospital",
+      world: { kind: fatal ? "death" : "violence", subjectId: p.id, ...eventPlace(location) },
     },
   );
   const conflict =
@@ -220,15 +223,16 @@ export function violence(
   } else {
     hospitalize(s, shooting ? "shooting" : "assault", e.id);
     // Police respond to witnessed violence; criminal exposure, not victimhood, permits arrest.
-    const l = locationById(presenceOf(s).location)!;
+    const l = locationById(location)!;
     if (random(s) < s.zones[l.zone].police / 160) {
       record(
         s,
         "risk",
         "Police broke up the scene and took witness statements.",
-        [p.id, npc.id],
+        [p.id, npc.id], undefined,
+        { world: { kind: "disturbance", ...eventCause(s, e.id) } },
       );
-      if (random(s) < 0.25) arrest(s, npc.id, "witnessed assault", 1);
+      if (random(s) < 0.25) arrest(s, npc.id, "witnessed assault", 1, e.id);
     }
   }
   return e.text;
@@ -275,7 +279,9 @@ export function hospitalize(
     `You’ll be in the hospital for ${days} days. The bill is $${bill}: you paid $${paid}${bill - paid > 0 ? `, and $${bill - paid} goes on what you owe` : ""}. You can’t work until you’re out, and the city won’t wait.`,
     [p.id],
     [p.id],
-    { importance: "major", title: "Recovery and treatment" },
+    { importance: "major", title: "Recovery and treatment",
+      world: { kind: "injury", transition: "hospital-admission", subjectId: p.id, ...eventCause(s, eventId) },
+    },
   );
 }
 export function dischargePatient(s: GameState) {
@@ -289,7 +295,9 @@ export function dischargePatient(s: GameState) {
       s,
       "risk",
       "You’re out of the hospital. Whatever you missed while you were in is still waiting.",
-      [s.playerId],
+      [s.playerId], undefined,
+      { world: { kind: "release", transition: "hospital-discharge", subjectId: s.playerId,
+        sourceEventId: stay.eventId } },
     );
   }
 }
@@ -402,7 +410,8 @@ export function resolveStreetScene(
   let text: string;
   if (response === "disrespect") {
     text = `You brushed ${name(npc)} off. They didn’t take it well.`;
-    const e = record(s, "social", text, [p.id, npc.id]);
+    const e = record(s, "social", text, [p.id, npc.id], undefined,
+      { world: { kind: "disturbance", ...eventPlace(scene.location) } });
     c = addGrievance(
       s,
       npc.id,
@@ -413,7 +422,7 @@ export function resolveStreetScene(
     );
     scene.conflictId = c.id;
     // Some people walk off; some react now. An argument alone is never a lethal license.
-    if (random(s) < npc.traits.risk / 350) text = violence(s, npc, c, war);
+    if (random(s) < npc.traits.risk / 350) text = violence(s, npc, c, war, scene.location);
     else {
       text +=
         npc.authority >= 40
@@ -429,13 +438,13 @@ export function resolveStreetScene(
       awardSkill(s, p.id, "survival", 50, `escape:${c.id}`);
     }
     if ((war || c?.lethal) && random(s) < Math.max(.015, npc.traits.risk / 400 - proficiency(p, "survival") / 2000 - equipmentBonus(p).defense / 500))
-      text = violence(s, npc, c, war);
+      text = violence(s, npc, c, war, scene.location);
   } else if (
     response === "identify" &&
     war &&
     random(s) < npc.traits.risk / 170
   ) {
-    text = violence(s, npc, c, true);
+    text = violence(s, npc, c, true, scene.location);
   } else {
     const resolved =
       !c ||
@@ -482,6 +491,7 @@ export function expose(
   location: string,
   kind: "arrival" | "activity" | "linger",
   activityKey = "",
+  verifiedPeople?: readonly string[],
 ) {
   const l = locationById(location),
     p = player(s);
@@ -527,7 +537,8 @@ export function expose(
         `A stray bullet at ${l.name} ended your life. It wasn’t meant for you.`,
         [p.id],
         [p.id],
-        { importance: "critical", title: "Wrong place, wrong time" },
+        { importance: "critical", title: "Wrong place, wrong time",
+          world: { kind: "death", subjectId: p.id, ...eventPlace(location) } },
       );
       p.status = "dead";
       s.ap = 0;
@@ -540,6 +551,7 @@ export function expose(
     if (
       (npc.id === "quanny" && (!s.quanny.met || !s.quanny.claim)) ||
       npc.id === p.id ||
+      (verifiedPeople && !verifiedPeople.includes(npc.id)) ||
       npc.status !== "active" ||
       npc.availableDay > s.day
     )
@@ -590,7 +602,7 @@ export function expose(
       85,
     ) / 100;
   if ((war || c) && random(s) < force) {
-    violence(s, npc, c, war);
+    violence(s, npc, c, war, location);
     return;
   }
   const debt = s.street.agreements.find(
@@ -763,6 +775,7 @@ export function advanceConflicts(s: GameState) {
         `${name(a)} and ${name(b)} clashed over ${war ? "their organizations' ongoing war" : "an existing personal grievance"}.`,
         [a.id, b.id],
         [a.id, b.id],
+        { world: { kind: "disturbance" } },
       );
       addGrievance(
         s,
@@ -881,7 +894,9 @@ export function introductoryShooting(
         ".",
       [p.id],
       undefined,
-      { title: "Minor shooting injury", importance: "major" },
+      { title: "Minor shooting injury", importance: "major",
+        world: { kind: "injury", subjectId: p.id, ...eventCause(s, eventId) },
+      },
     );
     return "minor";
   }
@@ -905,7 +920,11 @@ export function initiateConflict(
     s,
     "risk",
     `${p.name} ${approach === "retaliate" ? "went after" : approach === "disrespect" ? "disrespected" : approach === "fight" ? "squared up with" : "tried to rob"} ${name(npc)}.`,
-    [p.id, npc.id],
+    [p.id, npc.id], undefined,
+    { world: {
+      kind: approach === "rob" ? "crime" : approach === "disrespect" ? "disturbance" : "violence",
+      subjectId: npc.id, ...eventPlace(presenceOf(s).location),
+    } },
   );
   const c = addGrievance(
     s,
@@ -970,14 +989,19 @@ export function initiateConflict(
     npc.status =
       approach === "retaliate" && random(s) < 0.2 ? "dead" : "laying-low";
     npc.availableDay = s.day + (approach === "retaliate" ? 5 : 2);
-    record(
+    const outcome = record(
       s,
       "risk",
       `${name(npc)} was ${npc.status === "dead" ? "killed" : "hospitalized"} during the confrontation.`,
       [p.id, npc.id],
       undefined,
-      { importance: "critical" },
+      { importance: "critical", world: {
+        kind: npc.status === "dead" ? "death" : "injury",
+        ...(npc.status === "laying-low" ? { transition: "hospital-admission" as const } : {}),
+        subjectId: npc.id, ...eventCause(s, e.id),
+      } },
     );
+    if (npc.status === "laying-low") npc.hospitalizationEventId = outcome.id;
   } else {
     awardCombat(s, p.id, e.id, "defense");
     awardSkill(s, p.id, "survival", 50, `escape:${c.id}`);
@@ -987,5 +1011,5 @@ export function initiateConflict(
     ]);
   }
   if (random(s) < s.zones[npc.home].police / 160)
-    arrest(s, p.id, "witnessed violence", approach === "retaliate" ? 3 : 1);
+    arrest(s, p.id, "witnessed violence", approach === "retaliate" ? 3 : 1, e.id);
 }

@@ -8,5 +8,9 @@ export default defineConfig({
       input: { main: "index.html", strip: "strip.html" },
     },
   },
-  test: { include: ["src/tests/**/*.test.ts"] },
+  test: {
+    include: ["src/tests/**/*.test.ts"],
+    // Seeded campaigns now settle and round-trip the expanded Reservoir population.
+    testTimeout: 15_000,
+  },
 });

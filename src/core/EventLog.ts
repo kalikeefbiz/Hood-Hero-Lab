@@ -15,6 +15,7 @@ export function record(
       | "factionId"
       | "presentationKey"
       | "expiresOnIncidentClose"
+      | "world"
     >
   > = {},
 ): GameEvent {
@@ -33,7 +34,13 @@ export function record(
   return event;
 }
 export function visibleEvents(s: GameState) {
-  return s.events.filter((e) => e.observedBy.includes(s.playerId));
+  return s.events
+    .filter((e) => e.observedBy.includes(s.playerId))
+    .map((e) => {
+      if (!e.world) return e;
+      const { world, ...visible } = e;
+      return visible;
+    });
 }
 
 // Several factual records may describe one outcome. Keep all records, present one notice.
