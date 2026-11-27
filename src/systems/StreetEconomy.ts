@@ -11,7 +11,7 @@ import { boardPeople } from "../board/people";
 import { presenceOf } from "../board/presence";
 import { awardBuyer, skillsOf, skillRank } from "./Skills";
 import { applyInfluence, rivalControl } from "./Territory";
-import { STRATEGY_BALANCE } from "../content/strategy";
+import { applyFactionConsequences } from "./gang/Consequences";
 import { arrest } from "./Incarceration";
 import {
   cash,
@@ -312,7 +312,7 @@ export function acquire(
     n.wallet.clean += paid.clean;
     n.wallet.illicit += paid.illicit;
   }
-  if (n.affiliation) s.factions[n.affiliation].resources -= def.wholesale;
+  if (n.affiliation) applyFactionConsequences(s, n.affiliation, { resources: -def.wholesale });
   const lot: MerchandiseLot = {
     id: `lot-${s.nextId++}`,
     category: "nightgoods",
@@ -585,11 +585,10 @@ function resolveTransaction(
   m.actors[actor] = (m.actors[actor] ?? 0) + sold;
   if (c.affiliation) {
     m.factions[c.affiliation] = (m.factions[c.affiliation] ?? 0) + sold;
-    s.factions[c.affiliation].resources = clamp(
-      s.factions[c.affiliation].resources + Math.floor(gross * 0.05),
-      0,
-      STRATEGY_BALANCE.resourceCap,
-    );
+    applyFactionConsequences(s, c.affiliation, {
+      resources: Math.floor(gross * 0.05),
+      contribution: actor === s.playerId ? Math.min(3, gross * 0.01) : undefined,
+    });
     if (sold)
       applyInfluence(s, {
         actor,
@@ -599,8 +598,6 @@ function resolveTransaction(
         magnitude: Math.min(1.5, sold * 0.15),
         cause: `${c.name}'s commerce contributed to ${s.factions[c.affiliation].name}'s economic presence.`,
       });
-    if (actor === s.playerId)
-      s.strategic.contributions[c.affiliation] += Math.min(3, gross * 0.01);
   }
   c.stress = clamp(c.stress + (buyer ? 2 : 7));
   c.rivalThreat = clamp(
@@ -863,11 +860,7 @@ export function advanceStreet(s: GameState) {
         (m.factions[active.affiliation] ?? 0) + 1;
       m.pressure = clamp(m.pressure + 4);
       m.competition = clamp(m.competition + 1, 0, 50);
-      s.factions[active.affiliation].resources = clamp(
-        s.factions[active.affiliation].resources + 2,
-        0,
-        STRATEGY_BALANCE.resourceCap,
-      );
+      applyFactionConsequences(s, active.affiliation, { resources: 2 });
       m.demand = clamp(
         m.demand +
           (s.factions[active.affiliation].priority === "commerce" ? 1 : -1),

@@ -20,11 +20,11 @@ import {
   successorError,
   appointSuccessor,
 } from "../systems/Politics";
-import { dominanceScore, stabilizedControl } from "../systems/Territory";
+import { dominanceScore } from "../systems/Territory";
+import { underlordProgress } from "../systems/gang/Authority";
 import {
   legitimateProgress,
   retire,
-  finalizeEnding,
 } from "../systems/EndConditions";
 import { THEMES } from "./theme";
 import "./strategy.css";
@@ -36,7 +36,6 @@ function useResult(onChange: Props["onChange"]) {
     apply: (result: { state: GameState; error: string | null }) => {
       if (result.error) setMessage(result.error);
       else {
-        finalizeEnding(result.state);
         onChange(result.state);
         setMessage(latestPlayerEvent(result.state)?.text ?? "Recorded.");
       }
@@ -128,6 +127,7 @@ export function OrganizationPanel({ s, onChange }: Props) {
     r = useResult(onChange),
     stage = authorityStage(s),
     next = promotionRequirements(s),
+    underlord = underlordProgress(s),
     f = p.affiliation ? s.factions[p.affiliation] : null;
   return (
     <section
@@ -138,7 +138,7 @@ export function OrganizationPanel({ s, onChange }: Props) {
       <h3>{f ? f.name : "Unaffiliated"}</h3>
       <p>
         {f
-          ? `${stage?.name ?? "Member"} · You’ve put in $${Math.floor(s.strategic.contributions[f.id])}`
+          ? `${stage?.name ?? "Recruit"} · ${Math.floor(s.strategic.contributions[f.id])} contribution points`
           : "Your Set is your own people. Joining an organization takes someone inside who trusts you enough to vouch for you."}
       </p>
       {f && (
@@ -151,7 +151,7 @@ export function OrganizationPanel({ s, onChange }: Props) {
           </p>
           {next.stage && (
             <>
-              <h4>Next: {next.stage.name}</h4>
+              <h4>{next.stage.name === stage?.name ? "More authority" : `Next: ${next.stage.name}`}</h4>
               <ul>
                 {next.missing.map((m) => (
                   <li key={playerText(s, m)}>{playerText(s, m)}</li>
@@ -171,8 +171,8 @@ export function OrganizationPanel({ s, onChange }: Props) {
             </>
           )}
           <p>
-            To run it all: hold {stabilizedControl(s, f.id)} of 4 neighborhoods ·{" "}
-            {p.authority >= 70 ? "top rank reached" : "reach the top rank"} ·{" "}
+            To run it all: hold {underlord.zones} of {underlord.requiredZones} neighborhoods ·{" "}
+            {underlord.authorityEligible ? "authority requirement met" : "gain more authority"} ·{" "}
             {s.crew.successor
               ? `${s.characters[s.crew.successor].name} will take your place`
               : "no one named to take your place"}
@@ -183,7 +183,7 @@ export function OrganizationPanel({ s, onChange }: Props) {
       <details>
         <summary>Who could take your place</summary>
         <p>
-          You need to be on the succession council, and they need to be in
+          You need enough authority, and they need to be in
           your organization, around, and willing.
         </p>
         {s.crew.members.map((id) => {

@@ -1,3 +1,4 @@
+import { applyFactionConsequences } from "./gang/Consequences";
 import { openingDecision } from "./StreetLife";
 import {
   type GameState,
@@ -125,9 +126,7 @@ export function advanceIncident(s: GameState, i: Incident) {
     // Leaders with loyalty/stability priorities may discipline an unauthorized act.
     if (leader && leader.traits.loyalty >= 70 && random(s) < 0.65) {
       resolveIncident(s, i, "settlement", leader.id);
-      s.factions[i.organization].instability = clamp(
-        s.factions[i.organization].instability - 8,
-      );
+      applyFactionConsequences(s, i.organization, { instability: -8 });
       return;
     }
   }
@@ -140,7 +139,7 @@ export function advanceIncident(s: GameState, i: Incident) {
     if (age === (i.id === "the-chains" ? 2 : 3)) raiseIncidentDemand(s, i);
     if (age >= (i.id === "the-chains" ? 4 : 5)) {
       i.leadershipAware = true;
-      s.factions[i.organization].instability += 5;
+      applyFactionConsequences(s, i.organization, { instability: 5 });
       record(
         s,
         "incident",

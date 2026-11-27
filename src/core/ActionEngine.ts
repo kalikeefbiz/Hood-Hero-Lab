@@ -14,12 +14,12 @@ import {
   hospitalStay,
   streetConversation,
   streetLocation,
-  witnessIdentity,
 } from "../systems/Danger";
 import { moveTo, presenceOf } from "../board/presence";
 import { applyInfluence } from "../systems/Territory";
-import { STRATEGY_BALANCE } from "../content/strategy";
-import { finalizeEnding } from "../systems/EndConditions";
+import { clearSuccessor } from "../systems/gang/Authority";
+import { applyFactionConsequences } from "../systems/gang/Consequences";
+import { membershipError, recordSponsorship, resolveAffiliation, resolveStanding } from "../systems/gang/Membership";
 import {
   marketAccess,
   transactionError,
@@ -34,7 +34,6 @@ import {
   type GameState,
   type GameEvent,
   type ID,
-  type FactionId,
 } from "./GameState";
 import { record } from "./EventLog";
 import { random } from "./Random";
@@ -53,7 +52,7 @@ import { syncEncounters } from "../systems/EncounterLifecycle";
 import { evaluatePromises } from "../systems/Commitments";
 import { requestActivity, requestError } from "../systems/CrewAgency";
 import { recoverySupport } from "../systems/Crew";
-import { progress } from "../systems/Progression";
+import { settlePlayerProgress } from "../systems/Progression";
 
 import {
   currentEmployment,
@@ -529,17 +528,8 @@ export function validateAction(s: GameState, a: Action): string | null {
   }
   if (["remove", "assign"].includes(a.type) && !s.crew.members.includes(t!.id))
     return "They’re not in your Set";
-  if (a.type === "standing" && !t?.affiliation)
-    return "They aren’t with an organization";
-  if (a.type === "affiliate") {
-    if (c.affiliation) return "Already affiliated";
-    if (!t?.affiliation) return "A member must sponsor you";
-    if (
-      c.organizationStanding[t.affiliation] < BALANCE.affiliationStanding ||
-      (t.relationships[c.id]?.trust ?? 0) < BALANCE.affiliationTrust
-    )
-      return "Requires 35 organizational standing and a sponsor willing to vouch for you";
-  }
+  if (a.type === "standing" || a.type === "affiliate")
+    return membershipError(a.type, c, t);
   return null;
 }
 // Shared with the interface so displayed odds use the resolver's exact current-state calculation.
@@ -699,11 +689,7 @@ export function resolveAction(s: GameState, a: Action) {
         !i!.negotiated;
       const paid = expense(s, c, i!.demand, "Property buyback")!;
       // Group custody and group payment are retained; no invented individual holder.
-      s.factions[i!.organization].resources = clamp(
-        s.factions[i!.organization].resources + paid.clean + paid.illicit,
-        0,
-        STRATEGY_BALANCE.resourceCap,
-      );
+      applyFactionConsequences(s, i!.organization, { resources: paid.clean + paid.illicit });
       resolveIncident(s, i!, "buyback", c.id);
       text = `${c.name} paid $${i!.demand} to settle the demand.`;
       category = "money";
@@ -766,7 +752,7 @@ export function resolveAction(s: GameState, a: Action) {
       );
       const closeness = t!.relationships[c.id]?.affection ?? 0;
       s.crew.members = s.crew.members.filter((id) => id !== t!.id);
-      if (s.crew.successor === t!.id) s.crew.successor = null;
+      clearSuccessor(s, t!.id);
       change(t!, c.id, {
         trust: -(10 + Math.round(closeness / 10) + (promised ? 6 : 0)),
         grievance: 4 + Math.round(closeness / 10) + (promised ? 4 : 0),
@@ -778,51 +764,27 @@ export function resolveAction(s: GameState, a: Action) {
     case "assign":
       return; // Legacy requests are rejected by validateAction.
     case "standing":
-      c.organizationStanding[t!.affiliation!] = clamp(
-        c.organizationStanding[t!.affiliation!] + 8,
-      );
-      c.neighborhoodStanding[t!.home] = clamp(
-        c.neighborhoodStanding[t!.home] + 5,
-      );
-      c.influence += 3;
-      c.legitimacy = clamp(c.legitimacy + 1);
-      change(t!, c.id, { trust: 5, respect: 4 });
-      text = `${c.name} strengthened a connection with ${s.factions[t!.affiliation!].name}.`;
+      text = resolveStanding(s, c, t!);
       break;
     case "affiliate":
-      c.affiliation = t!.affiliation as FactionId;
-      c.authority = 10;
-      if (c.id === s.playerId) s.strategic.membershipDay = s.day;
-      change(t!, c.id, { respect: 5 });
-      text = `${t!.name} vouched for ${c.name}, and ${s.factions[c.affiliation].name} took you in. Your Set is still your own crew.`;
+      text = resolveAffiliation(s, c, t!);
       break;
     case "rest":
       c.stress = clamp(c.stress - 14);
       text = `${c.name} took a quiet afternoon and let some stress go.`;
       break;
   }
-  if (
-    c.id === s.playerId &&
-    ["standing", "offer", "socialize", "gig", "work"].includes(a.type)
-  ) {
-    const zone = t?.home ?? c.home;
-    const faction = a.type === "standing" ? (t?.affiliation ?? null) : null;
+  if (c.id === s.playerId && (a.type === "offer" || a.type === "socialize" || a.type === "gig")) {
+    const descriptions = { offer: "helped someone with money", socialize: "spent time with a neighbor", gig: "worked a local gig" };
     applyInfluence(s, {
       actor: c.id,
       participants: t ? [t.id] : [],
-      faction,
-      zone,
-      kind:
-        a.type === "gig"
-          ? "economic"
-          : a.type === "standing"
-            ? "support"
-            : "community",
-      magnitude: a.type === "standing" ? 1.5 : 0.3,
-      cause: `${c.name} ${({ standing: "helped out in the neighborhood", offer: "helped someone with money", socialize: "spent time with a neighbor", gig: "worked a local gig", work: "worked an honest shift" } as Record<string, string>)[a.type] ?? "was out in the neighborhood"}, and people noticed${faction ? " who you run with" : ""}.`,
+      faction: null,
+      zone: t?.home ?? c.home,
+      kind: a.type === "gig" ? "economic" : "community",
+      magnitude: 0.3,
+      cause: `${c.name} ${descriptions[a.type]}, and people noticed.`,
     });
-    if (c.id === s.playerId && faction && c.affiliation === faction)
-      s.strategic.contributions[faction] += 2;
   }
   const e = record(
     s,
@@ -890,10 +852,6 @@ export function resolveAction(s: GameState, a: Action) {
     );
     remember(s, c.id, t.id, e.id, text, 5);
   }
-  if (c.id === s.playerId) {
-    progress(s);
-    finalizeEnding(s);
-  }
   return e;
 }
 function crewActivityFor(state: GameState, a: Action) {
@@ -957,7 +915,7 @@ function resolvePlayerOrNpcAction(state: GameState, a: Action, inPlace: boolean)
   if (a.target && crewActivity) {
     requestActivity(next, a.target, crewActivity);
     expose(next, presenceOf(next).location, "activity", String(previousAP));
-    progress(next);
+    settlePlayerProgress(next);
     syncEncounters(next);
     return { state: next, error: null, event: next.events.at(-1) };
   }
@@ -981,15 +939,7 @@ function resolvePlayerOrNpcAction(state: GameState, a: Action, inPlace: boolean)
   if (a.actor === next.playerId) {
     const location = presenceOf(next).location;
     if (a.type === "affiliate" && a.target && event)
-      witnessIdentity(
-        next,
-        a.target,
-        a.actor,
-        event.id,
-        location,
-        "sponsorship",
-        true,
-      );
+      recordSponsorship(next, a.target, a.actor, event.id, location);
     if (a.type === "crime") {
       const zone = next.street.transactions.at(-1)?.market ?? player(next).home;
       const actual = streetLocation(zone);
@@ -1010,9 +960,8 @@ function resolvePlayerOrNpcAction(state: GameState, a: Action, inPlace: boolean)
         };
     }
     expose(next, presenceOf(next).location, "activity", String(previousAP));
+    settlePlayerProgress(next);
   }
-  progress(next);
-  finalizeEnding(next);
   syncEncounters(next);
   return { state: next, error: null, event };
 }

@@ -1,5 +1,6 @@
-import { clamp, type GameState, type ZoneId } from "../core/GameState";
-import { applyInfluence, dominanceScore } from "./Territory";
+import { applyFactionConsequences } from "./gang/Consequences";
+import { type GameState, type ZoneId } from "../core/GameState";
+import { adjustFoothold, applyInfluence, dominanceScore } from "./Territory";
 import { STRATEGY_BALANCE as B } from "../content/strategy";
 import type { DecisionKind, EffectKind } from "./StrategicTypes";
 export function advanceFactions(s: GameState) {
@@ -13,17 +14,10 @@ export function advanceFactions(s: GameState) {
       0,
     );
     // Upkeep and diminishing returns constrain resource growth and overextension.
-    f.resources = clamp(
-      f.resources +
-        economies +
-        held * 1.5 -
-        5 -
-        held * 2 -
-        f.instability * 0.025,
-      0,
-      B.resourceCap,
-    );
-    if (f.id === "backstreet") f.instability = clamp(f.instability + 0.12);
+    applyFactionConsequences(s, f.id, {
+      resources: economies + held * 1.5 - 5 - held * 2 - f.instability * 0.025,
+      ...(f.id === "backstreet" ? { instability: 0.12 } : {}),
+    });
     const leadership = f.leaders.reduce((n, id) => {
       const c = s.characters[id];
       return (
@@ -33,10 +27,7 @@ export function advanceFactions(s: GameState) {
           : c.influence * (c.status === "arrested" ? 0.35 : 1))
       );
     }, 0);
-    s.strategic.territories[f.home].factions[f.id].influence = clamp(
-      s.strategic.territories[f.home].factions[f.id].influence +
-        leadership / 3000,
-    );
+    adjustFoothold(s, f.home, f.id, "influence", leadership / 3000);
     if (s.day < strategy.nextDecisionDay) continue;
     const options: {
       kind: DecisionKind;
@@ -122,34 +113,33 @@ export function advanceFactions(s: GameState) {
     options.sort((a, b) => b.score - a.score);
     const choice = options[0];
     if (!choice) continue;
-    f.resources -= choice.cost;
+    applyFactionConsequences(s, f.id, { resources: -choice.cost });
     const politicalCrisis = f.instability >= 60;
     let kind: EffectKind = "support",
       magnitude = 10;
     if (choice.kind === "recover") {
-      f.instability = clamp(f.instability - 12);
-      f.resources = clamp(f.resources + 22, 0, B.resourceCap);
+      applyFactionConsequences(s, f.id, { resources: 22, instability: -12 });
       kind = "community";
       magnitude = 4;
       const ally = f.allies
         .map((id) => s.factions[id])
         .find((a) => a.resources > 500 && f.resources < 180);
       if (ally) {
-        ally.resources -= 20;
-        f.resources += 20;
+        applyFactionConsequences(s, ally.id, { resources: -20 });
+        applyFactionConsequences(s, f.id, { resources: 20 });
       }
     } else if (choice.kind === "economy") {
       kind = "economic";
       magnitude = 13;
-      f.resources = clamp(f.resources + 20, 0, B.resourceCap);
+      applyFactionConsequences(s, f.id, { resources: 20 });
     } else if (choice.kind === "maintain") {
       kind = "defense";
       magnitude = 9;
-      f.instability = clamp(f.instability - 1);
+      applyFactionConsequences(s, f.id, { instability: -1 });
     } else if (choice.kind === "contest") {
       kind = "challenge";
       magnitude = 12;
-      f.instability = clamp(f.instability + 2);
+      applyFactionConsequences(s, f.id, { instability: 2 });
       const target =
         s.strategic.territories[choice.zone].controller ??
         f.enemies.find(

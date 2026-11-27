@@ -1,3 +1,4 @@
+import { finalizeEnding } from "./EndConditions";
 import { player, type GameState } from "../core/GameState";
 import { BALANCE } from "../content/balance";
 import { record } from "../core/EventLog";
@@ -12,4 +13,11 @@ export function progress(s: GameState) {
     s.crew.capacity = capacity;
     record(s, "crew", `Your influence supports a Set of ${capacity}.`, [p.id]);
   }
+}
+
+/** Complete a player-facing command or the daily settlement once on the owned snapshot. */
+export function settlePlayerProgress(state: GameState) {
+  if (state.end) return;
+  progress(state);
+  finalizeEnding(state);
 }

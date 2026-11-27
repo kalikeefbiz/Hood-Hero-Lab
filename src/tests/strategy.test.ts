@@ -157,7 +157,7 @@ describe("condition-driven factions and player politics", () => {
     ).toBeGreaterThan(
       s.strategic.territories.south.factions.backstreet.economy,
     );
-    expect(politicalError(s, "challenge", "south", "justice")).toContain("Organizer");
+    expect(politicalError(s, "challenge", "south", "justice")).toContain("Big Homie");
   });
   it("advancement considers time, resources, standing, leadership and political opposition", () => {
     const s = fresh(),

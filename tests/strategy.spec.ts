@@ -134,10 +134,10 @@ test("earned affiliation authority restriction and advancement use existing spon
     .getByRole("button", { name: "Ask to move up · 1 AP" })
     .click();
   await expect(page.locator(".organization-panel")).toContainText(
-    "Contributor",
+    "Soldier",
   );
   await expect(page.locator(".organization-panel")).toContainText(
-    "You’ve put in $",
+    "120 contribution points",
   );
   await shot(page, ".organization-panel", "04-organization-progression");
 });

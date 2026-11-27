@@ -8,11 +8,12 @@ import {
   validateAction,
   type Action,
 } from "../core/ActionEngine";
-// Utility scores derive from goals, needs, values, memories and obligations.
-function decide(s: GameState, c: Character): Action | null {
-  if (
+export function npcCanTakeDailyAction(s: GameState, c: Character) {
+  return !(
     c.status !== "active" ||
     c.availableDay > s.day ||
+    c.lastActionDay >= s.day ||
+    c.agency.lastAssignmentDay === s.day ||
     s.commitments.some(
       (o) =>
         o.actor === c.id &&
@@ -22,8 +23,12 @@ function decide(s: GameState, c: Character): Action | null {
         o.kind !== "recover-property" &&
         (o.kind !== "crew-activity" || o.dueDay === s.day),
     )
-  )
-    return null;
+  );
+}
+
+// Utility scores derive from goals, needs, values, memories and obligations.
+function decide(s: GameState, c: Character): Action | null {
+  if (!npcCanTakeDailyAction(s, c)) return null;
   if (shiftToday(s, c.id)) return { actor: c.id, type: "work" };
   const options: { action: Action; score: number }[] = [];
   const add = (action: Action, score: number) => {
@@ -90,7 +95,6 @@ export function advanceNPCs(s: GameState) {
         c.id === "contact-angels" ? (s.streetLife?.rng ?? 11011) : s.quanny.rng;
     try {
       considerCrewOffer(s, c);
-      if (c.agency.lastAssignmentDay === s.day) continue;
       const action = decide(s, c);
       if (action) resolveAction(s, action);
     } finally {

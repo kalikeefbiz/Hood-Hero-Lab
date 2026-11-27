@@ -1,3 +1,4 @@
+import { npcCanTakeDailyAction } from "../systems/NPCDecisionAI";
 import {
   dayEndWarning,
   finishActionTiming,
@@ -579,4 +580,35 @@ export function executeLocationAction(
         .map((tx) => tx.id),
     },
   };
+}
+
+export interface NpcPresenceObservation {
+  locationId: string;
+  propertyId?: string;
+  time: Pick<ReturnType<typeof worldTime>, "day" | "minuteOfDay">;
+  peopleHere: readonly string[];
+}
+
+export interface NpcLocationIntent {
+  actorId: string;
+  command: LocationCommand;
+  day: number;
+}
+
+/** The trusted host supplies fresh co-presence from Gemini for an existing engine action. */
+export function executeNpcLocationIntent(
+  state: GameState,
+  intent: NpcLocationIntent,
+  presence: NpcPresenceObservation,
+) {
+  const { actorId, command, day } = intent;
+  const actor = Object.hasOwn(state.characters, actorId) ? state.characters[actorId] : undefined;
+  const time = worldTime(state);
+  const rejected = (error: string) => ({ state, error, eventIds: [] as string[] });
+  if (!actor || actorId === state.playerId) return rejected("Choose a simulated character.");
+  if (time.day !== day || presence.time.day !== day || presence.time.minuteOfDay !== time.minuteOfDay)
+    return rejected("That observation is out of date.");
+  if (!npcCanTakeDailyAction(state, actor)) return rejected("They’re busy right now.");
+  const result = executeLocationAction(state, { ...presence, actorId }, command);
+  return { state: result.state, error: result.error, eventIds: result.changes.eventIds };
 }
