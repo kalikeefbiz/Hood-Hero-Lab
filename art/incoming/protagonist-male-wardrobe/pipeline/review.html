@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Protagonist wardrobe review (round-5 body)</title>
+<style>
+  html, body { margin: 0; background: #222; font: 600 13px/1.2 system-ui, sans-serif; }
+  #labels div { position: absolute; color: #fff; background: rgba(0,0,0,.55); padding: 3px 6px; border-radius: 3px; }
+  #title { position: absolute; right: 8px; bottom: 6px; color: #fff; background: rgba(0,0,0,.55); padding: 3px 6px; }
+</style>
+<body>
+<canvas id="c"></canvas><div id="labels"></div><div id="title"></div>
+<script type="module">
+// Renders the round-5 body + face + equipped wardrobe items with the city's day/night lighting
+// (same values as scripts/review-character.html / src/strip/main.ts). Garments bind to the body's
+// bones by name and hide body triangles through body-masks.json, exactly like the runtime wardrobe.
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
+import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+
+const q = new URLSearchParams(location.search);
+const fail = (m) => { window.reviewError = String(m); throw new Error(m); };
+window.addEventListener("error", (e) => { window.reviewError ??= e.message; });
+window.addEventListener("unhandledrejection", (e) => { window.reviewError ??= String(e.reason?.message ?? e.reason); });
+const sheet = q.get("sheet") ?? "body";
+const CELL = +(q.get("cell") ?? (sheet.endsWith("detail") ? 560 : 420)), COLS = 3, ROWS = sheet.endsWith("detail") ? 2 : 3;
+
+const canvas = document.getElementById("c");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(CELL * COLS, CELL * ROWS);
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.AgXToneMapping; renderer.setScissorTest(true);
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+const hemi = new THREE.HemisphereLight(), sun = new THREE.DirectionalLight();
+scene.add(hemi, sun, sun.target);
+function light(mode, yaw) {
+  const night = mode === "night";
+  sun.color.set(night ? 0x8fa6ff : 0xffb27a); sun.intensity = night ? 0.22 : 2.6;
+  hemi.color.set(night ? 0x2a3555 : 0x9fb6e0); hemi.groundColor.set(night ? 0x0c0b10 : 0x4a3428);
+  hemi.intensity = night ? 0.12 : 0.9;
+  renderer.toneMappingExposure = night ? 1.35 : 1.0;
+  scene.environmentIntensity = night ? 0.07 : 0.7;
+  const a = yaw - 0.6; sun.position.set(Math.sin(a) * 10, night ? 14 : 6, Math.cos(a) * 10);
+  return new THREE.Color(night ? 0x1b1f33 : 0x8a95a6);
+}
+const ktx2 = new KTX2Loader().setTranscoderPath("/basis/").detectSupport(renderer);
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx2);
+
+const BODY = q.get("body") ?? "/art/incoming/protagonist-male-rework";
+const WARD = q.get("wardrobe") ?? "/art/incoming/protagonist-male-wardrobe";
+const items = (q.get("items") ?? "").split(",").filter(Boolean).map((s) => s.split(":"));   // id:relative/path.glb
+const bodyBuf = await (await fetch(`${BODY}/protagonist-male-rework.glb`)).arrayBuffer();
+const sha = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bodyBuf)), (b) => b.toString(16).padStart(2, "0")).join("");
+const g = await loader.parseAsync(bodyBuf, `${BODY}/`);
+const root = g.scene, clips = g.animations;
+let body; root.traverse((o) => { if (o.isSkinnedMesh && o.name === "Body") body = o; });
+const bones = new Map(); root.traverse((o) => { if (o.isBone) bones.set(o.name, o); });
+function bind(mesh) {
+  const bs = mesh.skeleton.bones.map((b) => bones.get(b.name));
+  if (bs.some((b) => !b)) fail(`${mesh.name}: bone outside the canonical rig`);
+  body.parent.add(mesh); mesh.bind(new THREE.Skeleton(bs, mesh.skeleton.boneInverses), mesh.bindMatrix); mesh.frustumCulled = false;
+  return mesh;
+}
+// head + complexion
+const headId = q.get("head") ?? "face-01", cx = q.get("complexion") ?? "complexion-01";
+const [hg, tex] = await Promise.all([loader.loadAsync(`${BODY}/heads/${headId}.glb`), ktx2.loadAsync(`${BODY}/complexions/${cx}.ktx2`)]);
+let head; hg.scene.traverse((o) => { if (o.isSkinnedMesh && !head) head = o; }); bind(head);
+tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace; body.material.map = tex; body.material.needsUpdate = true;
+// garments + mask
+const report = { bodySha256: sha, garments: {} };
+if (items.length) {
+  const masks = await (await fetch(`${WARD}/body-masks.json`)).json();
+  const idx = body.geometry.index.array;
+  if (masks.bodySha256 !== sha || masks.indexCount !== idx.length) fail("body-masks.json does not match the round-5 body");
+  const hidden = new Uint8Array(idx.length / 3);
+  for (const [id, path] of items) {
+    const gg = await loader.loadAsync(`${WARD}/${path}`);
+    if (gg.animations.length) fail(`${id} carries animations`);
+    let m; gg.scene.traverse((o) => { if (o.isSkinnedMesh && o.name === id) m = o; });
+    if (!m) fail(`${id}: skinned mesh named ${id} missing`);
+    bind(m);
+    const mat = m.material;
+    report.garments[id] = { triangles: m.geometry.index.count / 3, vertices: m.geometry.attributes.position.count,
+      maps: Object.fromEntries(["map", "normalMap", "roughnessMap", "aoMap"].map((k) => [k, mat[k] ? `${mat[k].image.width}x${mat[k].image.height}${mat[k].isCompressedTexture ? " ktx2" : ""}` : null])),
+      sheen: mat.sheen ?? 0, type: mat.type };
+    for (const [s, c] of masks.wearables[id].ranges) hidden.fill(1, s, s + c);
+    const dbg = q.get("debug");
+    if (dbg === "vnormal") { m.material = new THREE.MeshNormalMaterial(); }
+    else if (dbg === "nonormal") { mat.normalMap = null; mat.needsUpdate = true; }
+    else if (dbg) { const src = { base: mat.map, normal: mat.normalMap, orm: mat.aoMap }[dbg]; m.material = new THREE.MeshBasicMaterial({ map: src, side: THREE.DoubleSide }); if (src) src.colorSpace = dbg === "base" ? THREE.SRGBColorSpace : THREE.NoColorSpace; }
+  }
+  const vis = new idx.constructor(idx.length - hidden.reduce((a, b) => a + 3 * b, 0));
+  for (let i = 0, o = 0; i < hidden.length; i++) if (!hidden[i]) { vis.set(idx.subarray(3 * i, 3 * i + 3), o); o += 3; }
+  const masked = body.geometry.clone(); masked.setIndex(new THREE.BufferAttribute(vis, 1)); body.geometry = masked;
+  report.visibleBodyTriangles = vis.length / 3;
+}
+root.traverse((o) => { if (o.isMesh) o.frustumCulled = false; });
+if (q.get("hidebody")) { body.visible = false; head.visible = false; }
+scene.add(root);
+const mixer = new THREE.AnimationMixer(root);
+function pose(name, t) { mixer.stopAllAction(); const c = clips.find((x) => x.name === name); if (!c) return false; const a = mixer.clipAction(c); a.play(); mixer.setTime(t * c.duration); return true; }
+
+// views: [title, target y, distance, yaw deg, pitch(y offset), fov, mode, clip, t]
+const V = (title, ty, d, yaw, dy = 0.1, fov = 32, mode = "day", clip = "Idle", t = 0) => ({ title, ty, d, yaw, dy, fov, mode, clip, t });
+const views = sheet === "motion" ? [
+  V("collar back · run A", 1.47, 0.6, 165, 0.05, 26, "day", "Run", 0.05), V("collar back · run B", 1.47, 0.6, 195, 0.05, 26, "day", "Run", 0.55), V("collar side · run", 1.49, 0.6, 120, 0.04, 26, "day", "Run", 0.65),
+  V("hip side · run A", 0.92, 0.8, 95, 0.0, 26, "day", "Run", 0.05), V("hip side · run B", 0.92, 0.8, 265, 0.0, 26, "day", "Run", 0.55), V("hip back · run", 0.92, 0.8, 160, 0.0, 26, "day", "Run", 0.2),
+] : sheet === "sdetail" ? [
+  V("sneaker · 3/4", 0.06, 0.55, 35, 0.06, 28), V("sneaker · side", 0.06, 0.55, 90, 0.02, 28), V("sneaker · heel", 0.07, 0.5, 170, 0.06, 28),
+  V("laces · top", 0.08, 0.38, 15, 0.22, 26), V("sole · run push-off", 0.15, 0.9, 120, 0.0, 30, "day", "Run", 0.5), V("hem break · walk", 0.12, 0.7, 40, 0.03, 26, "day", "Walk", 0.1),
+] : sheet === "jdetail" ? [
+  V("front pocket · fly", 0.9, 0.6, 10, 0.02, 26), V("back pocket · yoke", 0.9, 0.6, 165, 0.02, 26), V("knee back · walk", 0.5, 0.7, 170, 0.0, 26, "day", "Walk", 0.6),
+  V("hem · shoe", 0.15, 0.7, 25, 0.05, 26), V("waistband · belt loop", 0.97, 0.45, 60, 0.03, 24), V("thigh · whiskers", 0.82, 0.8, 0, 0.0, 26),
+] : sheet === "detail" ? [
+  V("collar · front", 1.45, 0.55, 8, 0.03, 24), V("collar · back", 1.47, 0.55, 165, 0.05, 24), V("sleeve hem", 1.28, 0.55, 70, 0.0, 24),
+  V("bottom hem · front", 0.98, 0.6, 15, 0.0, 24), V("armpit · walk", 1.25, 0.7, 75, 0.0, 26, "day", "Walk", 0.25), V("shoulder seam · back 3/4", 1.42, 0.6, 140, 0.15, 24),
+] : [
+  V("front", 0.95, 4.6, 0), V("3/4", 0.95, 4.6, 35), V("side", 0.95, 4.6, 90),
+  V("back", 0.95, 4.6, 180), V("walk · mid-stride", 0.95, 4.6, 60, 0.1, 32, "day", "Walk", 0.25), V("run", 0.95, 4.6, 40, 0.1, 32, "day", "Run", 0.3),
+  V("night", 0.95, 4.6, 20, 0.1, 32, "night"), V("chest · close", 1.3, 1.5, 20, 0.05, 30), V("idle · late frame", 0.95, 4.6, 330, 0.1, 32, "day", "Idle", 0.6),
+];
+const cam = new THREE.PerspectiveCamera(32, 1, 0.01, 100);
+const labels = document.getElementById("labels");
+views.forEach((v, i) => {
+  const x = (i % COLS) * CELL, y = Math.floor(i / COLS) * CELL, yaw = v.yaw * Math.PI / 180;
+  pose(v.clip, v.t); root.updateMatrixWorld(true);
+  cam.fov = v.fov; cam.updateProjectionMatrix();
+  cam.position.set(Math.sin(yaw) * v.d, v.ty + v.dy * (v.d / 4.6) * 4, Math.cos(yaw) * v.d); cam.lookAt(0, v.ty, 0);
+  scene.background = light(v.mode, yaw);
+  renderer.setViewport(x, CELL * (ROWS - 1) - y, CELL, CELL); renderer.setScissor(x, CELL * (ROWS - 1) - y, CELL, CELL);
+  renderer.render(scene, cam);
+  const d = document.createElement("div"); d.style.left = `${x + 6}px`; d.style.top = `${y + 6}px`; d.textContent = v.title; labels.appendChild(d);
+});
+document.getElementById("title").textContent = `round-5 · ${headId} · ${items.map((i) => i[0]).join(" + ") || "unclothed"} · three.js city lighting`;
+window.reviewReport = report; window.reviewDone = true;
+</script>
+</body>

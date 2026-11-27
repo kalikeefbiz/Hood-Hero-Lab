@@ -1,0 +1,49 @@
+{
+  "id": "protagonist-male-wardrobe",
+  "profile": "hero",
+  "status": "benchmark (owner review pending)",
+  "body": {
+    "folder": "art/incoming/protagonist-male-rework",
+    "file": "protagonist-male-rework.glb",
+    "bodySha256": "06e7585513882d31ef28dd3233218231b6ced178da2087c15a3302bbafe71e74"
+  },
+  "skeleton": "GAME_RIG_Body (36 joints incl. root)",
+  "modular": {
+    "wearables": {
+      "tee-white": {
+        "slot": "top",
+        "file": "models/tops/tee-white.glb",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "tee-white"
+        }
+      },
+      "jeans-denim-standard": {
+        "slot": "bottom",
+        "file": "models/bottoms/jeans-denim-standard.glb",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "jeans-denim-standard"
+        }
+      },
+      "court-sneakers-white": {
+        "slot": "footwear",
+        "file": "models/footwear/court-sneakers-white.glb",
+        "bodyVisibility": {
+          "maskFile": "body-masks.json",
+          "maskKey": "court-sneakers-white"
+        }
+      }
+    }
+  },
+  "thirdParty": [
+    {
+      "asset": "denim_fabric_03",
+      "source": "https://polyhaven.com/a/denim_fabric_03",
+      "license": "CC0",
+      "usedIn": [
+        "jeans-denim-standard"
+      ]
+    }
+  ]
+}

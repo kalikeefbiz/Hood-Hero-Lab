@@ -1,0 +1,11 @@
+<!doctype html><body style="margin:0"><canvas id="c"></canvas><script type="module">
+import * as THREE from "three";
+import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
+const q=new URLSearchParams(location.search); const N=+(q.get("n")??1024);
+const r=new THREE.WebGLRenderer({canvas:document.getElementById("c"),preserveDrawingBuffer:true}); r.setSize(N,N); r.setPixelRatio(1);
+r.outputColorSpace=THREE.SRGBColorSpace; r.toneMapping=THREE.NoToneMapping;
+const t=await new KTX2Loader().setTranscoderPath("/basis/").detectSupport(r).loadAsync(q.get("f"));
+t.colorSpace=THREE.SRGBColorSpace; t.flipY=false;
+const s=new THREE.Scene(); const m=new THREE.Mesh(new THREE.PlaneGeometry(2,2),new THREE.MeshBasicMaterial({map:t})); s.add(m);
+r.render(s,new THREE.OrthographicCamera(-1,1,1,-1,0,1)); window.done=true;
+</script></body>

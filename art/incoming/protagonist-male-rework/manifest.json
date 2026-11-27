@@ -52,11 +52,14 @@
         "file": "heads/face-01.glb",
         "complexion": "complexion-01",
         "label": "Black",
-        "meshyTaskId": "01a20b45-e738-71c2-ba1b-871200f57913",
-        "meshyMode": "image-to-3d",
+        "meshyTaskId": "01a2166e-860c-779e-b04a-5a2ba66a975e",
+        "meshyMode": "multi-image-to-3d",
         "inputs": [
-          "ref/body/t-pose-front.png"
-        ]
+          "../protagonist-male/ref/heads/face-01/front.png",
+          "../protagonist-male/ref/heads/face-01/left.png",
+          "../protagonist-male/ref/heads/face-01/rear.png"
+        ],
+        "notes": "Rebuilt 2026-11-25 from the face-01 headshots (was generated from the full-body image). Aligned to the head slot, decimated, stitched to the body seam ring at z=1.538, neck colour matched to complexion-01."
       },
       "face-02": {
         "file": "heads/face-02.glb",
