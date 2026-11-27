@@ -100,6 +100,7 @@ test("simulation-resolved control change and successor appointment", async ({
   const s = underlordReady({ openCity: true });
   await seed(page, s);
   await page
+    .locator(".district-chips")
     .getByRole("button", { name: "Select Downtown", exact: true })
     .click();
   await expect(page.locator(".control-label")).toContainText("Gabriel");
