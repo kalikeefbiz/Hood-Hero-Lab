@@ -3,7 +3,7 @@ import sys; sys.path.insert(0,"/home/claude/work/pipe")
 from posing import *
 from shell_tools import *
 from facetypes import face_types
-o=np.load("/home/claude/work/tee_skin.npz",allow_pickle=True); i_=np.load("/home/claude/work/jeans_skin.npz",allow_pickle=True)
+import os; o=np.load(os.environ.get("TEE","/home/claude/work/tee_skin.npz"),allow_pickle=True); i_=np.load(os.environ.get("JEANS","/home/claude/work/jeans_skin.npz"),allow_pickle=True)
 ov3=np.load("/home/claude/work/tee_v3.npz",allow_pickle=True)
 Fo=[tuple(int(x) for x in f if x>=0) for f in o["F"]]; fto=face_types(Fo,ov3); Fo_out=[f for f,t in zip(Fo,fto) if t<=1]
 arm,body=open_source(); res={}

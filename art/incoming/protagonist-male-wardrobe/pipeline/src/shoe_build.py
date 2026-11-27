@@ -234,10 +234,14 @@ for k,y in enumerate(np.linspace(-0.088,-0.022,6)):
         x=xm(y)+s_*(TW+0.006); p,nn=drape(x,y)
         row.append((p+nn*0.0030,nn))
     EY.append(row)
+for k in range(2,len(EY)):   # a ray that misses the upper at the throat lands on the insole: extrapolate that eyelet from the row below
+    for j in (0,1):
+        if EY[k][j][0][2]<EY[k-1][j][0][2]-0.015:
+            EY[k][j]=(2*EY[k-1][j][0]-EY[k-2][j][0],EY[k-1][j][1]); print("eyelet fixed",k,j,EY[k][j][0].round(3))
 # laces conform to the tongue/upper (BVH of everything built so far) and are rounded 6-sided tubes,
 # so straight chords never sink into the curved tongue and leave floating fragments
 _bv=BVHTree.FromPolygons([Vector(v) for v in Vl2],[tuple(f) for f in F2])
-def strip(p0,p1,n0,n1,lift=0.0030,w=0.0062,th=0.0024,segs=8,part="laces",conform=True):
+def strip(p0,p1,n0,n1,tag='',lift=0.0030,w=0.0062,th=0.0024,segs=8,part="laces",conform=True):
     d=p1-p0; L_=np.linalg.norm(d); d/=L_
     rows=[]; NS=6
     for k in range(segs+1):
@@ -272,13 +276,37 @@ for k in range(len(EY)-1):
     strip(pl0,pr1,nl0,nr1,lift=0.0004); strip(pr0,pl1,nr0,nl1,lift=0.0030)
 (plt,nlt),(prt,nrt)=EY[-1]
 nk=(nlt+nrt)/2; nk/=np.linalg.norm(nk); knot=(plt+prt)/2+nk*0.004
-strip(plt,knot,nlt,nk,lift=0.001,segs=3); strip(prt,knot,nrt,nk,lift=0.001,segs=3)
+
+strip(plt,knot,nlt,nk,lift=0.001,segs=3,conform=False); strip(prt,knot,nrt,nk,lift=0.001,segs=3,conform=False)
 for s_ in (-1,1):   # a small flat bow lying on the tongue, and the lace ends
-    a1=knot+np.array([s_*0.022,-0.012,0.0])+nk*0.002; strip(knot,a1,nk,nk,lift=0.006,segs=6); strip(a1,knot,nk,nk,lift=0.002,segs=6)
-    e1=knot+np.array([s_*0.010,-0.034,0.0]); loc,nn_,_,_=bvhU.find_nearest(Vector(e1)); e1=np.array(loc)+np.array(nn_)*0.007; strip(knot,e1,nk,np.array(nn_),lift=0.002,segs=6)
+    a1=knot+np.array([s_*0.022,-0.012,0.0])+nk*0.002; strip(knot,a1,nk,nk,lift=0.004,segs=6,conform=False); strip(a1,knot,nk,nk,lift=0.002,segs=6,conform=False)
+    e1=knot+np.array([s_*0.010,-0.030,0.0]); loc,nn_,_,_=_bv.find_nearest(Vector(e1));   # lace ends lie on the tongue (bvhU could snap them to the side wall)
+    e1=np.array(loc)+np.array(nn_)*0.007; strip(knot,e1,nk,np.array(nn_),lift=0.002,segs=6,conform=False)
 V=np.array(Vl2); F=F2; parts=np.array(parts_)
 sd=np.array([signed_dist(bvhF,x)[0] for x in V]); print("foot clearance: min %.4f  verts inside foot %d (sole/insole expected)"%(sd.min(),(sd<0).sum()))
 from collections import Counter; print(Counter(parts.tolist()))
+# un-fold fins on the upper/collar (faces flipped against a neighbour read as white spikes at the sole line):
+# Laplacian-relax the vertices of any folded edge until no fold remains
+import collections as _co
+def _unfold(V,F,parts,iters=60):
+    V=np.array(V,float); ok=np.array([str(p) in ("upper","collar") for p in parts])
+    nb=_co.defaultdict(set); ef=_co.defaultdict(list)
+    for i,f in enumerate(F):
+        for a in range(len(f)):
+            u,w=f[a],f[(a+1)%len(f)]; nb[u].add(w); nb[w].add(u); ef[(min(u,w),max(u,w))].append(i)
+    for it in range(iters):
+        P_=V[[f[0] for f in F]]; N=np.array([np.cross(V[f[1]]-V[f[0]],V[f[-1]]-V[f[0]]) for f in F]); N/=np.maximum(np.linalg.norm(N,axis=1,keepdims=True),1e-12)
+        bad=set()
+        for e,fs in ef.items():
+            if len(fs)==2 and ok[fs[0]] and ok[fs[1]] and N[fs[0]]@N[fs[1]]<-0.3 and V[F[fs[0]][0],2]<0.055:
+                for fi in fs: bad.update(F[fi])
+        if not bad: print("unfold clean after",it); break
+        grow=set(bad)
+        for v in bad: grow|=nb[v]
+        for v in grow: V[v]=0.5*V[v]+0.5*np.mean([V[u] for u in nb[v]],axis=0)
+    else: print("unfold: still",len(bad),"verts")
+    return V
+# V=_unfold(V,F,parts)   # disabled: created new slivers; the side fleck was a weighting issue
 np.savez("/home/claude/work/shoeL_v1.npz",V=V,F=np.array([list(f)+[-1]*(4-len(f)) for f in F]),parts=parts,collar=np.array(collar,dtype=object),
          sole=np.array(soleR,dtype=object),eyelets=np.array([[r[0][0],r[1][0]] for r in EY]),allow_pickle=True)
 print("verts",len(V),"faces",len(F))

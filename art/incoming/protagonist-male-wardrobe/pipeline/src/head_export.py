@@ -46,6 +46,9 @@ BLEND=0.060
 w=np.clip((Z_SEAM+BLEND-Z)/BLEND,0,1); w=ndimage.gaussian_filter(w*w*(3-2*w),4)[...,None]
 locg=loc*g_ratio**GL
 L2=Lg*(1-w)+Lg*(tgt/np.maximum(locg,1e-4))*w
+# last ~2 cm above the seam: the body's own tone exactly (no head-texture detail ratio), so no tonal step at the join
+w2=np.clip((Z_SEAM+0.022-Z)/0.022,0,1); w2=ndimage.gaussian_filter(w2*w2*(3-2*w2),3)[...,None]
+L2=L2*(1-w2)+tgt*w2
 out=(srgb(L2)*255+0.5).astype(np.uint8); Image.fromarray(out).save("/home/claude/work/tex/face01_tex_blended.png")
 mat=bpy.data.materials.new("M_Head_face_01"); mat.use_nodes=True; nt=mat.node_tree; bsdf=[n for n in nt.nodes if n.type=="BSDF_PRINCIPLED"][0]
 im=bpy.data.images.load("/home/claude/work/tex/face01_tex_blended.png"); im.name="face01_tex_blended"
@@ -57,7 +60,7 @@ from mathutils import Vector
 bm_=body.data; bvb=BVHTree.FromPolygons([tuple(v.co) for v in bm_.vertices],[tuple(p.vertices) for p in bm_.polygons])
 me.update(); HN=np.array([v.normal for v in me.vertices]); ln=[]
 for l in me.loops:
-    v=me.vertices[l.vertex_index]; z=v.co.z; w=np.clip(1-(z-Z_SEAM)/0.02,0,1); w=w*w*(3-2*w)
+    v=me.vertices[l.vertex_index]; z=v.co.z; w=np.clip(1-(z-Z_SEAM)/0.035,0,1); w=w*w*(3-2*w)
     n=HN[l.vertex_index]
     if w>0:
         loc,nb_,fi,dd=bvb.find_nearest(Vector((v.co.x,v.co.y,min(z,Z_SEAM-0.002))))

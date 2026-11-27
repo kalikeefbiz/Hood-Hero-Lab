@@ -103,7 +103,10 @@ function pose(name, t) { mixer.stopAllAction(); const c = clips.find((x) => x.na
 
 // views: [title, target y, distance, yaw deg, pitch(y offset), fov, mode, clip, t]
 const V = (title, ty, d, yaw, dy = 0.1, fov = 32, mode = "day", clip = "Idle", t = 0) => ({ title, ty, d, yaw, dy, fov, mode, clip, t });
-const views = sheet === "sdetail" ? [
+const views = sheet === "motion" ? [
+  V("collar back · run A", 1.47, 0.6, 165, 0.05, 26, "day", "Run", 0.05), V("collar back · run B", 1.47, 0.6, 195, 0.05, 26, "day", "Run", 0.55), V("collar side · run", 1.49, 0.6, 120, 0.04, 26, "day", "Run", 0.65),
+  V("hip side · run A", 0.92, 0.8, 95, 0.0, 26, "day", "Run", 0.05), V("hip side · run B", 0.92, 0.8, 265, 0.0, 26, "day", "Run", 0.55), V("hip back · run", 0.92, 0.8, 160, 0.0, 26, "day", "Run", 0.2),
+] : sheet === "sdetail" ? [
   V("sneaker · 3/4", 0.06, 0.55, 35, 0.06, 28), V("sneaker · side", 0.06, 0.55, 90, 0.02, 28), V("sneaker · heel", 0.07, 0.5, 170, 0.06, 28),
   V("laces · top", 0.08, 0.38, 15, 0.22, 26), V("sole · run push-off", 0.15, 0.9, 120, 0.0, 30, "day", "Run", 0.5), V("hem break · walk", 0.12, 0.7, 40, 0.03, 26, "day", "Walk", 0.1),
 ] : sheet === "jdetail" ? [

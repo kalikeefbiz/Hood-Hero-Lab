@@ -179,7 +179,7 @@ for sg,pts in SHOE.items():
     tab=np.maximum.accumulate(tab[::-1],axis=0)[::-1]        # jeans above a height must also clear everything above... keep per-slab max downward
     from scipy.ndimage import maximum_filter, gaussian_filter1d as _g1
     tab=maximum_filter(tab,size=(3,3),mode=("nearest","wrap")); SHT[sg]=(c,tab)
-def shoe_clear(p,margin=0.005):
+def shoe_clear(p,margin=0.009):
     if p[2]>0.19: return p
     sg=1 if p[0]>0 else -1; c,tab=SHT[sg]; rel=p[:2]-c; r=np.linalg.norm(rel); a=np.arctan2(rel[1],rel[0])
     zi=min(int(max(p[2],0)/0.005),len(ZB)-1); ai=int((a+np.pi)/np.radians(6))%len(AB); need=tab[zi,ai]+margin

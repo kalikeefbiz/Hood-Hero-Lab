@@ -60,9 +60,9 @@ hc=Y-(0.050+0.35*(Z-0.04))                 # >0 on the counter
 edge(-hc,upper&(Z<0.085),0.0006); stitch_line(np.abs(hc-0.0035),Z,upper&(np.abs(hc-0.0035)<0.002)&(Z<0.085))
 # perforations on the toe cap (top surface only)
 upward=WN[...,2]>0.45
-gx=np.mod((X-0.1)/0.0062,1); gy=np.mod((Y+0.0031*np.floor((X-0.1)/0.0062))/0.0062,1)
-rr=np.hypot(gx-0.5,gy-0.5)*0.0062; perf=upper&(tc<-0.012)&upward&(Y>-0.19)&(rr<0.0009)
-H-=perf*0.0008; dark=np.maximum(dark,perf*0.6)
+P_=0.0072; gx=np.mod((X-0.1)/P_,1); gy=np.mod((Y+0.5*P_*np.floor((X-0.1)/P_))/P_,1)
+rr=np.hypot(gx-0.5,gy-0.5)*P_; perf=upper&(tc<-0.016)&upward&(Y>-0.19)&(rr<0.00062)
+H-=perf*0.0005; dark=np.maximum(dark,perf*0.38)
 # leather grain
 Pl=Pv; g1=full(fbm3(Pl,0.0011,2,91)); g2=full(fbm3(Pl,0.004,2,92))
 H+=(upper|tongue)*(0.00005*g1+0.00004*g2)
