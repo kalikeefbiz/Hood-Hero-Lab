@@ -1,3 +1,4 @@
+import { GAME_SAVE_VERSION } from "../src/core/GameState";
 import { AUTO_KEY } from "../src/persistence/SaveSystem";
 import { oneBuyer } from "../src/tests/sessionFixtures";
 import { buyerError } from "../src/systems/StreetEconomy";
@@ -27,7 +28,7 @@ test.beforeEach(async ({ page }) => {
     const info = await r.json();
     expect(info.commit).toBe(process.env.PLAYWRIGHT_EXPECTED_COMMIT);
     expect(info.milestone).toBe("GOAL 011");
-    expect(info.saveSchema).toBe(10);
+    expect(info.saveSchema).toBe(GAME_SAVE_VERSION);
   }
 });
 async function state(page: Page) {

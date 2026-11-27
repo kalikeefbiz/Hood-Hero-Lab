@@ -1,3 +1,5 @@
+import { isReservoirResidentAddition } from "../content/reservoirResidents";
+import { eventPlace } from "../core/WorldEvents";
 import {
   gain,
   gainError,
@@ -76,11 +78,13 @@ export function newStreetState(): StreetState {
   };
 }
 export function suppliers(s: GameState, actor = s.playerId) {
-  // Reuse actual street contacts; lawful residents and Justice do not become dealers.
+  // The expanded Reservoir cast has no approved wholesale roles. Existing
+  // supplier rules still apply to the established street contacts.
   return Object.values(s.characters)
     .filter(
       (c) =>
         c.id !== s.playerId &&
+        !isReservoirResidentAddition(c.id) &&
         (actor !== s.playerId || !pabloError(s, c.id)) &&
         !!c.affiliation &&
         c.traits.lawful < 65 &&
@@ -634,6 +638,7 @@ function resolveTransaction(
     [actor, ...(partner ? [partner] : [])],
     {
       importance: lost ? "personal" : "routine",
+      world: { kind: "crime", zone, ...(buyer ? eventPlace(s.activeSession?.location) : {}) },
       factionId: c.affiliation ?? undefined,
     },
   );
@@ -687,9 +692,9 @@ function resolveTransaction(
       (progress.milestones.supplyHistory ?? 0) + 1;
   }
   if (random(s) < policeChance)
-    arrest(s, actor, "police intervention during street work", 1);
+    arrest(s, actor, "police intervention during street work", 1, e.id);
   if (partner && random(s) < transactionArrestChance(s, partner, zone))
-    arrest(s, partner, "participating in street work", 1);
+    arrest(s, partner, "participating in street work", 1, e.id);
   return e;
 }
 /** Autonomous NPC activity keeps the existing economy; the player uses City sessions. */
@@ -883,6 +888,7 @@ export function advanceStreet(s: GameState) {
             importance: "personal",
             factionId: active.affiliation,
             title: "Local market shifted",
+            world: { kind: "faction-development", zone: m.zone },
           },
         );
       }

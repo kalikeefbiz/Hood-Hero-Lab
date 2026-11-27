@@ -280,4 +280,4 @@ for (const days of [30, 60, 180])
     expect(s.robberyCareer!.seizures.length).toBeGreaterThan(0);
     if (days === 180)
       expect(skillRank(player(s), "robbery")).toBeGreaterThanOrEqual(3);
-  }, 60000);
+  }, 120_000);

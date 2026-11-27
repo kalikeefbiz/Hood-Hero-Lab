@@ -1,9 +1,10 @@
+import { eventCause } from "../core/WorldEvents";
 import { confiscateCarried } from "./RobberyCareer";
 import { interruptSession } from "./SessionLifecycle";
 import { clamp, type GameState } from "../core/GameState";
 import { record } from "../core/EventLog";
 import { STREET_BALANCE as B } from "../content/street";
-export function arrest(s: GameState, id: string, cause: string, severity = 1) {
+export function arrest(s: GameState, id: string, cause: string, severity = 1, sourceEventId?: string) {
   const c = s.characters[id];
   if (!c || c.status !== "active") return;
   const prior = s.street.custody.filter((r) => r.character === id).length;
@@ -19,7 +20,9 @@ export function arrest(s: GameState, id: string, cause: string, severity = 1) {
     `${c.name} was arrested: ${cause}. Release is set for day ${s.day + length}. Debts and daily costs keep running.`,
     [id],
     id === s.playerId || s.crew.members.includes(id) ? [s.playerId, id] : [id],
-    { importance: "critical", title: `${c.name} in custody` },
+    { importance: "critical", title: `${c.name} in custody`,
+      world: { kind: "arrest", transition: "custody-start", subjectId: id,
+        ...(sourceEventId ? eventCause(s, sourceEventId) : {}) } },
   );
   confiscateCarried(s, id, e.id);
   s.street.custody.push({
@@ -53,7 +56,8 @@ export function releaseEligible(s: GameState) {
       c.id === s.playerId || s.crew.members.includes(c.id)
         ? [s.playerId, c.id]
         : [c.id],
-      { importance: "major", title: `${c.name} released` },
+      { importance: "major", title: `${c.name} released`,
+        world: { kind: "release", transition: "custody-end", subjectId: c.id, sourceEventId: r.eventId } },
     );
   }
 }

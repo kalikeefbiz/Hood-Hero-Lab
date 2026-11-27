@@ -1,3 +1,4 @@
+import { eventCause, eventPlace } from "../core/WorldEvents";
 import { blockQuannyBusiness } from "./Quanny";
 import { currentEncounter } from "./EncounterLifecycle";
 import { player, cash, clamp, type GameState } from "../core/GameState";
@@ -766,6 +767,10 @@ export function settleCareer(
       ...c.participants.map((p) => p.id),
       ...(c.victim ? [c.victim] : []),
     ],
+    undefined,
+    abandon ? undefined : {
+      world: { kind: "crime", zone: t.zone, ...eventPlace(j.location), subjectId: c.victim },
+    },
   );
   s.robberies!.history.push({
     id: a.id,
@@ -898,10 +903,10 @@ export function settleCareer(
     c.riskRoll <
       B.arrestRisk + t.risk + (t.zone === "downtown" ? B.downtownRisk : 0)
   ) {
-    arrest(s, s.playerId, "witnessed robbery", 1);
+    arrest(s, s.playerId, "witnessed robbery", 1, e.id);
     for (const p of c.participants)
       if (c.riskRoll < B.arrestRisk / 2)
-        arrest(s, p.id, "participating in robbery", 1);
+        arrest(s, p.id, "participating in robbery", 1, e.id);
   } else if (
     !abandon &&
     !success &&
@@ -918,7 +923,8 @@ export function settleCareer(
         s,
         "risk",
         `${s.characters[p.id].name} was hurt in the failed job and is recovering until day ${s.characters[p.id].availableDay}.`,
-        [s.playerId, p.id],
+        [s.playerId, p.id], undefined,
+        { world: { kind: "injury", subjectId: p.id, ...eventCause(s, e.id) } },
       );
     }
   }

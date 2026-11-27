@@ -17,7 +17,8 @@ import {
   canonicalCharacters,
   residents,
 } from "../content/characters";
-import { initializeRelationships } from "../systems/Relationships";
+import { initializeRelationships, initializeResidentRelationships } from "../systems/Relationships";
+import { missingReservoirResidents } from "../content/reservoirResidents";
 import { openingIncident } from "../content/openingIncident";
 import { syncEncounters } from "../systems/EncounterLifecycle";
 import { BALANCE } from "../content/balance";
@@ -90,6 +91,7 @@ export function newGame(
   for (const z of Object.values(s.zones)) syncTerritory(s, z.id);
   for (const c of Object.values(s.characters)) { skillsOf(c); equipmentOf(c); c.inventory = {slots: []}; }
   initializeRelationships(s);
+  registerReservoirResidents(s);
   if (!openCity) openingIncident(s);
   syncEncounters(s);
   return s;
@@ -108,4 +110,17 @@ export function enterGameplay(state: GameState): GameState {
   if (!beginQuanny(s, presenceOf(s).location, "gameplay")) return state;
   syncEncounters(s);
   return s;
+}
+
+/** Add missing canonical identities to new campaigns and compatible pre-roster saves. */
+export function registerReservoirResidents(s: GameState) {
+  const added = new Set<string>();
+  for (const resident of missingReservoirResidents(s.characters)) {
+    skillsOf(resident);
+    equipmentOf(resident);
+    resident.inventory = { slots: [] };
+    s.characters[resident.id] = resident;
+    added.add(resident.id);
+  }
+  initializeResidentRelationships(s, added);
 }

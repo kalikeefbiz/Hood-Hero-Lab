@@ -1,3 +1,4 @@
+import { eventPlace } from "../core/WorldEvents";
 import { carriedLotQuantity } from "./Inventory";
 import { lessonError, workIntroError } from "./StreetAccess";
 import { settlePlayerProgress } from "./Progression";
@@ -256,13 +257,15 @@ export function advanceStreetSession(
     addExposure(s, s.playerId, session.zone, 4, true);
     session.lastText =
       "Word’s getting around that you’re working this block.";
-    record(s, "risk", session.lastText, [s.playerId]);
+    record(s, "risk", session.lastText, [s.playerId], undefined,
+      { world: { kind: "crime", ...eventPlace(session.location) } });
   } else if (beat.kind === "patrol") {
     session.lastText =
       "A police patrol rolls up.";
-    record(s, "risk", session.lastText, [s.playerId]);
+    const patrol = record(s, "risk", session.lastText, [s.playerId], undefined,
+      { world: { kind: "disturbance", ...eventPlace(session.location) } });
     if (random(s) < transactionArrestChance(s, s.playerId, session.zone))
-      arrest(s, s.playerId, "police patrol during street work", 1);
+      arrest(s, s.playerId, "police patrol during street work", 1, patrol.id);
   } else if (beat.kind === "rival") {
     expose(s, session.location, "activity", key);
     session.lastText =

@@ -28,6 +28,8 @@ export interface Character {
   home: ZoneId;
   affiliation: FactionId | null;
   status: Status;
+  /** Explicit NPC hospital admission. Other injuries may only cause laying low. */
+  hospitalizationEventId?: ID;
   availableDay: number;
   lastActionDay: number;
   traits: { loyalty: number; ambition: number; risk: number; lawful: number };
@@ -133,6 +135,8 @@ export interface GameEvent {
   factionId?: FactionId;
   presentationKey?: string;
   expiresOnIncidentClose?: boolean;
+  /** Spatial and causal context for trusted world simulation. */
+  world?: import("./WorldEvents").WorldEventDetails;
 }
 export type CommitmentStatus =
   | "pending"
@@ -226,6 +230,7 @@ export interface GameState {
   quanny: import("../systems/QuannyState").QuannyState;
   danger: import("../systems/DangerState").DangerState;
   presence?: import("../board/presence").Presence;
+  sim?: import("../sim/types").SimSnapshotV1;
   version: typeof GAME_SAVE_VERSION;
   robberyCareer?: import("../systems/RobberyCareerState").RobberyCareer;
   inventory?: import("../systems/Inventory").InventoryState;

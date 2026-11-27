@@ -161,6 +161,7 @@ export function applyInfluence(s: GameState, effect: InfluenceEffect) {
       factionId: effect.faction ?? undefined,
       title: "Around the neighborhood",
       importance: "routine",
+      world: effect.faction ? { kind: "faction-development", zone: effect.zone } : undefined,
     },
   );
   s.strategic.effects.push({ ...effect, magnitude, day: s.day, eventId: e.id });
@@ -234,6 +235,7 @@ function changeControl(s: GameState, zone: ZoneId, to: FactionId | null) {
       title: to ? "Control changed" : "Control lost",
       importance: "major",
       factionId: to ?? from ?? undefined,
+      world: { kind: "territory-change", zone, previousController: from, controller: to },
     },
   );
   t.controller = to;
@@ -320,6 +322,7 @@ export function resolveTerritories(s: GameState) {
           title: `${z.name}: Rival pressure`,
           importance: "major",
           factionId: challenger,
+          world: { kind: "faction-development", zone: z.id },
         },
       );
     t.lawfulEconomy = clamp(

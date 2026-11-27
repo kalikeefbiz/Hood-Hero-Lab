@@ -120,8 +120,16 @@ export function advanceDay(state: GameState, { inPlace = false } = {}): GameStat
       c.id !== s.playerId &&
       c.status === "laying-low" &&
       c.availableDay <= s.day
-    )
+    ) {
       c.status = "active";
+      if (c.hospitalizationEventId) {
+        record(s, "risk", `${c.name} was discharged from the hospital.`, [c.id], [c.id], {
+          world: { kind: "release", transition: "hospital-discharge", subjectId: c.id,
+            sourceEventId: c.hospitalizationEventId },
+        });
+        delete c.hospitalizationEventId;
+      }
+    }
   releaseEligible(s);
   advanceStreet(s);
   generateShifts(s);

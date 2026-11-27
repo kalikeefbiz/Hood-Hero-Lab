@@ -32,6 +32,7 @@ import {
   clamp,
   player,
   type GameState,
+  type ZoneId,
   type GameEvent,
   type ID,
 } from "./GameState";
@@ -574,7 +575,7 @@ export function partnerContribution(s: GameState, id: string) {
   );
 }
 // Mutates only an owned simulation snapshot. UI calls performAction for transactional validation.
-export function resolveAction(s: GameState, a: Action) {
+export function resolveAction(s: GameState, a: Action, socialZone?: ZoneId) {
   const c = s.characters[a.actor],
     t = a.target ? s.characters[a.target] : undefined,
     i = a.incidentId ? s.incidents[a.incidentId] : undefined;
@@ -780,7 +781,7 @@ export function resolveAction(s: GameState, a: Action) {
       actor: c.id,
       participants: t ? [t.id] : [],
       faction: null,
-      zone: t?.home ?? c.home,
+      zone: socialZone ?? t?.home ?? c.home,
       kind: a.type === "gig" ? "economic" : "community",
       magnitude: 0.3,
       cause: `${c.name} ${descriptions[a.type]}, and people noticed.`,
@@ -792,6 +793,10 @@ export function resolveAction(s: GameState, a: Action) {
     text,
     [c.id, ...(t ? [t.id] : [])],
     [c.id, ...(t ? [t.id] : [])],
+    a.type === "affiliate" ? {
+      factionId: c.affiliation ?? undefined,
+      world: { kind: "faction-development", subjectId: c.id },
+    } : undefined,
   );
   if (c.id === s.playerId && ["gig", "apply", "acceptJob"].includes(a.type))
     completeWorkIntro(
@@ -870,6 +875,12 @@ export function actionExecutionError(state: GameState, a: Action) {
   return activity && a.target ? requestError(state, a.target, activity) : null;
 }
 
+interface ObservedSocialContext {
+  zone: ZoneId;
+  locationId?: string;
+  peopleHere: readonly string[];
+}
+
 /** By default the caller's state is preserved. Use inPlace only with exclusively owned state. */
 export function performAction(
   state: GameState,
@@ -878,9 +889,12 @@ export function performAction(
     inPlace = false,
     decision,
     afterEffects,
+    observedSocialContext,
   }: {
     inPlace?: boolean;
     decision?: DayEndDecision;
+    /** The caller has verified this street context against physical presence. */
+    observedSocialContext?: ObservedSocialContext;
     /** Record the initiating scene's response before a duration can cross dawn. */
     afterEffects?: (state: GameState) => void;
   } = {},
@@ -888,7 +902,9 @@ export function performAction(
   const error = actionExecutionError(state, a);
   if (error) return { state, error };
   const resolve = () => {
-    const result = resolvePlayerOrNpcAction(state, a, inPlace);
+    const result = resolvePlayerOrNpcAction(
+      state, a, inPlace, observedSocialContext,
+    );
     afterEffects?.(result.state);
     return result;
   };
@@ -904,17 +920,29 @@ export function performAction(
   );
 }
 
-function resolvePlayerOrNpcAction(state: GameState, a: Action, inPlace: boolean): {
+function resolvePlayerOrNpcAction(
+  state: GameState,
+  a: Action,
+  inPlace: boolean,
+  observedSocialContext?: ObservedSocialContext,
+): {
   state: GameState;
   error: string | null;
   event?: GameEvent;
 } {
   const previousAP = state.ap;
   const next = inPlace ? state : structuredClone(state);
+  const exposeActivity = () => {
+    const location = observedSocialContext
+      ? observedSocialContext.locationId
+      : presenceOf(next).location;
+    if (location)
+      expose(next, location, "activity", String(previousAP), observedSocialContext?.peopleHere);
+  };
   const crewActivity = crewActivityFor(state, a);
   if (a.target && crewActivity) {
     requestActivity(next, a.target, crewActivity);
-    expose(next, presenceOf(next).location, "activity", String(previousAP));
+    exposeActivity();
     settlePlayerProgress(next);
     syncEncounters(next);
     return { state: next, error: null, event: next.events.at(-1) };
@@ -922,7 +950,7 @@ function resolvePlayerOrNpcAction(state: GameState, a: Action, inPlace: boolean)
   const previousAccess = Object.values(state.zones)
     .filter((z) => !marketAccess(state, state.playerId, z.id))
     .map((z) => z.id);
-  const event = resolveAction(next, a);
+  const event = resolveAction(next, a, observedSocialContext?.zone);
   for (const z of Object.values(next.zones))
     if (
       !previousAccess.includes(z.id) &&
@@ -959,7 +987,7 @@ function resolvePlayerOrNpcAction(state: GameState, a: Action, inPlace: boolean)
                 ].slice(-12),
         };
     }
-    expose(next, presenceOf(next).location, "activity", String(previousAP));
+    exposeActivity();
     settlePlayerProgress(next);
   }
   syncEncounters(next);

@@ -289,7 +289,7 @@ it("projects canon rank, Set inventory, and disclosed faction information withou
   expect(s.characters.flacco.relationships.player).toBeDefined();
 });
 
-it("accepts NPC intents only with current co-presence and shares the daily action budget", () => {
+it("validates NPC observations without settling their visual routines", () => {
   const s = fresh();
   const actorId = "resident-reservoir";
   const intent = {
@@ -313,22 +313,16 @@ it("accepts NPC intents only with current co-presence and shares the daily actio
     later,
   );
 
-  const accepted = executeNpcLocationIntent(s, intent, observation);
-  expect(accepted.error).toBeNull();
-  expect(accepted.eventIds).toHaveLength(1);
-  expect(accepted.state.characters[actorId].wallet.clean).toBeLessThan(
-    s.characters[actorId].wallet.clean,
-  );
-  expect(accepted.state.ap).toBe(s.ap);
-  expect(worldTime(accepted.state)).toEqual(worldTime(s));
-  const duplicate = executeNpcLocationIntent(
-    accepted.state,
-    intent,
-    observation,
-  );
-  expect(duplicate.state).toBe(accepted.state);
-  expect(duplicate.error).toMatch(/busy/);
-  const actor = structuredClone(accepted.state.characters[actorId]);
-  advanceNPCs(accepted.state);
-  expect(accepted.state.characters[actorId]).toEqual(actor);
+  const before = structuredClone(s);
+  for (let i = 0; i < 3; i++) {
+    const result = executeNpcLocationIntent(s, intent, observation);
+    expect(result).toMatchObject({ error: expect.stringMatching(/daily gameplay resolver/), eventIds: [] });
+    expect(result.state).toBe(s);
+  }
+  expect(s).toEqual(before);
+  advanceNPCs(s);
+  expect(s.characters[actorId].lastActionDay).toBe(s.day);
+  const once = structuredClone(s.characters[actorId]);
+  advanceNPCs(s);
+  expect(s.characters[actorId]).toEqual(once);
 });

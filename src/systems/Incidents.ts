@@ -38,6 +38,7 @@ export function resolveIncident(
     {
       importance: "major",
       factionId: i.organization,
+      world: { kind: "faction-development", subjectId: i.victim },
       presentationKey: `incident:${i.id}:outcome`,
       title:
         resolution === "sold" ? "The Chains — lost" : "The Chains — resolved",

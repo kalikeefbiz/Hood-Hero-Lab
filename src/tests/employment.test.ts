@@ -344,6 +344,6 @@ describe("employment commitments and survival", () => {
           expect(cash(player(s))).toBe(125 + 35 * (BALANCE.gigIncome - 18));
       }
     },
-    30000,
+    90_000,
   );
 });

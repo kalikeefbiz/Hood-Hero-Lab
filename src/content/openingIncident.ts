@@ -47,7 +47,7 @@ export function openingIncident(s: GameState) {
     "Cuzzo: “Three young Angels took my chains. Dizzy, Baby Canon, Joker. They’re asking $150 to give them back. Call me.”",
     ["mega", ...participants],
     ["player", "mega", ...participants],
-    { incidentId: "the-chains" },
+    { incidentId: "the-chains", world: { kind: "crime", subjectId: "mega" } },
   );
   remember(s, "mega", "player", e.id, "Asked my cousin for support.", 20);
   for (const a of participants)

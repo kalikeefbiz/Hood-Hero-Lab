@@ -162,7 +162,8 @@ export function promote(state: GameState) {
     {
       importance: "major",
       title: "Moving up",
-      factionId: player(s).affiliation!,
+      factionId: p.affiliation!,
+      world: { kind: "faction-development", subjectId: p.id },
     },
   );
   settlePlayerProgress(s);
@@ -203,6 +204,7 @@ export function appointSuccessor(state: GameState, id: string) {
       importance: "major",
       title: "Successor appointed",
       factionId: player(s).affiliation!,
+      world: { kind: "faction-development", subjectId: id },
     },
   );
   settlePlayerProgress(s);
