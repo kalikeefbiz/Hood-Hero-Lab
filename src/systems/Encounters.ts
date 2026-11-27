@@ -1,3 +1,4 @@
+import { settlePlayerProgress } from "./Progression";
 import {
   openingDecision,
   giveFlaccoStock,
@@ -127,6 +128,7 @@ export function respondEncounter(
         effect.compensation,
       );
     if (effect.choice === "attend") attendCrewActivity(s, effect.assignmentId!);
+    if (effect.choice === "request" || effect.choice === "attend") settlePlayerProgress(s);
     if (effect.choice === "accept") acceptCrewOffer(s, e.crewOfferId!);
     if (effect.choice === "decline") {
       const o = s.crewOffers.find((o) => o.id === e.crewOfferId)!;

@@ -7,8 +7,8 @@ import { underlordReady, consolidate } from "../src/tests/strategicFixtures";
 import { businessAction } from "../src/systems/Businesses";
 import { politicalAction } from "../src/systems/Politics";
 import { connect } from "../src/systems/Relationships";
-import type { GameState } from "../src/core/GameState";
-import { dismissEncounter } from "./helpers";
+import { GAME_SAVE_VERSION, type GameState } from "../src/core/GameState";
+import { dismissEncounter, navigate, tapUntil } from "./helpers";
 const base = process.env.PLAYWRIGHT_BASE_PATH || "/";
 async function nav(page: Page, name: string) {
   await page
@@ -26,7 +26,8 @@ async function seed(page: Page, s: GameState) {
     { key: SAVE_KEY, raw: serialize(s) },
   );
   await page.reload();
-  await page.getByRole("button", { name: "Resume saved game" }).click();
+  const resume = page.getByRole("button", { name: "Resume saved game" });
+  await tapUntil(page, resume, () => page.locator(".game-shell").isVisible());
   await dismissEncounter(page);
 }
 async function shot(page: Page, selector: string, name: string) {
@@ -42,7 +43,7 @@ async function verifyBuild(page: Page) {
     const b = await r.json();
     expect(b.commit).toBe(process.env.PLAYWRIGHT_EXPECTED_COMMIT);
     expect(b.milestone).toBe("GOAL 011");
-    expect(b.saveSchema).toBe(10);
+    expect(b.saveSchema).toBe(GAME_SAVE_VERSION);
   }
 }
 test.beforeEach(async ({ page }) => verifyBuild(page));
@@ -93,32 +94,36 @@ test("actual local investment, contested map, autonomous decisions and persisted
   await dismissEncounter(page);
   await expect(page.locator(".game-shell")).toBeVisible();
 });
-test("simulation-resolved control change and council succession progression", async ({
+test("simulation-resolved control change and successor appointment", async ({
   page,
 }) => {
-  const s = underlordReady();
+  const s = underlordReady({ openCity: true });
   await seed(page, s);
   await page
     .getByRole("button", { name: "Select Downtown", exact: true })
     .click();
   await expect(page.locator(".control-label")).toContainText("Gabriel");
   await shot(page, ".city-layout", "03-control-change");
-  await nav(page, "Set");
+  await navigate(page, "Set");
   await expect(page.locator(".organization-panel")).toContainText(
     "hold 4 of 4 neighborhoods",
   );
   await page.getByText("Who could take your place", { exact: true }).click();
-  await expect(page.locator(".organization-panel")).toContainText(
-    "Eligible to accept",
-  );
+  const appointment = page.getByRole("button", { name: /Appoint Joker/ });
+  const ending = page.locator(".ending");
+  await expect(appointment).toBeEnabled();
   await shot(page, ".organization-panel", "07-underlord-successor");
-  await page.getByRole("button", { name: /Appoint Joker/ }).click();
-  await expect(page.locator(".ending")).toContainText("underlord");
+  await tapUntil(page, appointment, () => ending.isVisible());
+  await expect(ending).toContainText("You made it to the top");
+  await expect.poll(() => page.evaluate(
+    (key) => JSON.parse(localStorage.getItem(key)!).state.end,
+    AUTO_KEY,
+  )).toBe("underlord");
 });
 test("earned affiliation authority restriction and advancement use existing sponsorship", async ({
   page,
 }) => {
-  let s = newGame("Test(7) Advancement", "south");
+  const s = newGame("Test(7) Advancement", "south", undefined, { openCity: true });
   s.day = 15;
   s.characters.player.affiliation = "backstreet";
   s.characters.player.authority = 10;
@@ -129,15 +134,17 @@ test("earned affiliation authority restriction and advancement use existing spon
   connect(s, "player", "justice");
   s.characters.justice.relationships.player.trust = 60;
   await seed(page, s);
-  await nav(page, "Set");
-  await page
-    .getByRole("button", { name: "Ask to move up · 1 AP" })
-    .click();
+  await navigate(page, "Set");
+  const promote = page.getByRole("button", { name: "Ask to move up · 1 AP" });
+  await tapUntil(page, promote, () => page.evaluate(
+    (key) => JSON.parse(localStorage.getItem(key)!).state.characters.player.authority === 25,
+    AUTO_KEY,
+  ));
   await expect(page.locator(".organization-panel")).toContainText(
-    "Contributor",
+    "Soldier",
   );
   await expect(page.locator(".organization-panel")).toContainText(
-    "You’ve put in $",
+    "120 contribution points",
   );
   await shot(page, ".organization-panel", "04-organization-progression");
 });

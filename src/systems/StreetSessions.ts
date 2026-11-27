@@ -1,7 +1,6 @@
 import { carriedLotQuantity } from "./Inventory";
 import { lessonError, workIntroError } from "./StreetAccess";
-import { progress } from "./Progression";
-import { finalizeEnding } from "./EndConditions";
+import { settlePlayerProgress } from "./Progression";
 import { finishSessionPartner, interruptSession } from "./SessionLifecycle";
 import { z } from "zod";
 import { player, type GameState } from "../core/GameState";
@@ -274,8 +273,7 @@ export function advanceStreetSession(
   session.totals.heat += Math.max(0, player(s).police - heat);
   session.settled.push(key);
   session.cursor++;
-  progress(s);
-  finalizeEnding(s);
+  settlePlayerProgress(s);
   syncEncounters(s);
   const reason = interruption(s);
   if (reason || session.cursor === session.beats.length || !saleLot(s)) {

@@ -11,7 +11,7 @@ import {
 import { presenceOf } from "../board/presence";
 import { advanceBusinesses } from "../systems/Businesses";
 import { resolveTerritories } from "../systems/Territory";
-import { legitimateProgress, finalizeEnding } from "../systems/EndConditions";
+import { legitimateProgress } from "../systems/EndConditions";
 import { advanceStreet } from "../systems/StreetEconomy";
 import { releaseEligible } from "../systems/Incarceration";
 import { processCrewActivities } from "../systems/CrewAgency";
@@ -26,7 +26,7 @@ import { advanceNPCs } from "../systems/NPCDecisionAI";
 import { advanceFactions } from "../systems/Factions";
 import { advanceIncidents } from "../systems/Incidents";
 import { advancePressure } from "../systems/Reputation";
-import { progress } from "../systems/Progression";
+import { settlePlayerProgress } from "../systems/Progression";
 
 import { settleAttendance, generateShifts } from "../systems/Employment";
 import { settleWorkplaceScenes } from "../systems/Workplace";
@@ -171,15 +171,15 @@ export function advanceDay(state: GameState, { inPlace = false } = {}): GameStat
       [p.id],
       { importance: "routine" },
     );
-  progress(s);
+  const { income: lawfulIncome, recentCrime } = legitimateProgress(s);
   s.strategic.lawfulStreak =
-    legitimateProgress(s).income >= BALANCE.recurringIncomeVictory &&
-    !legitimateProgress(s).recentCrime &&
+    lawfulIncome >= BALANCE.recurringIncomeVictory &&
+    !recentCrime &&
     p.wallet.illicit === 0
       ? s.strategic.lawfulStreak + 1
       : 0;
-  finalizeEnding(s);
   dischargePatient(s);
+  settlePlayerProgress(s);
   s.ap =
     hospitalStay(s) || s.end
       ? 0
